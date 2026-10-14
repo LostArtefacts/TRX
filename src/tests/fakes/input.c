@@ -13,6 +13,20 @@
 static bool m_Pressed[INPUT_ROLE_NUMBER_OF] = {};
 static bool m_Held[INPUT_ROLE_NUMBER_OF] = {};
 static bool m_HeldOff[INPUT_ROLE_NUMBER_OF] = {};
+static int32_t m_DownFor[INPUT_ROLE_NUMBER_OF] = {};
+static bool m_ScriptHold = false;
+
+// The menu keys that repeat while held, in ticks, as the real input repeats
+// them after 0.4 seconds every 0.1 seconds, or every 0.2 for left and right.
+static const struct {
+    INPUT_ROLE role;
+    int32_t delay;
+    int32_t every;
+} m_Repeats[] = {
+    { INPUT_ROLE_MENU_UP, 12, 3 },   { INPUT_ROLE_MENU_DOWN, 12, 3 },
+    { INPUT_ROLE_MENU_LEFT, 12, 6 }, { INPUT_ROLE_MENU_RIGHT, 12, 6 },
+    { INPUT_ROLE_MENU_SKIP, 12, 3 }, { (INPUT_ROLE)-1, 0, 0 },
+};
 
 static INPUT_ROLE M_CheckRole(lua_State *const L, const int arg)
 {
@@ -116,6 +130,34 @@ bool Input_IsPressed(const INPUT_ROLE role)
     return m_Pressed[role] && !m_HeldOff[role];
 }
 
+bool Input_IsRoleDown(const INPUT_ROLE role)
+{
+    return m_Held[role];
+}
+
+bool Input_Grab_IsHeld(const INPUT_ROLE role)
+{
+    return m_ScriptHold && m_Held[role] && !m_HeldOff[role];
+}
+
+bool Input_Grab_IsPressed(const INPUT_ROLE role)
+{
+    if (!Input_Grab_IsHeld(role)) {
+        return false;
+    }
+    const int32_t down_for = m_DownFor[role];
+    if (down_for == 1) {
+        return true;
+    }
+    for (int32_t i = 0; m_Repeats[i].role != (INPUT_ROLE)-1; i++) {
+        if (m_Repeats[i].role == role) {
+            return down_for > m_Repeats[i].delay
+                && (down_for - m_Repeats[i].delay) % m_Repeats[i].every == 0;
+        }
+    }
+    return false;
+}
+
 void Input_HoldOffRole(const INPUT_ROLE role)
 {
     m_HeldOff[role] = true;
@@ -145,11 +187,12 @@ bool InputRaw_IsReserved(void)
 
 void InputRaw_SetScriptHold(const bool held)
 {
+    m_ScriptHold = held;
 }
 
 bool InputRaw_IsHeldByScript(void)
 {
-    return false;
+    return m_ScriptHold;
 }
 
 bool InputRaw_IsKeyHeld(const char *const key)
@@ -232,6 +275,14 @@ void FakeInput_Reset(void)
     memset(m_Pressed, 0, sizeof(m_Pressed));
     memset(m_Held, 0, sizeof(m_Held));
     memset(m_HeldOff, 0, sizeof(m_HeldOff));
+    memset(m_DownFor, 0, sizeof(m_DownFor));
+}
+
+void FakeInput_Tick(void)
+{
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        m_DownFor[role] = m_Held[role] ? m_DownFor[role] + 1 : 0;
+    }
 }
 
 void FakeInput_PushLua(lua_State *const L)
