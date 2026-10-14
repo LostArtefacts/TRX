@@ -104,7 +104,8 @@ bool Input_IsRoleDown(INPUT_ROLE role);
 
 // Check a role as the script that holds the devices reads it: debounced, with
 // the menu keys repeating as the game's own menus repeat them, and less the
-// roles held off. Both report false while the game reads the devices itself.
+// roles held off. Both report false while the game reads the devices itself,
+// and while the console is open.
 bool Input_Grab_IsHeld(INPUT_ROLE role);
 bool Input_Grab_IsPressed(INPUT_ROLE role);
 
