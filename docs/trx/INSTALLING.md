@@ -1387,9 +1387,13 @@ If you install everything correctly, your game directory should look more or les
 │   ├── ui
 │   │   ├── hud
 │   │   │   ├── overlay
+│   │   │   │   ├── ammo.lua
+│   │   │   │   ├── bars.lua
 │   │   │   │   ├── init.lua
 │   │   │   │   ├── photo_mode.lua
-│   │   │   │   └── pickups.lua
+│   │   │   │   ├── pickups.lua
+│   │   │   │   ├── place.lua
+│   │   │   │   └── readouts.lua
 │   │   │   ├── assault.lua
 │   │   │   └── legend.lua
 │   │   ├── screens
@@ -2845,9 +2849,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── ui
     │   │   │   ├── hud
     │   │   │   │   ├── overlay
+    │   │   │   │   │   ├── ammo.lua
+    │   │   │   │   │   ├── bars.lua
     │   │   │   │   │   ├── init.lua
     │   │   │   │   │   ├── photo_mode.lua
-    │   │   │   │   │   └── pickups.lua
+    │   │   │   │   │   ├── pickups.lua
+    │   │   │   │   │   ├── place.lua
+    │   │   │   │   │   └── readouts.lua
     │   │   │   │   ├── assault.lua
     │   │   │   │   └── legend.lua
     │   │   │   ├── screens
