@@ -35,7 +35,7 @@ local at_level_end = require("trx.events").at_level_end
 ---- A signal that a level script derives, with `trx.signal.Signal:map`,
 ---  `trx.signal.combine`, an operator or `trx.signal.polled`, stops when the
 ---  level ends. One that a global script derives follows its sources while
----  something holds it, or until `trx.signal.Signal:stop`.
+---  something holds it or listens to it, or until `trx.signal.Signal:stop`.
 ---- An event handler follows the script that attached it, as `trx.events`
 ---  says.
 ---- A listener from `trx.signal.Signal:on` stays attached until
@@ -108,6 +108,12 @@ local function new_signal(value)
     _next_id = 1,
   }, Signal)
 end
+
+-- How many listeners each derived signal has. The count holds the signal, so
+-- that a signal with a listener attached keeps following its sources even
+-- where nothing else holds it.
+---@type table<trx.signal.Signal, integer>
+local heard = {}
 
 -- Derived signals keep the listeners they attach to their sources, so they can
 -- detach them later. Level-script signals are stopped when the level ends.
@@ -232,6 +238,9 @@ function Signal:on(fn)
   local id = self._next_id
   self._next_id = id + 1
   listeners[id] = fn
+  if self._bound ~= nil then
+    heard[self] = (heard[self] or 0) + 1
+  end
   return setmetatable({ _signal = self, _id = id }, Listener)
 end
 
@@ -279,6 +288,10 @@ function Listener:detach()
   local id = self._id
   local was_listening = listeners[id] ~= nil
   listeners[id] = nil
+  local count = heard[signal]
+  if was_listening and count ~= nil then
+    heard[signal] = count > 1 and count - 1 or nil
+  end
   return was_listening
 end
 
