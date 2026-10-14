@@ -768,6 +768,14 @@ function M.open(ctx, book_pages, index, mode)
   end
   self.arrow_left = arrow(-1)
   self.arrow_right = arrow(1)
+  -- The signals follow the ring's rest frame, which lasts the session, so they
+  -- stop with the screen rather than wait to be collected.
+  ctx:on_end(function()
+    self.arrow_left:stop()
+    self.arrow_right:stop()
+    self.caption_shown:stop()
+    self.resting:stop()
+  end)
 
   self.book = ctx:push({
     root = trx.ui.widgets.Spacer(),
