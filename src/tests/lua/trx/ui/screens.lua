@@ -170,6 +170,29 @@ test("an error in a screen's layer gives the screen back", function()
   finish_case()
 end)
 
+test(
+  "an error as the main layer closes still gives the screen back",
+  function()
+    local main
+    define(RING_ENTRY, function(ctx)
+      main = ctx:push({
+        root = label("closing"),
+        on_close = function()
+          error("broken close")
+        end,
+      })
+      return main
+    end)
+    fake.offer(RING_ENTRY, { object = PASSPORT })
+    h.raises(function()
+      main:close()
+    end, "broken close")
+    assert(fake.take_choice(RING_ENTRY) == CHOICE_CANCEL)
+    assert(not fake.is_held(RING_ENTRY))
+    finish_case()
+  end
+)
+
 test("an engine release closes the layers without a choice", function()
   local closed = false
   local held
@@ -229,6 +252,32 @@ test("a screen runs its end callbacks once its layers have closed", function()
   h.raises(function()
     held:on_end(function() end)
   end, "the screen has ended")
+  finish_case()
+end)
+
+test("an error as a screen ends still closes the rest", function()
+  local held, last
+  local ended = false
+  define(RING_ENTRY, function(ctx)
+    held = ctx
+    ctx:on_end(function()
+      ended = true
+    end)
+    local main = ctx:push({
+      root = label("first"),
+      on_close = function()
+        error("broken close")
+      end,
+    })
+    last = ctx:push({ root = label("last") })
+    return main
+  end)
+  fake.offer(RING_ENTRY, { object = PASSPORT })
+  h.raises(function()
+    held:cancel()
+  end, "broken close")
+  assert(not last.is_open, "a layer outlived the screen")
+  assert(ended, "the end callback did not run")
   finish_case()
 end)
 
