@@ -1,27 +1,17 @@
 local raw = trxc.screens
-local raw_events = trxc.events
 local raw_hooks = trxc.hooks
-local raw_enum = trxc.enum
 local h = require("trx.internal.helpers")
 
 require("trx.ui")
 require("trx.ui.layers")
-require("trx.events")
+local at_level_end = require("trx.events").at_level_end
 
 local ui = trx.ui
 
 -- The choices are the engine's, read back as any other enum is. They are not
 -- public: a script defines a screen and ends it through its context, and never
 -- names one.
-local function constants(backing)
-  local result = {}
-  for _, constant in ipairs(raw_enum.values(backing)) do
-    result[constant.name] = constant.value
-  end
-  return result
-end
-
-local choices = constants("UI_TAKEOVER_CHOICE")
+local choices = h.constants("UI_TAKEOVER_CHOICE")
 
 -------------------------------------------------------------------------------
 -- The screens
@@ -136,34 +126,41 @@ end
 -------------------------------------------------------------------------------
 
 -- Ends the screen. The layers close after the context is marked done, so the
--- close callbacks see a screen that is already over.
+-- close callbacks see a screen that is already over. An error in a callback
+-- does not stop the rest, and the first one is raised at the end.
 local function finish(ctx, choice)
-  if rawget(ctx, "_done") then
+  if ctx._done then
     return false
   end
-  rawset(ctx, "_done", true)
+  ctx._done = true
   if held[ctx.screen] == ctx then
     held[ctx.screen] = nil
   end
 
-  local layers = rawget(ctx, "_layers")
-  rawset(ctx, "_layers", {})
+  local layers = ctx._layers
+  ctx._layers = {}
   if choice ~= nil then
     raw.close(ctx.screen, choice)
   end
+  local failed = nil
   for _, layer in ipairs(layers) do
-    layer:close()
+    local err = h.failure(layer.close, layer)
+    failed = failed or err
   end
-  local ended = rawget(ctx, "_ended")
-  rawset(ctx, "_ended", {})
+  local ended = ctx._ended
+  ctx._ended = {}
   for _, callback in ipairs(ended) do
-    callback()
+    local err = h.failure(callback)
+    failed = failed or err
+  end
+  if failed ~= nil then
+    error(failed, 0)
   end
   return true
 end
 
 local function on_layer_closed(ctx, layer)
-  if not rawget(ctx, "_done") and rawget(ctx, "_main") == layer then
+  if not ctx._done and ctx._main == layer then
     finish(ctx, choices.CANCEL)
   end
 end
@@ -171,7 +168,7 @@ end
 local function reported(name)
   return {
     get = function(self)
-      return rawget(self, "_fields")[name]
+      return self._fields[name]
     end,
   }
 end
@@ -185,16 +182,22 @@ local background = reported("background")
 ---@trx.readonly is_held, screen
 ---@field screen trx.ui.Screen The screen.
 ---@field is_held boolean Whether the script still holds the screen.
+---@field private _screen trx.ui.Screen
+---@field private _fields table<string, any>
+---@field private _layers trx.ui.StackLayer[]
+---@field private _ended function[]
+---@field private _done boolean
+---@field private _main? trx.ui.StackLayer
 local Context = h.class("ui.ScreenContext", {
   fields = {
     screen = {
       get = function(self)
-        return rawget(self, "_screen")
+        return self._screen
       end,
     },
     is_held = {
       get = function(self)
-        return not rawget(self, "_done")
+        return not self._done
       end,
     },
   },
@@ -205,7 +208,7 @@ local Context = h.class("ui.ScreenContext", {
 ---@param settings trx.ui.layers.push.settings The layer settings.
 ---@return trx.ui.StackLayer # The pushed layer.
 function Context:push(settings)
-  if rawget(self, "_done") then
+  if self._done then
     error("the screen has ended", 2)
   end
   ---@type table<string, any>
@@ -214,14 +217,15 @@ function Context:push(settings)
     forwarded[key] = value
   end
   forwarded.on_close = function(layer)
-    if settings.on_close ~= nil then
-      settings.on_close(layer)
-    end
+    local err = h.failure(settings.on_close, layer)
     on_layer_closed(self, layer)
+    if err ~= nil then
+      error(err, 0)
+    end
   end
   local layer =
     trx.ui.layers.push(forwarded --[[@as trx.ui.layers.push.settings]])
-  local layers = rawget(self, "_layers")
+  local layers = self._layers
   layers[#layers + 1] = layer
   return layer
 end
@@ -237,10 +241,10 @@ end
 ---```
 ---@param callback function What to run.
 function Context:on_end(callback)
-  if rawget(self, "_done") then
+  if self._done then
     error("the screen has ended", 2)
   end
-  local ended = rawget(self, "_ended")
+  local ended = self._ended
   ended[#ended + 1] = callback
 end
 
@@ -432,16 +436,14 @@ function screens.define(screen, open, options)
   end
   local definition = { open = open }
   stack[#stack + 1] = definition
-  if raw_events.is_level_script() then
-    trx.events.on_level_unload(function()
-      for i, other in ipairs(stack) do
-        if other == definition then
-          table.remove(stack, i)
-          break
-        end
+  at_level_end(function()
+    for i, other in ipairs(stack) do
+      if other == definition then
+        table.remove(stack, i)
+        break
       end
-    end)
-  end
+    end
+  end)
 end
 
 -------------------------------------------------------------------------------
@@ -467,7 +469,7 @@ local function open_screen(screen, args)
   end
 
   local owned = false
-  for _, layer in ipairs(rawget(ctx, "_layers")) do
+  for _, layer in ipairs(ctx._layers) do
     owned = owned or layer == result
   end
   if not owned then
@@ -475,7 +477,7 @@ local function open_screen(screen, args)
     error("a screen definition must return a layer from ctx:push", 0)
   end
 
-  rawset(ctx, "_main", result)
+  ctx._main = result
   held[screen] = ctx
   return true
 end
