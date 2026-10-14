@@ -522,6 +522,16 @@ test("a direct quad can be recorded", function()
   assert(#ops > 0, "direct quad recorded " .. #ops)
 end)
 
+test("the screen reaches the edges that the canvas stops short of", function()
+  fake.set_viewport(1707, 963)
+  local canvas, screen = trx.ui.canvas, trx.ui.screen
+  assert(screen.width >= canvas.width and screen.width < canvas.width + 1)
+  assert(screen.height >= canvas.height and screen.height < canvas.height + 1)
+  local right = trx.ui.primitive.to_screen(screen.width)
+  assert(math.abs(right - 1707) < 0.01, right)
+  fake.set_viewport(640, 480)
+end)
+
 for _, scale in ipairs({ 0.5, 1.0, 1.3, 1.75, 2.0 }) do
   test(("a bar borders evenly at bar scale %s"):format(scale), function()
     -- Use a viewport that does not divide evenly into the canvas, so edges

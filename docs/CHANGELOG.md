@@ -169,6 +169,7 @@
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
 - Added `trx.overlay.letterbox`, which sets how deep the cinematic bars are (TRX1426)
 - Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
+- Added `trx.ui.screen`, the whole screen in canvas units, which reaches the edges that `trx.ui.canvas` can stop short of
 - Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
 - Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
