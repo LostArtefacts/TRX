@@ -1,7 +1,6 @@
-require("trx.signal")
-
 local raw = trxc.cutscenes
 local h = require("trx.internal.helpers")
+local lasting_polled = require("trx.signal").lasting_polled
 
 ---@class (partial) trx
 ---@field cutscenes trx.cutscenes
@@ -212,7 +211,7 @@ h.properties(M.signals, "cutscenes.signals", {
   is_playing = {
     get = function()
       if cutscene_playing == nil then
-        cutscene_playing = trx.signal.polled(function()
+        cutscene_playing = lasting_polled(function()
           return trx.cutscenes.is_playing
         end)
       end
@@ -222,7 +221,7 @@ h.properties(M.signals, "cutscenes.signals", {
   is_active = {
     get = function()
       if cutscene_active == nil then
-        cutscene_active = trx.signal.polled(function()
+        cutscene_active = lasting_polled(function()
           return trx.cutscenes.is_active
         end)
       end

@@ -1,7 +1,6 @@
-require("trx.signal")
-
 local raw = trxc.overlay
 local h = require("trx.internal.helpers")
+local lasting_polled = require("trx.signal").lasting_polled
 
 ---@class (partial) trx
 ---@field overlay trx.overlay
@@ -82,7 +81,7 @@ h.properties(M.signals, "overlay.signals", {
   letterbox = {
     get = function()
       if letterbox_held == nil then
-        letterbox_held = trx.signal.polled(raw.has_letterbox)
+        letterbox_held = lasting_polled(raw.has_letterbox)
       end
       return letterbox_held
     end,
@@ -90,7 +89,7 @@ h.properties(M.signals, "overlay.signals", {
   health_bar_forced = {
     get = function()
       if held == nil then
-        held = trx.signal.polled(raw.is_health_bar_forced)
+        held = lasting_polled(raw.is_health_bar_forced)
       end
       return held
     end,

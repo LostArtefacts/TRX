@@ -1,10 +1,9 @@
-require("trx.signal")
-
 local raw = trxc.game
 local raw_inventory = trxc.inventory
 local raw_stats = trxc.stats
 local hooks = trxc.hooks
 local h = require("trx.internal.helpers")
+local lasting_polled = require("trx.signal").lasting_polled
 
 ---@class (partial) trx
 ---@field game trx.game
@@ -238,7 +237,7 @@ for _, entry in ipairs(GAME_SIGNALS) do
   signal_props[name] = {
     get = function()
       if held == nil then
-        held = trx.signal.polled(read)
+        held = lasting_polled(read)
       end
       return held
     end,
