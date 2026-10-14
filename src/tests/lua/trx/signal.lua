@@ -448,6 +448,16 @@ test("a signal is made after trxc leaves the globals", function()
   assert(ok, err)
 end)
 
+test("a signal polled while shown goes idle when it stops", function()
+  local shown = signal.new(true)
+  local held = signal.polled_while(shown, function()
+    return 5
+  end, -1)
+  assert(held:get() == 5, held:get())
+  held:stop()
+  assert(held:get() == -1, held:get())
+end)
+
 test("a signal polled while shown reads nothing while hidden", function()
   local shown = signal.new(false)
   local reads = 0
