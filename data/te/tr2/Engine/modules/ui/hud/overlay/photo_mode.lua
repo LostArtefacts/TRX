@@ -1,1 +1,0 @@
-../../../../../../../trx/ship/modules/ui/hud/overlay/photo_mode.lua

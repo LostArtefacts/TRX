@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 
@@ -88,9 +89,17 @@ INJECTION_LINKS: dict[tuple[str, str], tuple[str, ...]] = {
 
 
 def remove_te_symlinks() -> None:
+    # rglob does not descend into a linked directory, so this removes the link
+    # and leaves what it points at alone.
     for path in DATA_TE.rglob("*"):
         if path.is_symlink():
             path.unlink()
+    # A directory that held only links is empty now, and would block a link
+    # to the whole directory in its place.
+    for dirpath, _, _ in os.walk(DATA_TE, topdown=False):
+        path = Path(dirpath)
+        if path != DATA_TE and not any(path.iterdir()):
+            path.rmdir()
 
 
 def create_symlink(path: Path, target: str) -> None:
@@ -98,16 +107,31 @@ def create_symlink(path: Path, target: str) -> None:
     path.symlink_to(target)
 
 
+def is_skipped(path: Path) -> bool:
+    return path.parent.name == "presets"
+
+
 def mirror_links(source_dir: Path, target_dir: Path) -> None:
-    for source_path in sorted(source_dir.rglob("*")):
+    """Links target_dir to source_dir as a whole where nothing under it is
+    skipped, and otherwise links each entry, a subdirectory as a whole where
+    it can be."""
+    if not source_dir.is_dir():
+        return
+    if not any(
+        is_skipped(path) for path in source_dir.rglob("*") if path.is_file()
+    ):
+        target_rel = source_dir.relative_to(target_dir.parent, walk_up=True)
+        create_symlink(target_dir, str(target_rel))
+        return
+    for source_path in sorted(source_dir.iterdir()):
+        target_path = target_dir / source_path.name
         if source_path.is_dir():
-            continue
-        if source_path.parent.name == 'presets':
-            continue
-        rel_path = source_path.relative_to(source_dir)
-        target_path = target_dir / rel_path
-        target_rel = source_path.relative_to(target_path.parent, walk_up=True)
-        create_symlink(target_path, str(target_rel))
+            mirror_links(source_path, target_path)
+        elif not is_skipped(source_path):
+            target_rel = source_path.relative_to(
+                target_path.parent, walk_up=True
+            )
+            create_symlink(target_path, str(target_rel))
 
 
 def create_cfg_links() -> None:

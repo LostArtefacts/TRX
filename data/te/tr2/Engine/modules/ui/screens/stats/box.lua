@@ -1,1 +1,0 @@
-../../../../../../../trx/ship/modules/ui/screens/stats/box.lua

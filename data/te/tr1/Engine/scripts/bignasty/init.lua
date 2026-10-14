@@ -1,1 +1,0 @@
-../../../../../trx/ship/scripts/bignasty/init.lua
