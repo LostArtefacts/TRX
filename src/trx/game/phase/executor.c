@@ -159,6 +159,11 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
 
             LUA_Tick();
         }
+        // Draws nothing once the fades let go of the screen, so that no frame
+        // shows the interface between the fades and the next screen.
+        if (!UI_Fade_IsHoldingScreen()) {
+            break;
+        }
 
         // Draws the frame between two ticks as the main loop does, so that a
         // tick lasts as long here as in a phase.
