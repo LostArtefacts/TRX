@@ -210,6 +210,7 @@
         },
         "stats": {
             "ammo": "Попадания/выстрелы",
+            "ammo_fmt": "\\{review}%d / %d",
             "ammo_hits": "\\{review}Попадания",
             "ammo_used": "\\{review}Использовано боеприпасов",
             "assault_best_time_fmt": "\\{review}%s",

@@ -4,11 +4,11 @@
 #include <trx/game/ui/common.h>
 
 // Sets whether trx.ui may add widgets to the current scene.
-void LUA_UI_SetDrawing(bool drawing);
-bool LUA_UI_IsDrawing(void);
+void LUA_UI_SetReserving(bool reserving);
+bool LUA_UI_IsReserving(void);
 
 // Opens each region and lets scripts add widgets to it.
-void LUA_UI_DrawRegions(void);
+void LUA_UI_ReserveRegions(void);
 
 // Hides the script interface from the next drawn frame so a screenshot contains
 // only the picture.

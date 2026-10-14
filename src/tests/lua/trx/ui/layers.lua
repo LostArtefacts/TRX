@@ -95,6 +95,96 @@ test("a layer draws over a widget placed in a region", function()
   assert(over_at > under_at, "the layer drew before the widget")
 end)
 
+local function count_drawn(text)
+  local count = 0
+  for _, op in ipairs(fake.scene()) do
+    if op:match("^text ") and op:sub(-#text - 6) == " text=" .. text then
+      count = count + 1
+    end
+  end
+  return count
+end
+
+test("a widget placed twice moves rather than draws twice", function()
+  local widget = label("twice")
+  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
+  trx.ui.regions.place(trx.ui.Region.TOP_RIGHT, widget)
+  assert(count_drawn("twice") == 1, "drawn " .. count_drawn("twice"))
+  assert(trx.ui.regions.remove(widget))
+  assert(not trx.ui.regions.remove(widget), "it was in a second region")
+end)
+
+test("a widget placed again stops following its old region", function()
+  local where = trx.signal.new(trx.ui.Region.TOP_LEFT)
+  local widget = label("moved")
+  trx.ui.regions.place(where, widget)
+  trx.ui.regions.place(trx.ui.Region.BOTTOM_LEFT, widget)
+  where:set(trx.ui.Region.TOP_RIGHT)
+  assert(count_drawn("moved") == 1, "drawn " .. count_drawn("moved"))
+  assert(trx.ui.regions.remove(widget))
+  assert(not trx.ui.regions.remove(widget), "it was in a second region")
+end)
+
+test("a widget in another tree cannot be placed", function()
+  local body = label("inside")
+  local outer = trx.ui.widgets.Pad({ child = body })
+  h.raises(function()
+    trx.ui.regions.place(trx.ui.Region.TOP_LEFT, body)
+  end, "already part of another widget")
+  assert(not trx.ui.regions.remove(body), "a tree child was in a region")
+  outer:release()
+end)
+
+test("a layer's root cannot be used anywhere else", function()
+  fresh()
+  local root = label("root")
+  local layer = push({ root = root })
+  h.raises(function()
+    trx.ui.regions.place(trx.ui.Region.TOP_LEFT, root)
+  end, "already in use")
+  h.raises(function()
+    push({ root = root })
+  end, "already in use")
+  h.raises(function()
+    trx.ui.widgets.Pad({ child = root })
+  end, "already in use")
+  layer:close()
+  h.raises(function()
+    trx.ui.regions.place(trx.ui.Region.TOP_LEFT, root)
+  end, "the widget was released")
+end)
+
+test("a placed widget cannot be a layer's root", function()
+  fresh()
+  local placed = label("placed")
+  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, placed)
+  h.raises(function()
+    push({ root = placed })
+  end, "already in use")
+  trx.ui.regions.remove(placed)
+end)
+
+test("releasing a placed widget removes it from its region", function()
+  local widget = label("released")
+  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
+  widget:release()
+  assert(count_drawn("released") == 0, "the released widget was drawn")
+  assert(not trx.ui.regions.remove(widget), "it was still in its region")
+end)
+
+test("a widget that a level script removed is not removed again", function()
+  local widget = label("kept")
+  fake.as_level_script(function()
+    trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
+    trx.ui.regions.remove(widget)
+  end)
+  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
+  fake.end_level()
+  local drawn_after = count_drawn("kept")
+  trx.ui.regions.remove(widget)
+  assert(drawn_after == 1, "the level end removed the widget")
+end)
+
 test("a layer draws behind the engine interface", function()
   fresh()
   local layer = push({ root = label("layer") })
@@ -166,15 +256,70 @@ test("a layer can say where it goes", function()
   assert(x == 12 and y == 34)
 end)
 
-test("a layer can take room in a region", function()
+test("a layer stands where its placement puts it", function()
   fresh()
+  local root = label("placed")
+  local layer = push({ root = root, place = { x = 0, y = 1, margin = 10 } })
+  local ops = fake.scene()
+  local w, height = root:measure()
+  layer:close()
+
+  local safe = trx.ui.safe_area_for(w)
+  local x, y = xy_of(drawn(ops, "placed"))
+  assert(x == math.floor(safe.x + 10), x)
+  assert(y == math.floor(safe.y + safe.height - 10 - height), y)
+end)
+
+test("a layer can stand on the whole canvas", function()
+  fresh()
+  local root = label("placed")
+  local layer = push({ root = root, place = { canvas = true, x = 1, y = 0 } })
+  local ops = fake.scene()
+  local w = root:measure()
+  layer:close()
+
+  local x, y = xy_of(drawn(ops, "placed"))
+  assert(x == math.floor(trx.ui.canvas.width - w), x)
+  assert(y == 0, y)
+end)
+
+test("a layer works its corner out once while nothing changes", function()
+  fresh()
+  local calls = 0
   local layer = push({
-    root = label("in-region"),
-    region = trx.ui.Region.BOTTOM_CENTER,
+    place = function()
+      calls = calls + 1
+      return 12, 34
+    end,
   })
+  fake.scene()
+  fake.scene()
+  fake.scene()
+  layer:close()
+  assert(calls == 1, calls)
+end)
+
+test("a layer moves when a signal its placement reads changes", function()
+  fresh()
+  local share = trx.signal.new(0)
+  local layer = push({ root = label("placed"), place = { y = share } })
+  local _, top = xy_of(drawn(fake.scene(), "placed"))
+  share:set(1)
+  local _, bottom = xy_of(drawn(fake.scene(), "placed"))
+  layer:close()
+  assert(bottom > top, ("%d is not below %d"):format(bottom, top))
+end)
+
+test("a new root can take a new placement", function()
+  fresh()
+  local layer = push({ place = { x = 0, y = 0 } })
+  layer:set_root(label("moved"), function()
+    return 12, 34
+  end)
   local ops = fake.scene()
   layer:close()
-  assert(drawn(ops, "in-region") ~= nil)
+  local x, y = xy_of(drawn(ops, "moved"))
+  assert(x == 12 and y == 34)
 end)
 
 test("a layer reads no input on the tick it opens", function()
@@ -224,8 +369,7 @@ test("a layer that takes no input leaves it to the one below", function()
   local upper = push({ modal = false })
   fake.tick()
   fake.tick()
-  assert(trx.ui.layers.top() == lower)
-  assert(not upper:is_top())
+  assert(trx.ui.layers.active() == lower)
   upper:close()
   lower:close()
   assert(reads == 1)
@@ -347,6 +491,23 @@ test("an error while reading input closes the layer", function()
   assert(fake.errors() == 1)
 end)
 
+test("an error while reading input reports a close error too", function()
+  fresh()
+  push({
+    on_input = function()
+      error("input broke")
+    end,
+    on_close = function()
+      error("close broke")
+    end,
+  })
+  fake.tick()
+  fake.tick()
+  local message = fake.last_error()
+  assert(message:find("input broke", 1, true), message)
+  assert(message:find("close broke", 1, true), message)
+end)
+
 test("an error while drawing closes the layer", function()
   fresh()
   local broken = trx.ui.widgets.Label({ text = "x" })
@@ -429,7 +590,7 @@ end
 
 test("a list draws only the rows in view", function()
   fresh()
-  local l = list({ rows = rows("r1", "r2", "r3", "r4", "r5"), visible = 2 })
+  local l = list({ rows = rows("r1", "r2", "r3", "r4", "r5"), page_rows = 2 })
   l:select(4)
   local layer = push({ root = l })
   local drawn_texts = texts(fake.scene())
@@ -443,11 +604,11 @@ end)
 
 test("a list keeps the cursor in view when it shows fewer rows", function()
   fresh()
-  local visible = trx.signal.new(5)
+  local page_rows = trx.signal.new(5)
   local l =
-    list({ rows = rows("r1", "r2", "r3", "r4", "r5"), visible = visible })
+    list({ rows = rows("r1", "r2", "r3", "r4", "r5"), page_rows = page_rows })
   l:select(5)
-  visible:set(2)
+  page_rows:set(2)
   local layer = push({ root = l })
   local drawn_texts = texts(fake.scene())
   layer:close()
@@ -477,15 +638,15 @@ test("a list answers the row the player picks", function()
   assert(picked == 2, tostring(picked))
 end)
 
-test("a list leaves the back key to its layer", function()
+test("a list reports the back key", function()
   fresh()
   local l = list({ rows = rows("a") })
   local backed = false
   local layer = push({
     root = l,
     on_input = function(_, keys)
-      l:control(keys)
-      backed = backed or keys:pressed(trx.input.Role.MENU_BACK)
+      local _, cancelled = l:control(keys)
+      backed = backed or cancelled
     end,
   })
   fake.tick()
@@ -593,32 +754,6 @@ test("a sleek bar keeps its fill within its frame", function()
   assert(#bar_scene(-1) == 1, "an empty bar drew a fill")
 end)
 
--- The layer each op of a scene was drawn in, keyed by the text it draws.
-local function layers_of(texts)
-  local ops, layers = fake.scene(), fake.scene_layers()
-  local found = {}
-  for i, op in ipairs(ops) do
-    for _, text in ipairs(texts) do
-      if op:sub(-#(" text=" .. text)) == " text=" .. text then
-        found[text] = layers[i]
-      end
-    end
-  end
-  return found
-end
-
-test("each paint lands in the layer it is declared in", function()
-  fresh()
-  local under = push({ root = label("under"), modal = false })
-  local over = label("over")
-  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, over, trx.ui.Layer.OVER)
-  local found = layers_of({ "under", "over" })
-  assert(found.under == "under", tostring(found.under))
-  assert(found.over == "over", tostring(found.over))
-  under:close()
-  trx.ui.regions.remove(over)
-end)
-
 local BLACK = trx.math.color("000000")
 
 local function fade_ticks(count)
@@ -653,6 +788,41 @@ test("a fade layer closes at rest when told to, and says so once", function()
   assert(done == 1, "the move was reported " .. done .. " times")
   assert(closed == 1, "the close was reported " .. closed .. " times")
   assert(not layer:close(), "a closed layer closed again")
+end)
+
+test("an error as a fade layer closes still ends its move", function()
+  local errors = fake.errors()
+  local done = 0
+  local layer = trx.ui.layers.fade({
+    fill = BLACK,
+    on_close = function()
+      error("broken")
+    end,
+  })
+  layer:to(0, 2, {
+    close = true,
+    on_done = function()
+      done = done + 1
+    end,
+  })
+  fade_ticks(4)
+  assert(not layer.is_open, "the layer stayed open")
+  assert(done == 1, "the move was reported " .. done .. " times")
+  assert(fake.errors() == errors + 1, "the error was not raised")
+end)
+
+test("an error as a fade move ends leaves the layer whole", function()
+  local errors = fake.errors()
+  local layer = trx.ui.layers.fade({ fill = BLACK, opacity = 0 })
+  layer:to(1, 1, {
+    on_done = function()
+      error("broken")
+    end,
+  })
+  fade_ticks(3)
+  assert(layer.is_open, "the layer closed")
+  assert(fake.errors() == errors + 1, "the error was not raised")
+  assert(layer:close())
 end)
 
 test("a move cut short by another reports only the last", function()
@@ -723,5 +893,182 @@ test("a level script's fade layer closes with the level", function()
   fake.end_level()
   assert(not layer.is_open)
 end)
+
+test("a layer releases the root that a new one replaces", function()
+  fresh()
+  local old = label("old")
+  local layer = push({ root = old })
+  layer:set_root(label("new"))
+  layer:close()
+  h.raises(function()
+    trx.ui.regions.place(trx.ui.Region.TOP_LEFT, old)
+  end, "the widget was released")
+end)
+
+test("a widget taken out of its region can be placed again", function()
+  local widget = label("again")
+  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
+  assert(trx.ui.regions.remove(widget))
+  assert(count_drawn("again") == 0, "the removed widget was drawn")
+  trx.ui.regions.place(trx.ui.Region.TOP_RIGHT, widget)
+  assert(count_drawn("again") == 1, "the widget did not come back")
+  widget:release()
+end)
+
+test("a level script's placed widget is released with the level", function()
+  local widget
+  fake.as_level_script(function()
+    widget = label("level widget")
+    trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
+  end)
+  fake.end_level()
+  assert(count_drawn("level widget") == 0, "the widget outlived the level")
+  h.raises(function()
+    trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
+  end, "the widget was released")
+end)
+
+local function counting(role)
+  local counter = { reads = 0 }
+  counter.layer = push({
+    on_input = function(_, keys)
+      if keys:pressed(role) then
+        counter.reads = counter.reads + 1
+      end
+    end,
+  })
+  return counter
+end
+
+local function ticks(count)
+  for _ = 1, count do
+    fake.tick()
+  end
+end
+
+test("a layer without an input callback reads no input", function()
+  fresh()
+  local below = push({ on_input = function() end })
+  local above = push({})
+  assert(trx.ui.layers.active() == below, "the layer above took the input")
+  above:close()
+  below:close()
+end)
+
+test("a modal layer holds the input back without reading it", function()
+  fresh()
+  local below = push({ on_input = function() end })
+  local above = push({ modal = true })
+  assert(trx.ui.layers.active() == above, "the layer below kept the input")
+  above:close()
+  below:close()
+end)
+
+test("during play a layer that reads input takes the devices", function()
+  fresh()
+  fake.set_playing(true)
+  local layer = push({ on_input = function() end })
+  assert(trx.input.is_grabbed(), "the game still has the devices")
+  layer:close()
+  assert(not trx.input.is_grabbed(), "the game did not get the devices back")
+end)
+
+test("during play a layer that reads no input leaves the devices", function()
+  fresh()
+  fake.set_playing(true)
+  local layer = push({})
+  assert(not trx.input.is_grabbed(), "the layer took the devices")
+  layer:close()
+end)
+
+test("outside play a layer leaves the devices to the game", function()
+  fresh()
+  local layer = push({ on_input = function() end })
+  assert(not trx.input.is_grabbed(), "the layer took the devices")
+  layer:close()
+end)
+
+test("during play a press reads once while the key is held", function()
+  fresh()
+  fake.set_playing(true)
+  local counter = counting(Role.MENU_CONFIRM)
+  fake.tick()
+  fake.press(Role.MENU_CONFIRM)
+  ticks(30)
+  counter.layer:close()
+  fake.release_all()
+  assert(counter.reads == 1, counter.reads)
+end)
+
+test("during play a key held from before the layer is no press", function()
+  fresh()
+  fake.set_playing(true)
+  fake.press(Role.MENU_CONFIRM)
+  local counter = counting(Role.MENU_CONFIRM)
+  ticks(3)
+  assert(counter.reads == 0, "the held key read as a press")
+  fake.release_all()
+  fake.tick()
+  fake.press(Role.MENU_CONFIRM)
+  fake.tick()
+  counter.layer:close()
+  fake.release_all()
+  assert(counter.reads == 1, counter.reads)
+end)
+
+-- The ticks, counted from the press, on which a layer read a key that the
+-- player held for the given number of ticks during play.
+local function presses_of(role, held)
+  fresh()
+  fake.set_playing(true)
+  local at = {}
+  local count = 0
+  local layer = push({
+    on_input = function(_, keys)
+      count = count + 1
+      if keys:pressed(role) then
+        at[#at + 1] = count
+      end
+    end,
+  })
+  fake.tick()
+  fake.tick()
+  count = 0
+  fake.press(role)
+  ticks(held)
+  layer:close()
+  fake.release_all()
+  return table.concat(at, ",")
+end
+
+test("during play up and down repeat as the game's menus do", function()
+  -- Once on the press, then from the 0.4 s delay every 0.1 s.
+  assert(presses_of(Role.MENU_UP, 24) == "1,15,18,21,24")
+  assert(presses_of(Role.MENU_DOWN, 24) == "1,15,18,21,24")
+end)
+
+test("during play left and right repeat as the game's menus do", function()
+  -- Once on the press, then from the 0.4 s delay every 0.2 s.
+  assert(presses_of(Role.MENU_LEFT, 24) == "1,18,24")
+  assert(presses_of(Role.MENU_RIGHT, 24) == "1,18,24")
+end)
+
+test("during play a held confirm key does not repeat", function()
+  assert(presses_of(Role.MENU_CONFIRM, 24) == "1")
+end)
+
+test(
+  "during play a level's layer lets the devices go with the level",
+  function()
+    fresh()
+    fake.set_playing(true)
+    fake.as_level_script(function()
+      push({ on_input = function() end })
+    end)
+    assert(trx.input.is_grabbed())
+    fake.end_level()
+    assert(not trx.input.is_grabbed(), "the game did not get the devices back")
+  end
+)
 
 return h.report()

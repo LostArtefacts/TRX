@@ -210,6 +210,7 @@
         },
         "stats": {
             "ammo": "Buaidhean / Losgadh",
+            "ammo_fmt": "\\{review}%d / %d",
             "ammo_hits": "Buaidhean",
             "ammo_used": "Losgadh",
             "assault_best_time_fmt": "%s",

@@ -170,7 +170,7 @@
 - Added `trx.overlay.letterbox`, which sets how deep the cinematic bars are (TRX1426)
 - Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
 - Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
-- Added `trx.ui.Widget:release_with`, which ties signals and listeners to a widget, so that they go when it is released
+- Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `trx.math.rotate()`, which turns a vector the way the engine turns a model
@@ -244,15 +244,14 @@
     - `trx.events.on_console_open`, `trx.events.on_console_close`, `trx.events.on_console_clear` and `trx.events.on_console_log`
     - `trx.console.history` and `trx.console.remember`
     - `trx.console.is_open`
-- Added a UI layer above the game interface
-    - `trx.ui.Layer` and the `layer` setting of `trx.ui.regions.place`
 - Added `trx.ui.widgets.Custom`, a widget that measures and draws itself through script functions
 - Added `trx.ui.safe_area_for`, the room a centered box of a given width has, so that a narrow box need not keep clear of what sits in a corner
 - Added script support for stacking screens, such as a menu with a question over it
     - `trx.ui.layers.push`
-    - `trx.ui.layers.top`
+    - `trx.ui.layers.active`
     - `trx.ui.layers.count`
     - `trx.ui.StackLayer` and `trx.ui.LayerKeys`
+    - `trx.ui.Placement`, which says where a layer puts its widgets
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
 - Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
@@ -285,15 +284,24 @@
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
-- Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
-- Changed script widgets to stay behind the game interface when they overlap
+- Changed the drawing events to belong to the modules that draw
+    - `trx.events.on_ui_draw` → `trx.ui.on_reserve`
+    - `trx.events.on_ui_paint` → `trx.ui.on_paint`
+    - `trx.events.on_scene_paint` → `trx.scene.on_paint`
+- Changed `hidden` to a setting that every widget takes beside `shown`, in place of a field of `trx.ui.Widget`
 - Changed `trx.ui.widgets.Resize` to take its width and its height as signals too
+- Changed script widgets to stay behind the game interface when they overlap
 - Changed script widgets to measure themselves again when a signal they read changes, so `trx.ui.Widget:wakes_on` is needed only for a signal a widget depends on in another way
 - Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 - Changed `trx.savegame.load` to raise an error for an empty slot
 - Changed the functions of `trx.inventory` and `trx.stats` to plain functions, called with a dot rather than a colon
+- Removed `trx.ui.Widget:wakes_on`, as a widget follows every signal it reads while it measures, however it reads it
+- Removed `trx.ui.Widget:release_with`, as a derived signal lives while something holds it
 - Removed `trx.ui.mesh_slot` and `trx.ui.MeshSlot` in favour of `trx.ui.primitive.model` and `trx.ui.widgets.Model`
+- Removed `trx.ui.regions.fallback`, as nothing drew a fallback
+- Removed `trx.ui.widgets.Row`, which was a horizontal `trx.ui.widgets.Stack` of two arrows and a widget
+- Removed `h_bars` from `trx.ui.widgets.Resize`, as a `trx.ui.widgets.Bar` already follows the player's bar scale
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.ui.primitive.panel` and `trx.ui.widgets.Frame` drawing a frame a pixel away from where the game draws its own
 - Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes

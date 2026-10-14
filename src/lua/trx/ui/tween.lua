@@ -1,5 +1,6 @@
 local raw = trxc.tween
 local h = require("trx.internal.helpers")
+local report = require("trx.signal").report
 
 require("trx.ui")
 
@@ -73,20 +74,21 @@ local Tween = h.class("ui.Tween")
 ---The value now.
 ---@return number # The value.
 function Tween:get()
-  return raw.get(rawget(self, "_raw"))
+  report(self)
+  return raw.get(self._raw)
 end
 
 ---Where the value is going, or where it rests.
 ---@return number # The target.
 function Tween:target()
-  return raw.target(rawget(self, "_raw"))
+  return raw.target(self._raw)
 end
 
 ---Whether the value is still on its way to its target, counted in whole
 ---ticks, as the input a script reads each tick is.
 ---@return boolean # `true` until the tick the move ends on.
 function Tween:is_moving()
-  return raw.is_moving(rawget(self, "_raw"))
+  return raw.is_moving(self._raw)
 end
 
 ---@class (exact) trx.ui.Tween.to.options
@@ -105,7 +107,7 @@ function Tween:to(target, ticks, options)
     error("the curve is not one of trx.ui.ease", 2)
   end
   local delay = options.delay or 0
-  raw.to(rawget(self, "_raw"), target, ticks, name, delay)
+  raw.to(self._raw, target, ticks, name, delay)
   return self
 end
 
@@ -113,7 +115,7 @@ end
 ---@param value number The value.
 ---@return trx.ui.Tween # The same tween.
 function Tween:set(value)
-  raw.set(rawget(self, "_raw"), value)
+  raw.set(self._raw, value)
   return self
 end
 

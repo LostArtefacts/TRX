@@ -2,16 +2,14 @@
 
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/debug.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
-#include <trx/game/output.h>
-#include <trx/game/overlay.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
-// The globe is drawn by a script, which picks an adventure by starting its
-// level. Without one the phase has nothing to offer and leaves for the title.
+// A script draws the globe, its backdrop and its fades, and picks an adventure
+// by starting its level. Without one the phase has nothing to offer and leaves
+// for the title.
 typedef struct {
     PHASE_GLOBE_SELECT_ARGS args;
     bool is_held;
@@ -40,9 +38,6 @@ static void M_End(PHASE *const phase)
         UI_Takeover_Release(UI_TAKEOVER_GLOBE_SELECT);
         p->is_held = false;
     }
-    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
-    Overlay_ShowArrow(OVERLAY_ARROW_BCL, false);
-    Overlay_ShowArrow(OVERLAY_ARROW_BCR, false);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)

@@ -210,6 +210,7 @@
         },
         "stats": {
             "ammo": "Munizioni a Segno/Usate",
+            "ammo_fmt": "\\{review}%d / %d",
             "ammo_hits": "Colpi a Segno",
             "ammo_used": "Munizioni Usate",
             "assault_best_time_fmt": "%s",

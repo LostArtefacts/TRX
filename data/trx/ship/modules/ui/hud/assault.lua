@@ -8,9 +8,6 @@
 -- Every one of them is made once and given signals. The timings are polled,
 -- because the engine publishes nothing for them, and only while something is
 -- on screen to read them.
---
--- Usage:
---   require("common.ui.hud.assault").setup()
 
 local M = {}
 
@@ -60,7 +57,8 @@ function M.setup()
       return TIME_PLACEHOLDER
     end
     local seconds = frames // trx.game.LOGIC_FPS
-    local fraction = (frames % trx.game.LOGIC_FPS)
+    local fraction = frames
+      % trx.game.LOGIC_FPS
       * FRACTION_SCALE
       // trx.game.LOGIC_FPS
     return TIME_FORMAT:format(seconds // 60, seconds % 60, fraction)
@@ -157,13 +155,12 @@ function M.setup()
           shown = penalty.shown,
         })
       end
-      local column = ui.widgets.Stack({
+      return ui.widgets.Stack({
         spacing = 3,
         align = ui.HAlign.RIGHT,
+        hidden = hidden,
         children = children,
       })
-      column.hidden = hidden
-      return column
     end
 
     -- The penalties take the left, and as much room again is held open on the

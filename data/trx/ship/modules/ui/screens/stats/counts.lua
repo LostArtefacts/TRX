@@ -110,7 +110,7 @@ function M.final_totals(include_bonus)
   local hurt = false
   for _, level in ipairs(trx.game.levels) do
     local counted = level.type == trx.game.LevelType.NORMAL
-      or (level.type == trx.game.LevelType.BONUS and include_bonus)
+      or level.type == trx.game.LevelType.BONUS and include_bonus
     local stats = counted and level.stats or nil
     if stats ~= nil then
       totals.timer = totals.timer + stats.timer

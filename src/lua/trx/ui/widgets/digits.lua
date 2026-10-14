@@ -7,7 +7,6 @@ local primitive = trx.ui.primitive
 local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
-local text_scale = base.text_scale
 
 -- The sprite each character of a Digits widget draws, and how far the pen moves
 -- over it. A colon and a full stop are narrower than a digit and are drawn
@@ -57,17 +56,16 @@ end
 -- The digits are drawn from a sprite object the level may never have loaded,
 -- which is every level outside the gym.
 local function digits_loaded(widget)
-  return primitive.sprite_count(widget.object) > 0
+  return primitive.sprite_count(value_of(widget.object)) > 0
 end
 
----@class (exact) trx.ui.widgets.Digits.settings
----@field object trx.catalog.objects The sprite object to draw the characters from.
+---@class (exact) trx.ui.widgets.Digits.settings: trx.ui.widgets.settings
+---@field object any The sprite object to draw the characters from, or a signal carrying it.
 ---@field text any The text, or a signal carrying it.
 ---@field color any What color to draw the characters in, or a signal carrying one.
 ---@field color_bottom? any The color the characters fade to down their height. The main color by default, which draws them flat.
 ---@field mark_color? any What color to draw the `T` in. The main color by default.
 ---@field mark_color_bottom? any The color the `T` fades to. Its own color by default.
----@field shown? any Whether the digits are shown, or a signal that holds that value.
 
 ---A line of text drawn from an object's sprites, one sprite per character.
 ---
@@ -92,24 +90,26 @@ function widgets.Digits(settings)
     if not digits_loaded(w) then
       return 0, 0
     end
-    local scale = raw.text_scale()
+    local object = value_of(w.object)
+    local scale = raw.drawn_text_scale()
     local glyphs = digit_glyphs(tostring(value_of(w.text)))
     local width, bottom = 0, 0.0
     for _, glyph in ipairs(glyphs) do
       width = width + (glyph.offset or 0) + (glyph.advance or DIGIT_ADVANCE)
       if glyph.sprite ~= nil then
-        local _, _, _, y1 = primitive.sprite_bounds(w.object, glyph.sprite)
+        local _, _, _, y1 = primitive.sprite_bounds(object, glyph.sprite)
         bottom = math.max(bottom, y1 + (glyph.drop or 0))
       end
     end
-    return width * scale, (bottom - digit_rise(w.object, glyphs)) * scale
+    return width * scale, (bottom - digit_rise(object, glyphs)) * scale
   end, function(w, x, y)
     if not digits_loaded(w) then
       return
     end
-    local scale = raw.text_scale()
+    local object = value_of(w.object)
+    local scale = raw.drawn_text_scale()
     local glyphs = digit_glyphs(tostring(value_of(w.text)))
-    local top = y - digit_rise(w.object, glyphs) * scale
+    local top = y - digit_rise(object, glyphs) * scale
     local pen = x
     for _, glyph in ipairs(glyphs) do
       pen = pen + (glyph.offset or 0) * scale
@@ -121,7 +121,7 @@ function widgets.Digits(settings)
           bottom_color = value_of(w.mark_color_bottom) or top_color
         end
         primitive.gradient_sprite(
-          w.object,
+          object,
           glyph.sprite,
           pen + (glyph.nudge or 0) * scale,
           top + (glyph.drop or 0) * scale,
@@ -136,5 +136,5 @@ function widgets.Digits(settings)
       pen = pen + (glyph.advance or DIGIT_ADVANCE) * scale
     end
   end)
-  return self:wakes_on(text_scale())
+  return self
 end

@@ -1,6 +1,7 @@
 // Stands up the layer stack over a recorded scene and a faked input. The
 // assertions live in layers.lua.
 
+#include <fakes/game.h>
 #include <fakes/input.h>
 #include <fakes/ui_draw.h>
 #include <harness/fake_calls.h>
@@ -22,11 +23,16 @@
 #include <trx/game/viewport.h>
 
 #include <lauxlib.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 // Counts the handler errors that the dispatcher reports and then continues
 // past.
 static int32_t m_ErrorCount = 0;
+
+// The message of the last handler error that the dispatcher reported.
+static char m_LastError[512] = { 0 };
 
 // The viewport matches the canvas unless a test changes it.
 static int32_t m_ViewportW = 640;
@@ -36,7 +42,9 @@ static int M_FakeReset(lua_State *const L)
 {
     FakeCalls_Reset();
     FakeInput_Reset();
+    FakeGame_SetPlaying(false);
     m_ErrorCount = 0;
+    m_LastError[0] = '\0';
     m_ViewportW = 640;
     m_ViewportH = 480;
     return 0;
@@ -49,9 +57,17 @@ static int M_FakeErrors(lua_State *const L)
     return 1;
 }
 
+// fake.last_error() -> string
+static int M_FakeLastError(lua_State *const L)
+{
+    lua_pushstring(L, m_LastError);
+    return 1;
+}
+
 // fake.tick()
 static int M_FakeTick(lua_State *const L)
 {
+    FakeInput_Tick();
     LUA_Tick();
     return 0;
 }
@@ -70,8 +86,8 @@ static int M_FakeSceneLayers(lua_State *const L)
     return 1;
 }
 
-// Runs a whole scene as the engine runs one: the draw event for every region,
-// the layout, and then each paint pass.
+// Runs a whole scene as the engine runs one: the reserve event for every
+// region, the layout, and then each paint pass.
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
@@ -79,9 +95,9 @@ static int M_FakeScene(lua_State *const L)
     UI_BeginScene();
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetDrawing(true);
-        LUA_FireEventInt32(LUA_EVENT_UI_DRAW, i);
-        LUA_UI_SetDrawing(false);
+        LUA_UI_SetReserving(true);
+        LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
+        LUA_UI_SetReserving(false);
         UI_EndRegion();
     }
     UI_EndScene();
@@ -125,6 +141,13 @@ static int M_FakeEndLevel(lua_State *const L)
     return 0;
 }
 
+// fake.set_playing(playing) - whether a level is being played.
+static int M_FakeSetPlaying(lua_State *const L)
+{
+    FakeGame_SetPlaying(lua_toboolean(L, 1));
+    return 0;
+}
+
 // fake.set_viewport(w, h)
 static int M_FakeSetViewport(lua_State *const L)
 {
@@ -137,9 +160,13 @@ static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeSetViewport);
     lua_setfield(L, -2, "set_viewport");
+    lua_pushcfunction(L, M_FakeSetPlaying);
+    lua_setfield(L, -2, "set_playing");
     FakeInput_PushLua(L);
     lua_pushcfunction(L, M_FakeErrors);
     lua_setfield(L, -2, "errors");
+    lua_pushcfunction(L, M_FakeLastError);
+    lua_setfield(L, -2, "last_error");
     lua_pushcfunction(L, M_FakeTick);
     lua_setfield(L, -2, "tick");
     lua_pushcfunction(L, M_FakeScene);
@@ -220,6 +247,10 @@ void Console_ShowImpl(
 {
     if (level == LOG_LEVEL_ERROR) {
         m_ErrorCount++;
+        va_list va;
+        va_start(va, fmt);
+        vsnprintf(m_LastError, sizeof(m_LastError), fmt, va);
+        va_end(va);
     }
 }
 

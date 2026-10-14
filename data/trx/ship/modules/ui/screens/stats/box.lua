@@ -10,7 +10,6 @@ local metrics = require("common.ui.metrics")
 local M = {}
 
 local Mode = listing.Mode
-local f32 = trx.math.f32
 
 local BARE_ROW_SPACING = 11.0
 local MIN_MARGIN_ROWS = 0.5
@@ -60,38 +59,37 @@ local function layout(state)
   }
 
   local function text_height()
-    return f32(rows * rh + (bare and rh or chrome_height(state)))
+    return rows * rh + (bare and rh or chrome_height(state))
   end
 
-  local available = f32(trx.ui.safe_area.height / trx.ui.text_scale)
-  local natural = f32(2.0 * natural_margin + gaps * natural_spacing)
+  local available = trx.ui.safe_area.height / trx.ui.text_scale
+  local natural = 2.0 * natural_margin + gaps * natural_spacing
   result.squeezed = text_height() + natural > available
   if not result.squeezed then
     return result
   end
 
-  local min_margin = math.min(f32(rh * MIN_MARGIN_ROWS), natural_margin)
-  local min_spacing =
-    math.min(f32(rh * f32(MIN_ROW_SPACING_ROWS)), natural_spacing)
+  local min_margin = math.min(rh * MIN_MARGIN_ROWS, natural_margin)
+  local min_spacing = math.min(rh * MIN_ROW_SPACING_ROWS, natural_spacing)
 
-  local excess = f32(text_height() + natural - available)
-  local spare_spacing = f32(gaps * (natural_spacing - min_spacing))
+  local excess = text_height() + natural - available
+  local spare_spacing = gaps * (natural_spacing - min_spacing)
   result.spacing = gaps > 0
-      and f32(natural_spacing - math.min(excess, spare_spacing) / gaps)
+      and natural_spacing - math.min(excess, spare_spacing) / gaps
     or 0.0
 
-  excess = f32(excess - spare_spacing)
+  excess = excess - spare_spacing
   if excess > 0.0 then
-    local spare_margin = f32(2.0 * (natural_margin - min_margin))
-    result.margin = f32(natural_margin - math.min(excess, spare_margin) / 2.0)
+    local spare_margin = 2.0 * (natural_margin - min_margin)
+    result.margin = natural_margin - math.min(excess, spare_margin) / 2.0
   end
 
-  local content = f32(text_height() + 2.0 * result.margin)
+  local content = text_height() + 2.0 * result.margin
   if bare then
-    content = f32(content + (rows + 1) * result.spacing)
+    content = content + (rows + 1) * result.spacing
   end
   if content > 0.0 and content > available then
-    result.scale = f32(available / content)
+    result.scale = available / content
   end
   return result
 end
@@ -108,9 +106,10 @@ local function label(state, text)
   return trx.ui.widgets.Label({ text = text, scale = state.fit })
 end
 
-local function centered_widget(state, text)
+local function centered_widget(state, text, shown)
   return trx.ui.widgets.Stack({
     align = trx.ui.HAlign.CENTER,
+    shown = shown,
     children = { label(state, text) },
   })
 end
@@ -125,15 +124,17 @@ end
 
 -- A row that names a counter and gives its value, either of which can be a
 -- signal.
-local function pair_widget(state, key, value)
+local function pair_widget(state, key, value, shown)
   if listing.is_bare(state) then
     return trx.ui.widgets.Stack({
       orientation = trx.ui.Orientation.HORIZONTAL,
+      shown = shown,
       children = { label(state, key), label(state, " "), label(state, value) },
     })
   end
   return trx.ui.widgets.Stack({
     orientation = trx.ui.Orientation.HORIZONTAL,
+    shown = shown,
     spacing = state.look.row_spacing,
     align = trx.ui.HAlign.DISTRIBUTE,
     children = { label(state, key), label(state, value) },
@@ -174,44 +175,38 @@ local function scrolled_row(state, offset)
     return r ~= nil and r.text == nil
   end)
 
-  local centered = centered_widget(state, text)
-  centered.shown = is_text
-  local pair = pair_widget(state, key, value)
-  pair.shown = is_pair
-  return trx.ui.widgets
-    .Stack({ align = trx.ui.HAlign.SPAN, children = { centered, pair } })
-    :release_with(row, text, key, value, is_text, is_pair)
+  local centered = centered_widget(state, text, is_text)
+  local pair = pair_widget(state, key, value, is_pair)
+  return trx.ui.widgets.Stack({
+    align = trx.ui.HAlign.SPAN,
+    children = { centered, pair },
+  })
 end
 
 -- An arrow that says the rows go on past the top or the foot of the box. It
 -- keeps its room while there is nothing to point at, which `lit` says.
 local function hint(state, glyph, anchor, lit)
   local scale = fitted(state, HINT_SCALE)
-  return trx.ui.widgets
-    .Custom({
-      measure = function()
-        local gw = lit:get() and trx.ui.primitive.measure_text(glyph, scale)
-          or 0
-        return gw, fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale
-      end,
-      paint = function(x, y, w)
-        if not lit:get() then
-          return
-        end
-        local gw, gh = trx.ui.primitive.measure_text(glyph, scale)
-        local slack = fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale
-          - gh
-        trx.ui.primitive.text(
-          glyph,
-          x + (w - gw) / 2,
-          y + slack * anchor,
-          scale,
-          0
-        )
-      end,
-    })
-    :wakes_on(lit)
-    :release_with(lit)
+  return trx.ui.widgets.Custom({
+    measure = function()
+      local gw = lit:get() and trx.ui.primitive.measure_text(glyph, scale) or 0
+      return gw, fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale
+    end,
+    paint = function(x, y, w)
+      if not lit:get() then
+        return
+      end
+      local gw, gh = trx.ui.primitive.measure_text(glyph, scale)
+      local slack = fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale - gh
+      trx.ui.primitive.text(
+        glyph,
+        x + (w - gw) / 2,
+        y + slack * anchor,
+        scale,
+        0
+      )
+    end,
+  })
 end
 
 local function body_rows(state)
@@ -243,7 +238,7 @@ local function body_rows(state)
     from = state.reset,
   })
   state.reset:set_enabled(counts.has_any_time())
-  add(state.reset)
+  add(state.reset.widget)
   return children
 end
 
@@ -315,22 +310,14 @@ function M.build(state)
   return trx.ui.widgets.Pad({
     x = fitted(state, box.margin),
     y = fitted(state, box.margin),
+    shown = state.shown,
     child = dialog,
   })
 end
 
--- The box stands in the safe area at the look's height, and a box too large
--- for the room starts at its top left rather than off the screen. A box keeps
--- clear only of the corners it is wide enough to reach.
+-- The box stands in the safe area at the look's height.
 function M.place(state)
-  return function(w, h)
-    local safe = trx.ui.safe_area_for(w)
-    local function offset(slack, ratio)
-      return slack >= 0 and f32(slack * ratio) or 0
-    end
-    return f32(safe.x + offset(f32(safe.width - w), 0.5)),
-      f32(safe.y + offset(f32(safe.height - h), state.anchor_y))
-  end
+  return { y = state.anchor_y }
 end
 
 return M

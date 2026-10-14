@@ -82,7 +82,7 @@ void LUA_UI_HideNextFrame(void)
     m_HideNextFrame = true;
 }
 
-void LUA_UI_DrawRegions(void)
+void LUA_UI_ReserveRegions(void)
 {
     if (m_HideNextFrame) {
         m_HideNextFrame = false;
@@ -90,9 +90,9 @@ void LUA_UI_DrawRegions(void)
     }
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetDrawing(true);
-        LUA_FireEventInt32(LUA_EVENT_UI_DRAW, i);
-        LUA_UI_SetDrawing(false);
+        LUA_UI_SetReserving(true);
+        LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
+        LUA_UI_SetReserving(false);
         UI_EndRegion();
     }
 }

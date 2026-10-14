@@ -9,7 +9,6 @@ local primitive = trx.ui.primitive
 local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
-local text_scale = base.text_scale
 
 -- The height in canvas units at the default text size, and the frame around
 -- the fill.
@@ -26,9 +25,8 @@ local FILLS = {
   trx.math.color(0xA1, 0x83, 0x3C),
 }
 
----@class (exact) trx.ui.widgets.SleekBar.settings
+---@class (exact) trx.ui.widgets.SleekBar.settings: trx.ui.widgets.settings
 ---@field progress any How full the bar is, from 0 to 1, or a signal that holds it.
----@field shown? any Whether the bar is shown, or a signal that holds that value.
 
 ---A thin bar that shows progress, as the game draws it under a button that the
 ---player holds.
@@ -81,5 +79,5 @@ function widgets.SleekBar(settings)
       )
     end
   end)
-  return self:wakes_on(text_scale())
+  return self
 end

@@ -8,7 +8,7 @@
 --     words = trx.locale.get("general/passport/delete_save"),
 --     align = trx.ui.HAlign.RIGHT,
 --   })
---   ctx:push({ root = button, ... })
+--   ctx:push({ root = button.widget, ... })
 --   if button:control(keys, can_delete) then ... end
 
 local metrics = require("common.ui.metrics")
@@ -34,8 +34,9 @@ M.HEIGHT = 2.0 * PAD_Y
   + SPACING
   + BAR_HEIGHT
 
--- The button's own state, which the widget it hands out reads through.
----@class common.ui.HoldButtonState
+-- A button: its widget, and the hold it counts.
+---@class common.ui.HoldButton
+---@field widget trx.ui.Widget The button, to push or to place in another widget.
 ---@field private has_key boolean
 ---@field private enabled trx.signal.Signal
 ---@field private hidden trx.signal.Signal
@@ -46,12 +47,6 @@ M.HEIGHT = 2.0 * PAD_Y
 ---@field private armed boolean
 local Button = {}
 Button.__index = Button
-
--- A button, which is a widget that also reads the player's input.
----@class common.ui.HoldButton: trx.ui.Widget
----@field control fun(self: common.ui.HoldButton, keys: trx.ui.LayerKeys, enabled: boolean): boolean Reads one tick of input, and returns whether the hold has just completed.
----@field set_enabled fun(self: common.ui.HoldButton, enabled: boolean) Shows or hides the button.
----@field private _state common.ui.HoldButtonState
 
 -- The words and the key to hold, or nil while the key is not bound. The
 -- player cannot bind keys while a screen with the button is open, so the
@@ -115,8 +110,8 @@ end
 -- width it is given. It keeps its room while it is disabled or its key is not
 -- bound.
 local function build(self, text, align, scale)
-  local bar = trx.ui.widgets.SleekBar({ progress = self.fill })
-  bar.hidden = self.empty
+  local bar =
+    trx.ui.widgets.SleekBar({ progress = self.fill, hidden = self.empty })
   return trx.ui.widgets.Stack({
     align = align,
     children = {
@@ -140,15 +135,17 @@ local function build(self, text, align, scale)
   })
 end
 
--- Creates a button with no hold under way. It starts hidden. The settings
--- are:
---   words - what the button does
---   align - where the button sits in the width it is given, as a
---           trx.ui.HAlign, centered by default
---   scale - how many times its size the button is drawn, 1 by default
---   from  - a button that this one stands in for, whose hold it carries on
+---@class common.ui.HoldButton.settings
+---@field words string What the button does.
+---@field align? trx.ui.HAlign Where the button sits in the width it is given. Centered by default.
+---@field scale? number How many times its size the button is drawn. `1` by default.
+---@field from? common.ui.HoldButton A button that this one stands in for, whose hold it carries on.
+
+-- Creates a button with no hold under way. It starts hidden.
+---@param settings common.ui.HoldButton.settings
+---@return common.ui.HoldButton
 function M.new(settings)
-  local from = settings.from ~= nil and settings.from._state or nil
+  local from = settings.from
   local enabled = trx.signal.new(false)
   local filling = trx.signal.new(from ~= nil and from.filling:get() or false)
   local label = label_of(settings.words)
@@ -163,21 +160,13 @@ function M.new(settings)
     armed = from == nil or from.armed,
   }, Button)
   self:sync()
-  ---@type common.ui.HoldButton
-  local widget = build(
+  self.widget = build(
     self,
     label or "",
     settings.align or trx.ui.HAlign.CENTER,
     settings.scale or 1.0
-  ):release_with(self.hidden, self.empty)
-  widget._state = self
-  function widget.control(_, keys, enabled)
-    return self:control(keys, enabled)
-  end
-  function widget.set_enabled(_, enabled)
-    self:set_enabled(enabled)
-  end
-  return widget
+  )
+  return self
 end
 
 return M

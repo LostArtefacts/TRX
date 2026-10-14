@@ -47,14 +47,10 @@ function M.can_back_out()
   return trx.inventory_ring.mode() ~= trx.inventory_ring.Mode.DEATH
 end
 
-function M.is_tr1()
-  return trx.game.tr_version == 1
-end
-
 -- Returns whether a page opens only after the player confirms it. TR1 does
 -- this; the later games open a page as soon as the book stops on it.
 function M.browses_first(mode)
-  return M.is_tr1()
+  return trx.game.tr_version == 1
     and (
       mode == trx.inventory_ring.Mode.TITLE
       or mode == trx.inventory_ring.Mode.GAME
@@ -126,7 +122,7 @@ function M.first_available(pages)
   return nil
 end
 
----@class passport.BookPage
+---@class common.ui.passport.BookPage
 ---@field role? string
 ---@field available? boolean
 
@@ -144,7 +140,7 @@ local function ensure_way_out(pages, mode)
 end
 
 function M.determine_pages(mode)
-  ---@type passport.BookPage[]
+  ---@type common.ui.passport.BookPage[]
   local pages = { {}, {}, {} }
   local function set(slot, role, available)
     pages[slot] = { role = role, available = available }

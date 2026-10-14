@@ -1,5 +1,6 @@
 // Hands out the overlay's snapshot slots without capturing anything, so fade
-// layers that hold a snapshot can be made and closed without a renderer.
+// layers that hold a snapshot or a backdrop can be made and closed without a
+// renderer.
 
 #include <trx/game/output/overlay.h>
 
@@ -14,6 +15,10 @@ int32_t Output_Overlay_CaptureSnapshotSlot(void)
         }
     }
     return -1;
+}
+
+void Output_Overlay_CaptureGameSnapshot(void)
+{
 }
 
 void Output_Overlay_FreeSnapshotSlot(const int32_t slot)

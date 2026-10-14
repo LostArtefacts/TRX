@@ -3,9 +3,6 @@
 -- it where it may, shows for its time, and leaves: a loading picture hands
 -- over to the level, any other fades out to black. A skip leaves at once, and
 -- a skip while it fades out ends it.
---
--- Usage:
---   require("common.ui.screens.picture").setup()
 
 local fade = require("common.ui.fade")
 local level_start = require("common.ui.level_start")
@@ -66,9 +63,7 @@ local function open(ctx)
         end
       end,
     }),
-    place = function()
-      return 0, 0
-    end,
+    place = { canvas = true },
     on_input = function(_, keys)
       if not waiting then
         show:control(keys)
@@ -83,7 +78,7 @@ local function open(ctx)
       height = BAR.height,
       y = BAR.y,
     })
-    ctx:push({ root = bar, place = bar.place, modal = false })
+    ctx:push({ root = bar.widget, place = bar.place })
   end
   return main
 end

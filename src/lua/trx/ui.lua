@@ -15,7 +15,7 @@ local h = require("trx.internal.helpers")
 ---place of fixed values, and follows them as they change.
 ---
 ---Below the widgets, a script can reserve room in a region during
----`trx.ui.on_draw` and paint into it by hand with `trx.ui.primitive` during
+---`trx.ui.on_reserve` and paint into it by hand with `trx.ui.primitive` during
 ---`trx.ui.on_paint`. The primitive drawing calls work only while the
 ---interface is painted.
 ---
@@ -79,9 +79,9 @@ local VAlign = {
 }
 M.VAlign = h.enum("ui.VAlign", "UI_STACK_V_ALIGN", VAlign)
 
----One of the nine places the interface is built in. A handler is told which
----one is being built and adds to it, and everything asking for a place is laid
----out together there rather than over what else asked for it.
+---One of the nine areas of the screen that the interface is laid out in.
+---Everything that reserves room in a region is stacked together, so nothing in
+---one region overlaps.
 ---
 ---The eight around the edge stack what they hold away from the edge they sit
 ---at. The middle is what the others leave, and is where a dialog goes.
@@ -108,25 +108,9 @@ local Region = {
 }
 M.Region = h.enum("ui.Region", "UI_REGION", Region)
 
----Whether a widget is drawn below or above the engine interface.
----
----Widgets use the lower layer by default. Use the upper layer for a text field.
----Each region keeps space for both layers. Both draw under the console.
----@enum trx.ui.Layer
-local Layer = {
-  ---Below the engine interface.
-  UNDER = h.IntegerConstant,
-  ---Above the engine interface.
-  OVER = h.IntegerConstant,
-}
-M.Layer = h.enum("ui.Layer", "UI_LAYER", Layer)
-
--- The engine fires an event as it builds each region and as it paints each
--- layer. The types are reflected out of ENUM_MAP, as trx.events reads them.
-local types = {}
-for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
-  types[constant.name] = constant.value
-end
+-- The engine fires an event as it builds each region and as it paints. The
+-- types are reflected out of ENUM_MAP, as trx.events reads them.
+local types = h.constants("LUA_EVENT_TYPE")
 local Listener = h.class_of("events.Listener")
 
 local function listen(event_type)
@@ -139,8 +123,8 @@ local function listen(event_type)
 end
 
 ---Happens while the interface is built, once for each region. The handler
----adds widgets to the region it is handed, or reserves room in it to paint
----into later.
+---reserves room in the region it is handed with `trx.ui.primitive.reserve`,
+---and paints into that room later during `trx.ui.on_paint`.
 ---
 ---It happens anywhere the game draws its interface, including fades, FMVs
 ---and normal play, and it follows the frame rate rather than the game clock.
@@ -148,7 +132,7 @@ end
 ---```lua
 ---local slot = nil
 ---
----trx.ui.on_draw(function(region)
+---trx.ui.on_reserve(function(region)
 ---  if region == trx.ui.Region.TOP_CENTER then
 ---    local w, h = trx.ui.primitive.measure_text("hello")
 ---    slot = trx.ui.primitive.reserve(region, w, h)
@@ -166,26 +150,16 @@ end
 ---@trx.arg callback.region The region being built.
 ---@return trx.events.Listener # The attached handler.
 ---@type fun(callback: fun(region: trx.ui.Region)): trx.events.Listener
-M.on_draw = listen(types.UI_DRAW)
+M.on_reserve = listen(types.UI_RESERVE)
 
 ---Happens once the interface is laid out and before it is drawn, under the
----engine interface. The boxes reserved during `trx.ui.on_draw` are known by
----then, and the primitive drawing calls work here and nowhere else.
+---engine interface. The boxes reserved during `trx.ui.on_reserve` are known by
+---then, and the primitive drawing calls work here and nowhere else. The
+---console still draws over what is painted here.
 ---@param callback function What to run when it happens.
 ---@return trx.events.Listener # The attached handler.
 ---@type fun(callback: function): trx.events.Listener
 M.on_paint = listen(types.UI_PAINT)
-
----`trx.ui.on_paint` for the layer above the engine interface. A script paints
----here where its work must cover the interface rather than sit under it, such
----as a text field. It still draws under the console.
----
----`trx.ui.regions.place` picks the layer for a widget, so a script building
----with widgets has no reason to take this.
----@param callback function What to run when it happens.
----@return trx.events.Listener # The attached handler.
----@type fun(callback: function): trx.events.Listener
-M.on_paint_over = listen(types.UI_PAINT_OVER)
 
 ---Which of the game's frames to draw. The look of each follows the menu style
 ---the player chose.
@@ -250,7 +224,7 @@ h.properties(M, "ui", {
     set = raw.set_clipboard,
   },
   text_scale = {
-    get = raw.text_scale,
+    get = raw.drawn_text_scale,
   },
   safe_area = {
     get = function()
@@ -328,10 +302,10 @@ function M.safe_area_for(width)
   }
 end
 
----How far the frame being drawn stands between the last two ticks, from `0`
----at the earlier one to `1` at the later one. `trx.ui.Tween` reads it to glide
----between ticks.
----@return number # The share of the way.
+---Returns the interpolation factor of the frame being drawn between the last
+---two ticks: `0` at the earlier tick and `1` at the later one.
+---`trx.ui.Tween` reads it to move smoothly between ticks.
+---@return number # The factor, from `0` to `1`.
 ---@type fun(): number
 M.interpolation_rate = raw.interpolation_rate
 

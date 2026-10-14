@@ -7,29 +7,19 @@ local primitive = trx.ui.primitive
 local widgets = trx.ui.widgets
 local W = base.W
 local new_widget = base.new_widget
-local set_parent = base.set_parent
+local hold = base.hold
 local forget = base.forget
 local value_of = base.value_of
-local f32 = base.f32
-local text_scale = base.text_scale
-local bar_scale = base.bar_scale
 
----@class (exact) trx.ui.widgets.Resize.settings
+---@class (exact) trx.ui.widgets.Resize.settings: trx.ui.widgets.settings
 ---@field child trx.ui.Widget The child widget.
 ---@field w? any The width, in canvas units, or a signal that holds it. Its own by default.
 ---@field h? any The height, in canvas units, or a signal that holds it. Its own by default.
----@field h_bars? number The height in bar heights. This overrides the plain height.
----@field shown? any Whether the resized widget is shown, or a signal that holds that value.
 
 ---Gives a child widget an explicit size.
----
----Use h_bars when a widget must match the height of the game's bars after the
----player's bar scale is applied.
 ---@param settings trx.ui.widgets.Resize.settings The resize settings.
 ---@return trx.ui.Widget # The resized widget.
 function widgets.Resize(settings)
-  local BAR_HEIGHT = 18
-
   local self = new_widget(settings, function(w)
     local cw, ch = w.child:measure()
     local fixed_w = value_of(w.w)
@@ -37,23 +27,20 @@ function widgets.Resize(settings)
     if fixed_w ~= nil then
       cw = fixed_w
     end
-    if w.h_bars ~= nil then
-      ch = w.h_bars * BAR_HEIGHT * raw.bar_scale()
-    elseif fixed_h ~= nil then
+    if fixed_h ~= nil then
       ch = fixed_h
     end
     return cw, ch
   end, function(w, x, y, bw, bh)
     w.child:paint(x, y, bw, bh)
   end)
-  set_parent(self.child, self)
-  return self:wakes_on(bar_scale())
+  hold(self.child, self)
+  return self
 end
 
----@class (exact) trx.ui.widgets.Spacer.settings
----@field w? number The width, in canvas units at the default text size. `0` by default.
----@field h? number The height, in canvas units at the default text size. `0` by default.
----@field shown? any Whether the spacer is shown, or a signal that holds that value.
+---@class (exact) trx.ui.widgets.Spacer.settings: trx.ui.widgets.settings
+---@field w? any The width, in canvas units at the default text size, or a signal that holds it. `0` by default.
+---@field h? any The height, in canvas units at the default text size, or a signal that holds it. `0` by default.
 
 ---Keeps empty room, which follows the text scale the same way the widgets
 ---beside it do. With no size, it takes no room, which suits a layer that shows
@@ -69,16 +56,15 @@ end
 function widgets.Spacer(settings)
   local self = new_widget(settings or {}, function(w)
     local scale = raw.drawn_text_scale()
-    return f32((w.w or 0) * scale), f32((w.h or 0) * scale)
+    return (value_of(w.w) or 0) * scale, (value_of(w.h) or 0) * scale
   end, function() end)
-  return self:wakes_on(text_scale())
+  return self
 end
 
----@class (exact) trx.ui.widgets.Pad.settings
+---@class (exact) trx.ui.widgets.Pad.settings: trx.ui.widgets.settings
 ---@field child trx.ui.Widget The child widget.
----@field x? number The margin at the left and the right. `0` by default.
----@field y? number The margin at the top and the bottom. `0` by default.
----@field shown? any Whether the padded widget is shown, or a signal that holds that value.
+---@field x? any The margin at the left and the right, or a signal that holds it. `0` by default.
+---@field y? any The margin at the top and the bottom, or a signal that holds it. `0` by default.
 
 ---Keeps a margin around a child widget.
 ---
@@ -90,29 +76,23 @@ function widgets.Pad(settings)
   local self = new_widget(settings, function(w)
     local cw, ch = w.child:measure()
     local scale = raw.drawn_text_scale()
-    local px = f32((w.x or 0) * scale)
-    local py = f32((w.y or 0) * scale)
-    return f32(cw + f32(px + px)), f32(ch + f32(py + py))
+    local px = (value_of(w.x) or 0) * scale
+    local py = (value_of(w.y) or 0) * scale
+    return cw + px + px, ch + py + py
   end, function(w, x, y, bw, bh)
     local scale = raw.drawn_text_scale()
-    local px = f32((w.x or 0) * scale)
-    local py = f32((w.y or 0) * scale)
-    w.child:paint(
-      f32(x + px),
-      f32(y + py),
-      f32(f32(bw - px) - px),
-      f32(f32(bh - py) - py)
-    )
+    local px = (value_of(w.x) or 0) * scale
+    local py = (value_of(w.y) or 0) * scale
+    w.child:paint(x + px, y + py, bw - px - px, bh - py - py)
   end)
-  set_parent(self.child, self)
-  return self:wakes_on(text_scale())
+  hold(self.child, self)
+  return self
 end
 
----@class (exact) trx.ui.widgets.Frame.settings
+---@class (exact) trx.ui.widgets.Frame.settings: trx.ui.widgets.settings
 ---@field child trx.ui.Widget The child widget.
----@field style? trx.ui.FrameStyle Which frame to draw. The dialog box by default.
----@field z? integer The draw order. `160` by default, which is behind text.
----@field shown? any Whether the framed widget is shown, or a signal that holds that value.
+---@field style? any Which `trx.ui.FrameStyle` to draw, or a signal that holds it. The dialog box by default.
+---@field z? any The draw order, or a signal that holds it. `160` by default, which is behind text.
 
 ---Draws one of the game's frames behind a child widget.
 ---
@@ -127,20 +107,19 @@ function widgets.Frame(settings)
     primitive.panel(
       x,
       y,
-      w.z or 160,
+      value_of(w.z) or base.FRAME_Z,
       bw,
       bh,
-      w.style or trx.ui.FrameStyle.DIALOG
+      value_of(w.style) or trx.ui.FrameStyle.DIALOG
     )
     w.child:paint(x, y, bw, bh)
   end)
-  set_parent(self.child, self)
+  hold(self.child, self)
   return self
 end
 
----@class (exact) trx.ui.widgets.Fit.settings
+---@class (exact) trx.ui.widgets.Fit.settings: trx.ui.widgets.settings
 ---@field child trx.ui.Widget The child widget.
----@field shown? any Whether the fitted widget is shown, or a signal that holds that value.
 
 ---Shrinks a child widget until it is within the screen.
 ---
@@ -199,59 +178,42 @@ function widgets.Fit(settings)
     w.child:paint(x, y, bw, bh)
     raw.pop_text_scale()
   end)
-  set_parent(self.child, self)
-  return self:wakes_on(text_scale(), trx.ui.signals.layout)
+  hold(self.child, self)
+  return self
 end
 
----@class (exact) trx.ui.widgets.Row.settings
----@field child trx.ui.Widget The child widget placed between the arrows.
----@field left any Whether the left arrow is lit, or a signal that holds that value.
----@field right any Whether the right arrow is lit, or a signal that holds that value.
----@field spacing? number The gap between each arrow and the child widget. 15 by default.
----@field shown? any Whether the row is shown, or a signal that holds that value.
+-- What a stack reads for each axis: where a child box keeps its position and
+-- its size, the setting that aligns along the axis, and the values of that
+-- setting.
+local AXES = {
+  x = {
+    i = 1,
+    pos = 2,
+    size = 4,
+    setting = "align",
+    center = trx.ui.HAlign.CENTER,
+    far = trx.ui.HAlign.RIGHT,
+    span = trx.ui.HAlign.SPAN,
+    distribute = trx.ui.HAlign.DISTRIBUTE,
+  },
+  y = {
+    i = 2,
+    pos = 3,
+    size = 5,
+    setting = "v_align",
+    center = trx.ui.VAlign.CENTER,
+    far = trx.ui.VAlign.BOTTOM,
+    span = trx.ui.VAlign.SPAN,
+    distribute = trx.ui.VAlign.DISTRIBUTE,
+  },
+}
 
----A widget with a left and right arrow beside a child widget.
----
----Unlit arrows stay hidden but keep their room, so the child widget does not
----move when arrows appear or disappear.
----@param settings trx.ui.widgets.Row.settings The row settings.
----@return trx.ui.Widget # The row.
-function widgets.Row(settings)
-  -- The arrow's hidden state is the inverse of the caller's lit state.
-  local function not_of(value)
-    if type(value) == "table" and value.get ~= nil then
-      return ~value
-    end
-    return value ~= true
-  end
-
-  local function arrow(glyph, lit)
-    local self = trx.ui.widgets.Label({ text = glyph })
-    self.hidden = not_of(lit)
-    return self
-  end
-
-  local row = trx.ui.widgets.Stack({
-    orientation = trx.ui.Orientation.HORIZONTAL,
-    v_align = trx.ui.VAlign.CENTER,
-    spacing = settings.spacing or 15,
-    shown = settings.shown,
-    children = {
-      arrow("\\{button left}", settings.left),
-      settings.child,
-      arrow("\\{button right}", settings.right),
-    },
-  })
-  return row
-end
-
----@class (exact) trx.ui.widgets.Stack.settings
----@field children table[] The widgets, in the order they are laid out.
----@field orientation? trx.ui.Orientation The layout direction. Vertical by default.
----@field spacing? number The gap between one and the next. `0` by default.
----@field align? trx.ui.HAlign Where a narrower child sits in a vertical stack.
----@field v_align? trx.ui.VAlign Where a shorter child sits in a horizontal stack.
----@field shown? any Whether the stack is shown, or a signal that holds that value.
+---@class (exact) trx.ui.widgets.Stack.settings: trx.ui.widgets.settings
+---@field children trx.ui.Widget[] The widgets, in the order they are laid out.
+---@field orientation? any The `trx.ui.Orientation` to lay out in, or a signal that holds it. Vertical by default.
+---@field spacing? any The gap between one and the next, in canvas units at the default text size, or a signal that holds it. `0` by default.
+---@field align? any The `trx.ui.HAlign`, or a signal that holds it, that says where the children sit across the width. In a vertical stack, it places each narrower child. In a horizontal stack, it places the whole row, and `trx.ui.HAlign.DISTRIBUTE` spreads the children out. Left by default.
+---@field v_align? any The `trx.ui.VAlign`, or a signal that holds it, that says where the children sit down the height. In a horizontal stack, it places each shorter child. In a vertical stack, it places the whole column, and `trx.ui.VAlign.DISTRIBUTE` spreads the children out. Top by default.
 
 ---Lays widgets out one after another.
 ---
@@ -260,121 +222,91 @@ end
 ---@return trx.ui.Widget # The stack.
 function widgets.Stack(settings)
   local function is_horizontal(w)
-    return w.orientation == trx.ui.Orientation.HORIZONTAL
+    return value_of(w.orientation) == trx.ui.Orientation.HORIZONTAL
   end
 
   local function measure(w)
-    local along, across = 0.0, 0.0
-    local spacing = f32((w.spacing or 0) * raw.drawn_text_scale())
+    -- The boxes follow the alignment too, which only laying out reads.
+    value_of(w.align)
+    value_of(w.v_align)
+    local along = is_horizontal(w) and AXES.x or AXES.y
+    local across = along == AXES.x and AXES.y or AXES.x
+    local spacing = (value_of(w.spacing) or 0) * raw.drawn_text_scale()
+    local along_total, across_total = 0.0, 0.0
     local first = true
     for _, child in ipairs(w.children) do
       if child:is_shown() then
-        local cw, ch = child:measure()
+        local size = { child:measure() }
         if not first then
-          along = f32(along + spacing)
+          along_total = along_total + spacing
         end
         first = false
-        if is_horizontal(w) then
-          along, across = f32(along + cw), math.max(across, ch)
-        else
-          along, across = f32(along + ch), math.max(across, cw)
-        end
+        along_total = along_total + size[along.i]
+        across_total = math.max(size[across.i], across_total)
       end
     end
-    if is_horizontal(w) then
-      return along, across
+    if along == AXES.x then
+      return along_total, across_total
     end
-    return across, along
+    return across_total, along_total
   end
 
   -- Works out the box of each child shown, for the box that the stack is
   -- given.
   local function lay_out(w, x, y, bw, bh)
     local boxes = { x = x, y = y, w = bw, h = bh }
-    local horizontal = is_horizontal(w)
-    local along_align = horizontal and w.align or w.v_align
-    local across_align = horizontal and w.v_align or w.align
-    local span = across_align
-      == (horizontal and trx.ui.VAlign.SPAN or trx.ui.HAlign.SPAN)
-    local center = across_align
-      == (horizontal and trx.ui.VAlign.CENTER or trx.ui.HAlign.CENTER)
-    local far = across_align
-      == (horizontal and trx.ui.VAlign.BOTTOM or trx.ui.HAlign.RIGHT)
+    local along = is_horizontal(w) and AXES.x or AXES.y
+    local across = along == AXES.x and AXES.y or AXES.x
+    local along_align = value_of(w[along.setting])
+    local across_align = value_of(w[across.setting])
+    local origin = { x, y }
+    local room = { bw, bh }
+    local plain_spacing = value_of(w.spacing) or 0
+    local spacing = plain_spacing * raw.drawn_text_scale()
 
-    local along, across = w:measure()
-    if not horizontal then
-      along, across = across, along
-    end
-    local box_along = horizontal and bw or bh
-    local box_across = horizontal and bh or bw
-    local spacing = f32((w.spacing or 0) * raw.drawn_text_scale())
-    local shown = 0
+    local shown = {}
+    local total = 0.0
     for _, child in ipairs(w.children) do
       if child:is_shown() then
-        shown = shown + 1
+        local size = { child:measure() }
+        shown[#shown + 1] = { child, size }
+        total = total + size[along.i]
       end
     end
 
     -- Spare room along the axis goes into the gaps, or in front of the
     -- children, depending on what the stack asked for.
-    local spare = f32(box_along - along)
-    local at = horizontal and x or y
-    if
-      along_align
-      == (horizontal and trx.ui.HAlign.DISTRIBUTE or trx.ui.VAlign.DISTRIBUTE)
-    then
+    local at = origin[along.i]
+    if along_align == along.distribute then
       -- The engine shares out what the children and their plain gaps leave,
       -- counted apart rather than as they were measured.
-      local total = 0.0
-      for _, child in ipairs(w.children) do
-        if child:is_shown() then
-          local cw, ch = child:measure()
-          total = f32(total + (horizontal and cw or ch))
-        end
-      end
-      local gaps = math.max(0, shown - 1)
-      local leftover = f32(
-        box_along
-          - f32(
-            total + f32(f32((w.spacing or 0) * gaps) * raw.drawn_text_scale())
-          )
-      )
+      local gaps = math.max(0, #shown - 1)
+      local leftover = room[along.i]
+        - (total + plain_spacing * gaps * raw.drawn_text_scale())
       if gaps > 0 and leftover > 0 then
-        spacing = f32(spacing + f32(leftover / gaps))
+        spacing = spacing + leftover / gaps
       end
-    elseif
-      along_align
-      == (horizontal and trx.ui.HAlign.CENTER or trx.ui.VAlign.CENTER)
-    then
-      at = f32(at + f32(spare * 0.5))
-    elseif
-      along_align
-      == (horizontal and trx.ui.HAlign.RIGHT or trx.ui.VAlign.BOTTOM)
-    then
-      at = f32(at + spare)
+    elseif along_align == along.center or along_align == along.far then
+      local spare = room[along.i] - select(along.i, w:measure())
+      at = at + (along_align == along.center and spare * 0.5 or spare)
     end
 
-    local origin = horizontal and y or x
-    for _, child in ipairs(w.children) do
-      if child:is_shown() then
-        local cw, ch = child:measure()
-        local size_along = horizontal and cw or ch
-        local size_across = horizontal and ch or cw
-        local across_at = origin
-        if span then
-          size_across = math.max(size_across, box_across)
-        elseif center then
-          across_at = f32(origin + f32(f32(box_across - size_across) * 0.5))
-        elseif far then
-          across_at = f32(f32(origin + box_across) - size_across)
-        end
-        if horizontal then
-          boxes[#boxes + 1] = { child, at, across_at, size_along, size_across }
-        else
-          boxes[#boxes + 1] = { child, across_at, at, size_across, size_along }
-        end
-        at = f32(f32(at + size_along) + spacing)
+    for _, entry in ipairs(shown) do
+      local child, size = entry[1], entry[2]
+      local box = { child, 0, 0, size[1], size[2] }
+      local across_at = origin[across.i]
+      local across_room = room[across.i]
+      if across_align == across.span then
+        box[across.size] = math.max(size[across.i], across_room)
+      elseif across_align == across.center then
+        across_at = across_at + (across_room - size[across.i]) * 0.5
+      elseif across_align == across.far then
+        across_at = across_at + across_room - size[across.i]
       end
+      box[along.pos] = at
+      box[across.pos] = across_at
+      boxes[#boxes + 1] = box
+      at = at + size[along.i] + spacing
     end
     return boxes
   end
@@ -399,7 +331,7 @@ function widgets.Stack(settings)
   end)
 
   for _, child in ipairs(self.children) do
-    set_parent(child, self)
+    hold(child, self)
   end
   return self
 end

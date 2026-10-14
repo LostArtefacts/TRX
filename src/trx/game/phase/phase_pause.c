@@ -1,115 +1,49 @@
 #include <trx/game/phase/phase_pause.h>
 
-#include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/game/const.h>
-#include <trx/game/fader.h>
-#include <trx/game/game/state.h>
-#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/music.h>
-#include <trx/game/output.h>
-#include <trx/game/overlay.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
-#include <stdint.h>
-
-#define M_FADE_TIME 0.4
-
-typedef enum {
-    STATE_FADE_IN,
-    STATE_WAIT,
-    STATE_ASK,
-    STATE_FADE_OUT,
-} STATE;
-
+// A script draws the pause screen, its backdrop and its fades, and ends it
+// with a choice. Without one the game resumes at once.
 typedef struct {
-    STATE state;
-    GF_ACTION action;
-    FADER fader;
-    bool resume_pending;
+    bool is_held;
 } M_PRIV;
 
-static void M_RemoveText(M_PRIV *const p)
+static PHASE_CONTROL M_Resume(void)
 {
-    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
-}
-
-static void M_FadeIn(M_PRIV *const p)
-{
-    p->state = STATE_FADE_IN;
-    Fader_InitTo(&p->fader, 0.0f, 1.0f, M_FADE_TIME);
-}
-
-static void M_FadeOut(M_PRIV *const p)
-{
-    M_RemoveText(p);
-    if (p->action == GF_NOOP) {
-        Fader_InitFromCurrent(&p->fader, 0.0f, M_FADE_TIME);
-    } else {
-        Fader_InitFromCurrentHold(
-            &p->fader, 1.0f, M_FADE_TIME, 3.0 / (double)LOGIC_FPS);
-    }
-    p->state = STATE_FADE_OUT;
-}
-
-static void M_PauseGame(M_PRIV *const p)
-{
-    p->action = GF_NOOP;
-    Music_Pause();
-    Sound_PauseAll();
-    Output_Overlay_CaptureGameSnapshot();
-    M_FadeIn(p);
-}
-
-static void M_ReturnToGame(M_PRIV *const p)
-{
-    if (g_Config.ui.pause_fade_effects) {
-        p->resume_pending = true;
-    } else {
-        Music_Unpause();
-        Sound_UnpauseAll();
-        p->resume_pending = false;
-    }
-    M_FadeOut(p);
-}
-
-static void M_ExitToTitle(M_PRIV *const p)
-{
-    p->action = GF_EXIT_TO_TITLE;
-    M_FadeOut(p);
-}
-
-static void M_CreateText(M_PRIV *const p)
-{
-    Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = OVERLAY_TEXT_GS_KEY,
-        .gs_key = GS_ID("general/pause/paused"),
-    });
+    Music_Unpause();
+    Sound_UnpauseAll();
+    return (PHASE_CONTROL) {
+        .action = PHASE_ACTION_END,
+        .gf_cmd = { .action = GF_NOOP },
+    };
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-
-    p->resume_pending = false;
-    M_PauseGame(p);
+    Music_Pause();
+    Sound_PauseAll();
+    p->is_held = UI_Takeover_Offer(UI_TAKEOVER_PAUSE, (UI_TAKEOVER_ARGS) {});
+    if (!p->is_held) {
+        LOG_WARNING("no script draws the pause screen, resuming");
+        return M_Resume();
+    }
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    UI_Takeover_Release(UI_TAKEOVER_PAUSE);
-    M_RemoveText(p);
-}
-
-static bool M_IsFadeActive(M_PRIV *const p)
-{
-    return Fader_IsActive(&p->fader) && g_Config.ui.pause_fade_effects
-        && g_Config.ui.pause_background_style != BK_NONE;
+    if (p->is_held) {
+        UI_Takeover_Release(UI_TAKEOVER_PAUSE);
+        p->is_held = false;
+    }
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -118,81 +52,24 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     Input_Update();
     Shell_ProcessInput();
 
-    switch (p->state) {
-    case STATE_FADE_IN:
-        if (g_InputDB.pause) {
-            M_ReturnToGame(p);
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        } else if (!M_IsFadeActive(p)) {
-            p->state = STATE_WAIT;
-            M_CreateText(p);
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        }
-        break;
-
-    case STATE_WAIT:
-        if (Game_IsPlayable()) {
-            if (g_InputDB.pause) {
-                M_ReturnToGame(p);
-                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-            } else if (
-                g_InputDB.option
-                && UI_Takeover_Offer(
-                    UI_TAKEOVER_PAUSE, (UI_TAKEOVER_ARGS) {})) {
-                p->state = STATE_ASK;
-            }
-        } else {
-            if (g_InputDB.pause || g_InputDB.option) {
-                M_ReturnToGame(p);
-                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-            }
-        }
-        break;
-
-    case STATE_ASK:
-        switch (UI_Takeover_TakeChoice(UI_TAKEOVER_PAUSE)) {
-        case UI_TAKEOVER_CHOICE_CANCEL:
-            p->state = STATE_WAIT;
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        case UI_TAKEOVER_CHOICE_RESUME:
-            M_ReturnToGame(p);
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        case UI_TAKEOVER_CHOICE_EXIT_TO_TITLE:
-            M_ExitToTitle(p);
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        default:
-            break;
-        }
-        break;
-
-    case STATE_FADE_OUT:
-        if (!M_IsFadeActive(p)) {
-            if (p->resume_pending) {
-                Music_Unpause();
-                Sound_UnpauseAll();
-                p->resume_pending = false;
-            }
-            return (PHASE_CONTROL) {
-                .action = PHASE_ACTION_END,
-                .gf_cmd = { .action = p->action },
-            };
-        }
-        break;
+    switch (UI_Takeover_TakeChoice(UI_TAKEOVER_PAUSE)) {
+    case UI_TAKEOVER_CHOICE_CANCEL:
+    case UI_TAKEOVER_CHOICE_RESUME:
+        p->is_held = false;
+        return M_Resume();
+    case UI_TAKEOVER_CHOICE_EXIT_TO_TITLE:
+        p->is_held = false;
+        return (PHASE_CONTROL) {
+            .action = PHASE_ACTION_END,
+            .gf_cmd = { .action = GF_EXIT_TO_TITLE },
+        };
+    default:
+        return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
     }
-
-    return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
 static void M_Draw(PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
-
-    const float progress = g_Config.ui.pause_fade_effects
-        ? Fader_GetCurrentValue(&p->fader)
-        : p->fader.args.target;
-    Output_Overlay_DrawBackground(
-        g_Config.ui.pause_background_style, progress, nullptr);
-    Output_Flush();
 }
 
 PHASE *Phase_Pause_Create(void)

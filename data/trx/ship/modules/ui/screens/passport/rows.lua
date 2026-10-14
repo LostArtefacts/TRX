@@ -20,14 +20,14 @@ function M.slot_rows(filter)
       row.text = trx.locale.format("general/misc/empty_slot_fmt", slot_num)
     elseif info.counter <= 0 then
       row.text = info.level_title
-    elseif pages.is_tr1() then
+    elseif trx.game.tr_version == 1 then
       row.text = info.level_title .. " " .. info.counter
       if info.is_quick then
         row.text = row.text .. " (QS)"
       end
     else
       row.text = info.level_title
-      row.right = info.is_quick and ("QS " .. info.counter)
+      row.right = info.is_quick and "QS " .. info.counter
         or tostring(info.counter)
     end
     rows[#rows + 1] = row

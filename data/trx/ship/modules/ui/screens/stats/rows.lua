@@ -7,9 +7,9 @@ local metrics = require("common.ui.metrics")
 local M = {}
 
 M.Mode = {
-  LEVEL = 1,
-  FINAL = 2,
-  ASSAULT = 3,
+  LEVEL = "level",
+  FINAL = "final",
+  ASSAULT = "assault",
 }
 
 local Mode = M.Mode
@@ -50,7 +50,7 @@ local function show_crystals()
     or trx.config.get("gameplay.save_crystal_mode") == "pickup"
 end
 
-local function row(_, key, value)
+local function row(key, value)
   return { key = key, value = value }
 end
 
@@ -62,7 +62,6 @@ local function auto_secrets_row(state)
   local totals = state.totals
   if state.mode == Mode.FINAL or state.floor_secrets then
     return row(
-      state,
       trx.locale.get("general/stats/secrets"),
       trx.locale.format(
         "general/stats/detail_fmt",
@@ -72,7 +71,6 @@ local function auto_secrets_row(state)
     )
   end
   return row(
-    state,
     trx.locale.get("general/stats/secrets"),
     counts.icon_secrets(state.level)
   )
@@ -83,7 +81,6 @@ local function count_row(state, key, name)
       and "general/stats/detail_fmt"
     or "general/stats/basic_fmt"
   return row(
-    state,
     trx.locale.get(key),
     trx.locale.format(fmt, state.totals.counts[name], state.totals.maxes[name])
   )
@@ -99,9 +96,7 @@ local function configured_rows(state)
   end
 
   local function timer()
-    add(
-      row(state, trx.locale.get("general/stats/time_taken"), state.time_text)
-    )
+    add(row(trx.locale.get("general/stats/time_taken"), state.time_text))
   end
 
   if M.is_bare(state) then
@@ -142,14 +137,12 @@ local function configured_rows(state)
     if M.is_bare(state) then
       add(
         row(
-          state,
           trx.locale.get("general/stats/ammo_used"),
           string.format("%d", totals.ammo_used)
         )
       )
       add(
         row(
-          state,
           trx.locale.get("general/stats/ammo_hits"),
           string.format("%d", totals.ammo_hits)
         )
@@ -157,10 +150,9 @@ local function configured_rows(state)
     else
       add(
         row(
-          state,
           trx.locale.get("general/stats/ammo"),
           trx.locale.format(
-            "general/misc/pagination_nav",
+            "general/stats/ammo_fmt",
             totals.ammo_hits,
             totals.ammo_used
           )
@@ -171,7 +163,6 @@ local function configured_rows(state)
   if get("ui.stats.show_medipacks_used") then
     add(
       row(
-        state,
         trx.locale.get("general/stats/medipacks_used"),
         string.format("%.1f", totals.medipacks_used)
       )
@@ -180,7 +171,6 @@ local function configured_rows(state)
   if get("ui.stats.show_distance_travelled") then
     add(
       row(
-        state,
         trx.locale.get("general/stats/distance_travelled"),
         counts.format_distance(totals.distance_travelled)
       )
@@ -191,7 +181,6 @@ local function configured_rows(state)
   if get("ui.stats.show_deaths") and totals.deaths >= 0 then
     add(
       row(
-        state,
         trx.locale.get("general/stats/deaths"),
         trx.locale.format("general/stats/basic_fmt", totals.deaths)
       )
@@ -236,7 +225,6 @@ local function assault_rows(state)
       else
         add(
           row(
-            state,
             string.format(
               "%2d: %s %d",
               i,
@@ -292,7 +280,6 @@ function M.all_rows(state)
     state.mode == Mode.LEVEL and trx.config.get("ui.stats.show_level_header")
   then
     rows[1] = row(
-      state,
       trx.locale.get("general/stats/level"),
       trx.locale.format(
         "general/stats/detail_fmt",

@@ -7,19 +7,22 @@ local primitive = trx.ui.primitive
 local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
-local bar_scale = base.bar_scale
+
+-- The size of the game's own bars, in canvas units before the player's bar
+-- scale.
+local BAR_WIDTH = 208
+local BAR_HEIGHT = 18
 
 -- The themes the engine has handed over, by the theme each stands for, so
 -- that a bar painted every frame builds its colours once.
 local themes = {}
 
----@class (exact) trx.ui.widgets.Bar.settings
----@field type trx.ui.BarType The bar theme to use.
+---@class (exact) trx.ui.widgets.Bar.settings: trx.ui.widgets.settings
+---@field type any The `trx.ui.BarType` theme to use, or a signal that holds it.
 ---@field value any The fill amount from 0 to 1, or a signal that holds it.
----@field w? number The width, in canvas units. The game's own by default.
----@field h? number The height, in canvas units. The game's own by default.
----@field smooth? boolean Whether the fill shades one band into the next. The player's smooth bars setting by default.
----@field shown? any Whether the bar is shown, or a signal that holds that value.
+---@field w? any The width, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
+---@field h? any The height, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
+---@field smooth? any Whether the fill shades one band into the next, or a signal that holds that value. The player's smooth bars setting by default.
 
 ---One of the game's bars, drawn with the player's bar settings.
 ---
@@ -68,7 +71,7 @@ function widgets.Bar(settings)
   end
 
   local function theme_of(w)
-    local type = w.type or trx.ui.BarType.LARA_HP
+    local type = value_of(w.type) or trx.ui.BarType.LARA_HP
     local key = raw.bar_theme_key(type)
     if key == nil then
       return nil
@@ -84,7 +87,8 @@ function widgets.Bar(settings)
   local self = new_widget(settings, function(w)
     local theme = theme_of(w)
     local scale = raw.bar_scale() * (theme ~= nil and theme.basic_scale or 1)
-    return (w.w or 208) * scale, (w.h or 18) * scale
+    return (value_of(w.w) or BAR_WIDTH) * scale,
+      (value_of(w.h) or BAR_HEIGHT) * scale
   end, function(w, x, y, bw, bh)
     local theme = theme_of(w)
     if theme == nil then
@@ -147,7 +151,7 @@ function widgets.Bar(settings)
       return
     end
 
-    local shaded = settings.smooth
+    local shaded = value_of(w.smooth)
     if shaded == nil then
       shaded = is_smooth()
     end
@@ -184,5 +188,5 @@ function widgets.Bar(settings)
       end
     end
   end)
-  return self:wakes_on(bar_scale())
+  return self
 end

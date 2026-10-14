@@ -2,9 +2,6 @@
 -- the level's cameras: it fades in from black, shows for its time with the
 -- loading bar filling, and fades out to black. A skip fades it out at once, and
 -- a skip while it fades out ends it.
---
--- Usage:
---   require("common.ui.screens.level_view").setup()
 
 local fade = require("common.ui.fade")
 local loading_bar = require("common.ui.widgets.loading_bar")
@@ -35,7 +32,7 @@ local function open(ctx)
     y = BAR.y,
   })
   return ctx:push({
-    root = bar,
+    root = bar.widget,
     place = bar.place,
     on_input = function(_, keys)
       show:control(keys)

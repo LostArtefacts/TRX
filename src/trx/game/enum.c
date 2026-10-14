@@ -182,7 +182,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CUTSCENE_FRAME, "cutscene_frame");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CUTSCENE_END, "cutscene_end");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_LEVEL_UNLOAD, "level_unload");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_DRAW, "ui_draw");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_RESERVE, "ui_reserve");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT, "ui_paint");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TICK, "tick");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_KEY_DOWN, "key_down");

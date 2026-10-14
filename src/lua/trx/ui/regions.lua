@@ -1,22 +1,31 @@
-local raw = trxc.events
 local h = require("trx.internal.helpers")
 
 require("trx.ui")
 require("trx.ui.primitive")
 require("trx.ui.widgets")
-require("trx.events")
+local at_level_end = require("trx.events").at_level_end
 
 local ui = trx.ui
+local base = require("trx.ui.widgets.base")
 
 local primitive = trx.ui.primitive
 
--- Stores a root widget and reservation for each layer and region.
----@type table<trx.ui.Layer, table<trx.ui.Region, trx.ui.Widget?>>
-local roots = { [trx.ui.Layer.UNDER] = {}, [trx.ui.Layer.OVER] = {} }
+-- The gap between two widgets placed in one region.
+local ROOT_SPACING = 3
 
--- Widget to show when a region's root has no visible size.
+-- The root stack of each region.
 ---@type table<trx.ui.Region, trx.ui.Widget?>
-local fallbacks = {}
+local roots = {}
+
+-- What regions keeps for each placed widget: the root that holds it, the
+-- listener that moves it with a region signal, and the level unload handler
+-- that removes it.
+---@type table<trx.ui.Widget, { root: trx.ui.Widget, region_listener: trx.signal.Listener?, unload: trx.events.Listener? }>
+local placed = setmetatable({}, { __mode = "k" })
+
+-- The reservation of each root in the scene being built.
+---@type table<trx.ui.Widget, integer>
+local slots = setmetatable({}, { __mode = "k" })
 
 -- Horizontal alignment follows the region's screen edge.
 local ALIGN_OF = {
@@ -48,7 +57,7 @@ local ALIGN_OF = {
 ---
 ---The screen has nine regions. Engine UI uses those regions for bars, overlay
 ---text, inventory-ring hints, and dialogs. A widget placed in a region stacks
----after the engine UI in that region.
+---after the engine UI in that region, and draws under it.
 ---
 ---Place a widget once when the script loads. Use signals when the widget must
 ---change later.
@@ -58,54 +67,54 @@ ui.regions = h.namespace("ui.regions")
 ---@class (partial) trx.ui.regions
 local regions = trx.ui.regions
 
-local function root_of(layer, region)
-  local root = roots[layer][region]
+local function root_of(region)
+  local root = roots[region]
   if root == nil then
     root = trx.ui.widgets.Stack({
       children = {},
       orientation = trx.ui.Orientation.VERTICAL,
-      spacing = 3,
-      align = ALIGN_OF[region] or trx.ui.HAlign.LEFT,
+      spacing = ROOT_SPACING,
+      align = ALIGN_OF[region],
     })
-    roots[layer][region] = root
+    roots[region] = root
   end
   return root
 end
 
-local function attach(region, widget, layer)
-  local root = root_of(layer, region)
+-- Adds a widget to the root of a region, and returns the root. A widget that
+-- has another holder is an error at the given level.
+local function attach(region, widget, level)
+  local root = root_of(region)
+  base.hold(widget, root, level + 2)
   table.insert(root.children, widget)
-  widget._parent = root
-  widget._layer = layer
   root:wake()
+  return root
 end
 
-local function unattach(widget)
-  local root = widget._parent
-  if root == nil then
-    return
-  end
+local function unattach(widget, root)
   for i, child in ipairs(root.children) do
     if child == widget then
       table.remove(root.children, i)
       break
     end
   end
-  widget._parent = nil
-  widget._layer = nil
+  base.unhold(widget, root)
   root:wake()
 end
 
 local function remove(widget)
-  local listener = widget._region_listener
-  if listener ~= nil then
-    listener:detach()
-    widget._region_listener = nil
-  end
-  if widget._parent == nil then
+  local entry = placed[widget]
+  if entry == nil then
     return false
   end
-  unattach(widget)
+  placed[widget] = nil
+  if entry.region_listener ~= nil then
+    entry.region_listener:detach()
+  end
+  if entry.unload ~= nil then
+    entry.unload:detach()
+  end
+  unattach(widget, entry.root)
   return true
 end
 
@@ -113,10 +122,7 @@ end
 -- it, as its event handlers do. One a global script placed stays for the
 -- session.
 local function bind_scope(widget)
-  if not raw.is_level_script() then
-    return
-  end
-  trx.events.on_level_unload(function()
+  return at_level_end(function()
     remove(widget)
     widget:release()
   end)
@@ -124,137 +130,69 @@ end
 
 ---Places a widget in a region.
 ---
----The layer decides whether the widget is covered by the engine interface or
----covers it. A widget is under it unless the call says otherwise. Each layer
----keeps room of its own in the region, so widgets on the two layers stack
----rather than sit on top of each other.
----
 ---If the region argument is a signal, the widget moves when the signal
----changes.
+---changes. Placing a widget that is already placed moves it.
 ---
 ---```lua
 ---trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)
 ---```
----
----```lua
----trx.ui.regions.place(
----  trx.ui.Region.BOTTOM_LEFT,
----  console,
----  trx.ui.Layer.OVER
----)
----```
 ---@param region any The target region, or a signal that holds one.
 ---@param widget trx.ui.Widget The widget to place.
----@param layer? trx.ui.Layer Which layer to draw on. Defaults to `trx.ui.Layer.UNDER`.
-function regions.place(region, widget, layer)
-  layer = layer or trx.ui.Layer.UNDER
-  if type(region) == "table" and region.get ~= nil then
-    attach(region:get(), widget, layer)
-    widget._region_listener = region:on(function(value)
-      unattach(widget)
-      attach(value, widget, layer)
+function regions.place(region, widget)
+  remove(widget)
+  local entry = {}
+  if base.is_signal(region) then
+    entry.root = attach(region:get(), widget, 2)
+    entry.region_listener = region:on(function(value)
+      unattach(widget, entry.root)
+      entry.root = attach(value, widget, 2)
     end)
   else
-    attach(region, widget, layer)
+    entry.root = attach(region, widget, 2)
   end
-  bind_scope(widget)
+  entry.unload = bind_scope(widget)
+  placed[widget] = entry
 end
 
----Removes a widget from its region.
+---Takes a widget out of its region and keeps it, so that it can be placed
+---again.
 ---
----Use this for temporary widgets. Widgets owned by a level script are removed
----when the level ends. Call `trx.ui.Widget:release` separately to detach their
----signal listeners.
+---To be done with a widget, release it with `trx.ui.Widget:release` instead,
+---which takes it out of its region as well. Widgets that a level script placed
+---are released when the level ends.
 ---@param widget trx.ui.Widget The widget to remove.
 ---@return boolean # Whether the widget was in a region.
 function regions.remove(widget)
   return remove(widget)
 end
 
----Sets the widget to draw when a region has no visible content.
----
----A region with only non-shown widgets draws nothing. A fallback can reserve
----that empty place instead, for example the corner arrows shown when a bar is
----off screen. Each region has at most one fallback.
----@param region trx.ui.Region The target region.
----@param widget trx.ui.Widget The fallback widget.
-function regions.fallback(region, widget)
-  fallbacks[region] = widget
-  if raw.is_level_script() then
-    trx.events.on_level_unload(function()
-      if fallbacks[region] == widget then
-        fallbacks[region] = nil
-      end
-      widget:release()
-    end)
-  end
-end
-
--- Reserves room for one layer's root in a region. The fallback belongs to the
--- region rather than to a layer, so only the under layer offers it.
----@param layer trx.ui.Layer
----@param region trx.ui.Region
----@param fallback trx.ui.Widget?
-local function reserve_root(layer, region, fallback)
-  local root = roots[layer][region]
-  local w, h = 0.0, 0.0
-
-  if root ~= nil then
-    root._slot = nil
-    if root:is_shown() then
-      w, h = root:measure()
-    end
-  end
-
-  -- A fallback replaces the root instead of sitting beside it, so measure it
-  -- only when the root has no visible size.
-  local shown = root
-  if w <= 0 or h <= 0 then
-    shown = nil
-    if fallback ~= nil then
-      fallback._slot = nil
-      if fallback:is_shown() then
-        w, h = fallback:measure()
-        shown = fallback
-      end
-    end
-  end
-
-  if shown ~= nil and w > 0 and h > 0 then
-    shown._slot = primitive.reserve(region, w, h)
-  end
-end
+base.set_unplace(remove)
 
 -- Reserve room for each region while the scene is being built. Signal changes
--- have already invalidated any stale widget measurements by this point. Each
--- layer reserves separately, so the two never land on the same place.
-trx.ui.on_draw(function(region)
-  reserve_root(trx.ui.Layer.UNDER, region, fallbacks[region])
-  reserve_root(trx.ui.Layer.OVER, region, nil)
+-- have already invalidated any stale widget measurements by this point.
+trx.ui.on_reserve(function(region)
+  local root = roots[region]
+  if root == nil then
+    return
+  end
+  slots[root] = nil
+  if root:is_shown() then
+    local w, h = root:measure()
+    if w > 0 and h > 0 then
+      slots[root] = primitive.reserve(region, w, h)
+    end
+  end
 end)
 
 -- Paint widgets after the engine has assigned boxes to their reservations.
-local function paint_placed(widget)
-  if widget == nil or widget._slot == nil then
-    return
-  end
-  local x, y, w, h = primitive.slot_box(widget._slot)
-  if x ~= nil then
-    widget:paint(x, y, w, h)
-  end
-end
-
 trx.ui.on_paint(function()
-  for _, root in pairs(roots[trx.ui.Layer.UNDER]) do
-    paint_placed(root)
-  end
-  for _, fallback in pairs(fallbacks) do
-    paint_placed(fallback)
-  end
-end)
-
-trx.ui.on_paint_over(function()
-  for _, root in pairs(roots[trx.ui.Layer.OVER]) do
-    paint_placed(root)
+  for _, root in pairs(roots) do
+    local slot = slots[root]
+    if slot ~= nil then
+      local x, y, w, h = primitive.slot_box(slot)
+      if x ~= nil then
+        root:paint(x, y, w, h)
+      end
+    end
   end
 end)

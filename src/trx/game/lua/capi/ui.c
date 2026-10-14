@@ -26,13 +26,14 @@
 #include <lauxlib.h>
 #include <math.h>
 
-static bool m_Drawing = false;
+static bool m_Reserving = false;
 static bool m_Painting = false;
 
-static void M_CheckDrawing(lua_State *const L)
+static void M_CheckReserving(lua_State *const L)
 {
-    if (!m_Drawing) {
-        luaL_error(L, "trx.ui is only available from trx.events.on_ui_draw");
+    if (!m_Reserving) {
+        luaL_error(
+            L, "trx.ui.primitive.reserve works only during trx.ui.on_reserve");
     }
 }
 
@@ -476,7 +477,7 @@ static int M_L_UIGradientSprite(lua_State *const L)
 // trxc.ui.reserve(region: trx.ui.Region, w: number, h: number): integer
 static int M_L_UIReserve(lua_State *const L)
 {
-    M_CheckDrawing(L);
+    M_CheckReserving(L);
     const lua_Integer region = luaL_checkinteger(L, 1);
     if (region < 0 || region >= UI_REGION_NUMBER_OF) {
         return luaL_error(L, "unknown region");
@@ -769,13 +770,6 @@ static int M_L_UIDrawnTextScale(lua_State *const L)
     return 1;
 }
 
-// trxc.ui.text_scale(): number
-static int M_L_UITextScale(lua_State *const L)
-{
-    lua_pushnumber(L, UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT));
-    return 1;
-}
-
 // trxc.ui.get_clipboard(): string
 static int M_L_UIGetClipboard(lua_State *const L)
 {
@@ -810,7 +804,6 @@ static const luaL_Reg m_Module[] = {
     { "bar_theme", M_L_UIBarTheme },
     { "bar_theme_key", M_L_UIBarThemeKey },
     { "bar_scale", M_L_UIBarScale },
-    { "text_scale", M_L_UITextScale },
     { "drawn_text_scale", M_L_UIDrawnTextScale },
     { "reserve", M_L_UIReserve },
     { "slot_box", M_L_UISlotBox },
@@ -846,7 +839,7 @@ static void M_Create(lua_State *const L)
 
 static void M_Shutdown(void)
 {
-    m_Drawing = false;
+    m_Reserving = false;
     m_Painting = false;
 }
 
@@ -860,14 +853,14 @@ void LUA_UI_SetPainting(const bool painting)
     m_Painting = painting;
 }
 
-void LUA_UI_SetDrawing(const bool drawing)
+void LUA_UI_SetReserving(const bool reserving)
 {
-    m_Drawing = drawing;
+    m_Reserving = reserving;
 }
 
-bool LUA_UI_IsDrawing(void)
+bool LUA_UI_IsReserving(void)
 {
-    return m_Drawing;
+    return m_Reserving;
 }
 
 REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

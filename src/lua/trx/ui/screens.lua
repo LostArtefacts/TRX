@@ -61,9 +61,8 @@ local Screen = {
   ---opened to save or load leaves when the screen ends, and any ring leaves
   ---when the screen ends with `trx.ui.ScreenContext:confirm`.
   RING_ENTRY = h.IntegerConstant,
-  ---The question that the pause screen asks when the player presses the
-  ---inventory key: whether to leave for the title screen. It has a
-  ---`trx.ui.PauseContext`.
+  ---The pause screen, from the moment the game pauses until it resumes or
+  ---leaves for the title screen. It has a `trx.ui.PauseContext`.
   PAUSE = h.IntegerConstant,
   ---The quick save or load screen, with a `trx.ui.SaveLoadContext`. The save
   ---and load keys open it when the instant screen setting is on.
@@ -249,7 +248,7 @@ function Context:on_end(callback)
 end
 
 ---Ends the screen, and closes its layers. A ring entry is put away, the pause
----screen stays paused and drops its question, the quick save or load screen
+---screen returns to the game, the quick save or load screen
 ---closes, and the statistics screen ends as the player skipping it does. Does
 ---nothing if the screen has already ended.
 ---@return boolean # Whether the screen was still held.
@@ -287,8 +286,7 @@ function Pause:resume()
   return finish(self, choices.RESUME)
 end
 
----Ends the pause screen, and leaves for the title screen with the pause
----screen's fade.
+---Ends the pause screen, and leaves for the title screen.
 ---@return boolean # Whether the screen was still held.
 function Pause:exit_to_title()
   return finish(self, choices.EXIT_TO_TITLE)
