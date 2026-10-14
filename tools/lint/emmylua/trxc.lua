@@ -291,7 +291,6 @@ trxc = {}
 ---@field is_pressed fun(role: trx.input.Role): boolean
 ---@field is_rebindable fun(role: trx.input.Role): boolean
 ---@field is_reserved fun(): boolean
----@field is_role_down fun(role: trx.input.Role): boolean
 ---@field is_suppressed fun(role: trx.input.Role): boolean
 ---@field is_unbindable fun(role: trx.input.Role): boolean
 ---@field key_name fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout): string?

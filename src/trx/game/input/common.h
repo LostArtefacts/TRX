@@ -96,12 +96,6 @@ bool Input_IsHeld(INPUT_ROLE role);
 // on the game frame where the player starts to hold it.
 bool Input_IsPressed(INPUT_ROLE role);
 
-// Checks whether the devices hold a role down, as the player's bindings
-// resolve it. Unlike Input_IsHeld, it answers while a script holds the
-// devices, and it ignores hold-offs and suppression. It reports false while
-// the game holds the devices for a rebind.
-bool Input_IsRoleDown(INPUT_ROLE role);
-
 // Check a role as the script that holds the devices reads it: debounced, with
 // the menu keys repeating as the game's own menus repeat them, and less the
 // roles held off. Both report false while the game reads the devices itself,
