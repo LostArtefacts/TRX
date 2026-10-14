@@ -174,6 +174,7 @@
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `trx.math.rotate()`, which turns a vector the way the engine turns a model
+- Added `trx.math.wrap_angle()`, `trx.math.idiv()`, `trx.math.lerp()` and `trx.math.lerp_angle()`, which wrap, divide and blend numbers the way the engine does
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
 - Added `trx.ui.primitive.model` and `trx.ui.widgets.Model`, which draw a model on the canvas as the interface is painted, turned any way and in the game or over the inventory ring, held as a pickup or standing free, and lit as the script says, each game in its own terms, by the light the game holds a pickup up in unless told otherwise
 - Added `trx.ui.primitive.background`, which draws a picture behind the whole interface, in colour or greyed and dimmed

@@ -136,6 +136,61 @@ where the engine would. [`trx.math.Angle`](#math.Angle) says what an angle is he
   local half_turn = trx.math.degrees(180)
   ```
 
+- <a id="math.wrap_angle" name="math.wrap_angle"></a>[lua]`trx.math.wrap_angle(angle)`  
+  Brings an angle back into the engine's range, from `-32768` to `32767`, the
+  way the engine's own angles wrap round.
+
+  Parameters:
+  - <a id="math.wrap_angle.angle" name="math.wrap_angle.angle"></a>**`angle`** (number). The angle, any number of turns out of range.
+
+  Returns: [trx.math.Angle](#math.Angle).
+
+  Example:
+  ```lua
+  local turned = trx.math.wrap_angle(angle + trx.math.DEG_90)
+  ```
+
+- <a id="math.idiv" name="math.idiv"></a>[lua]`trx.math.idiv(a, b)`  
+  Divides two whole numbers and drops the fraction, towards zero, as the
+  engine's integer division does. Lua's `//` rounds down instead, so the two
+  differ for a negative result: `-7 // 2` is `-4`, and `trx.math.idiv(-7, 2)`
+  is `-3`.
+
+  Parameters:
+  - <a id="math.idiv.a" name="math.idiv.a"></a>**`a`** (number). The dividend, a whole number.
+  - <a id="math.idiv.b" name="math.idiv.b"></a>**`b`** (number). The divisor, a whole number.
+
+  Returns: number. The quotient, a whole number.
+
+- <a id="math.lerp" name="math.lerp"></a>[lua]`trx.math.lerp(from, to, rate)`  
+  A value part way from one to another, rounded to the nearest whole number
+  as the engine rounds, with halves going away from zero. A script draws a
+  frame between two ticks with it, with [`trx.ui.interpolation_rate`](UI.md#ui.interpolation_rate) as the
+  rate.
+
+  Parameters:
+  - <a id="math.lerp.from" name="math.lerp.from"></a>**`from`** (number). The value at a rate of `0`.
+  - <a id="math.lerp.to" name="math.lerp.to"></a>**`to`** (number). The value at a rate of `1`.
+  - <a id="math.lerp.rate" name="math.lerp.rate"></a>**`rate`** (number). How far from the first to the second.
+
+  Returns: integer. The value in between.
+
+  Example:
+  ```lua
+  local y = trx.math.lerp(last_y, y, trx.ui.interpolation_rate())
+  ```
+
+- <a id="math.lerp_angle" name="math.lerp_angle"></a>[lua]`trx.math.lerp_angle(from, to, rate)`  
+  An angle part way from one to another, the short way round, with the
+  fraction dropped towards zero as the engine drops it.
+
+  Parameters:
+  - <a id="math.lerp_angle.from" name="math.lerp_angle.from"></a>**`from`** ([trx.math.Angle](#math.Angle)). The angle at a rate of `0`.
+  - <a id="math.lerp_angle.to" name="math.lerp_angle.to"></a>**`to`** ([trx.math.Angle](#math.Angle)). The angle at a rate of `1`.
+  - <a id="math.lerp_angle.rate" name="math.lerp_angle.rate"></a>**`rate`** (number). How far from the first to the second.
+
+  Returns: [trx.math.Angle](#math.Angle). The angle in between.
+
 - <a id="math.f32" name="math.f32"></a>[lua]`trx.math.f32(value)`  
   Rounds a number to single precision. The engine lays its interface out in
   single precision, and a box that lands on half a pixel rounds one way or the

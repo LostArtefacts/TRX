@@ -204,6 +204,69 @@ function M.degrees(degrees)
   return math.floor(degrees * DEG_360 / 360 + 0.5)
 end
 
+---Brings an angle back into the engine's range, from `-32768` to `32767`, the
+---way the engine's own angles wrap round.
+---
+---```lua
+---local turned = trx.math.wrap_angle(angle + trx.math.DEG_90)
+---```
+---@param angle number The angle, any number of turns out of range.
+---@return trx.math.Angle
+function M.wrap_angle(angle)
+  return math.floor(angle + 32768) % 65536 - 32768
+end
+
+---Divides two whole numbers and drops the fraction, towards zero, as the
+---engine's integer division does. Lua's `//` rounds down instead, so the two
+---differ for a negative result: `-7 // 2` is `-4`, and `trx.math.idiv(-7, 2)`
+---is `-3`.
+---@param a number The dividend, a whole number.
+---@param b number The divisor, a whole number.
+---@return number # The quotient, a whole number.
+function M.idiv(a, b)
+  local q = a // b
+  if a % b ~= 0 and (a < 0) ~= (b < 0) then
+    q = q + 1
+  end
+  return q
+end
+
+---A value part way from one to another, rounded to the nearest whole number
+---as the engine rounds, with halves going away from zero. A script draws a
+---frame between two ticks with it, with `trx.ui.interpolation_rate` as the
+---rate.
+---
+---```lua
+---local y = trx.math.lerp(last_y, y, trx.ui.interpolation_rate())
+---```
+---@param from number The value at a rate of `0`.
+---@param to number The value at a rate of `1`.
+---@param rate number How far from the first to the second.
+---@return integer # The value in between.
+function M.lerp(from, to, rate)
+  local value = from + (to - from) * rate
+  return value < 0 and -math.floor(-value + 0.5) or math.floor(value + 0.5)
+end
+
+---An angle part way from one to another, the short way round, with the
+---fraction dropped towards zero as the engine drops it.
+---@param from trx.math.Angle The angle at a rate of `0`.
+---@param to trx.math.Angle The angle at a rate of `1`.
+---@param rate number How far from the first to the second.
+---@return trx.math.Angle # The angle in between.
+function M.lerp_angle(from, to, rate)
+  from, to = from % 65536, to % 65536
+  local diff = to - from
+  if diff > 2 * raw.DEG_90 then
+    diff = diff - DEG_360
+  elseif diff < -2 * raw.DEG_90 then
+    diff = diff + DEG_360
+  end
+  local value = from + diff * rate
+  value = value < 0 and -math.floor(-value) or math.floor(value)
+  return M.wrap_angle(value % 65536)
+end
+
 ---Rounds a number to single precision. The engine lays its interface out in
 ---single precision, and a box that lands on half a pixel rounds one way or the
 ---other depending on the precision it was worked out in, so a layout that has
