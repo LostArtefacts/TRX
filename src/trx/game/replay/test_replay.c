@@ -47,6 +47,7 @@ typedef struct {
     int32_t brace_depth;
     bool in_quote;
     bool escaped;
+    char *end;
 } M_BLOCK_EVENT_CTX;
 
 // Parsed frame events
@@ -394,8 +395,22 @@ static const char *M_GetBlockPayloadStartIfAny(const char *const evt)
     return nullptr;
 }
 
-static bool M_TryStartBlockEvent(
-    M_BLOCK_EVENT_CTX *const ctx, const char *const evt)
+// Joins a line onto the block event before it. The gap between the end of the
+// block and the start of the line holds the line end, any comment cut from the
+// line before, blank lines and indentation, and becomes one line break
+// followed by spaces.
+static void M_JoinBlockLine(M_BLOCK_EVENT_CTX *const ctx, char *const line)
+{
+    if (ctx->end < line) {
+        *ctx->end = '\n';
+        for (char *ch = ctx->end + 1; ch < line; ch++) {
+            *ch = ' ';
+        }
+    }
+    ctx->end = line + strlen(line);
+}
+
+static bool M_TryStartBlockEvent(M_BLOCK_EVENT_CTX *const ctx, char *const evt)
 {
     const char *const payload_start = M_GetBlockPayloadStartIfAny(evt);
     if (payload_start == nullptr || *payload_start != '{') {
@@ -403,6 +418,7 @@ static bool M_TryStartBlockEvent(
     }
 
     ctx->collecting = true;
+    ctx->end = evt + strlen(evt);
     ctx->brace_depth = 0;
     ctx->in_quote = false;
     ctx->escaped = false;
@@ -1189,9 +1205,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
                 }
 
                 if (block_ctx.collecting) {
-                    if (evt > p->data) {
-                        evt[-1] = '\n';
-                    }
+                    M_JoinBlockLine(&block_ctx, evt);
                     M_ScanBraceState(
                         evt, &block_ctx.brace_depth, &block_ctx.in_quote,
                         &block_ctx.escaped);
