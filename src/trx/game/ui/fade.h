@@ -28,7 +28,7 @@ int32_t UI_Fade_PushFill(RGBA_8888 color, float opacity);
 int32_t UI_Fade_PushSnapshot(float opacity);
 
 // Pushes a backdrop layer of a style, over the picture at `path` or a snapshot
-// of the game that it captures as it is pushed.
+// of the game that it captures as it is pushed. A picture captures nothing.
 int32_t UI_Fade_PushBackdrop(
     BACKGROUND_TYPE style, const char *path, float opacity);
 
