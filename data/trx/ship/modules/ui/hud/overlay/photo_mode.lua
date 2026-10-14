@@ -267,8 +267,8 @@ function M.setup()
         return
       end
       local t = primitive.to_canvas(thickness)
-      local w = ui.canvas.width
-      local h = ui.canvas.height
+      local w = ui.screen.width
+      local h = ui.screen.height
       primitive.quad(0, 0, 0, w, t, RED)
       primitive.quad(0, h - t, 0, w, t, RED)
       primitive.quad(0, t, 0, t, h - 2 * t, RED)
