@@ -182,6 +182,10 @@ test("the question stays on screen while the screen leaves", function()
     has(texts(), L("general/pause/are_you_sure")),
     "the question went before the screen"
   )
+  assert(
+    caption() == L("general/pause/paused"),
+    "the caption went, which moves the question"
+  )
   assert(left() == CHOICE_EXIT_TO_TITLE)
   finish()
 end)
