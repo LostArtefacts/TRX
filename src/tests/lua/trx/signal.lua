@@ -371,6 +371,44 @@ test(
   end
 )
 
+-- How many listeners a signal has.
+local function listeners_of(source)
+  local count = 0
+  for _ in pairs(rawget(source, "_listeners")) do
+    count = count + 1
+  end
+  return count
+end
+
+test("a derived signal with a listener follows its source", function()
+  local source = signal.new(1)
+  local seen = nil
+  source
+    :map(function(value)
+      return value * 2
+    end)
+    :on(function(value)
+      seen = value
+    end)
+  collectgarbage()
+  source:set(2)
+  assert(seen == 4, "the listener stopped hearing the source")
+end)
+
+test("a derived signal goes once its last listener detaches", function()
+  local source = signal.new(1)
+  local listener = source
+    :map(function(value)
+      return value * 2
+    end)
+    :on(function() end)
+  listener:detach()
+  listener = nil
+  collectgarbage()
+  source:set(2)
+  assert(listeners_of(source) == 0, listeners_of(source))
+end)
+
 test("a polled signal that nothing holds stops reading", function()
   local reads = 0
   do

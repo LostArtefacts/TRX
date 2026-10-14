@@ -40,7 +40,7 @@ What a script makes lasts as follows:
 - A signal that a level script derives, with [`trx.signal.Signal:map`](#signal.Signal.map),
  [`trx.signal.combine`](#signal.combine), an operator or [`trx.signal.polled`](#signal.polled), stops when the
  level ends. One that a global script derives follows its sources while
- something holds it, or until [`trx.signal.Signal:stop`](#signal.Signal.stop).
+ something holds it or listens to it, or until [`trx.signal.Signal:stop`](#signal.Signal.stop).
 - An event handler follows the script that attached it, as [`trx.events`](EVENTS.md#events)
  says.
 - A listener from [`trx.signal.Signal:on`](#signal.Signal.on) stays attached until
