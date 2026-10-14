@@ -35,6 +35,18 @@ listeners can then read the handle when they need it.
 Signals stay idle until something uses them: a polled signal starts reading
 only when it is created.
 
+What a script makes lasts as follows:
+
+- A signal that a level script derives, with [`trx.signal.Signal:map`](#signal.Signal.map),
+ [`trx.signal.combine`](#signal.combine), an operator or [`trx.signal.polled`](#signal.polled), stops when the
+ level ends. One that a global script derives follows its sources while
+ something holds it, or until [`trx.signal.Signal:stop`](#signal.Signal.stop).
+- An event handler follows the script that attached it, as [`trx.events`](EVENTS.md#events)
+ says.
+- A listener from [`trx.signal.Signal:on`](#signal.Signal.on) stays attached until
+ [`trx.signal.Listener:detach`](#signal.Listener.detach), whichever script attached it.
+- The engine's own signals, such as [`trx.game.signals`](GAME.md#game.signals), last the session.
+
 ### Properties
 
 - <a id="signal.tick" name="signal.tick"></a>**`trx.signal.tick`** ([trx.signal.Signal](#signal.Signal)). A signal that increments on every engine tick, regardless of what is on screen. Anything listening to it runs every tick.
@@ -94,6 +106,12 @@ only when it is created.
       Calls the handler with the new value whenever the signal changes. Attaching
       a listener does not call it immediately; read the signal directly when you
       need its current value.
+
+      The listener stays attached until [`trx.signal.Listener:detach`](#signal.Listener.detach), even when a
+      level script attaches it, so that it can follow an engine signal past the
+      level. A level script that needs the value for its own level only can
+      derive a signal instead, which stops with the level, or detach the listener
+      in [`trx.events.on_level_unload`](EVENTS.md#events.on_level_unload).
 
       Parameters:
       - <a id="signal.Signal.on.fn" name="signal.Signal.on.fn"></a>**`fn`** (function). The function to call when the signal changes.

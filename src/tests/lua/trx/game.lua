@@ -339,4 +339,41 @@ test("a bonus check must be a function", function()
   end, "must be a function")
 end)
 
+test("a game signal a level script read first outlives that level", function()
+  local photo_mode
+  fake.as_level_script(function()
+    photo_mode = trx.game.signals.is_photo_mode
+  end)
+  fake.end_level()
+  fake.set_photo_mode(true)
+  fake.tick()
+  local followed = photo_mode:get()
+  fake.set_photo_mode(false)
+  fake.tick()
+  assert(followed, "the signal stopped with the level")
+  assert(trx.game.signals.is_photo_mode == photo_mode, "the signal changed")
+end)
+
+test("a listener a level script attaches outlives the level", function()
+  local heard = {}
+  local listener
+  fake.as_level_script(function()
+    listener = trx.game.signals.is_photo_mode:on(function(value)
+      heard[#heard + 1] = value
+    end)
+  end)
+  fake.end_level()
+  fake.set_photo_mode(true)
+  fake.tick()
+  fake.set_photo_mode(false)
+  fake.tick()
+  assert(#heard == 2, "the listener heard " .. #heard .. " changes")
+  assert(listener:detach(), "the listener was already detached")
+  fake.set_photo_mode(true)
+  fake.tick()
+  fake.set_photo_mode(false)
+  fake.tick()
+  assert(#heard == 2, "the detached listener still heard changes")
+end)
+
 return h.report()

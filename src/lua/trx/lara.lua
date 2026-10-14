@@ -1,7 +1,6 @@
-require("trx.signal")
-
 local raw = trxc.lara
 local h = require("trx.internal.helpers")
+local lasting_polled = require("trx.signal").lasting_polled
 
 -- trx.lara stands for one C struct, so reading trx.lara.air reads Lara's air.
 -- What is reachable is what lara.Lara declares below, and nothing else.
@@ -389,7 +388,7 @@ for _, entry in ipairs(SIGNALS) do
   signal_props[name] = {
     get = function()
       if held == nil then
-        held = trx.signal.polled(read)
+        held = lasting_polled(read)
       end
       return held
     end,

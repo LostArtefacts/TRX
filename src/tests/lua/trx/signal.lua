@@ -375,6 +375,40 @@ test("a level script's derived signal stops when the level ends", function()
   assert(doubled:get() == 2, "it stopped following the source")
 end)
 
+test(
+  "a derived signal that nothing holds stops following its source",
+  function()
+    local source = signal.new(1)
+    do
+      local _ = source:map(function(value)
+        return value * 2
+      end)
+    end
+    collectgarbage()
+    source:set(2)
+    local count = 0
+    for _ in pairs(rawget(source, "_listeners")) do
+      count = count + 1
+    end
+    assert(count == 0, count)
+  end
+)
+
+test("a polled signal that nothing holds stops reading", function()
+  local reads = 0
+  do
+    local _ = signal.polled(function()
+      reads = reads + 1
+      return reads
+    end)
+  end
+  collectgarbage()
+  fake.tick()
+  local after = reads
+  fake.tick()
+  assert(reads == after, "it still reads")
+end)
+
 test("a global script's derived signal outlives a level", function()
   local source = signal.new(1)
   local doubled = source:map(function(value)
