@@ -133,27 +133,38 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
     LUA_FireEventEx(LUA_EVENT_SCREEN_CHANGE, args, 3);
 
     while (UI_Fade_IsHoldingScreen()) {
-        Clock_WaitTick();
-        m_CurrentFrame++;
+        const int32_t nframes = Clock_WaitTick();
+        for (int32_t frame = 0; frame < nframes; frame++) {
+            m_CurrentFrame++;
 
-        Shell_ProcessEvents();
-        Overlay_Control();
+            Shell_ProcessEvents();
+            Overlay_Control();
 
-        const GF_COMMAND gf_cmd = M_HandleOverride(phase);
-        if (gf_cmd.action == GF_EXIT_GAME) {
-            PhaseExecutor_BeginExit();
-        } else if (gf_cmd.action != GF_NOOP) {
-            return gf_cmd;
+            const GF_COMMAND gf_cmd = M_HandleOverride(phase);
+            if (gf_cmd.action == GF_EXIT_GAME) {
+                PhaseExecutor_BeginExit();
+            } else if (gf_cmd.action != GF_NOOP) {
+                return gf_cmd;
+            }
+
+            if (Shell_IsExiting()) {
+                PhaseExecutor_BeginExit();
+            }
+            if (m_Exiting && !UI_IsExitFading()) {
+                return (GF_COMMAND) { .action = GF_EXIT_GAME };
+            }
+
+            LUA_Tick();
         }
 
-        if (Shell_IsExiting()) {
-            PhaseExecutor_BeginExit();
+        // Draws the frame between two ticks as the main loop does, so that a
+        // tick lasts as long here as in a phase.
+        if (Interpolation_IsActive()) {
+            Interpolation_SetRate(0.5f);
+            Output_SetTime(m_CurrentFrame - 0.5f);
+            M_DrawHeldScreen();
+            Clock_WaitTick();
         }
-        if (m_Exiting && !UI_IsExitFading()) {
-            return (GF_COMMAND) { .action = GF_EXIT_GAME };
-        }
-
-        LUA_Tick();
 
         Interpolation_SetRate(1.0f);
         Output_SetTime(m_CurrentFrame);
