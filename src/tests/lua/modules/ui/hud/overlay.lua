@@ -113,6 +113,16 @@ test("photo mode frames the screen in red", function()
   )
 end)
 
+test("a screenshot takes the picture without the red frame", function()
+  only_the_panel()
+  fake.set_photo_mode(true)
+  fake.tick()
+
+  fake.hide_next_frame()
+  assert(#frame_quads(draw()) == 0, "the frame was drawn into the screenshot")
+  assert(#frame_quads(draw()) == 4, "the frame did not come back")
+end)
+
 test("the red frame is gone once photo mode closes", function()
   only_the_panel()
   fake.set_photo_mode(true)
