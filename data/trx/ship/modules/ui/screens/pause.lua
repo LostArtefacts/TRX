@@ -149,16 +149,18 @@ local function open(ctx)
     end
     is_leaving = true
     is_waiting = false
-    trx.overlay.set_caption()
     fades:move(backdrop, target, FADE_TICKS, hold, on_done)
   end
 
   local function resume()
+    trx.overlay.set_caption()
     leave(0, 0, function()
       ctx:resume()
     end)
   end
 
+  -- The caption stays until the screen ends, because the question stands on
+  -- the room above it and would move down as the caption went.
   local function exit()
     leave(1, EXIT_HOLD_TICKS, function()
       ctx:exit_to_title()
