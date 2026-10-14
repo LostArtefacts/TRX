@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/console/common.h>
 #include <trx/game/cutseq.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/backends/base.h>
@@ -227,7 +228,9 @@ void Input_Update(void)
 
     InputState_Clear(&m_GrabInput);
     InputState_Clear(&m_GrabInputDB);
-    if (InputRaw_IsHeldByScript()) {
+    // The console holds the devices too while it is open, and what the player
+    // types into it is not for the script that grabbed them.
+    if (InputRaw_IsHeldByScript() && !Console_IsOpened()) {
         m_GrabInput = g_Input;
         m_GrabInputDB = g_InputDB;
     }
