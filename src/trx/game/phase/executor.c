@@ -132,6 +132,9 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
     };
     LUA_FireEventEx(LUA_EVENT_SCREEN_CHANGE, args, 3);
 
+    // Starts the clock from the change, so that the time the last screen took
+    // to end, such as to load a level, does not run as ticks of the fade.
+    Clock_SyncTick();
     while (UI_Fade_IsHoldingScreen()) {
         const int32_t nframes = Clock_WaitTick();
         for (int32_t frame = 0; frame < nframes; frame++) {
