@@ -133,6 +133,27 @@ M.on_game_start = hook(types.GAME_START)
 ---@type fun(callback: function): trx.events.Listener
 M.on_title_start = hook(types.TITLE_START)
 
+---Happens before the engine starts its next screen, such as a level, the title,
+---a picture or the statistics. This is where a script decides how the screen
+---on show gives way to the next one.
+---
+---The engine waits to start the next screen while a fade layer that holds the
+---screen is open, and draws only the interface and the fade layers meanwhile.
+---See `holds_screen` in `trx.ui.layers.fade`. <!--noref: holds_screen-->
+---
+---```lua
+---trx.events.on_screen_change(function(cross_fades, fade_ticks, fade_hold)
+---  trx.log.info("the screen changes")
+---end)
+---```
+---@param callback fun(cross_fades: boolean, fade_ticks: integer, fade_hold: integer) What to run when it happens.
+---@trx.arg callback.cross_fades Whether the next screen blends in from the frame on show, as a loading picture does.
+---@trx.arg callback.fade_ticks How many ticks the engine screen that ended asked to fade to black over, or `0` where it asked for no fade.
+---@trx.arg callback.fade_hold How many ticks that screen asked to stay black for once faded.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: fun(cross_fades: boolean, fade_ticks: integer, fade_hold: integer)): trx.events.Listener
+M.on_screen_change = hook(types.SCREEN_CHANGE)
+
 ---Happens as the engine lets go of a level, before the handlers a level script
 ---attached are detached and before the world the script was written against is
 ---taken apart. This is where a script hands back what it set up while the

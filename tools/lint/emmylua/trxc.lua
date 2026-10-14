@@ -167,6 +167,7 @@ trxc = {}
 
 ---@class (exact) trxc.fade
 ---@field close fun(id: integer)
+---@field hold_screen fun(id: integer)
 ---@field is_open fun(id: integer): boolean
 ---@field opacity fun(id: integer): number
 ---@field push_backdrop fun(style: string, path: string?, opacity: number): integer

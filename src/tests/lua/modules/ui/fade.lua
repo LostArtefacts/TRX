@@ -261,4 +261,45 @@ test("a value waits, fades, and starts again", function()
   finish()
 end)
 
+-------------------------------------------------------------------------------
+-- changing screens
+-------------------------------------------------------------------------------
+
+test("a screen handed over fades to black before the next starts", function()
+  fade.hand_over({ ticks = 2, hold = 4 })
+  fake.change_screen(false)
+  assert(fake.holds_screen(), "the next screen did not wait")
+  ticks(5)
+  assert(blacks()[1] == 0xFF, "the screen did not go black")
+  assert(fake.holds_screen(), "the black did not rest")
+  ticks(6)
+  assert(not fake.holds_screen(), "the next screen still waits")
+  assert(#blacks() == 0, "the black outlived the change")
+  finish()
+end)
+
+test("a next screen that blends in takes the frame as it is", function()
+  fade.hand_over({ ticks = 2, hold = 2 })
+  fake.change_screen(true)
+  assert(not fake.holds_screen(), "the next screen waited")
+  assert(#blacks() == 0, "the screen faded")
+  finish()
+end)
+
+test("a fade that an engine screen asks for runs the same", function()
+  fake.change_screen(false, 2, 1)
+  assert(fake.holds_screen(), "the next screen did not wait")
+  ticks(8)
+  assert(not fake.holds_screen(), "the next screen still waits")
+  finish()
+end)
+
+test("a hand over is spent by the change that follows", function()
+  fade.hand_over({ ticks = 2, hold = 2 })
+  fake.change_screen(true)
+  fake.change_screen(false)
+  assert(not fake.holds_screen(), "the hand over ran twice")
+  finish()
+end)
+
 return h.report()

@@ -73,6 +73,13 @@ static int M_L_FadeOpacity(lua_State *const L)
     return 1;
 }
 
+// trxc.fade.hold_screen(id: integer)
+static int M_L_FadeHoldScreen(lua_State *const L)
+{
+    UI_Fade_HoldScreen((int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
 // trxc.fade.close(id: integer)
 static int M_L_FadeClose(lua_State *const L)
 {
@@ -82,6 +89,7 @@ static int M_L_FadeClose(lua_State *const L)
 
 static const luaL_Reg m_Module[] = {
     { "close", M_L_FadeClose },
+    { "hold_screen", M_L_FadeHoldScreen },
     { "is_open", M_L_FadeIsOpen },
     { "opacity", M_L_FadeOpacity },
     { "push_backdrop", M_L_FadePushBackdrop },

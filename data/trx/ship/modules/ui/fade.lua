@@ -1,6 +1,6 @@
--- Every fade the shipped interface draws, so that each one runs the same way.
--- The engine runs each move; this module decides which fade runs, and
--- whether fades run at all.
+-- Every fade the shipped interface draws, so that each one runs the same way,
+-- and how one screen gives way to the next. The engine runs each move; this
+-- module decides which fade runs, and whether fades run at all.
 --
 -- Usage:
 --   local fade = require("common.ui.fade")
@@ -17,6 +17,8 @@
 --
 --   local black = fade.across({ from = 0, to = 1, ticks = 15 })
 --   black:to(0, 15)
+--
+--   fade.hand_over({ ticks = 15, hold = 3 })  -- as a screen leaves
 
 local timer = require("common.timer")
 
@@ -342,12 +344,60 @@ function M.value(options)
 end
 
 -------------------------------------------------------------------------------
+-- Changing screens
+-------------------------------------------------------------------------------
+
+-- How the screen that left asked the next one to come in, or nil for a cut.
+---@type { ticks: integer, hold: integer }?
+local handed = nil
+
+-- Asks for the screen on show to fade to black before the next screen starts,
+-- over `ticks` and then resting black for `hold`, unless the next screen
+-- blends in from it. The next screen waits for the fade to end.
+function M.hand_over(options)
+  handed = { ticks = options.ticks or 0, hold = options.hold or 0 }
+end
+
+-- Fades the frame on show to black, rests there, and lets the next screen
+-- start.
+local function fade_to_black(ticks, hold)
+  local frame = trx.ui.layers.fade({ snapshot = true, holds_screen = true })
+  local black = trx.ui.layers.fade({
+    fill = BLACK,
+    opacity = 0,
+    holds_screen = true,
+    on_close = function()
+      frame:close()
+    end,
+  })
+  black:to(1, ticks, {
+    on_done = function()
+      timer.after(hold, function()
+        black:close()
+      end, { clock = timer.Clock.UI })
+    end,
+  })
+end
+
+local function on_screen_change(cross_fades, fade_ticks, fade_hold)
+  local request = handed
+  handed = nil
+  if request == nil and fade_ticks > 0 then
+    request = { ticks = fade_ticks, hold = fade_hold }
+  end
+  if request ~= nil and not cross_fades then
+    fade_to_black(request.ticks, request.hold)
+  end
+end
+
+-------------------------------------------------------------------------------
 -- Setup
 -------------------------------------------------------------------------------
 
--- Listens for the events that drop the fades that outlive their screens.
--- Called once, from a global script.
+-- Listens for the screens changing, and for the events that drop the fades
+-- that outlive their screens. Called once, from a global script.
 function M.setup()
+  trx.events.on_screen_change(on_screen_change)
   trx.events.on_game_start(function()
     local level = trx.game.current_level
     if level ~= nil and level.type == trx.game.LevelType.CUTSCENE then

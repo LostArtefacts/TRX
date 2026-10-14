@@ -826,6 +826,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.layers.fade.settings.path" name="ui.layers.fade.settings.path"></a>**`path`** (string, optional). The picture of an `image` backdrop, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it.
     - <a id="ui.layers.fade.settings.opacity" name="ui.layers.fade.settings.opacity"></a>**`opacity`** (number, optional). How opaque the layer starts, from `0` to `1`. `1` by default.
     - <a id="ui.layers.fade.settings.on_close" name="ui.layers.fade.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
+    - <a id="ui.layers.fade.settings.holds_screen" name="ui.layers.fade.settings.holds_screen"></a>**`holds_screen`** (boolean, optional). Whether the engine waits to start its next screen while the layer is open. `false` by default.
 
   Returns: [trx.ui.FadeLayer](#ui.FadeLayer). The layer.
 

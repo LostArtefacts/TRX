@@ -6,6 +6,7 @@
 #include <trx/core/strings.h>
 #include <trx/game/clock.h>
 #include <trx/game/console/common.h>
+#include <trx/game/const.h>
 #include <trx/game/fader.h>
 #include <trx/game/fmv.h>
 #include <trx/game/game.h>
@@ -25,6 +26,7 @@
 #include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/exit_fade.h>
+#include <trx/game/ui/fade.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
@@ -83,17 +85,11 @@ static GF_COMMAND M_HandleOverride(const PHASE *const phase)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-static void M_DrawFadeToBlackTransition(const float opacity)
+static void M_DrawHeldScreen(void)
 {
     Output_BeginScene();
     Output_SwitchViewport(VIEWPORT_GAME);
     UI_BeginScene();
-
-    UI_BeginLayer(UI_LAYER_BACKDROP);
-    UI_ScheduleDrawSnapshot(1.0f);
-    UI_ScheduleDrawScreenBlack(opacity);
-    UI_EndLayer(UI_LAYER_BACKDROP);
-
     LUA_UI_DrawRegions();
     Overlay_DrawUI();
     TouchOverlay_Draw();
@@ -113,14 +109,30 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     }
 }
 
-static GF_COMMAND M_RunFadeToBlackTransition(
-    const PHASE *const phase, const FADER_ARGS args)
+static int32_t M_ToTicks(const double seconds)
 {
-    Output_Overlay_CaptureSnapshot();
+    return (int32_t)(seconds * LOGIC_FPS + 0.5);
+}
 
-    FADER fader = {};
-    Fader_InitToHold(&fader, 0.0f, 1.0f, args.duration, args.debuff);
-    while (Fader_IsActive(&fader)) {
+// Tells scripts that the next phase is about to start, then waits while a fade
+// layer holds the screen. The scripts decide how one screen gives way to the
+// next.
+static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
+{
+    const bool cross_fades = phase != nullptr
+        && phase->uses_cross_fade_in != nullptr
+        && phase->uses_cross_fade_in(phase);
+    const FADER_ARGS fade =
+        m_PendingFadeToBlack ? m_PendingFadeToBlackArgs : (FADER_ARGS) {};
+    m_PendingFadeToBlack = false;
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_BOOL, .value.b = cross_fades },
+        { .type = LUA_EVENT_ARG_INT32, .value.i32 = M_ToTicks(fade.duration) },
+        { .type = LUA_EVENT_ARG_INT32, .value.i32 = M_ToTicks(fade.debuff) },
+    };
+    LUA_FireEventEx(LUA_EVENT_SCREEN_CHANGE, args, 3);
+
+    while (UI_Fade_IsHoldingScreen()) {
         Clock_WaitTick();
         m_CurrentFrame++;
 
@@ -145,7 +157,7 @@ static GF_COMMAND M_RunFadeToBlackTransition(
 
         Interpolation_SetRate(1.0f);
         Output_SetTime(m_CurrentFrame);
-        M_DrawFadeToBlackTransition(Fader_GetCurrentValue(&fader));
+        M_DrawHeldScreen();
     }
 
     return (GF_COMMAND) { .action = GF_NOOP };
@@ -281,18 +293,9 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
     m_PhaseStack[m_PhaseStackSize++] = phase;
 
-    if (m_PendingFadeToBlack) {
-        const bool uses_cross_fade_in = phase != nullptr
-            && phase->uses_cross_fade_in != nullptr
-            && phase->uses_cross_fade_in(phase);
-        if (!uses_cross_fade_in) {
-            gf_cmd =
-                M_RunFadeToBlackTransition(phase, m_PendingFadeToBlackArgs);
-            if (gf_cmd.action != GF_NOOP) {
-                goto finish;
-            }
-        }
-        m_PendingFadeToBlack = false;
+    gf_cmd = M_ChangeScreen(phase);
+    if (gf_cmd.action != GF_NOOP) {
+        goto finish;
     }
 
     if (phase->start != nullptr) {

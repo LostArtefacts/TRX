@@ -280,6 +280,7 @@
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
 - Added fade layers, which the engine draws over its interface and below the console, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
+- Added `trx.events.on_screen_change` and the `holds_screen` setting of `trx.ui.layers.fade`, which let a script run the change from one screen to the next
 - Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.TimedContext`, which reports how long the view shows and fades
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting

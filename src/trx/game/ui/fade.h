@@ -32,6 +32,12 @@ int32_t UI_Fade_PushSnapshot(float opacity);
 int32_t UI_Fade_PushBackdrop(
     BACKGROUND_TYPE style, const char *path, float opacity);
 
+// Makes the engine wait to start its next phase while the layer is open.
+void UI_Fade_HoldScreen(int32_t id);
+
+// Returns whether an open layer makes the engine wait to start its next phase.
+bool UI_Fade_IsHoldingScreen(void);
+
 bool UI_Fade_IsOpen(int32_t id);
 float UI_Fade_GetOpacity(int32_t id);
 

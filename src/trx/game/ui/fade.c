@@ -31,6 +31,7 @@ typedef struct {
     char *backdrop_path;
     bool is_moving;
     bool close_at_rest;
+    bool holds_screen;
 } M_FADE;
 
 typedef struct {
@@ -205,6 +206,24 @@ int32_t UI_Fade_PushBackdrop(
     fade->backdrop = style;
     fade->backdrop_path = path != nullptr ? Memory_DupStr(path) : nullptr;
     return M_MakeId(fade - m_Fades);
+}
+
+void UI_Fade_HoldScreen(const int32_t id)
+{
+    M_FADE *const fade = M_Get(id);
+    if (fade != nullptr) {
+        fade->holds_screen = true;
+    }
+}
+
+bool UI_Fade_IsHoldingScreen(void)
+{
+    for (int32_t i = 0; i < M_MAX_FADES; i++) {
+        if (m_Fades[i].in_use && m_Fades[i].holds_screen) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool UI_Fade_IsOpen(const int32_t id)

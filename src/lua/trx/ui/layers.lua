@@ -362,6 +362,7 @@ end
 ---@field path? string The picture of an `image` backdrop, as `trx.ui.primitive.background` takes it. <!--noref: image-->
 ---@field opacity? number How opaque the layer starts, from `0` to `1`. `1` by default.
 ---@field on_close? function Runs once when the layer closes, for any reason. It receives the layer.
+---@field holds_screen? boolean Whether the engine waits to start its next screen while the layer is open. `false` by default.
 
 ---Puts up a fade layer, on top of the others drawn where it is. A level
 ---script's layer closes when the level ends.
@@ -387,6 +388,9 @@ function layers.fade(settings)
   end
   if id == 0 then
     error("too many fade layers", 2)
+  end
+  if settings.holds_screen then
+    raw_fade.hold_screen(id)
   end
   local layer =
     setmetatable({ on_close = settings.on_close, _id = id }, FadeLayer)

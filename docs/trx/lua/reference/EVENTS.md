@@ -99,6 +99,31 @@ return.
   end)
   ```
 
+- <a id="events.on_screen_change" name="events.on_screen_change"></a>[lua]`trx.events.on_screen_change(callback)`  
+  Happens before the engine starts its next screen, such as a level, the title,
+  a picture or the statistics. This is where a script decides how the screen
+  on show gives way to the next one.
+
+  The engine waits to start the next screen while a fade layer that holds the
+  screen is open, and draws only the interface and the fade layers meanwhile.
+  See `holds_screen` in [`trx.ui.layers.fade`](UI.md#ui.layers.fade).
+
+  Parameters:
+  - <a id="events.on_screen_change.callback" name="events.on_screen_change.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_screen_change.cross_fades" name="events.on_screen_change.cross_fades"></a>**`cross_fades`** (boolean). Whether the next screen blends in from the frame on show, as a loading picture does.
+    - <a id="events.on_screen_change.fade_ticks" name="events.on_screen_change.fade_ticks"></a>**`fade_ticks`** (integer). How many ticks the engine screen that ended asked to fade to black over, or `0` where it asked for no fade.
+    - <a id="events.on_screen_change.fade_hold" name="events.on_screen_change.fade_hold"></a>**`fade_hold`** (integer). How many ticks that screen asked to stay black for once faded.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_screen_change(function(cross_fades, fade_ticks, fade_hold)
+    trx.log.info("the screen changes")
+  end)
+  ```
+
 - <a id="events.on_level_unload" name="events.on_level_unload"></a>[lua]`trx.events.on_level_unload(callback)`  
   Happens as the engine lets go of a level, before the handlers a level script
   attached are detached and before the world the script was written against is
