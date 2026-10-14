@@ -79,7 +79,48 @@ test("the help setting takes the photo mode panel off the screen", function()
   trx.config.set("ui.enable_photo_mode_ui", false)
   fake.tick()
 
-  assert(draw() == "", "the panel drew with its setting turned off")
+  assert(
+    not draw():match("text_background"),
+    "the panel drew with its setting turned off"
+  )
+end)
+
+-- The quads of the red frame in a scene, in the order they were drawn.
+local function frame_quads(scene)
+  local quads = {}
+  for line in scene:gmatch("[^\n]+") do
+    if line:match("^quad .* color=ff000060$") then
+      quads[#quads + 1] = line
+    end
+  end
+  return quads
+end
+
+test("photo mode frames the screen in red", function()
+  only_the_panel()
+  fake.set_photo_mode(true)
+  trx.config.set("ui.enable_photo_mode_ui", false)
+  fake.tick()
+
+  -- The engine drew the frame four units thick at the text size, rounded to
+  -- whole pixels, and the canvas here is one pixel a unit.
+  local thickness = math.floor(4 * trx.ui.text_scale + 0.5)
+  local quads = frame_quads(draw())
+  assert(#quads == 4, "the frame drew " .. #quads .. " quads")
+  assert(
+    quads[1]:match("^quad x=0 y=0 z=0 w=640 h=" .. thickness .. " "),
+    quads[1]
+  )
+end)
+
+test("the red frame is gone once photo mode closes", function()
+  only_the_panel()
+  fake.set_photo_mode(true)
+  fake.tick()
+  fake.set_photo_mode(false)
+  fake.tick()
+
+  assert(#frame_quads(draw()) == 0, "the frame outlived photo mode")
 end)
 
 -------------------------------------------------------------------------------

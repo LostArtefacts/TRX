@@ -1,7 +1,8 @@
--- The photo mode help panel: what each key does while photo mode is open.
+-- The photo mode help panel, which says what each key does while photo mode
+-- is open, and the red frame around the screen, which says photo mode is on.
 --
 -- The panel is built once and updated through signals, like the rest of the
--- overlay. The engine draws the red border around the picture in the game view.
+-- overlay. The frame is painted only while photo mode is open.
 
 trx.locale.declare({
   ["general/photo_mode/title_camera_pos"] = "Photo Mode",
@@ -25,7 +26,7 @@ trx.locale.declare({
 
 local M = {}
 
--- Builds the photo mode panel and places it. Called once, by the overlay.
+-- Builds the photo mode panel and the frame. Called once, by the overlay.
 function M.setup()
   local input = trx.input
   local ui = trx.ui
@@ -248,6 +249,45 @@ function M.setup()
   })
 
   ui.regions.place(ui.Region.TOP_LEFT, panel)
+
+  -------------------------------------------------------------------------------
+  -- the red frame around the screen
+  -------------------------------------------------------------------------------
+
+  do
+    local RED = { r = 255, g = 0, b = 0, a = 96 }
+    local primitive = ui.primitive
+
+    -- Paints the frame four units thick at the text size, rounded to whole
+    -- screen pixels.
+    local function paint()
+      local thickness =
+        math.floor(primitive.to_screen(4 * ui.text_scale) + 0.5)
+      if thickness <= 0 then
+        return
+      end
+      local t = primitive.to_canvas(thickness)
+      local w = ui.canvas.width
+      local h = ui.canvas.height
+      primitive.quad(0, 0, 0, w, t, RED)
+      primitive.quad(0, h - t, 0, w, t, RED)
+      primitive.quad(0, t, 0, t, h - 2 * t, RED)
+      primitive.quad(w - t, t, 0, t, h - 2 * t, RED)
+    end
+
+    ---@type trx.events.Listener?
+    local painting = nil
+    local function follow(open)
+      if open and painting == nil then
+        painting = ui.on_paint(paint)
+      elseif not open and painting ~= nil then
+        painting:detach()
+        painting = nil
+      end
+    end
+    follow(state.open:get())
+    state.open:on(follow)
+  end
 end
 
 return M
