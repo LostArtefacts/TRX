@@ -547,6 +547,8 @@ trxc = {}
 ---@field get_safe_bottom fun(width?: number): number
 ---@field get_safe_top fun(width?: number): number
 ---@field get_safe_width fun(): number
+---@field get_screen_height fun(): number
+---@field get_screen_width fun(): number
 ---@field get_working_bottom fun(): number
 ---@field get_working_top fun(): number
 ---@field gradient_quad fun(x: number, y: number, z?: integer, w: number, h: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)

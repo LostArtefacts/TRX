@@ -27,12 +27,13 @@ local h = require("trx.internal.helpers")
 ---arrow, and `\{button left}` draws the button the player has bound.
 ---@trx.module 20 User interface
 ---@class (partial,exact) trx.ui
----@trx.readonly canvas, safe_area, text_scale, working_area
+---@trx.readonly canvas, safe_area, screen, text_scale, working_area
 ---@field canvas trx.ui.Area The whole canvas. Widget sizes are in these units rather than in screen pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size.
 ---@field clipboard string What the system clipboard holds. Reads as an empty string where it holds nothing, and raises on assignment where the platform refuses the text.
 ---
 ---  A script-drawn text field uses this value to paste and copy text.
 ---@field text_scale number The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. <!--noref: ui.text_scale-->
+---@field screen trx.ui.Area The whole screen, in canvas units. The canvas holds a whole number of units, so its right and bottom edges can stop short of the screen by a fraction of a unit; the screen reaches the edges. Something drawn from edge to edge, such as a frame around the screen, uses this area.
 ---@field safe_area trx.ui.Area The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there.
 ---@field working_area trx.ui.Area The part of the canvas between the cinematic bars. It is the whole canvas while there are none, and follows the bars as they move in and out. The interface regions lay out inside it, so `trx.ui.safe_area` lies within it too.
 local M = h.module("ui")
@@ -225,6 +226,16 @@ h.properties(M, "ui", {
   },
   text_scale = {
     get = raw.drawn_text_scale,
+  },
+  screen = {
+    get = function()
+      return {
+        x = 0,
+        y = 0,
+        width = raw.get_screen_width(),
+        height = raw.get_screen_height(),
+      }
+    end,
   },
   safe_area = {
     get = function()

@@ -22,6 +22,7 @@
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
+#include <trx/game/viewport.h>
 
 #include <lauxlib.h>
 #include <math.h>
@@ -48,6 +49,26 @@ static int M_L_UICanvasWidth(lua_State *const L)
 static int M_L_UICanvasHeight(lua_State *const L)
 {
     lua_pushnumber(L, UI_GetCanvasHeight());
+    return 1;
+}
+
+// trxc.ui.get_screen_width(): number
+static int M_L_UIScreenWidth(lua_State *const L)
+{
+    lua_pushnumber(
+        L,
+        UI_Scaler_CalcInverse(
+            Viewport_GetWidth(VIEWPORT_UI), UI_SCALER_TARGET_GENERIC));
+    return 1;
+}
+
+// trxc.ui.get_screen_height(): number
+static int M_L_UIScreenHeight(lua_State *const L)
+{
+    lua_pushnumber(
+        L,
+        UI_Scaler_CalcInverse(
+            Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_GENERIC));
     return 1;
 }
 
@@ -798,6 +819,8 @@ static const luaL_Reg m_Module[] = {
     { "set_clipboard", M_L_UISetClipboard },
     { "get_safe_bottom", M_L_UISafeBottom },
     { "get_safe_top", M_L_UISafeTop },
+    { "get_screen_height", M_L_UIScreenHeight },
+    { "get_screen_width", M_L_UIScreenWidth },
     { "get_working_bottom", M_L_UIWorkingBottom },
     { "get_working_top", M_L_UIWorkingTop },
     { "get_safe_width", M_L_UISafeWidth },
