@@ -302,6 +302,7 @@
 - Removed `trx.ui.regions.fallback`, as nothing drew a fallback
 - Removed `trx.ui.widgets.Row`, which was a horizontal `trx.ui.widgets.Stack` of two arrows and a widget
 - Removed `h_bars` from `trx.ui.widgets.Resize`, as a `trx.ui.widgets.Bar` already follows the player's bar scale
+- Removed `trx.signal.Signal:above` in favour of `trx.signal.Signal:map`
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.ui.primitive.panel` and `trx.ui.widgets.Frame` drawing a frame a pixel away from where the game draws its own
 - Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes

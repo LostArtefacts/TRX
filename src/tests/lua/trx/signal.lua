@@ -178,29 +178,6 @@ test("whether a signal holds a given value", function()
   assert(seen.count == 1)
 end)
 
-test("whether a signal holds more than a number", function()
-  local poison = signal.new(0)
-  local poisoned = poison:above(0)
-  local seen = watch(poisoned)
-  assert(poisoned:get() == false)
-
-  poison:set(4)
-  assert(poisoned:get() == true)
-  assert(seen.count == 1)
-
-  poison:set(9)
-  assert(seen.count == 1, "still poisoned, so the answer did not move")
-
-  poison:set(0)
-  assert(poisoned:get() == false)
-  assert(seen.count == 2)
-end)
-
-test("a value that is not a number is not above one", function()
-  local s = signal.new(nil)
-  assert(s:above(0):get() == false)
-end)
-
 test("a signal of a script's own reads what a combination does", function()
   -- The same derived signal can be read directly and listened to for changes.
   local a, b = signal.new(true), signal.new(true)

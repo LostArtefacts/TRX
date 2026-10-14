@@ -127,6 +127,10 @@ order: 3
     A `trx.ui.widgets.Bar` follows the player's bar scale on its own. Give
     `h` a plain height for any other widget.
 
+18. **`trx.signal.Signal:above` is gone**
+    Use `trx.signal.Signal:map`: `poison:above(0)` becomes
+    `poison:map(function(value) return type(value) == "number" and value > 0 end)`.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**
