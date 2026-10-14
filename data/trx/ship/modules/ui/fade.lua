@@ -327,33 +327,18 @@ end
 -- Values that fade
 -------------------------------------------------------------------------------
 
----@class common.ui.fade.Value
----@field private tween trx.ui.Tween
----@field private options table
-local Value = {}
-Value.__index = Value
-
--- The value now.
-function Value:get()
-  return self.tween:get()
-end
-
--- Starts the fade again from the beginning.
-function Value:restart()
-  local options = self.options
-  self.tween:set(options.from)
-  self.tween:to(options.to, options.ticks, { delay = options.delay })
-  return self
-end
-
--- A value that fades from `from` to `to` over `ticks`, after waiting `delay`
--- ticks, which a widget takes in place of a fixed value. It starts at once.
+-- A tween that fades from `from` to `to` over `ticks`, after waiting `delay`
+-- ticks, which a widget takes in place of a fixed value, and a function that
+-- starts the fade again from the beginning. It starts at once.
+---@return trx.ui.Tween, fun()
 function M.value(options)
-  local value = setmetatable({
-    tween = trx.ui.tween(options.from),
-    options = options,
-  }, Value)
-  return value:restart()
+  local tween = trx.ui.tween(options.from)
+  local function restart()
+    tween:set(options.from)
+    tween:to(options.to, options.ticks, { delay = options.delay })
+  end
+  restart()
+  return tween, restart
 end
 
 -------------------------------------------------------------------------------
