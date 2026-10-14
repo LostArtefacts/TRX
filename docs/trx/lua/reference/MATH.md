@@ -191,22 +191,6 @@ where the engine would. [`trx.math.Angle`](#math.Angle) says what an angle is he
 
   Returns: [trx.math.Angle](#math.Angle). The angle in between.
 
-- <a id="math.f32" name="math.f32"></a>[lua]`trx.math.f32(value)`  
-  Rounds a number to single precision. The engine lays its interface out in
-  single precision, and a box that lands on half a pixel rounds one way or the
-  other depending on the precision it was worked out in, so a layout that has
-  to land where the engine's would rounds every step this way.
-
-  Parameters:
-  - <a id="math.f32.value" name="math.f32.value"></a>**`value`** (number). The number.
-
-  Returns: number. The number in single precision.
-
-  Example:
-  ```lua
-  local x = trx.math.f32(0.1 + 0.2)
-  ```
-
 - <a id="math.sin" name="math.sin"></a>[lua]`trx.math.sin(angle)`  
   Sine of an angle.
 
