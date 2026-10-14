@@ -153,4 +153,29 @@ test("strict mode holds the angle to an integer", function()
   assert(trx.math.sin(0) == 0.0)
 end)
 
+test("an angle wraps into the engine's range", function()
+  assert(trx.math.wrap_angle(32768) == -32768)
+  assert(trx.math.wrap_angle(-32769) == 32767)
+  assert(trx.math.wrap_angle(70000) == 4464)
+end)
+
+test("integer division drops the fraction towards zero", function()
+  assert(trx.math.idiv(7, 2) == 3)
+  assert(trx.math.idiv(-7, 2) == -3)
+  assert(trx.math.idiv(7, -2) == -3)
+  assert(trx.math.idiv(-8, 2) == -4)
+end)
+
+test("a blend rounds halves away from zero", function()
+  assert(trx.math.lerp(0, 10, 0.5) == 5)
+  assert(trx.math.lerp(0, 3, 0.5) == 2)
+  assert(trx.math.lerp(0, -3, 0.5) == -2)
+end)
+
+test("an angle blends the short way round", function()
+  local from, to = -trx.math.DEG_90 * 2 + 100, trx.math.DEG_90 * 2 - 100
+  assert(trx.math.lerp_angle(from, to, 0.5) == -32768)
+  assert(trx.math.lerp_angle(0, trx.math.DEG_90, 0.5) == trx.math.DEG_90 // 2)
+end)
+
 return h.report()
