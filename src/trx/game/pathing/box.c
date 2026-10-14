@@ -40,6 +40,12 @@ static int16_t M_GetOverlapBoxNum(const int16_t overlap)
     return overlap & (g_TRVersion >= 4 ? BOX_NUMBER_BITS_TR4 : BOX_NUMBER_BITS);
 }
 
+static int16_t M_GetOverlapFlags(const int16_t overlap)
+{
+    return g_TRVersion >= 4 ? overlap & (BOX_OVERLAP_JUMP | BOX_OVERLAP_MONKEY)
+                            : 0;
+}
+
 static int16_t M_GetOverlap(const int32_t overlap_idx)
 {
     return m_Overlaps == nullptr || overlap_idx < 0
@@ -66,7 +72,7 @@ static bool M_IsOverlapTypeAhead(
             return false;
         }
         if (M_GetOverlapBoxNum(overlap) == exit_box) {
-            return (overlap & type) != 0;
+            return (M_GetOverlapFlags(overlap) & type) != 0;
         }
         if ((overlap & BOX_END_BIT) != 0) {
             return false;
@@ -163,7 +169,7 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
             if ((box_num & BOX_END_BIT) != 0) {
                 done = true;
             }
-            const int16_t overlap_flags = box_num;
+            const int16_t overlap_flags = M_GetOverlapFlags(box_num);
             box_num = M_GetOverlapBoxNum(box_num);
 
             const BOX_INFO *const box = Box_GetBox(box_num);

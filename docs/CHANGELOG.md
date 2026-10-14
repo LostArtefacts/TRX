@@ -67,6 +67,7 @@
 - Fixed enemies in New Game+ losing their doubled health in some levels, such as Diving Area in TR2 (TRX1702, regression from 1.10)
 - Fixed harpoons, grenades, rockets and other items spawned during play disappearing after loading a save (TRX1677)
 - Fixed items dropped by enemies sometimes being swapped between them, or a collected one coming back, after loading a save (TRX1677)
+- Fixed enemies losing track of Lara in large custom levels (regression from 1.11)
 
 **Level and game data**
 - Added the `health.scale` rule, which scales the health of every item but Lara. New Game+ sets it to 2.
