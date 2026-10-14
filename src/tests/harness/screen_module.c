@@ -25,6 +25,7 @@
 #include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/ui/elements/bar.h>
 #include <trx/game/ui/elements/label.h>
+#include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
@@ -179,6 +180,28 @@ static int M_FakeStartTitle(lua_State *const L)
     return 0;
 }
 
+// fake.change_screen(cross_fades, fade_ticks, fade_hold) - the engine is
+// about to start its next screen.
+static int M_FakeChangeScreen(lua_State *const L)
+{
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_BOOL, .value.b = lua_toboolean(L, 1) },
+        { .type = LUA_EVENT_ARG_INT32,
+          .value.i32 = (int32_t)luaL_optinteger(L, 2, 0) },
+        { .type = LUA_EVENT_ARG_INT32,
+          .value.i32 = (int32_t)luaL_optinteger(L, 3, 0) },
+    };
+    LUA_FireEventEx(LUA_EVENT_SCREEN_CHANGE, args, 3);
+    return 0;
+}
+
+// fake.holds_screen() -> boolean
+static int M_FakeHoldsScreen(lua_State *const L)
+{
+    lua_pushboolean(L, UI_Fade_IsHoldingScreen());
+    return 1;
+}
+
 // fake.release(screen)
 static int M_FakeRelease(lua_State *const L)
 {
@@ -223,6 +246,10 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "start_title");
     lua_pushcfunction(L, M_FakeControl);
     lua_setfield(L, -2, "control");
+    lua_pushcfunction(L, M_FakeChangeScreen);
+    lua_setfield(L, -2, "change_screen");
+    lua_pushcfunction(L, M_FakeHoldsScreen);
+    lua_setfield(L, -2, "holds_screen");
 }
 
 CONFIG g_ConfigStorage = {};
