@@ -378,9 +378,15 @@ function M.polled_while(shown, read, idle)
   end
   follow(signal, shown:get())
   listeners[1] = shown:on(while_held(signal, listeners, follow))
+  -- Stopping the signal puts the idle value back. The box holds the signal
+  -- weakly, so that the listeners do not keep it alive.
+  local box = setmetatable({ signal }, { __mode = "v" })
   listeners[2] = {
     detach = function()
-      if ticking ~= nil then
+      local held = box[1]
+      if held ~= nil then
+        follow(held, false)
+      elseif ticking ~= nil then
         ticking:detach()
         ticking = nil
       end
