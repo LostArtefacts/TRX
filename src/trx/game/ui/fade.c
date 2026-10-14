@@ -203,7 +203,11 @@ int32_t UI_Fade_PushBackdrop(
     if (fade == nullptr) {
         return UI_FADE_NONE;
     }
-    Output_Overlay_CaptureGameSnapshot();
+    // A picture draws over the whole screen, so only the other styles show
+    // the game behind them.
+    if (style != BK_IMAGE || path == nullptr) {
+        Output_Overlay_CaptureGameSnapshot();
+    }
     fade->backdrop = style;
     fade->backdrop_path = path != nullptr ? Memory_DupStr(path) : nullptr;
     return M_MakeId(fade - m_Fades);
