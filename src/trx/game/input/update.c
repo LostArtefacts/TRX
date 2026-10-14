@@ -81,30 +81,6 @@ static void M_UpdateTargetChange(void)
     g_Input.look = m_IsLookHeld;
 }
 
-bool Input_IsRoleDown(const INPUT_ROLE role)
-{
-    if (InputRaw_IsReserved()) {
-        return false;
-    }
-    INPUT_STATE state = {};
-    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
-         backend++) {
-        if (Input_IsBackendEnabled(backend)) {
-            M_UpdateFromBackend(
-                &state, Input_GetBackendImpl(backend),
-                g_Config.input.layout[backend]);
-        }
-    }
-    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
-         backend++) {
-        if (Input_IsBackendEnabled(backend)) {
-            Input_GetBackendImpl(backend)->resolve_combos(
-                g_Config.input.layout[backend], &state);
-        }
-    }
-    return InputState_GetRole(state, role);
-}
-
 void Input_HoldOffRole(const INPUT_ROLE role)
 {
     InputState_SetRole(&m_HoldOff, role, true);

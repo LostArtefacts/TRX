@@ -128,13 +128,6 @@ static int M_L_InputIsPressed(lua_State *const L)
     return 1;
 }
 
-// trxc.input.is_role_down(role: trx.input.Role): boolean
-static int M_L_InputIsRoleDown(lua_State *const L)
-{
-    lua_pushboolean(L, Input_IsRoleDown(M_CheckRole(L, 1)));
-    return 1;
-}
-
 // trxc.input.grab_is_held(role: trx.input.Role): boolean
 static int M_L_InputGrabIsHeld(lua_State *const L)
 {
@@ -418,7 +411,6 @@ static const luaL_Reg m_Module[] = {
     { "is_pressed", M_L_InputIsPressed },
     { "is_rebindable", M_L_InputIsRebindable },
     { "is_reserved", M_L_InputIsReserved },
-    { "is_role_down", M_L_InputIsRoleDown },
     { "is_suppressed", M_L_InputIsSuppressed },
     { "is_unbindable", M_L_InputIsUnbindable },
     { "key_name", M_L_InputKeyName },

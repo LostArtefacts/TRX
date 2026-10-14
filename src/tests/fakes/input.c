@@ -130,11 +130,6 @@ bool Input_IsPressed(const INPUT_ROLE role)
     return m_Pressed[role] && !m_HeldOff[role];
 }
 
-bool Input_IsRoleDown(const INPUT_ROLE role)
-{
-    return m_Held[role];
-}
-
 bool Input_Grab_IsHeld(const INPUT_ROLE role)
 {
     return m_ScriptHold && m_Held[role] && !m_HeldOff[role];
