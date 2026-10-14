@@ -75,3 +75,21 @@ trx.events.before_control(function()
   end
 end)
 ```
+
+### User interface
+
+Each of these files is a complete level script. The unit tests run each one as
+it is, so the code works with the current API.
+
+- [`ui/hud_widget.lua`](ui/hud_widget.lua) shows a widget in a corner of the
+  screen for the whole level.
+- [`ui/dialog.lua`](ui/dialog.lua) shows a note that the player closes.
+- [`ui/menu.lua`](ui/menu.lua) asks the player to pick one entry from a list.
+- [`ui/custom_widget.lua`](ui/custom_widget.lua) draws a widget with
+  `trx.ui.primitive`.
+- [`ui/screen.lua`](ui/screen.lua) draws the pause screen in place of the
+  shipped one.
+- [`ui/signals.lua`](ui/signals.lua) shows a value that changes, and hides it
+  in photo mode.
+- [`ui/tween.lua`](ui/tween.lua) moves a widget on the screen and then removes
+  it.
