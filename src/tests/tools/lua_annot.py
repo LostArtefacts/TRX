@@ -522,7 +522,7 @@ class NullableTests(unittest.TestCase):
     def test_shape_keeps_its_own_name_when_it_extends_another(self):
         _, _, opts, more = self.sigs["functions"]["things.aim"]
         self.assertEqual([f["name"] for f in opts["fields"]], ["a"])
-        self.assertEqual([f["name"] for f in more["fields"]], ["a", "b"])
+        self.assertEqual([f["name"] for f in more["fields"]], ["b", "a"])
 
     def test_nil_default_is_written_as_lua(self):
         self.assertIn('["default"] = nil', to_lua(self.sigs))

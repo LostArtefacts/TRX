@@ -586,7 +586,7 @@ class Parser:
             return own
         names = {f["name"] for f in own}
         base = self.inherited(parent, parents)
-        return [f for f in base if f["name"] not in names] + own
+        return own + [f for f in base if f["name"] not in names]
 
     def parse(self, path: Path) -> None:
         source = path.read_text(encoding="utf-8")
