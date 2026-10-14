@@ -24,10 +24,7 @@ local M = h.module("scene")
 
 -- The engine fires an event as it paints the scene. The types are reflected
 -- out of ENUM_MAP, as trx.events reads them.
-local types = {}
-for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
-  types[constant.name] = constant.value
-end
+local types = h.constants("LUA_EVENT_TYPE")
 local Listener = h.class_of("events.Listener")
 
 ---Happens on every drawn frame, after the rooms and everything standing in

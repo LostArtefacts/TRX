@@ -4,13 +4,9 @@
 -- the trx.* modules have loaded, and the engine's own UI scripts run after
 -- that.
 local raw_events = trxc.events
+local h = require("trx.internal.helpers")
 
-local console_event = 0
-for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
-  if constant.name == "UI_PAINT_CONSOLE" then
-    console_event = constant.value
-  end
-end
+local console_event = h.constants("LUA_EVENT_TYPE").UI_PAINT_CONSOLE
 
 local M = {}
 

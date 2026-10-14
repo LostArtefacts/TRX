@@ -4,10 +4,7 @@ local h = require("trx.internal.helpers")
 -- The event types, reflected out of ENUM_MAP as any other enum is, so no number
 -- is written twice. Not declared as an enum, and so not public: the named hooks
 -- below are the whole surface, and a script never has to name a type.
-local types = {}
-for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
-  types[constant.name] = constant.value
-end
+local types = h.constants("LUA_EVENT_TYPE")
 
 ---@class (partial) trx
 ---@field events trx.events
@@ -784,3 +781,16 @@ M.on_flyby_end = hook(types.FLYBY_END)
 function M.detach(listener)
   return listener:detach()
 end
+
+-- Ties what a level script makes to its level: runs the function as the level
+-- ends, and returns the handler, which the caller detaches if the thing goes
+-- earlier. Returns nil outside a level script, where nothing ends with the
+-- level.
+local function at_level_end(fn)
+  if not raw.is_level_script() then
+    return nil
+  end
+  return M.on_level_unload(fn)
+end
+
+return { at_level_end = at_level_end }

@@ -107,6 +107,18 @@ end
 
 local enum_needs = complain("helpers.enum")
 
+-- Returns the constants of C enum `backing` as a plain table of values by
+-- name. It is for the constants that a module uses but does not make public.
+---@param backing string
+---@return table<string, integer>
+function M.constants(backing)
+  local result = {}
+  for _, constant in ipairs(trxc.enum.values(backing)) do
+    result[constant.name] = constant.value
+  end
+  return result
+end
+
 -- Returns the constants of C enum `backing` as a read-only table. `docs` maps
 -- each constant's Lua name to its description, and must name every constant
 -- and nothing else. Without `docs` the enum is described as a whole, as one
@@ -267,6 +279,22 @@ function M.handle(path, backing, spec)
   })
 end
 
+-- Calls fn with the arguments, where there is one, and returns the error it
+-- raised, or nil. A module that runs script callbacks as it closes something
+-- finishes the close before it raises the first error.
+---@param fn function?
+---@return any
+function M.failure(fn, ...)
+  if fn == nil then
+    return nil
+  end
+  local ok, err = pcall(fn, ...)
+  if ok then
+    return nil
+  end
+  return err
+end
+
 -- Stands in for the value of an enum constant in its declaration table. C
 -- holds the values, and M.enum reads only the names from the table.
 ---@type integer
@@ -295,8 +323,9 @@ local class_needs = complain("helpers.class")
 -- class after this. `extends` names the type it inherits methods, fields and
 -- operators from. `fields` maps a field to its accessors: reading one calls
 -- `get(self)`, and a field takes a write only where it has a `set`. A class
--- with accessors raises on a write to any other name. `operators` maps a
--- metamethod name without its underscores to its function.
+-- with accessors raises on a write to any other name, except a name that
+-- starts with an underscore, which is the type's own state. `operators` maps
+-- a metamethod name without its underscores to its function.
 ---@param path string
 ---@param spec? { extends?: string, fields?: table<string, { get: function, set?: function }>, operators?: table<string, function> }
 ---@return table
@@ -363,6 +392,11 @@ function M.class(path, spec)
       return class[key]
     end
     class.__newindex = function(self, key, value)
+      -- A name that starts with an underscore is the type's own state.
+      if type(key) == "string" and key:sub(1, 1) == "_" then
+        rawset(self, key, value)
+        return
+      end
       local setter = setters[key]
       if setter == nil then
         if getters[key] ~= nil then

@@ -1,5 +1,4 @@
 local raw = trxc.inventory_ring
-local raw_enum = trxc.enum
 local raw_events = trxc.events
 local h = require("trx.internal.helpers")
 
@@ -73,16 +72,12 @@ local resting_on = nil
 ---@type trx.signal.Signal?
 local rest_frame = nil
 if raw_events ~= nil then
-  for _, constant in ipairs(raw_enum.values("LUA_EVENT_TYPE")) do
-    if constant.name == "RING_REST" then
-      raw_events.attach(constant.value, function(frame)
-        resting_on = frame >= 0 and frame or nil
-        if rest_frame ~= nil then
-          rest_frame:set(resting_on)
-        end
-      end)
+  raw_events.attach(h.constants("LUA_EVENT_TYPE").RING_REST, function(frame)
+    resting_on = frame >= 0 and frame or nil
+    if rest_frame ~= nil then
+      rest_frame:set(resting_on)
     end
-  end
+  end)
 end
 
 local function rest_frame_signal()
