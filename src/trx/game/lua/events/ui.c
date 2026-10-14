@@ -9,7 +9,7 @@
 
 static bool m_HideNextFrame = false;
 // What the interface was laid out in when scripts were last told.
-static float m_Layout[8] = {};
+static float m_Layout[9] = {};
 
 static void M_FadeDone(const int32_t id)
 {
@@ -17,14 +17,20 @@ static void M_FadeDone(const int32_t id)
 }
 
 // Tells scripts when the room the interface lays out in has changed since
-// the last tick: the canvas, the safe and working areas, or the text scale.
+// the last tick: the canvas, the safe and working areas, or the text and bar
+// scales.
 static void M_CheckLayout(void)
 {
     const float layout[] = {
-        UI_GetCanvasWidth(),         UI_GetCanvasHeight(),
-        UI_GetSafeCanvasWidth(),     UI_GetSafeCanvasTop(),
-        UI_GetSafeCanvasBottom(),    UI_GetWorkingCanvasTop(),
-        UI_GetWorkingCanvasBottom(), UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT),
+        UI_GetCanvasWidth(),
+        UI_GetCanvasHeight(),
+        UI_GetSafeCanvasWidth(),
+        UI_GetSafeCanvasTop(),
+        UI_GetSafeCanvasBottom(),
+        UI_GetWorkingCanvasTop(),
+        UI_GetWorkingCanvasBottom(),
+        UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT),
+        UI_Scaler_GetScale(UI_SCALER_TARGET_BAR),
     };
     bool changed = false;
     for (size_t i = 0; i < sizeof(layout) / sizeof(layout[0]); i++) {
