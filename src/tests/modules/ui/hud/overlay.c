@@ -110,6 +110,13 @@ static int M_FakeDrawRegions(lua_State *const L)
     return 2;
 }
 
+// fake.hide_next_frame() - the next frame is drawn for a screenshot.
+static int M_FakeHideNextFrame(lua_State *const L)
+{
+    LUA_UI_HideNextFrame();
+    return 0;
+}
+
 // fake.letterbox(depth) - where the cinematic bars are, as a fraction of the
 // screen height each.
 static int M_FakeLetterbox(lua_State *const L)
@@ -140,6 +147,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "paint");
     lua_pushcfunction(L, M_FakeLetterbox);
     lua_setfield(L, -2, "letterbox");
+    lua_pushcfunction(L, M_FakeHideNextFrame);
+    lua_setfield(L, -2, "hide_next_frame");
 }
 
 CONFIG g_ConfigStorage = {};

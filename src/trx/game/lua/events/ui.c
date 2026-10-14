@@ -8,6 +8,7 @@
 #include <trx/game/ui/scaler.h>
 
 static bool m_HideNextFrame = false;
+static bool m_IsFrameHidden = false;
 // What the interface was laid out in when scripts were last told.
 static float m_Layout[9] = {};
 
@@ -72,6 +73,9 @@ void LUA_UI_PaintRegions(const UI_LAYER layer)
     default:
         return;
     }
+    if (m_IsFrameHidden && layer != UI_LAYER_CONSOLE) {
+        return;
+    }
     LUA_UI_SetPainting(true);
     LUA_FireEvent(event);
     LUA_UI_SetPainting(false);
@@ -84,8 +88,9 @@ void LUA_UI_HideNextFrame(void)
 
 void LUA_UI_ReserveRegions(void)
 {
-    if (m_HideNextFrame) {
-        m_HideNextFrame = false;
+    m_IsFrameHidden = m_HideNextFrame;
+    m_HideNextFrame = false;
+    if (m_IsFrameHidden) {
         return;
     }
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
