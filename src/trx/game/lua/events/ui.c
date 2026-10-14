@@ -64,9 +64,6 @@ void LUA_UI_PaintRegions(const UI_LAYER layer)
     case UI_LAYER_UNDER:
         event = LUA_EVENT_UI_PAINT;
         break;
-    case UI_LAYER_OVER:
-        event = LUA_EVENT_UI_PAINT_OVER;
-        break;
     case UI_LAYER_CONSOLE:
         event = LUA_EVENT_UI_PAINT_CONSOLE;
         break;
