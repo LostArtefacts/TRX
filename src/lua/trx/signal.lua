@@ -271,15 +271,6 @@ function Signal:eq(value)
   end)
 end
 
----Whether the signal holds more than this number.
----@param amount number What to compare against.
----@return trx.signal.Signal # The derived signal.
-function Signal:above(amount)
-  return derive({ self }, function(x)
-    return type(x) == "number" and x > amount
-  end)
-end
-
 ---Detaches the listener so it no longer receives changes.
 ---@return boolean # Whether it was still listening.
 function Listener:detach()

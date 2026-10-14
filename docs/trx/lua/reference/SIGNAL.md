@@ -68,14 +68,6 @@ What a script makes lasts as follows:
 
     Methods:
 
-    - <a id="signal.Signal.above" name="signal.Signal.above"></a>[lua]`signal:above(amount)`  
-      Whether the signal holds more than this number.
-
-      Parameters:
-      - <a id="signal.Signal.above.amount" name="signal.Signal.above.amount"></a>**`amount`** (number). What to compare against.
-
-      Returns: [trx.signal.Signal](#signal.Signal). The derived signal.
-
     - <a id="signal.Signal.eq" name="signal.Signal.eq"></a>[lua]`signal:eq(value)`  
       Whether the signal holds this value.
 
