@@ -42,7 +42,7 @@ local function boxes(x, y, w, h)
     at(h_px - 2 * border)
 end
 
----@class common.ui.ColorSwatch.settings
+---@class common.ui.ColorSwatch.settings: trx.ui.widgets.settings
 ---@field color any The color, or a signal carrying it.
 ---@field w number The width, in canvas units at the default text size.
 ---@field h number The height, in canvas units at the default text size.
@@ -52,6 +52,8 @@ end
 ---@return trx.ui.Widget
 function M.swatch(settings)
   return trx.ui.widgets.Custom({
+    shown = settings.shown,
+    hidden = settings.hidden,
     measure = function()
       local scale = trx.ui.text_scale
       return settings.w * scale, settings.h * scale
@@ -79,7 +81,7 @@ local function marker(x, y, h)
   primitive.panel(ox, oy, 0, ow, oh, trx.ui.FrameStyle.OUTLINE)
 end
 
----@class common.ui.ColorSlider.settings
+---@class common.ui.ColorSlider.settings: trx.ui.widgets.settings
 ---@field stops any The colors the slider runs through, evenly spaced, or a signal carrying them.
 ---@field value any Where the marker sits, from 0 to 1, or a signal that holds it.
 ---@field w number The width, in canvas units at the default text size.
@@ -89,6 +91,8 @@ end
 ---@return trx.ui.Widget
 function M.slider(settings)
   return trx.ui.widgets.Custom({
+    shown = settings.shown,
+    hidden = settings.hidden,
     measure = function()
       local scale = trx.ui.text_scale
       return settings.w * scale, metrics.TEXT_HEIGHT * 0.5 * scale
