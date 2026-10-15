@@ -48,4 +48,16 @@ function M.pick(index, signals)
   return trx.signal.combine(table.unpack(args))
 end
 
+-- A signal of its own that follows `source` until the listener is detached.
+-- What is built on the copy stops following `source` with it.
+---@param source trx.signal.Signal
+---@return trx.signal.Signal copy
+---@return trx.signal.Listener listener
+function M.mirror(source)
+  local copy = trx.signal.new(source:get())
+  return copy, source:on(function(now)
+    copy:set(now)
+  end)
+end
+
 return M
