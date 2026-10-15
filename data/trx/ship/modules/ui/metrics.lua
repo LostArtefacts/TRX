@@ -23,9 +23,24 @@ M.TITLE_PAD_X = 10
 -- question.
 M.CHOICE_ROW_PAD = 20
 
+-- The widths measured so far, for the text scale they were measured at. The
+-- dialogs measure the same few texts many times over, such as on and off.
+local widths = {}
+local widths_scale = nil
+
 -- How wide a text is, in canvas units at the default text size.
 function M.text_width(text)
-  return trx.ui.primitive.measure_text(text, 1.0) / trx.ui.text_scale
+  local scale = trx.ui.text_scale
+  if scale ~= widths_scale then
+    widths = {}
+    widths_scale = scale
+  end
+  local width = widths[text]
+  if width == nil then
+    width = trx.ui.primitive.measure_text(text, 1.0) / scale
+    widths[text] = width
+  end
+  return width
 end
 
 -- The room between a dialog's frame and what it holds.
