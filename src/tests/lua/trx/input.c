@@ -470,6 +470,11 @@ void Input_ResetLayout(const INPUT_BACKEND backend, const INPUT_LAYOUT layout)
     FAKE_RECORD("reset_layout", FV(layout));
 }
 
+void Input_SaveBindings(void)
+{
+    FAKE_RECORD("save");
+}
+
 void Input_EnterListenMode(void)
 {
     m_Listening = true;

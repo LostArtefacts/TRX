@@ -16,6 +16,9 @@ static bool m_HeldOff[INPUT_ROLE_NUMBER_OF] = {};
 static int32_t m_DownFor[INPUT_ROLE_NUMBER_OF] = {};
 static bool m_ScriptHold = false;
 
+// How many times the bindings were saved, for as long as the test runs.
+static int32_t m_SavedCount = 0;
+
 // The menu keys that repeat while held, in ticks, as the real input repeats
 // them after 0.4 seconds every 0.1 seconds, or every 0.2 for left and right.
 static const struct {
@@ -251,6 +254,11 @@ void Input_UnassignRole(
 
 void Input_ResetLayout(const INPUT_BACKEND backend, const INPUT_LAYOUT layout)
 {
+}
+
+void Input_SaveBindings(void)
+{
+    m_SavedCount++;
 }
 
 void Input_EnterListenMode(void)
