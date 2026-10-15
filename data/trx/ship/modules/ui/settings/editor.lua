@@ -53,28 +53,28 @@ local function dim(text, on)
   return "\\{dim}" .. text .. "\\{/dim}"
 end
 
--- What a row shows, worked out once each time a setting moves.
-local function row_state(key)
+-- The title of a row, greyed out where the player cannot change it and
+-- starred where something holds it.
+local function title_text(key)
   local held = rows.held(key)
-  local available = rows.available(key)
-  local title = rows.title(key) .. (held and "*" or "")
-  return {
-    held = held,
-    title = dim(title, available),
-    value = dim(rows.value_text(key), available and rows.on_offer(key)),
-    color = rows.is_color(key) and trx.config.get(key) or nil,
-  }
+  return dim(rows.title(key) .. (held and "*" or ""), rows.available(key))
+end
+
+-- The value of a row, greyed out where the player cannot change it.
+local function value_text(key)
+  return dim(rows.value_text(key), rows.available(key) and rows.on_offer(key))
 end
 
 ---@class common.ui.settings.Editor: common.ui.settings.Tab
 ---@field keys string[] Every setting the tab lists that the game has.
 ---@field shown trx.signal.Signal The settings the tab shows, in order.
+---@field private positions trx.signal.Signal Where each shown setting sits, counted from 1.
 ---@field scroll common.ui.Scroll The rows and the one under the cursor.
 ---@field widget trx.ui.Widget The rows.
 ---@field footer trx.ui.Widget The hints under the dialog.
 ---@field value_w trx.signal.Signal How wide the widest value is, with its arrows.
 ---@field private watch trx.signal.Listener
----@field private values table<string, { state: trx.signal.Signal, widget: trx.ui.Widget }>
+---@field private values table<string, { widget: trx.ui.Widget }>
 ---@field private changed trx.signal.Signal
 ---@field private layout trx.signal.Signal
 ---@field private widths_at? string
@@ -260,7 +260,7 @@ end
 
 -- The value side of a row: a bar for a bar's colors, a swatch beside the code
 -- for a color, and the value as text for the rest.
-local function value_widget(key, state)
+local function value_widget(key, changed)
   local bar = rows.bar_type(key)
   if bar ~= nil then
     return trx.ui.widgets.Bar({
@@ -272,8 +272,8 @@ local function value_widget(key, state)
     })
   end
   local text = trx.ui.widgets.Label({
-    text = state:map(function(s)
-      return s.value
+    text = changed:map(function()
+      return value_text(key)
     end),
   })
   if not rows.is_color(key) then
@@ -286,8 +286,8 @@ local function value_widget(key, state)
     children = {
       text,
       color.swatch({
-        color = state:map(function(s)
-          return s.color
+        color = changed:map(function()
+          return trx.config.get(key)
         end),
         w = SWATCH_SIZE,
         h = SWATCH_SIZE,
@@ -298,98 +298,113 @@ end
 
 local function row_widget(self, key, settings)
   local changed = settings.changed
-  local state = self.values[key].state
-  local position = self.shown:map(function(shown)
-    for i, shown_key in ipairs(shown) do
-      if shown_key == key then
-        return i
-      end
-    end
-    return nil
-  end)
-  local focused = trx.signal.combine(
+  -- Whether the cursor is on the row, the frame that follows from it, and
+  -- which way the setting can step, worked out together.
+  local look = trx.signal.combine(
     settings.editing,
     self.scroll.selected,
-    position,
-    function(editing, selected, at)
-      return editing and at ~= nil and selected == at
+    self.positions,
+    changed,
+    function(editing, selected, positions)
+      local focused = editing
+        and selected ~= nil
+        and positions[key] == selected
+      return {
+        style = focused and trx.ui.FrameStyle.SELECTED or false,
+        left = focused and rows.can_change(key, -1),
+        right = focused and rows.can_change(key, 1),
+      }
     end
   )
   local shown = trx.signal.combine(
-    position,
+    self.positions,
     self.scroll.first,
     self.scroll.visible,
-    function(at, first, visible)
+    function(positions, first, visible)
+      local at = positions[key]
       return at ~= nil and at >= first and at < first + visible
     end
   )
-  local function can(dir)
-    return trx.signal.combine(focused, changed, function(on)
-      return on and rows.can_change(key, dir)
-    end)
-  end
 
   -- The value takes the room its widest value needs, and more where the title
   -- leaves it; the title takes the rest.
   local own_value = self:value_width(key) + arrows_width()
-  local lanes = trx.signal.combine(
+  local function lanes(row_w, max_value_w)
+    local title_w = width_of(rows.title(key))
+    local value_lane = math.max(
+      math.min(max_value_w, row_w - COLUMN_SPACING - title_w),
+      own_value
+    )
+    return math.max(title_w, row_w - COLUMN_SPACING - value_lane), value_lane
+  end
+  local label_lane = trx.signal.combine(
     settings.width,
     self.value_w,
     changed,
     function(row_w, max_value_w)
-      local title_w = width_of(rows.title(key))
-      local value_lane = math.max(
-        math.min(max_value_w, row_w - COLUMN_SPACING - title_w),
-        own_value
-      )
-      return {
-        value = value_lane,
-        label = math.max(title_w, row_w - COLUMN_SPACING - value_lane),
-      }
+      return (lanes(row_w, max_value_w))
     end
   )
-  local tr1_pad = metrics.frame_overhang()
-
+  local value_lane = trx.signal.combine(
+    settings.width,
+    self.value_w,
+    changed,
+    function(row_w, max_value_w)
+      return select(2, lanes(row_w, max_value_w))
+    end
+  )
+  local content = trx.ui.widgets.Stack({
+    orientation = trx.ui.Orientation.HORIZONTAL,
+    align = trx.ui.HAlign.DISTRIBUTE,
+    spacing = COLUMN_SPACING,
+    children = {
+      trx.ui.widgets.Resize({
+        scaled = true,
+        w = label_lane,
+        child = trx.ui.widgets.Label({
+          text = changed:map(function()
+            return title_text(key)
+          end),
+        }),
+      }),
+      lane(
+        value_lane,
+        trx.ui.HAlign.RIGHT,
+        row_arrows.new({
+          left = look:map(function(l)
+            return l.left
+          end),
+          right = look:map(function(l)
+            return l.right
+          end),
+          child = self.values[key].widget,
+        })
+      ),
+    },
+  })
+  local style = look:map(function(l)
+    return l.style
+  end)
+  -- In TR1 the frame of the row under the cursor reaches past the row, and
+  -- the row is padded back in. The other games need neither pad.
+  local overhang = metrics.frame_overhang()
+  if overhang == 0 then
+    return trx.ui.widgets.Frame({
+      shown = shown,
+      style = style,
+      child = content,
+    })
+  end
   return trx.ui.widgets.Pad({
-    x = -tr1_pad,
-    y = -tr1_pad,
+    x = -overhang,
+    y = -overhang,
     shown = shown,
     child = trx.ui.widgets.Frame({
-      style = focused:map(function(on)
-        return on and trx.ui.FrameStyle.SELECTED or false
-      end),
+      style = style,
       child = trx.ui.widgets.Pad({
-        x = tr1_pad,
-        y = tr1_pad,
-        child = trx.ui.widgets.Stack({
-          orientation = trx.ui.Orientation.HORIZONTAL,
-          align = trx.ui.HAlign.DISTRIBUTE,
-          children = {
-            lane(
-              lanes:map(function(l)
-                return l.label
-              end),
-              trx.ui.HAlign.LEFT,
-              trx.ui.widgets.Label({
-                text = state:map(function(s)
-                  return s.title
-                end),
-              })
-            ),
-            trx.ui.widgets.Spacer({ w = COLUMN_SPACING }),
-            lane(
-              lanes:map(function(l)
-                return l.value
-              end),
-              trx.ui.HAlign.RIGHT,
-              row_arrows.new({
-                left = can(-1),
-                right = can(1),
-                child = self.values[key].widget,
-              })
-            ),
-          },
-        }),
+        x = overhang,
+        y = overhang,
+        child = content,
       }),
     }),
   })
@@ -504,16 +519,20 @@ function M.new(settings)
     end
     return shown
   end)
+  self.positions = self.shown:map(function(shown)
+    local positions = {}
+    for i, key in ipairs(shown) do
+      positions[key] = i
+    end
+    return positions
+  end)
   self.scroll:set_count(#self.shown:get())
   self.watch = self.shown:on(function(shown)
     self.scroll:set_count(#shown)
   end)
   self.values = {}
   for _, key in ipairs(keys) do
-    local state = changed:map(function()
-      return row_state(key)
-    end)
-    self.values[key] = { state = state, widget = value_widget(key, state) }
+    self.values[key] = { widget = value_widget(key, changed) }
   end
   self.value_w = trx.signal.combine(changed, settings.layout, function()
     local arrows = arrows_width()

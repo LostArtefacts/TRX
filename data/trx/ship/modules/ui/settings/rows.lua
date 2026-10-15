@@ -25,8 +25,43 @@ local BAR_COLORS = {
   ["ui.progressbar_color"] = "PROGRESS",
 }
 
+-- What each setting is, as trx.config.describe says, asked once per setting.
+-- What a setting is does not change while the game runs, and the game starts
+-- the scripts afresh when it switches to another. A setting this game does
+-- not have is asked again, because a script can still declare it.
+local shapes = {}
+
+local function shape_of(key)
+  local shape = shapes[key]
+  if shape == nil then
+    local ok, found = pcall(trx.config.describe, key)
+    if not ok then
+      return nil
+    end
+    shape = found
+    shapes[key] = shape
+  end
+  return shape
+end
+
+-- The titles of the settings, for the language they were read in.
+local titles = {}
+local titles_language = nil
+
+-- What a setting is, as trx.config.describe says. Raises where this game has
+-- no such setting.
+---@param key string
+---@return trx.config.Shape
+function M.shape(key)
+  local shape = shape_of(key)
+  if shape == nil then
+    error(("unknown setting: %s"):format(key), 2)
+  end
+  return shape
+end
+
 local function kind(key)
-  return trx.config.describe(key).kind
+  return M.shape(key).kind
 end
 
 local function is_number(shape)
@@ -34,9 +69,20 @@ local function is_number(shape)
 end
 
 -- The game strings that a setting's text is kept under, which the game
--- strings derive from the settings themselves.
+-- strings derive from the settings themselves. A title is read once for each
+-- language.
 function M.title(key)
-  return trx.locale.get(("settings/%s/title"):format(key))
+  local language = trx.signal.config("language"):get()
+  if language ~= titles_language then
+    titles = {}
+    titles_language = language
+  end
+  local title = titles[key]
+  if title == nil then
+    title = trx.locale.get(("settings/%s/title"):format(key))
+    titles[key] = title
+  end
+  return title
 end
 
 function M.description(key)
@@ -47,7 +93,7 @@ end
 ---@param key string
 ---@return boolean
 function M.exists(key)
-  return (pcall(trx.config.describe, key))
+  return shape_of(key) ~= nil
 end
 
 -- Whether a script or the game flow holds the setting, so that it is not the
@@ -202,7 +248,7 @@ function M.value_text(key, value)
   end
   -- A value given here is the one the setting stores, and a percentage is
   -- read the way it is set, from 0 to 100.
-  if trx.config.describe(key).percent then
+  if M.shape(key).percent then
     value = value * 100
   end
   return trx.config.to_string(key, { human = true, value = value }) or ""
@@ -216,7 +262,7 @@ function M.value_texts(key)
   if handler.key_format ~= nil or M.is_color(key) then
     return { M.value_text(key) }
   end
-  local shape = trx.config.describe(key)
+  local shape = M.shape(key)
   if shape.kind == "boolean" then
     return { M.value_text(key, false), M.value_text(key, true) }
   elseif shape.kind == "integer" or is_number(shape) then
@@ -270,7 +316,7 @@ function M.can_change(key, dir)
   if handler.can_change ~= nil then
     return handler.can_change(key, dir) == true
   end
-  local shape = trx.config.describe(key)
+  local shape = M.shape(key)
   local value = trx.config.get(key)
   if shape.kind == "boolean" then
     return true
@@ -317,7 +363,7 @@ function M.change(key, dir, fine)
       return false
     end
   else
-    local shape = trx.config.describe(key)
+    local shape = M.shape(key)
     local value = trx.config.get(key)
     if shape.kind == "boolean" then
       trx.config.set(key, not value)
