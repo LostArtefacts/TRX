@@ -37,7 +37,13 @@ end
 
 local function on_layer(tab)
   local layer = trx.ui.layers.push({
-    root = tab.widget,
+    root = editor.rows({
+      tabs = { tab },
+      active = trx.signal.new(1),
+      editing = trx.signal.new(true),
+      width = trx.signal.new(300),
+      changed = trx.config.signals.changed,
+    }),
     on_input = function(_, keys)
       tab:control(keys)
     end,
