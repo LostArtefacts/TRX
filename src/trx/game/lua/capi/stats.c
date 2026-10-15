@@ -238,6 +238,13 @@ static int M_L_StatsTakeSecret(lua_State *const L)
     return 1;
 }
 
+// trxc.stats.has_crystals(): boolean
+static int M_L_StatsHasCrystals(lua_State *const L)
+{
+    lua_pushboolean(L, Stats_GameHasCrystals());
+    return 1;
+}
+
 static const luaL_Reg m_StatsMethods[] = {
     { "secret_list", M_L_StatsSecretList },
     { "give_secret", M_L_StatsGiveSecret },
@@ -251,6 +258,7 @@ static const luaL_Reg m_Module[] = {
     { "category", M_L_StatsCategory },
     { "kill_split", M_L_StatsKillSplit },
     { "allies_hurt", M_L_StatsAlliesHurt },
+    { "has_crystals", M_L_StatsHasCrystals },
     { nullptr, nullptr },
 };
 

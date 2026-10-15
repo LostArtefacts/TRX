@@ -509,6 +509,7 @@ trxc = {}
 ---@field category fun(stats: trx.stats.Stats, id: integer): trx.stats.Category?
 ---@field get fun(num: trx.game.LevelNum): trx.stats.Stats?
 ---@field get_current fun(): trx.stats.Stats?
+---@field has_crystals fun(): boolean
 ---@field kill_split fun(stats: trx.stats.Stats): integer?, integer?
 
 ---@class (exact) trxc.store

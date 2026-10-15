@@ -160,6 +160,12 @@ bool Stats_RemoveSecret(const GF_LEVEL *const level, const int16_t secret_idx)
     return true;
 }
 
+// No level of the faked game holds a save crystal.
+bool Stats_GameHasCrystals(void)
+{
+    return false;
+}
+
 bool Stats_HaveAlliesBeenHurt(const GF_LEVEL *const level)
 {
     const int32_t slot = M_GetSlot(level);
