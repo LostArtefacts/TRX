@@ -23,6 +23,11 @@ M.TITLE_PAD_X = 10
 -- question.
 M.CHOICE_ROW_PAD = 20
 
+-- How wide a text is, in canvas units at the default text size.
+function M.text_width(text)
+  return trx.ui.primitive.measure_text(text, 1.0) / trx.ui.text_scale
+end
+
 -- The room between a dialog's frame and what it holds.
 function M.outer_pad()
   return trx.game.tr_version == 1 and 2 or 3
