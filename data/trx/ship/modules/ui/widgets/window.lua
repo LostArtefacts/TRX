@@ -20,7 +20,7 @@ local HINT_ANCHOR_DOWN = -1.0
 -- false.
 local function hint_row(glyph, anchor, shown, hidden)
   return trx.ui.widgets.Custom({
-    shown = shown,
+    visible = shown,
     hidden = hidden,
     measure = function()
       return 0, metrics.HINT_HEIGHT * trx.ui.text_scale

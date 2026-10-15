@@ -91,7 +91,7 @@ end
 ---the root of a layer. Using it in a second place is an error. Releasing a widget ends it and every widget under it, and
 ---using a released widget is an error.
 ---@class (exact) trx.ui.Widget
----@field private shown? any
+---@field private visible? any
 ---@field private hidden? any
 ---@field private child? trx.ui.Widget
 ---@field private children? trx.ui.Widget[]
@@ -139,11 +139,11 @@ end
 
 ---Returns whether the widget participates in layout.
 ---
----A widget that is not shown keeps no room and leaves no gap. A hidden widget
+---A widget that is not visible keeps no room and leaves no gap. A hidden widget
 ---keeps its room but draws nothing.
 ---@return boolean # Whether it draws.
-function Widget:is_shown()
-  return value_of(self.shown) ~= false
+function Widget:is_visible()
+  return value_of(self.visible) ~= false
 end
 
 -- Detaches a widget and every widget under it from what they listen to, and
@@ -199,9 +199,9 @@ end
 ---@param w number The width it was given.
 ---@param h number The height it was given.
 function Widget:paint(x, y, w, h)
-  -- Hidden widgets keep their room but draw nothing. Widgets that are not shown
-  -- keep no room at all.
-  if self:is_shown() and value_of(self.hidden) ~= true then
+  -- Hidden widgets keep their room but draw nothing. Widgets that are not
+  -- visible keep no room at all.
+  if self:is_visible() and value_of(self.hidden) ~= true then
     self:on_paint(x, y, w, h)
   end
 end
@@ -272,7 +272,7 @@ end
 
 ---The settings that every widget takes, with its own.
 ---@class (exact) trx.ui.widgets.settings
----@field shown? any Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+---@field visible? any Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
 ---@field hidden? any Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
 ---@class (partial) trx.ui

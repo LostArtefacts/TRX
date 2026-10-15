@@ -71,7 +71,7 @@ function M.setup(state)
           return value or ""
         end),
         scale = 1.5,
-        shown = shown & text:map(function(value)
+        visible = shown & text:map(function(value)
           return value ~= nil
         end),
       })

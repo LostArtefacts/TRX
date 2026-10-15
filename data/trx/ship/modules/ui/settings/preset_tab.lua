@@ -164,7 +164,8 @@ local function confirm(push, preset, changes)
 
   local line_rows = {}
   for i, line in ipairs(lines) do
-    line_rows[i] = trx.ui.widgets.Label({ text = line, shown = list:shows(i) })
+    line_rows[i] =
+      trx.ui.widgets.Label({ text = line, visible = list:shows(i) })
   end
 
   local choice = trx.signal.new(1)
@@ -336,7 +337,7 @@ function M.new(settings)
     )
     children[i] = trx.ui.widgets.Pad({
       y = -tr1_pad,
-      shown = self.scroll:shows(i),
+      visible = self.scroll:shows(i),
       child = trx.ui.widgets.Frame({
         style = selected:map(function(on)
           return on and trx.ui.FrameStyle.SELECTED or false

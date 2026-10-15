@@ -98,7 +98,10 @@ local function ask(ctx, on_back, resume, exit)
   end
 
   asking = ctx:push({
-    root = trx.ui.widgets.Stack({ shown = shown, children = { first.widget } }),
+    root = trx.ui.widgets.Stack({
+      visible = shown,
+      children = { first.widget },
+    }),
     place = first.place,
     on_input = function(layer, keys)
       local picked, cancelled = first.list:control(keys)

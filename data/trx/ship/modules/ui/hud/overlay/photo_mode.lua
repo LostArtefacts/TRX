@@ -57,7 +57,10 @@ function M.setup()
   end
 
   local function text(shown, read)
-    return ui.widgets.Label({ text = state.language:map(read), shown = shown })
+    return ui.widgets.Label({
+      text = state.language:map(read),
+      visible = shown,
+    })
   end
 
   -- A prompt follows the current target, so the same row can say "move the
@@ -152,12 +155,12 @@ function M.setup()
       ui.widgets.Label({ text = slow_or(Role.DRAW) }),
       ui.widgets.Label({
         text = slow_or(Role.FLY_CHEAT),
-        shown = state.can_pose,
+        visible = state.can_pose,
       }),
       ui.widgets.Label({ text = slow_or(Role.PAUSE) }),
       ui.widgets.InputHint({ input = Role.TOGGLE_UI }),
       ui.widgets.InputHint({ input = Role.ACTION }),
-      ui.widgets.Label({ text = exit_key, shown = exit_shown }),
+      ui.widgets.Label({ text = exit_key, visible = exit_shown }),
     },
   })
 
@@ -226,7 +229,7 @@ function M.setup()
   -- Keep the panel off the edge of the screen, so the frame only needs to carry
   -- the margin between its edge and the text.
   local panel = ui.widgets.Fit({
-    shown = state.shown,
+    visible = state.shown,
     child = ui.widgets.Frame({
       style = ui.FrameStyle.DIALOG,
       child = ui.widgets.Pad({

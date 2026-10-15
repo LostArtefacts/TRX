@@ -103,7 +103,7 @@ local function page_indicator(self)
   end)
   return trx.ui.widgets.Stack({
     align = trx.ui.HAlign.RIGHT,
-    shown = count:map(function(n)
+    visible = count:map(function(n)
       return n > 1
     end),
     children = {
@@ -111,11 +111,14 @@ local function page_indicator(self)
       trx.ui.widgets.Stack({
         orientation = trx.ui.Orientation.HORIZONTAL,
         children = {
-          trx.ui.widgets.Label({ text = "\\{button left} ", shown = has_left }),
+          trx.ui.widgets.Label({
+            text = "\\{button left} ",
+            visible = has_left,
+          }),
           trx.ui.widgets.Label({ text = text }),
           trx.ui.widgets.Label({
             text = " \\{button right}",
-            shown = has_right,
+            visible = has_right,
           }),
         },
       }),
@@ -163,7 +166,7 @@ end
 ---@class common.ui.TextDialog.settings
 ---@field heavy? boolean Whether to draw the frame solid.
 ---@field footer? trx.ui.Widget A widget under the frame.
----@field shown? any Whether the dialog shows, or a signal that holds it.
+---@field visible? any Whether the dialog is visible, or a signal that holds it.
 
 -- Creates a text dialog with no text. `set_text` gives it one.
 ---@param settings? common.ui.TextDialog.settings
@@ -186,7 +189,7 @@ function M.new(settings)
   self.widget = trx.ui.widgets.Stack({
     spacing = FOOTER_SPACING,
     align = trx.ui.HAlign.SPAN,
-    shown = settings.shown,
+    visible = settings.visible,
     children = { frame, settings.footer },
   })
   return self

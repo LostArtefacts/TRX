@@ -103,7 +103,7 @@ local function tab(self, index, title)
   )
   return trx.ui.widgets.Stack({
     v_align = trx.ui.VAlign.CENTER,
-    shown = shown,
+    visible = shown,
     children = {
       trx.ui.widgets.Frame({
         style = style,

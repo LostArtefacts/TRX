@@ -62,7 +62,7 @@ local function dialog(state)
   })
   return trx.ui.widgets.Frame({
     style = trx.ui.FrameStyle.OUTLINE,
-    shown = state.shown,
+    visible = state.shown,
     child = trx.ui.widgets.Pad({
       x = FRAME_PAD,
       y = FRAME_PAD,

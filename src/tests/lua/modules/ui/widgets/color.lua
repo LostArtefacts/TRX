@@ -50,7 +50,7 @@ test("a swatch that is not shown draws nothing", function()
     color = trx.math.color("123456"),
     w = 13,
     h = 13,
-    shown = false,
+    visible = false,
   }))
   assert(not scene:match("color=123456"), scene)
 end)

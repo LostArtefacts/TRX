@@ -272,7 +272,7 @@ local function value_widget(key, changed)
     spacing = SWATCH_SPACING,
     children = {
       trx.ui.widgets.Bar({
-        shown = state:map(function(v)
+        visible = state:map(function(v)
           return v.bar ~= false
         end),
         type = state:map(function(v)
@@ -284,7 +284,7 @@ local function value_widget(key, changed)
         preview = true,
       }),
       trx.ui.widgets.Label({
-        shown = state:map(function(v)
+        visible = state:map(function(v)
           return v.bar == false
         end),
         text = state:map(function(v)
@@ -292,7 +292,7 @@ local function value_widget(key, changed)
         end),
       }),
       color.swatch({
-        shown = state:map(function(v)
+        visible = state:map(function(v)
           return v.color ~= false
         end),
         color = state:map(function(v)
@@ -404,7 +404,7 @@ local function slot_widget(self, index, settings)
   local overhang = metrics.frame_overhang()
   if overhang == 0 then
     return trx.ui.widgets.Frame({
-      shown = shown,
+      visible = shown,
       style = style,
       child = content,
     })
@@ -412,7 +412,7 @@ local function slot_widget(self, index, settings)
   return trx.ui.widgets.Pad({
     x = -overhang,
     y = -overhang,
-    shown = shown,
+    visible = shown,
     child = trx.ui.widgets.Frame({
       style = style,
       child = trx.ui.widgets.Pad({

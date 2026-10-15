@@ -270,10 +270,10 @@ end)
 
 test("a widget that is not shown keeps no room", function()
   local shown = trx.signal.new(false)
-  local label = widgets.Label({ text = "iris", shown = shown })
-  assert(not label:is_shown())
+  local label = widgets.Label({ text = "iris", visible = shown })
+  assert(not label:is_visible())
   shown:set(true)
-  assert(label:is_shown())
+  assert(label:is_visible())
 end)
 
 test("a stack adds up what it holds", function()
@@ -291,7 +291,7 @@ test("a stack leaves no gap where a child is not shown", function()
     spacing = 4,
     children = {
       widgets.Label({ text = "a" }),
-      widgets.Label({ text = "bb", shown = gone }),
+      widgets.Label({ text = "bb", visible = gone }),
     },
   })
   assert(select(2, stack:measure()) == 16, "the hidden child kept its room")
@@ -428,7 +428,7 @@ test("a child shown again takes its room back in the stack", function()
     spacing = 4,
     children = {
       widgets.Label({ text = "a" }),
-      widgets.Label({ text = "bb", shown = shown }),
+      widgets.Label({ text = "bb", visible = shown }),
     },
   })
   assert(select(2, stack:measure()) == 16)
@@ -693,7 +693,7 @@ test("a custom widget that is not shown draws nothing", function()
     paint = function()
       painted = true
     end,
-    shown = false,
+    visible = false,
   })
   custom:paint(0, 0, 1, 1)
   assert(not painted)

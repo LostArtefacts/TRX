@@ -152,7 +152,7 @@ function M.setup()
           color_bottom = PALETTE.pink.bottom,
           mark_color = plain.top,
           mark_color_bottom = plain.bottom,
-          shown = penalty.shown,
+          visible = penalty.shown,
         })
       end
       return ui.widgets.Stack({
@@ -171,7 +171,7 @@ function M.setup()
       ui.widgets.Stack({
         orientation = ui.Orientation.HORIZONTAL,
         spacing = PENALTY_GAP,
-        shown = on_screen,
+        visible = on_screen,
         children = { penalty_column(false), clock, penalty_column(true) },
       })
     )
@@ -213,7 +213,7 @@ function M.setup()
         color_bottom = color:map(function(palette)
           return palette.bottom
         end),
-        shown = shown,
+        visible = shown,
       })
     end
 
@@ -222,7 +222,7 @@ function M.setup()
       ui.widgets.Stack({
         orientation = ui.Orientation.HORIZONTAL,
         spacing = 20,
-        shown = lap_shown,
+        visible = lap_shown,
         children = {
           lap_digits(last, true, function(best_lap, best_time)
             if best_lap then
