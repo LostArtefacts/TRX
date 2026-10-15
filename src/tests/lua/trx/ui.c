@@ -347,6 +347,11 @@ void UI_Text_Measure(
     }
 }
 
+bool UI_Settings_IsBarLookPS1(const UI_BAR_TYPE type)
+{
+    return type == UI_BAR_PROGRESS;
+}
+
 // A minimal theme is enough for geometry tests.
 const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
 {

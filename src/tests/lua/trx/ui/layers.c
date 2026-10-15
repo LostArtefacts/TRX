@@ -285,6 +285,11 @@ void UI_Text_Measure(
     }
 }
 
+bool UI_Settings_IsBarLookPS1(const UI_BAR_TYPE type)
+{
+    return false;
+}
+
 const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
 {
     static UI_BAR_THEME theme = {

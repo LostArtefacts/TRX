@@ -565,6 +565,7 @@ trxc = {}
 ---@field horizontal_line fun(x0: number, x1: number, y: number, z?: integer)
 ---@field image fun(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
 ---@field interpolation_rate fun(): number
+---@field is_ps1_bar fun(type: trx.ui.BarType): boolean
 ---@field measure_text fun(text: string, scale?: number): number, number
 ---@field mesh_bounds fun(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
 ---@field panel fun(x: number, y: number, z?: integer, w: number, h: number, style: trx.ui.FrameStyle)

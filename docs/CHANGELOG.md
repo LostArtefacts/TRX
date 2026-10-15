@@ -182,6 +182,7 @@
 - Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
 - Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
 - Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
+- Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
 - Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
 - Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)

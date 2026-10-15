@@ -184,6 +184,11 @@ int32_t Viewport_GetHeight(const VIEWPORT_SPACE space)
     return 480;
 }
 
+bool UI_Settings_IsBarLookPS1(const UI_BAR_TYPE type)
+{
+    return false;
+}
+
 const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
 {
     return nullptr;

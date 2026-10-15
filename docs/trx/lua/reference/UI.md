@@ -733,6 +733,15 @@ arrow, and `\{button left}` draws the button the player has bound.
   local area = trx.ui.safe_area_for(200)
   ```
 
+- <a id="ui.is_ps1_bar" name="ui.is_ps1_bar"></a>[lua]`trx.ui.is_ps1_bar(type)`  
+  Whether a bar of the given type takes the PS1 look, which the player picks
+  in the settings and which decides which of its colors applies.
+
+  Parameters:
+  - <a id="ui.is_ps1_bar.type" name="ui.is_ps1_bar.type"></a>**`type`** ([trx.ui.BarType](#ui.BarType)). The bar.
+
+  Returns: boolean. True for the PS1 look.
+
 - <a id="ui.interpolation_rate" name="ui.interpolation_rate"></a>[lua]`trx.ui.interpolation_rate()`  
   Returns the interpolation factor of the frame being drawn between the last
   two ticks: `0` at the earlier tick and `1` at the later one.

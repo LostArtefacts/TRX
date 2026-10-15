@@ -316,6 +316,13 @@ function M.safe_area_for(width)
   }
 end
 
+---Whether a bar of the given type takes the PS1 look, which the player picks
+---in the settings and which decides which of its colors applies.
+---@param type trx.ui.BarType The bar.
+---@return boolean # True for the PS1 look.
+---@type fun(type: trx.ui.BarType): boolean
+M.is_ps1_bar = raw.is_ps1_bar
+
 ---Returns the interpolation factor of the frame being drawn between the last
 ---two ticks: `0` at the earlier tick and `1` at the later one.
 ---`trx.ui.Tween` reads it to move smoothly between ticks.

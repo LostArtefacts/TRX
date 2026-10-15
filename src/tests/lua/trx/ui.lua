@@ -1062,4 +1062,9 @@ test("a carousel keeps items beyond the neighbours out of sight", function()
   assert(#row_of(row) == 3, #row_of(row))
 end)
 
+test("a bar says whether it takes the PS1 look", function()
+  assert(trx.ui.is_ps1_bar(trx.ui.BarType.PROGRESS))
+  assert(not trx.ui.is_ps1_bar(trx.ui.BarType.LARA_HP))
+end)
+
 return h.report()
