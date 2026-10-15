@@ -20,7 +20,7 @@ static int32_t M_ToTicks(const double seconds)
     return (int32_t)(seconds * LOGIC_FPS + 0.5);
 }
 
-static bool M_UsesCrossFadeIn(PHASE *const phase)
+static bool M_UsesCrossFadeIn(const PHASE *const phase)
 {
     const M_PRIV *const p = phase->priv;
     return p->args.loading_pic && !p->args.block_cross_fade_in;
