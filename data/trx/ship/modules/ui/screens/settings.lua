@@ -104,49 +104,50 @@ local function close(ctx)
   ctx:cancel()
 end
 
+-- Builds one of the dialogs, opening anything it opens over itself through
+-- `push`.
+local function build_dialog(which, push)
+  local title, specs = DIALOGS[which]()
+  local declared = declared_by_tab()
+  return dialog.new({
+    title = title,
+    tabs = function(self)
+      local result = {}
+      for i, spec in ipairs(specs) do
+        local name = spec[2]
+        if name == nil then
+          result[i] = preset_tab.new({
+            title = spec[1],
+            editing = self.editing,
+            push = push,
+          })
+        else
+          result[i] = editor.new({
+            title = spec[1],
+            keys = tabs.arrange(name, declared[name] or {}),
+            editing = self.editing,
+            width = self.width,
+            dialog_width = self.dialog_width,
+            changed = self.changed,
+            layout = self.layout,
+            push = push,
+            edit_color = function(key)
+              color_editor.open(push, key)
+            end,
+          })
+        end
+      end
+      return result
+    end,
+  })
+end
+
 local function opener(which)
   ---@param ctx trx.ui.EntryContext
   return function(ctx)
-    local title, specs = DIALOGS[which]()
-    local declared = declared_by_tab()
-    local push = function(settings)
+    local settings_dialog = build_dialog(which, function(settings)
       return ctx:push(settings)
-    end
-
-    local settings_dialog = dialog.new({
-      title = title,
-      tabs = function(self)
-        local result = {}
-        for i, spec in ipairs(specs) do
-          local name = spec[2]
-          local tab
-          if name == nil then
-            tab = preset_tab.new({
-              title = spec[1],
-              editing = self.editing,
-              push = push,
-            })
-          else
-            tab = editor.new({
-              title = spec[1],
-              keys = tabs.arrange(name, declared[name] or {}),
-              editing = self.editing,
-              width = self.width,
-              dialog_width = self.dialog_width,
-              changed = self.changed,
-              layout = self.layout,
-              push = push,
-              edit_color = function(key)
-                color_editor.open(push, key)
-              end,
-            })
-          end
-          result[i] = tab
-        end
-        return result
-      end,
-    })
-
+    end)
     local resting = ring.resting()
     ctx:on_end(function()
       settings_dialog:close()

@@ -206,6 +206,42 @@ function M.available(key)
     and (handler.available == nil or handler.available() == true)
 end
 
+local function dim(text, on)
+  if on then
+    return text
+  end
+  return "\\{dim}" .. text .. "\\{/dim}"
+end
+
+-- What a row shows of each setting, kept as one signal per setting that every
+-- row and every dialog showing the setting shares.
+local states = {}
+
+-- What a row shows of a setting: the title, starred where something holds the
+-- setting, and the value, both greyed out where the player cannot change it,
+-- and the color of a color setting. It is worked out once each time a setting
+-- changes, and only while something reads it.
+---@param key string
+---@return trx.signal.Signal
+function M.state(key)
+  local state = states[key]
+  if state == nil then
+    state = trx.config.signals.changed:map(function()
+      local held = M.held(key)
+      local handler = handlers.get(key)
+      local available = not held
+        and (handler.available == nil or handler.available() == true)
+      return {
+        title = dim(M.title(key) .. (held and "*" or ""), available),
+        value = dim(M.value_text(key), available and M.on_offer(key)),
+        color = M.is_color(key) and trx.config.get(key) or nil,
+      }
+    end)
+    states[key] = state
+  end
+  return state
+end
+
 -- Whether the value the setting holds can be picked now. A dynamic enum can
 -- hold a value it no longer offers, such as a language whose files went.
 function M.on_offer(key)

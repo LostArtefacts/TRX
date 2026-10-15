@@ -46,25 +46,6 @@ local function lane(width, align, child)
   })
 end
 
-local function dim(text, on)
-  if on then
-    return text
-  end
-  return "\\{dim}" .. text .. "\\{/dim}"
-end
-
--- The title of a row, greyed out where the player cannot change it and
--- starred where something holds it.
-local function title_text(key)
-  local held = rows.held(key)
-  return dim(rows.title(key) .. (held and "*" or ""), rows.available(key))
-end
-
--- The value of a row, greyed out where the player cannot change it.
-local function value_text(key)
-  return dim(rows.value_text(key), rows.available(key) and rows.on_offer(key))
-end
-
 ---@class common.ui.settings.Editor: common.ui.settings.Tab
 ---@field keys string[] Every setting the tab lists that the game has.
 ---@field shown trx.signal.Signal The settings the tab shows, in order.
@@ -260,7 +241,7 @@ end
 
 -- The value side of a row: a bar for a bar's colors, a swatch beside the code
 -- for a color, and the value as text for the rest.
-local function value_widget(key, changed)
+local function value_widget(key)
   local bar = rows.bar_type(key)
   if bar ~= nil then
     return trx.ui.widgets.Bar({
@@ -272,8 +253,8 @@ local function value_widget(key, changed)
     })
   end
   local text = trx.ui.widgets.Label({
-    text = changed:map(function()
-      return value_text(key)
+    text = rows.state(key):map(function(state)
+      return state.value
     end),
   })
   if not rows.is_color(key) then
@@ -286,8 +267,8 @@ local function value_widget(key, changed)
     children = {
       text,
       color.swatch({
-        color = changed:map(function()
-          return trx.config.get(key)
+        color = rows.state(key):map(function(state)
+          return state.color
         end),
         w = SWATCH_SIZE,
         h = SWATCH_SIZE,
@@ -362,8 +343,8 @@ local function row_widget(self, key, settings)
         scaled = true,
         w = label_lane,
         child = trx.ui.widgets.Label({
-          text = changed:map(function()
-            return title_text(key)
+          text = rows.state(key):map(function(state)
+            return state.title
           end),
         }),
       }),
@@ -532,7 +513,7 @@ function M.new(settings)
   end)
   self.values = {}
   for _, key in ipairs(keys) do
-    self.values[key] = { widget = value_widget(key, changed) }
+    self.values[key] = { widget = value_widget(key) }
   end
   self.value_w = trx.signal.combine(changed, settings.layout, function()
     local arrows = arrows_width()
