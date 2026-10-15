@@ -305,7 +305,7 @@
 - Changed the name of the setting that takes a widget out of the layout
     - `shown` → `visible`
     - `trx.ui.Widget:is_shown` → `trx.ui.Widget:is_visible`
-- Changed `hidden` to a setting that every widget takes beside `shown`, in place of a field of `trx.ui.Widget`
+- Changed `hidden` of `trx.ui.Widget` into `trx.ui.widgets.Blank`, a widget that keeps the room of its child and draws nothing while a condition holds
 - Changed script widgets to stay behind the game interface when they overlap
 - Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw

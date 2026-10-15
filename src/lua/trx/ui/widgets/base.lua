@@ -92,7 +92,6 @@ end
 ---using a released widget is an error.
 ---@class (exact) trx.ui.Widget
 ---@field private visible? any
----@field private hidden? any
 ---@field private child? trx.ui.Widget
 ---@field private children? trx.ui.Widget[]
 ---@field private _size? { w: number, h: number }
@@ -139,8 +138,7 @@ end
 
 ---Returns whether the widget participates in layout.
 ---
----A widget that is not visible keeps no room and leaves no gap. A hidden widget
----keeps its room but draws nothing.
+---A widget that is not visible keeps no room and leaves no gap.
 ---@return boolean # Whether it draws.
 function Widget:is_visible()
   return value_of(self.visible) ~= false
@@ -199,9 +197,8 @@ end
 ---@param w number The width it was given.
 ---@param h number The height it was given.
 function Widget:paint(x, y, w, h)
-  -- Hidden widgets keep their room but draw nothing. Widgets that are not
-  -- visible keep no room at all.
-  if self:is_visible() and value_of(self.hidden) ~= true then
+  -- Widgets that are not visible keep no room at all.
+  if self:is_visible() then
     self:on_paint(x, y, w, h)
   end
 end
@@ -236,6 +233,14 @@ local function new_widget(settings, on_measure, on_paint, class)
       or class[key] ~= nil
     then
       error(("'%s' is not a widget setting"):format(tostring(key)), 3)
+    end
+    if key == "shown" or key == "hidden" then
+      error(
+        ("'%s' is not a widget setting; use visible, or wrap the widget in trx.ui.widgets.Blank"):format(
+          key
+        ),
+        3
+      )
     end
     self[key] = value
   end
@@ -272,8 +277,7 @@ end
 
 ---The settings that every widget takes, with its own.
 ---@class (exact) trx.ui.widgets.settings
----@field visible? any Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
----@field hidden? any Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+---@field visible? any Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. `trx.ui.widgets.Blank` keeps the room instead.
 
 ---@class (partial) trx.ui
 ---@field widgets trx.ui.widgets

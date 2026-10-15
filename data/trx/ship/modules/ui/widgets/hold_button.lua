@@ -110,25 +110,29 @@ end
 -- width it is given. It keeps its room while it is disabled or its key is not
 -- bound.
 local function build(self, text, align, scale)
-  local bar =
-    trx.ui.widgets.SleekBar({ progress = self.fill, hidden = self.empty })
+  local bar = trx.ui.widgets.Blank({
+    when = self.empty,
+    child = trx.ui.widgets.SleekBar({ progress = self.fill }),
+  })
   return trx.ui.widgets.Stack({
     align = align,
     children = {
-      trx.ui.widgets.Pad({
-        x = PAD_X * scale,
-        y = PAD_Y * scale,
-        hidden = self.hidden,
-        child = trx.ui.widgets.Stack({
-          spacing = SPACING,
-          align = trx.ui.HAlign.SPAN,
-          children = {
-            trx.ui.widgets.Label({
-              text = text,
-              scale = TEXT_SCALE * scale,
-            }),
-            bar,
-          },
+      trx.ui.widgets.Blank({
+        when = self.hidden,
+        child = trx.ui.widgets.Pad({
+          x = PAD_X * scale,
+          y = PAD_Y * scale,
+          child = trx.ui.widgets.Stack({
+            spacing = SPACING,
+            align = trx.ui.HAlign.SPAN,
+            children = {
+              trx.ui.widgets.Label({
+                text = text,
+                scale = TEXT_SCALE * scale,
+              }),
+              bar,
+            },
+          }),
         }),
       }),
     },

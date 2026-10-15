@@ -497,8 +497,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.Widget.is_visible" name="ui.Widget.is_visible"></a>[lua]`widget:is_visible()`  
       Returns whether the widget participates in layout.
 
-      A widget that is not visible keeps no room and leaves no gap. A hidden widget
-      keeps its room but draws nothing.
+      A widget that is not visible keeps no room and leaves no gap.
 
       Returns: boolean. Whether it draws.
 
@@ -1302,8 +1301,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Carousel.settings.side_size" name="ui.widgets.Carousel.settings.side_size"></a>**`side_size`** (any, optional). How large the items beside the middle are drawn, as a share of their own size, or a signal that holds it. `0.6` by default.
     - <a id="ui.widgets.Carousel.settings.ticks" name="ui.widgets.Carousel.settings.ticks"></a>**`ticks`** (any, optional). How many ticks a slide takes, or a signal that holds it. `8` by default.
     - <a id="ui.widgets.Carousel.settings.curve" name="ui.widgets.Carousel.settings.curve"></a>**`curve`** (any, optional). The curve of a slide, one of [`trx.ui.ease`](#ui.ease), or a signal that holds it. [`trx.ui.ease.quad_in_out`](#ui.ease.quad_in_out) by default.
-    - <a id="ui.widgets.Carousel.settings.visible" name="ui.widgets.Carousel.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Carousel.settings.hidden" name="ui.widgets.Carousel.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Carousel.settings.visible" name="ui.widgets.Carousel.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Carousel](#ui.Carousel). The carousel.
 
@@ -1334,8 +1332,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.widgets.Custom.settings.measure" name="ui.widgets.Custom.settings.measure"></a>**`measure`** (function). Returns the width and the height the widget wants, in canvas units.
     - <a id="ui.widgets.Custom.settings.paint" name="ui.widgets.Custom.settings.paint"></a>**`paint`** (function). Draws the widget with [`trx.ui.primitive`](#ui.primitive). It receives the left edge, the top edge, the width and the height of the box the widget was given.
-    - <a id="ui.widgets.Custom.settings.visible" name="ui.widgets.Custom.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Custom.settings.hidden" name="ui.widgets.Custom.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Custom.settings.visible" name="ui.widgets.Custom.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The widget.
 
@@ -1371,8 +1368,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Digits.settings.color_bottom" name="ui.widgets.Digits.settings.color_bottom"></a>**`color_bottom`** (any, optional). The color the characters fade to down their height. The main color by default, which draws them flat.
     - <a id="ui.widgets.Digits.settings.mark_color" name="ui.widgets.Digits.settings.mark_color"></a>**`mark_color`** (any, optional). What color to draw the `T` in. The main color by default.
     - <a id="ui.widgets.Digits.settings.mark_color_bottom" name="ui.widgets.Digits.settings.mark_color_bottom"></a>**`mark_color_bottom`** (any, optional). The color the `T` fades to. Its own color by default.
-    - <a id="ui.widgets.Digits.settings.visible" name="ui.widgets.Digits.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Digits.settings.hidden" name="ui.widgets.Digits.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Digits.settings.visible" name="ui.widgets.Digits.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The digits.
 
@@ -1399,8 +1395,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Image.settings.w" name="ui.widgets.Image.settings.w"></a>**`w`** (any). The width, in canvas units, or a signal that holds it.
     - <a id="ui.widgets.Image.settings.h" name="ui.widgets.Image.settings.h"></a>**`h`** (any). The height, in canvas units, or a signal that holds it.
     - <a id="ui.widgets.Image.settings.opacity" name="ui.widgets.Image.settings.opacity"></a>**`opacity`** (any, optional). How solid the image is, from 0 to 1, or a signal that holds that value. `1` by default.
-    - <a id="ui.widgets.Image.settings.visible" name="ui.widgets.Image.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Image.settings.hidden" name="ui.widgets.Image.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Image.settings.visible" name="ui.widgets.Image.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The image.
 
@@ -1415,8 +1410,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.InputHint.settings.input" name="ui.widgets.InputHint.settings.input"></a>**`input`** (any). The input role whose keys to show, a list of roles shown side by side, or a signal carrying either.
     - <a id="ui.widgets.InputHint.settings.text" name="ui.widgets.InputHint.settings.text"></a>**`text`** (any, optional). What the keys do, or a signal carrying it.
     - <a id="ui.widgets.InputHint.settings.scale" name="ui.widgets.InputHint.settings.scale"></a>**`scale`** (any, optional). Multiplies the text size, or a signal that holds it. `1.0` by default.
-    - <a id="ui.widgets.InputHint.settings.visible" name="ui.widgets.InputHint.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.InputHint.settings.hidden" name="ui.widgets.InputHint.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.InputHint.settings.visible" name="ui.widgets.InputHint.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The hint.
 
@@ -1437,8 +1431,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.widgets.Label.settings.text" name="ui.widgets.Label.settings.text"></a>**`text`** (any). The text, or a signal carrying it.
     - <a id="ui.widgets.Label.settings.scale" name="ui.widgets.Label.settings.scale"></a>**`scale`** (any, optional). Multiplies the text size, or a signal that holds it. `1.0` by default.
-    - <a id="ui.widgets.Label.settings.visible" name="ui.widgets.Label.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Label.settings.hidden" name="ui.widgets.Label.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Label.settings.visible" name="ui.widgets.Label.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The label.
 
@@ -1453,10 +1446,28 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Resize.settings.w" name="ui.widgets.Resize.settings.w"></a>**`w`** (any, optional). The width, in canvas units, or a signal that holds it. Its own by default.
     - <a id="ui.widgets.Resize.settings.h" name="ui.widgets.Resize.settings.h"></a>**`h`** (any, optional). The height, in canvas units, or a signal that holds it. Its own by default.
     - <a id="ui.widgets.Resize.settings.scaled" name="ui.widgets.Resize.settings.scaled"></a>**`scaled`** (any, optional). Whether `w` and `h` are at the default text size, and follow the text scale as [`Spacer`](#ui.widgets.Spacer) does, or a signal that holds that value. `false` by default.
-    - <a id="ui.widgets.Resize.settings.visible" name="ui.widgets.Resize.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Resize.settings.hidden" name="ui.widgets.Resize.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Resize.settings.visible" name="ui.widgets.Resize.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The resized widget.
+
+- <a id="ui.widgets.Blank" name="ui.widgets.Blank"></a>[lua]`trx.ui.widgets.Blank(settings)`  
+  Leaves a child widget blank while a condition holds: it keeps its room, so
+  nothing around it moves, and draws nothing.
+
+  Parameters:
+  - <a id="ui.widgets.Blank.settings" name="ui.widgets.Blank.settings"></a>**`settings`** (table). The settings.
+
+    Keys:
+    - <a id="ui.widgets.Blank.settings.child" name="ui.widgets.Blank.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
+    - <a id="ui.widgets.Blank.settings.when" name="ui.widgets.Blank.settings.when"></a>**`when`** (any). Whether to leave the child blank, or a signal that holds that value.
+    - <a id="ui.widgets.Blank.settings.visible" name="ui.widgets.Blank.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The widget.
+
+  Example:
+  ```lua
+  trx.ui.widgets.Blank({ when = ~can_step_left, child = left_arrow })
+  ```
 
 - <a id="ui.widgets.Spacer" name="ui.widgets.Spacer"></a>[lua]`trx.ui.widgets.Spacer([settings])`  
   Keeps empty room, which follows the text scale the same way the widgets
@@ -1469,8 +1480,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.widgets.Spacer.settings.w" name="ui.widgets.Spacer.settings.w"></a>**`w`** (any, optional). The width, in canvas units at the default text size, or a signal that holds it. `0` by default.
     - <a id="ui.widgets.Spacer.settings.h" name="ui.widgets.Spacer.settings.h"></a>**`h`** (any, optional). The height, in canvas units at the default text size, or a signal that holds it. `0` by default.
-    - <a id="ui.widgets.Spacer.settings.visible" name="ui.widgets.Spacer.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Spacer.settings.hidden" name="ui.widgets.Spacer.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Spacer.settings.visible" name="ui.widgets.Spacer.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The spacer.
 
@@ -1494,8 +1504,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Pad.settings.child" name="ui.widgets.Pad.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
     - <a id="ui.widgets.Pad.settings.x" name="ui.widgets.Pad.settings.x"></a>**`x`** (any, optional). The margin at the left and the right, or a signal that holds it. `0` by default.
     - <a id="ui.widgets.Pad.settings.y" name="ui.widgets.Pad.settings.y"></a>**`y`** (any, optional). The margin at the top and the bottom, or a signal that holds it. `0` by default.
-    - <a id="ui.widgets.Pad.settings.visible" name="ui.widgets.Pad.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Pad.settings.hidden" name="ui.widgets.Pad.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Pad.settings.visible" name="ui.widgets.Pad.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The padded widget.
 
@@ -1512,8 +1521,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Frame.settings.child" name="ui.widgets.Frame.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
     - <a id="ui.widgets.Frame.settings.style" name="ui.widgets.Frame.settings.style"></a>**`style`** (any, optional). Which [`trx.ui.FrameStyle`](#ui.FrameStyle) to draw, or a signal that holds it. `false` draws no frame, as for a row that the cursor is not on. The dialog box by default.
     - <a id="ui.widgets.Frame.settings.z" name="ui.widgets.Frame.settings.z"></a>**`z`** (any, optional). The draw order, or a signal that holds it. `160` by default, which is behind text.
-    - <a id="ui.widgets.Frame.settings.visible" name="ui.widgets.Frame.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Frame.settings.hidden" name="ui.widgets.Frame.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Frame.settings.visible" name="ui.widgets.Frame.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The framed widget.
 
@@ -1530,8 +1538,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Fit.settings.child" name="ui.widgets.Fit.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
-    - <a id="ui.widgets.Fit.settings.visible" name="ui.widgets.Fit.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Fit.settings.hidden" name="ui.widgets.Fit.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Fit.settings.visible" name="ui.widgets.Fit.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The fitted widget.
 
@@ -1549,8 +1556,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Stack.settings.spacing" name="ui.widgets.Stack.settings.spacing"></a>**`spacing`** (any, optional). The gap between one and the next, in canvas units at the default text size, or a signal that holds it. `0` by default.
     - <a id="ui.widgets.Stack.settings.align" name="ui.widgets.Stack.settings.align"></a>**`align`** (any, optional). The [`trx.ui.HAlign`](#ui.HAlign), or a signal that holds it, that says where the children sit across the width. In a vertical stack, it places each narrower child. In a horizontal stack, it places the whole row, and [`trx.ui.HAlign.DISTRIBUTE`](#ui.HAlign) spreads the children out. Left by default.
     - <a id="ui.widgets.Stack.settings.v_align" name="ui.widgets.Stack.settings.v_align"></a>**`v_align`** (any, optional). The [`trx.ui.VAlign`](#ui.VAlign), or a signal that holds it, that says where the children sit down the height. In a horizontal stack, it places each shorter child. In a vertical stack, it places the whole column, and [`trx.ui.VAlign.DISTRIBUTE`](#ui.VAlign) spreads the children out. Top by default.
-    - <a id="ui.widgets.Stack.settings.visible" name="ui.widgets.Stack.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Stack.settings.hidden" name="ui.widgets.Stack.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Stack.settings.visible" name="ui.widgets.Stack.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The stack.
 
@@ -1577,8 +1583,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.List.settings.rule_overhang" name="ui.widgets.List.settings.rule_overhang"></a>**`rule_overhang`** (any, optional). How far a rule between rows reaches past each side of the list, or a signal that holds it. `7` by default.
     - <a id="ui.widgets.List.settings.frame_overhang" name="ui.widgets.List.settings.frame_overhang"></a>**`frame_overhang`** (any, optional). How far the frame of the row under the cursor reaches above and below the row, or a signal that holds it. `0` by default.
     - <a id="ui.widgets.List.settings.scroll_hints" name="ui.widgets.List.settings.scroll_hints"></a>**`scroll_hints`** (any, optional). Whether to show arrows where the list runs past its rows, or a signal that holds that value. `true` by default.
-    - <a id="ui.widgets.List.settings.visible" name="ui.widgets.List.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.List.settings.hidden" name="ui.widgets.List.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.List.settings.visible" name="ui.widgets.List.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.List](#ui.List). The list.
 
@@ -1607,8 +1612,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Model.settings.spin" name="ui.widgets.Model.settings.spin"></a>**`spin`** (any, optional). How far the model turns each tick, on top of `rot_y` , or a signal carrying it. It turns smoothly between ticks, and picks up where it stopped when the spin starts again.
     - <a id="ui.widgets.Model.settings.mesh_mask" name="ui.widgets.Model.settings.mesh_mask"></a>**`mesh_mask`** (any, optional). Which of its meshes to draw, one bit each, or a signal that holds the mask. Every mesh by default.
     - <a id="ui.widgets.Model.settings.light" name="ui.widgets.Model.settings.light"></a>**`light`** (any, optional). The light to draw it in, or a signal carrying it, as [`trx.ui.primitive.model`](#ui.primitive.model) takes it.
-    - <a id="ui.widgets.Model.settings.visible" name="ui.widgets.Model.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.Model.settings.hidden" name="ui.widgets.Model.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.Model.settings.visible" name="ui.widgets.Model.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The model.
 
@@ -1635,8 +1639,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.SleekBar.settings.progress" name="ui.widgets.SleekBar.settings.progress"></a>**`progress`** (any). How full the bar is, from 0 to 1, or a signal that holds it.
-    - <a id="ui.widgets.SleekBar.settings.visible" name="ui.widgets.SleekBar.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap.
-    - <a id="ui.widgets.SleekBar.settings.hidden" name="ui.widgets.SleekBar.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    - <a id="ui.widgets.SleekBar.settings.visible" name="ui.widgets.SleekBar.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The bar.
 

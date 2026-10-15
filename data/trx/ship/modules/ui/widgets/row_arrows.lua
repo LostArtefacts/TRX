@@ -33,14 +33,14 @@ function M.new(settings)
     v_align = trx.ui.VAlign.CENTER,
     spacing = settings.spacing or M.Spacing.MEDIUM,
     children = {
-      trx.ui.widgets.Label({
-        text = "\\{button left}",
-        hidden = ~value.signal(settings.left or false),
+      trx.ui.widgets.Blank({
+        when = ~value.signal(settings.left or false),
+        child = trx.ui.widgets.Label({ text = "\\{button left}" }),
       }),
       settings.child,
-      trx.ui.widgets.Label({
-        text = "\\{button right}",
-        hidden = ~value.signal(settings.right or false),
+      trx.ui.widgets.Blank({
+        when = ~value.signal(settings.right or false),
+        child = trx.ui.widgets.Label({ text = "\\{button right}" }),
       }),
     },
   })

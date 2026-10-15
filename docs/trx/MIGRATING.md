@@ -110,7 +110,8 @@ order: 3
 15. **`trx.ui.widgets.Row` is gone**
     Build the row as a horizontal `trx.ui.widgets.Stack`: a `Label` of
     `\{button left}`, the widget, and a `Label` of `\{button right}`, each
-    arrow with `hidden` set to the opposite of what `left` or `right` took.
+    arrow in a `trx.ui.widgets.Blank` that blanks it when `left` or `right`
+    did not take it.
 
 16. **`h_bars` of `trx.ui.widgets.Resize` is gone**
     A `trx.ui.widgets.Bar` follows the player's bar scale on its own. Give
@@ -125,6 +126,11 @@ order: 3
     widget that is not visible keeps no room and leaves no gap.
     - `shown` → `visible`
     - `trx.ui.Widget:is_shown` → `trx.ui.Widget:is_visible`
+
+19. **`hidden` is gone**
+    A widget that keeps its room but draws nothing goes in a
+    `trx.ui.widgets.Blank`: `Label({ text = t, hidden = h })` becomes
+    `Blank({ when = h, child = Label({ text = t }) })`.
 
 ### Version 1.10 to 1.11
 
