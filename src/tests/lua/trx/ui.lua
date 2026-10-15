@@ -699,6 +699,27 @@ test("a custom widget that is not shown draws nothing", function()
   assert(not painted)
 end)
 
+test("a frame switched off draws its child alone", function()
+  local style = trx.signal.new(false)
+  local frame = widgets.Frame({
+    style = style,
+    child = widgets.Spacer({ w = 10, h = 10 }),
+  })
+  local function panels()
+    local text = table.concat(
+      fake.paint(function()
+        frame:paint(0, 0, 10, 10)
+      end),
+      "\n"
+    )
+    local _, count = text:gsub("text_background", "")
+    return count
+  end
+  assert(panels() == 0)
+  style:set(trx.ui.FrameStyle.SELECTED)
+  assert(panels() > 0)
+end)
+
 local function rows(...)
   local result = {}
   for i, text in ipairs({ ... }) do

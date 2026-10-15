@@ -1508,7 +1508,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Frame.settings.child" name="ui.widgets.Frame.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
-    - <a id="ui.widgets.Frame.settings.style" name="ui.widgets.Frame.settings.style"></a>**`style`** (any, optional). Which [`trx.ui.FrameStyle`](#ui.FrameStyle) to draw, or a signal that holds it. The dialog box by default.
+    - <a id="ui.widgets.Frame.settings.style" name="ui.widgets.Frame.settings.style"></a>**`style`** (any, optional). Which [`trx.ui.FrameStyle`](#ui.FrameStyle) to draw, or a signal that holds it. `false` draws no frame, as for a row that the cursor is not on. The dialog box by default.
     - <a id="ui.widgets.Frame.settings.z" name="ui.widgets.Frame.settings.z"></a>**`z`** (any, optional). The draw order, or a signal that holds it. `160` by default, which is behind text.
     - <a id="ui.widgets.Frame.settings.shown" name="ui.widgets.Frame.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
     - <a id="ui.widgets.Frame.settings.hidden" name="ui.widgets.Frame.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.

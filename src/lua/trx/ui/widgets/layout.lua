@@ -91,7 +91,7 @@ end
 
 ---@class (exact) trx.ui.widgets.Frame.settings: trx.ui.widgets.settings
 ---@field child trx.ui.Widget The child widget.
----@field style? any Which `trx.ui.FrameStyle` to draw, or a signal that holds it. The dialog box by default.
+---@field style? any Which `trx.ui.FrameStyle` to draw, or a signal that holds it. `false` draws no frame, as for a row that the cursor is not on. The dialog box by default.
 ---@field z? any The draw order, or a signal that holds it. `160` by default, which is behind text.
 
 ---Draws one of the game's frames behind a child widget.
@@ -104,14 +104,17 @@ function widgets.Frame(settings)
   local self = new_widget(settings, function(w)
     return w.child:measure()
   end, function(w, x, y, bw, bh)
-    primitive.panel(
-      x,
-      y,
-      value_of(w.z) or base.FRAME_Z,
-      bw,
-      bh,
-      value_of(w.style) or trx.ui.FrameStyle.DIALOG
-    )
+    local style = value_of(w.style)
+    if style ~= false then
+      primitive.panel(
+        x,
+        y,
+        value_of(w.z) or base.FRAME_Z,
+        bw,
+        bh,
+        style or trx.ui.FrameStyle.DIALOG
+      )
+    end
     w.child:paint(x, y, bw, bh)
   end)
   hold(self.child, self)
