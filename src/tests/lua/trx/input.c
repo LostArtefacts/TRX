@@ -475,6 +475,18 @@ void Input_SaveBindings(void)
     FAKE_RECORD("save");
 }
 
+void TouchOverlay_EnterSelectionMode(void)
+{
+    const bool selecting = true;
+    FAKE_RECORD("touch_select", FV(selecting));
+}
+
+void TouchOverlay_ExitSelectionMode(void)
+{
+    const bool selecting = false;
+    FAKE_RECORD("touch_select", FV(selecting));
+}
+
 void Input_EnterListenMode(void)
 {
     m_Listening = true;

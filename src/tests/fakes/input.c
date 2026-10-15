@@ -19,6 +19,9 @@ static bool m_ScriptHold = false;
 // How many times the bindings were saved, for as long as the test runs.
 static int32_t m_SavedCount = 0;
 
+// Whether the on-screen controls are being picked from.
+static bool m_Selecting = false;
+
 // The menu keys that repeat while held, in ticks, as the real input repeats
 // them after 0.4 seconds every 0.1 seconds, or every 0.2 for left and right.
 static const struct {
@@ -105,6 +108,16 @@ const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout)
 bool Touch_HasHardwareSupport(void)
 {
     return false;
+}
+
+void TouchOverlay_EnterSelectionMode(void)
+{
+    m_Selecting = true;
+}
+
+void TouchOverlay_ExitSelectionMode(void)
+{
+    m_Selecting = false;
 }
 
 bool Input_IsBackendEnabled(const INPUT_BACKEND backend)

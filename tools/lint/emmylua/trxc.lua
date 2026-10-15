@@ -305,6 +305,7 @@ trxc = {}
 ---@field reset_layout fun(backend?: trx.input.Backend, layout?: trx.input.Layout)
 ---@field role_name fun(role: trx.input.Role): string
 ---@field suppress fun(role: trx.input.Role, enabled: boolean)
+---@field touch_select fun(enabled: boolean)
 ---@field unbind fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout)
 
 ---@class (exact) trxc.inventory
