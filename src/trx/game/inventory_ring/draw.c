@@ -12,7 +12,6 @@
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
-#include <trx/game/option.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output.h>
 #include <trx/game/savegame.h>
@@ -335,7 +334,6 @@ void InvRing_Draw(INV_RING *const ring)
         if (inv_item->object_id == O_PASSPORT_CLOSED) {
             inv_item->object_id = O_PASSPORT_OPTION;
         }
-        Option_Draw(inv_item);
     }
 
     float top_opacity = Fader_GetCurrentValue(&ring->top_fader);

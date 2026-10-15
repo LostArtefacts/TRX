@@ -1,7 +1,8 @@
 -- The settings dialogs of the inventory ring: the graphics, the sound and the
--- gameplay settings, each a dialog of tabs.
+-- gameplay settings, each a dialog of tabs, and the controls.
 
 local color_editor = require("common.ui.settings.color_editor")
+local controls = require("common.ui.settings.controls")
 local dialog = require("common.ui.settings.dialog")
 local editor = require("common.ui.settings.editor")
 local handlers = require("common.ui.settings.handlers")
@@ -187,10 +188,42 @@ local function opener(which)
   end
 end
 
+-- Opens the controls dialog. Confirming out of it leaves the ring, as using
+-- an entry does, except on the title screen, where it puts the entry away.
+---@param ctx trx.ui.EntryContext
+local function open_controls(ctx)
+  local resting = ring.resting()
+  local layer, close_dialog = controls.open({
+    push = function(settings)
+      return ctx:push(settings)
+    end,
+    finish = function(confirmed)
+      local title = trx.inventory_ring.mode() == trx.inventory_ring.Mode.TITLE
+      if confirmed and not title then
+        ctx:confirm()
+      else
+        close(ctx)
+      end
+    end,
+    visible = resting,
+    wrap = ring.while_resting,
+  })
+  ctx:on_end(function()
+    close_dialog()
+    resting:stop()
+  end)
+  return layer
+end
+
 function M.setup()
   trx.events.on_level_unload(function()
     places = {}
   end)
+  trx.ui.screens.define(
+    trx.ui.Screen.RING_ENTRY,
+    open_controls,
+    { object = trx.catalog.objects.CONTROLS_OPTION }
+  )
   for object, which in pairs({
     [trx.catalog.objects.GRAPHICS_OPTION] = "graphics",
     [trx.catalog.objects.SOUND_OPTION] = "sound",
