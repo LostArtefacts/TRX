@@ -4,6 +4,7 @@
 #include <trx/game/input/raw.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/module.h>
+#include <trx/game/ui/touch_overlay.h>
 
 #include <lauxlib.h>
 
@@ -385,6 +386,21 @@ static int M_L_InputListen(lua_State *const L)
     return 0;
 }
 
+// trxc.input.touch_select(enabled: boolean)
+//
+// Shows every on-screen control and reads a touch as the one to bind, while a
+// capture binds a role on the touch controls.
+static int M_L_InputTouchSelect(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    if (lua_toboolean(L, 1)) {
+        TouchOverlay_EnterSelectionMode();
+    } else {
+        TouchOverlay_ExitSelectionMode();
+    }
+    return 0;
+}
+
 // trxc.input.is_listening(): boolean
 static int M_L_InputIsListening(lua_State *const L)
 {
@@ -435,6 +451,7 @@ static const luaL_Reg m_Module[] = {
     { "reset_layout", M_L_InputResetLayout },
     { "role_name", M_L_InputRoleName },
     { "suppress", M_L_InputSuppress },
+    { "touch_select", M_L_InputTouchSelect },
     { "unbind", M_L_InputUnbind },
     { nullptr, nullptr },
 };

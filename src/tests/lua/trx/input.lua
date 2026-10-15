@@ -288,6 +288,27 @@ test("a capture takes nothing until a key is pressed", function()
   assert(fake.calls().bind.count == 1, "a cancelled capture reads nothing")
 end)
 
+test("a capture on the touch controls shows them until it ends", function()
+  fake.set_anything_down(false)
+  local capture = input.capture(Role.JUMP, {
+    backend = input.Backend.TOUCH,
+    layout = input.Layout.CUSTOM_1,
+  })
+  tick()
+  assert(fake.calls().touch_select.selecting == true)
+  capture:cancel()
+  assert(fake.calls().touch_select.selecting == false)
+  assert(fake.calls().touch_select.count == 2)
+end)
+
+test("a capture on the keyboard leaves the touch controls", function()
+  fake.set_anything_down(false)
+  local capture = input.capture(Role.JUMP, { layout = input.Layout.CUSTOM_1 })
+  tick()
+  capture:cancel()
+  assert(fake.calls().touch_select.count == 0)
+end)
+
 test("a capture writes no read-only binding", function()
   raises(function()
     input.capture(Role.JUMP, { layout = input.Layout.DEFAULT })

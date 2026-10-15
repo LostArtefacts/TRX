@@ -624,6 +624,7 @@ function M.capture(role, opts, done)
   local capture = setmetatable({}, Capture)
   local was_listening = raw.is_listening()
   local waiting_for_release = true
+  local selecting = false
   local listener = nil --[[@as trx.signal.Listener?]]
 
   local function finish(bound)
@@ -632,6 +633,9 @@ function M.capture(role, opts, done)
     end
     listener:detach()
     listener = nil
+    if selecting then
+      raw.touch_select(false)
+    end
     raw.listen(was_listening)
     if done ~= nil then
       done(bound)
@@ -646,6 +650,12 @@ function M.capture(role, opts, done)
       end
       waiting_for_release = false
       raw.listen(true)
+      -- The on-screen controls are bound by touching them, so every one of
+      -- them shows until the capture ends.
+      selecting = backend == M.Backend.TOUCH
+      if selecting then
+        raw.touch_select(true)
+      end
     elseif raw.bind_pressed(role, slot, backend, layout) then
       finish(true)
     end
