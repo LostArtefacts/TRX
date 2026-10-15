@@ -66,6 +66,13 @@ test("format keeps every argument under strict", function()
   assert(result == "1 of 5", result)
 end)
 
+test("the languages and the dubs come with their names", function()
+  assert(table.concat(trx.locale.text_languages(), ",") == "en,fr")
+  assert(table.concat(trx.locale.voice_languages(), ",") == "fr")
+  assert(trx.locale.language_name("fr") == "Français")
+  assert(trx.locale.language_name("xx") == nil)
+end)
+
 test("reload reports whether the language files came back", function()
   assert(trx.locale.reload() == true)
 end)

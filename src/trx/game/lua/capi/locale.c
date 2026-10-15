@@ -3,7 +3,9 @@
 // manipulates them, and trx/game/game_strings, which is this - and a third
 // would shadow Lua's own string library besides.
 
+#include <trx/core/memory.h>
 #include <trx/core/result.h>
+#include <trx/core/vector.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/locale/common.h>
@@ -49,10 +51,51 @@ static int M_L_LocaleReload(lua_State *const L)
     return 1;
 }
 
+static int M_PushAvailable(lua_State *const L, const LOCALE_ROLE role)
+{
+    VECTOR *const codes = Locale_GetAvailable(role);
+    lua_createtable(L, codes->count, 0);
+    for (int32_t i = 0; i < codes->count; i++) {
+        char *const code = *(char **)Vector_Get(codes, i);
+        lua_pushstring(L, code);
+        lua_rawseti(L, -2, i + 1);
+        Memory_Free(code);
+    }
+    Vector_Free(codes);
+    return 1;
+}
+
+// trxc.locale.text_languages(): string[]
+static int M_L_LocaleTextLanguages(lua_State *const L)
+{
+    return M_PushAvailable(L, LOCALE_ROLE_TEXT);
+}
+
+// trxc.locale.voice_languages(): string[]
+static int M_L_LocaleVoiceLanguages(lua_State *const L)
+{
+    return M_PushAvailable(L, LOCALE_ROLE_AUDIO);
+}
+
+// trxc.locale.language_name(code: string): string?
+static int M_L_LocaleLanguageName(lua_State *const L)
+{
+    const char *const name = Locale_GetLanguageName(luaL_checkstring(L, 1));
+    if (name == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, name);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "declare", M_L_LocaleDeclare },
     { "get", M_L_LocaleGet },
+    { "language_name", M_L_LocaleLanguageName },
     { "reload", M_L_LocaleReload },
+    { "text_languages", M_L_LocaleTextLanguages },
+    { "voice_languages", M_L_LocaleVoiceLanguages },
     { nullptr, nullptr },
 };
 
