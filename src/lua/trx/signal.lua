@@ -68,6 +68,10 @@ local derive
 ---@field private _listeners table<integer, fun(value: any)>
 ---@field private _next_id integer
 ---@field private _bound trx.signal.Listener[]?
+---@field private _dormant boolean?
+---@field private _count integer?
+---@field private _pull fun(): any
+---@field private _attach fun()
 ---@operator band(trx.signal.Signal): trx.signal.Signal
 ---@operator bor(trx.signal.Signal): trx.signal.Signal
 ---@operator bnot: trx.signal.Signal
@@ -99,6 +103,7 @@ local Signal = h.class("signal.Signal", {
 ---@field private __index trx.signal.Listener
 ---@field private _signal trx.signal.Signal
 ---@field private _id integer
+---@field private _keeps boolean?
 local Listener = h.class("signal.Listener")
 
 local function new_signal(value)
@@ -109,11 +114,12 @@ local function new_signal(value)
   }, Signal)
 end
 
--- How many listeners each derived signal has. The count holds the signal, so
--- that a signal with a listener attached keeps following its sources even
--- where nothing else holds it.
+-- How many listeners keep each derived signal alive. The table holds the
+-- signal, so that a signal with a listener attached keeps following its
+-- sources even where nothing else holds it. The links between derived signals
+-- are not counted.
 ---@type table<trx.signal.Signal, integer>
-local heard = {}
+local kept = {}
 
 -- Derived signals keep the listeners they attach to their sources, so they can
 -- detach them later. Level-script signals are stopped when the level ends.
@@ -143,6 +149,32 @@ local function while_held(derived, listeners, update)
   end
 end
 
+-- Attaches a listener. One that `keeps` the signal holds a derived signal
+-- alive while it listens; the link from a derived signal to its sources does
+-- not, because the derived signal holds its sources itself. A dormant derived
+-- signal follows its sources again once anything listens.
+local function attach(signal, fn, keeps)
+  local listeners = signal._listeners
+  local id = signal._next_id
+  signal._next_id = id + 1
+  listeners[id] = fn
+  signal._count = (signal._count or 0) + 1
+  if signal._bound ~= nil then
+    if signal._dormant then
+      signal._dormant = nil
+      signal._value = signal._pull()
+      signal._attach()
+    end
+    if keeps then
+      kept[signal] = (kept[signal] or 0) + 1
+    end
+  end
+  return setmetatable(
+    { _signal = signal, _id = id, _keeps = keeps or nil },
+    Listener
+  )
+end
+
 -- Creates a derived signal by reading one or more source signals.
 derive = function(sources, fn)
   local count = #sources
@@ -157,12 +189,19 @@ derive = function(sources, fn)
 
   local derived = new_signal(value_of())
   local listeners = {}
+  -- The sources reach the signal through a weak reference alone, and not
+  -- through the function that works its value out, so a source that outlives
+  -- the signal keeps nothing that the function reads alive.
   local recompute = while_held(derived, listeners, function(held)
-    held:set(value_of())
+    held:set(held._pull())
   end)
-  for i, source in ipairs(sources) do
-    listeners[i] = source:on(recompute)
+  derived._pull = value_of
+  derived._attach = function()
+    for i, source in ipairs(sources) do
+      listeners[i] = attach(source, recompute, false)
+    end
   end
+  derived._attach()
   return bind(derived, listeners)
 end
 
@@ -194,6 +233,9 @@ end
 ---@return any # What it holds.
 function Signal:get()
   report(self)
+  if self._dormant then
+    self._value = self._pull()
+  end
   return self._value
 end
 
@@ -234,14 +276,7 @@ end
 ---@trx.arg fn.value The new value.
 ---@return trx.signal.Listener # The listener handle used to detach later.
 function Signal:on(fn)
-  local listeners = self._listeners
-  local id = self._next_id
-  self._next_id = id + 1
-  listeners[id] = fn
-  if self._bound ~= nil then
-    heard[self] = (heard[self] or 0) + 1
-  end
-  return setmetatable({ _signal = self, _id = id }, Listener)
+  return attach(self, fn, true)
 end
 
 ---Creates a signal by applying a function to this signal's value.
@@ -268,6 +303,7 @@ function Signal:stop()
     listener:detach()
   end
   self._bound = nil
+  self._dormant = nil
   return true
 end
 
@@ -286,13 +322,25 @@ function Listener:detach()
   local signal = self._signal
   local listeners = signal._listeners
   local id = self._id
-  local was_listening = listeners[id] ~= nil
-  listeners[id] = nil
-  local count = heard[signal]
-  if was_listening and count ~= nil then
-    heard[signal] = count > 1 and count - 1 or nil
+  if listeners[id] == nil then
+    return false
   end
-  return was_listening
+  listeners[id] = nil
+  signal._count = (signal._count or 1) - 1
+  local count = kept[signal]
+  if self._keeps and count ~= nil then
+    kept[signal] = count > 1 and count - 1 or nil
+  end
+  -- A derived signal that nothing listens to any more lets go of its sources
+  -- at once, rather than when a source next changes, which may be never. It
+  -- works its value out again when read.
+  if signal._count == 0 and signal._attach ~= nil and signal._bound ~= nil then
+    for _, bound in ipairs(signal._bound) do
+      bound:detach()
+    end
+    signal._dormant = true
+  end
+  return true
 end
 
 -- Creates a polled signal that belongs to no level. An engine module keeps one

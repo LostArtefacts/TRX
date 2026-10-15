@@ -409,6 +409,37 @@ test("a derived signal goes once its last listener detaches", function()
   assert(listeners_of(source) == 0, listeners_of(source))
 end)
 
+test("a chain of derived signals lets go of its source at once", function()
+  local source = signal.new(1)
+  local listener = source
+    :map(function(value)
+      return value * 2
+    end)
+    :map(function(value)
+      return value + 1
+    end)
+    :on(function() end)
+  assert(listeners_of(source) == 1)
+  listener:detach()
+  assert(listeners_of(source) == 0, listeners_of(source))
+end)
+
+test("a derived signal nothing listens to still reads its sources", function()
+  local source = signal.new(1)
+  local doubled = source:map(function(value)
+    return value * 2
+  end)
+  doubled:on(function() end):detach()
+  source:set(5)
+  assert(doubled:get() == 10, doubled:get())
+  local heard = nil
+  doubled:on(function(value)
+    heard = value
+  end)
+  source:set(7)
+  assert(heard == 14, heard)
+end)
+
 test("a polled signal that nothing holds stops reading", function()
   local reads = 0
   do
