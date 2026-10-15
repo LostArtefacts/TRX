@@ -26,6 +26,10 @@ saved and loaded with the player's own, and shown in the settings menu where
 the declaration asks for. A setting a game's `scripts/_game.lua` declares
 belongs to that game and goes when it does.
 
+### Properties
+
+- <a id="config.signals.changed" name="config.signals.changed"></a>**`trx.config.signals.changed`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when any setting changes. It holds a count that goes up with each change, whichever settings moved. A widget that follows several settings at once listens to this rather than to each of them. *(read-only)*
+
 ### Structures
 
 - <a id="config.Shape" name="config.Shape"></a>[lua]`trx.config.Shape`
@@ -91,6 +95,9 @@ belongs to that game and goes when it does.
       Returns: boolean. Whether it was still watching.
 
 ### Functions
+
+- <a id="config.signals" name="config.signals"></a>[lua]`trx.config.signals`  
+  What the settings tell a script about themselves.
 
 - <a id="config.get" name="config.get"></a>[lua]`trx.config.get(key)`  
   Reads a setting. The value comes back as the type the option is declared

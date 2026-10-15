@@ -108,6 +108,7 @@ trxc = {}
 ---@field labels fun(key: string): { value: string, label: string, enabled: boolean }[]
 ---@field list fun(): table<string, any>
 ---@field off_change fun(id: integer): boolean
+---@field on_any_change fun(fn: fun())
 ---@field on_change fun(key: string, fn: fun(value: any)): integer
 ---@field on_change_lasting fun(key: string, fn: fun(value: any)): integer
 ---@field override fun(key: string, value: any)

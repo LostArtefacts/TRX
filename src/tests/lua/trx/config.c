@@ -63,7 +63,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "config",
-        .deps = { "locale", "math", nullptr },
+        .deps = { "locale", "math", "signal", nullptr },
         .tests = "trx/config",
         .push_fake = M_PushFake,
     };

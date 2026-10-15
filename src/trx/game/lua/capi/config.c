@@ -53,6 +53,7 @@ static VECTOR *m_Watchers = nullptr;
 static int32_t m_NextWatcherId = 1;
 static int32_t m_ChangeListener = -1;
 static int32_t m_DispatchDepth = 0;
+static int32_t m_AnyChangeRef = LUA_NOREF;
 
 static CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
 {
@@ -576,12 +577,29 @@ static void M_CompactWatchers(lua_State *const L)
     }
 }
 
+// Says that settings moved, to the one function that hears of every change.
+static void M_CallAnyChange(lua_State *const L)
+{
+    if (m_AnyChangeRef == LUA_NOREF) {
+        return;
+    }
+    lua_rawgeti(L, LUA_REGISTRYINDEX, m_AnyChangeRef);
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        Console_ShowError("config change hook failed: %s", lua_tostring(L, -1));
+        lua_pop(L, 1);
+    }
+}
+
 // Says a setting moved, to whoever asked about that one.
 static void M_HandleChange(const EVENT *const event, void *const user_data)
 {
     lua_State *const L = m_L;
     const CONFIG_CHANGE *const change = event->data;
-    if (L == nullptr || m_Watchers == nullptr || change == nullptr) {
+    if (L == nullptr || change == nullptr) {
+        return;
+    }
+    M_CallAnyChange(L);
+    if (m_Watchers == nullptr) {
         return;
     }
     if (m_DispatchDepth >= M_MAX_DISPATCH_DEPTH) {
@@ -684,6 +702,21 @@ static int M_L_ConfigOffChange(lua_State *const L)
     return 1;
 }
 
+// trxc.config.on_any_change(fn: fun())
+//
+// Replaces the one function that is called once for each batch of changed
+// settings, whichever settings they are.
+static int M_L_ConfigOnAnyChange(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    if (m_AnyChangeRef != LUA_NOREF) {
+        luaL_unref(L, LUA_REGISTRYINDEX, m_AnyChangeRef);
+    }
+    lua_pushvalue(L, 1);
+    m_AnyChangeRef = luaL_ref(L, LUA_REGISTRYINDEX);
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get", M_L_ConfigGet },
     { "describe", M_L_ConfigDescribe },
@@ -700,6 +733,7 @@ static const luaL_Reg m_Module[] = {
     { "declare", M_L_ConfigDeclare },
     { "on_change", M_L_ConfigOnChange },
     { "on_change_lasting", M_L_ConfigOnChangeLasting },
+    { "on_any_change", M_L_ConfigOnAnyChange },
     { "off_change", M_L_ConfigOffChange },
     { nullptr, nullptr },
 };
@@ -744,6 +778,7 @@ static void M_Shutdown(void)
         m_ChangeListener = -1;
     }
     m_DispatchDepth = 0;
+    m_AnyChangeRef = LUA_NOREF;
     m_L = nullptr;
 }
 
