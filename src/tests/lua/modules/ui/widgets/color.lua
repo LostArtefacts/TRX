@@ -45,4 +45,14 @@ test("a slider draws a marker over its colors", function()
   assert(scene:match("gradient"), scene)
 end)
 
+test("a swatch that is not shown draws nothing", function()
+  local scene = scene_of(color.swatch({
+    color = trx.math.color("123456"),
+    w = 13,
+    h = 13,
+    shown = false,
+  }))
+  assert(not scene:match("color=123456"), scene)
+end)
+
 return h.report()
