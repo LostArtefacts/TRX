@@ -777,6 +777,17 @@ static int M_L_UIBarThemeKey(lua_State *const L)
     return 1;
 }
 
+// trxc.ui.is_ps1_bar(type: trx.ui.BarType): boolean
+static int M_L_UIIsPS1Bar(lua_State *const L)
+{
+    const lua_Integer type = luaL_checkinteger(L, 1);
+    if (type < 0 || type >= UI_BAR_NUMBER_OF) {
+        return luaL_error(L, "unknown bar type");
+    }
+    lua_pushboolean(L, UI_Settings_IsBarLookPS1((UI_BAR_TYPE)type));
+    return 1;
+}
+
 // trxc.ui.bar_scale(): number
 static int M_L_UIBarScale(lua_State *const L)
 {
@@ -826,6 +837,7 @@ static const luaL_Reg m_Module[] = {
     { "get_safe_width", M_L_UISafeWidth },
     { "bar_theme", M_L_UIBarTheme },
     { "bar_theme_key", M_L_UIBarThemeKey },
+    { "is_ps1_bar", M_L_UIIsPS1Bar },
     { "bar_scale", M_L_UIBarScale },
     { "drawn_text_scale", M_L_UIDrawnTextScale },
     { "reserve", M_L_UIReserve },
