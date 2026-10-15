@@ -376,4 +376,13 @@ test("a weapon nothing drives is claimed all the same", function()
   end, "patch it")
 end)
 
+test("a weapon says how it fires, and the flags cannot be written", function()
+  local weapon = trx.weapons.all[1]
+  assert(type(weapon.is_machine_gun) == "boolean")
+  assert(type(weapon.is_launcher) == "boolean")
+  h.raises(function()
+    weapon.is_launcher = true
+  end)
+end)
+
 return h.report()
