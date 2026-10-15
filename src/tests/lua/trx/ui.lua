@@ -132,6 +132,17 @@ test("a pose takes up to sixteen steps", function()
   end)
 end)
 
+test("a heading outline draws the outline alone", function()
+  local text = table.concat(
+    fake.paint(function()
+      primitive.panel(0, 0, 0, 10, 10, trx.ui.FrameStyle.HEADING_OUTLINE)
+    end),
+    "\n"
+  )
+  assert(text:match("text_outline"), text)
+  assert(not text:match("text_background"), text)
+end)
+
 test("darkening and a background go behind the interface", function()
   local lines = fake.paint(function()
     primitive.background(nil, true, 0.5)

@@ -11,6 +11,7 @@ typedef enum {
     UI_FRAME_DIALOG_HEADING,
     UI_FRAME_SELECTED_OPTION,
     UI_FRAME_OUTLINE_ONLY,
+    UI_FRAME_HEADING_OUTLINE,
 } UI_FRAME_STYLE;
 
 // The text style a frame style draws its background and its outline in.

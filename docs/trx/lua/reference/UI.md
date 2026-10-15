@@ -128,6 +128,8 @@ arrow, and `\{button left}` draws the button the player has bound.
         The box around the option the player is on.
     - `trx.ui.FrameStyle.OUTLINE`  
         An outline with nothing behind it.
+    - `trx.ui.FrameStyle.HEADING_OUTLINE`  
+        The outline of the strip a dialog puts its title in, with nothing behind it, as the game draws around a color swatch.
 
 - <a id="ui.BarType" name="ui.BarType"></a>[lua]`trx.ui.BarType`
 

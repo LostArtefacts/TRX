@@ -176,6 +176,9 @@ local FrameStyle = {
   SELECTED = h.IntegerConstant,
   ---An outline with nothing behind it.
   OUTLINE = h.IntegerConstant,
+  ---The outline of the strip a dialog puts its title in, with nothing behind
+  ---it, as the game draws around a color swatch.
+  HEADING_OUTLINE = h.IntegerConstant,
 }
 M.FrameStyle = h.enum("ui.FrameStyle", "UI_FRAME_STYLE", FrameStyle)
 

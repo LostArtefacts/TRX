@@ -586,7 +586,7 @@ static int M_L_UIPanel(lua_State *const L)
 {
     M_CheckPainting(L);
     const lua_Integer style = luaL_checkinteger(L, 6);
-    if (style < 0 || style > UI_FRAME_OUTLINE_ONLY) {
+    if (style < 0 || style > UI_FRAME_HEADING_OUTLINE) {
         return luaL_error(L, "unknown frame style");
     }
 
