@@ -199,6 +199,88 @@ static int M_L_ConfigDescribe(lua_State *const L)
     return 1;
 }
 
+// trxc.config.labels(key: string): { value: string, label: string, enabled: boolean }[]
+static int M_L_ConfigLabels(lua_State *const L)
+{
+    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    if (option->value.type == TVT_ENUM) {
+        const int32_t count = EnumMap_GetValueCount(option->enum_map);
+        lua_createtable(L, count, 0);
+        for (int32_t i = 0; i < count; i++) {
+            const int32_t value = EnumMap_GetValueAt(option->enum_map, i);
+            const char *const label = EnumMap_GetLabel(option->enum_map, value);
+            lua_createtable(L, 0, 3);
+            M_PushEnumName(L, EnumMap_ToString(option->enum_map, value));
+            lua_setfield(L, -2, "value");
+            lua_pushstring(L, label != nullptr ? label : "");
+            lua_setfield(L, -2, "label");
+            lua_pushboolean(L, true);
+            lua_setfield(L, -2, "enabled");
+            lua_rawseti(L, -2, i + 1);
+        }
+        return 1;
+    }
+    if (option->value.type == TVT_DYNAMIC_ENUM) {
+        const void *const token = Config_Option_GetEnumKey(option);
+        const int32_t count = DynamicEnum_GetValueCount(token);
+        lua_createtable(L, count, 0);
+        int32_t n = 0;
+        for (int32_t i = 0; i < count; i++) {
+            const char *const value = DynamicEnum_GetValueAt(token, i);
+            if (value == nullptr) {
+                continue;
+            }
+            const char *const label = DynamicEnum_GetLabelAt(token, i);
+            lua_createtable(L, 0, 3);
+            lua_pushstring(L, value);
+            lua_setfield(L, -2, "value");
+            lua_pushstring(L, label != nullptr ? label : value);
+            lua_setfield(L, -2, "label");
+            lua_pushboolean(L, DynamicEnum_IsValueEnabled(token, value));
+            lua_setfield(L, -2, "enabled");
+            lua_rawseti(L, -2, ++n);
+        }
+        return 1;
+    }
+    lua_newtable(L);
+    return 1;
+}
+
+// trxc.config.to_string(key: string, human?: boolean, value?: any): string?
+static int M_L_ConfigToString(lua_State *const L)
+{
+    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    const bool human = lua_toboolean(L, 2);
+    if (lua_isnoneornil(L, 3)) {
+        const char *const text = Config_Option_GetValueAsString(option, human);
+        lua_pushstring(L, text != nullptr ? text : "");
+        return 1;
+    }
+    const char *const value = M_ValueAsString(L, 3);
+    if (!Config_Option_AcceptsString(option, value)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    char *const text = Config_Option_NormalizeValueString(option, value, human);
+    lua_pushstring(L, text);
+    Memory_Free(text);
+    return 1;
+}
+
+// trxc.config.is_hidden(key: string): boolean
+static int M_L_ConfigIsHidden(lua_State *const L)
+{
+    lua_pushboolean(L, Config_Option_IsHidden(M_GetOption(L, 1)));
+    return 1;
+}
+
+// trxc.config.is_default(key: string): boolean
+static int M_L_ConfigIsDefault(lua_State *const L)
+{
+    lua_pushboolean(L, Config_Option_IsAtDefault(M_GetOption(L, 1)));
+    return 1;
+}
+
 // trxc.config.set(key: string, value: any, force?: boolean)
 static int M_L_ConfigSet(lua_State *const L)
 {
@@ -609,7 +691,11 @@ static const luaL_Reg m_Module[] = {
     { "reset", M_L_ConfigReset },
     { "override", M_L_ConfigOverride },
     { "restore", M_L_ConfigRestore },
+    { "is_default", M_L_ConfigIsDefault },
+    { "is_hidden", M_L_ConfigIsHidden },
     { "is_overridden", M_L_ConfigIsOverridden },
+    { "labels", M_L_ConfigLabels },
+    { "to_string", M_L_ConfigToString },
     { "list", M_L_ConfigList },
     { "declare", M_L_ConfigDeclare },
     { "on_change", M_L_ConfigOnChange },

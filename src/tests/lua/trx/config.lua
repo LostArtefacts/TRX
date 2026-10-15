@@ -178,6 +178,40 @@ test("an enum value is taken in either spelling", function()
   assert(trx.config.get("visuals.shadow_type") == "extra_dark")
 end)
 
+test("labels list every value an enum takes", function()
+  local values = {}
+  for _, entry in ipairs(trx.config.labels("visuals.shadow_type")) do
+    values[#values + 1] = entry.value
+    assert(entry.enabled == true, entry.value)
+    assert(type(entry.label) == "string", entry.value)
+  end
+  local described = trx.config.describe("visuals.shadow_type").values
+  table.sort(values)
+  table.sort(described)
+  assert(table.concat(values, ",") == table.concat(described, ","))
+  assert(#trx.config.labels("visuals.fov") == 0)
+end)
+
+test("to_string writes a value as stored or as shown", function()
+  trx.config.set("audio.enable_music", true)
+  assert(trx.config.to_string("audio.enable_music") == "true")
+  assert(
+    trx.config.to_string("visuals.shadow_type", { value = "sprite" })
+      == "sprite"
+  )
+  assert(
+    trx.config.to_string("visuals.shadow_type", { value = "nonsense" }) == nil
+  )
+end)
+
+test("is_default follows the value back to its default", function()
+  trx.config.set("visuals.fov", 70)
+  assert(not trx.config.is_default("visuals.fov"))
+  trx.config.reset("visuals.fov")
+  assert(trx.config.is_default("visuals.fov"))
+  assert(not trx.config.is_hidden("visuals.fov"))
+end)
+
 test("describe tells the shape of a setting", function()
   assert(trx.config.describe("audio.enable_music").kind == "boolean")
   assert(trx.config.describe("visuals.fov").kind == "integer")
