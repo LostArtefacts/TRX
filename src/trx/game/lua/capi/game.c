@@ -583,11 +583,11 @@ static int M_L_GameGlobe(lua_State *const L)
         lua_setfield(L, -2, "completion_level");
 
         lua_newtable(L);
-        int32_t count = 0;
+        int32_t prereq_count = 0;
         for (int32_t bit = 0; bit < 32; bit++) {
             if ((entry->prereq_mask & (1u << bit)) != 0) {
                 lua_pushinteger(L, bit + 1);
-                lua_rawseti(L, -2, ++count);
+                lua_rawseti(L, -2, ++prereq_count);
             }
         }
         lua_setfield(L, -2, "prereqs");
