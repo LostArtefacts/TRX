@@ -2243,6 +2243,20 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'modules/ui/screens/settings',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'src': ['fakes/path.c'],
+  'engine': ['game/lua/capi/json.c', 'gl/enum.c'],
+  'stubs': false,
+}
+
+unit_tests += {
   'name': 'modules/ui/scroll',
   'bundles': [
     b_lua_surface,

@@ -1,5 +1,4 @@
 local raw = trxc.config
-local raw_settings = trxc.settings
 local h = require("trx.internal.helpers")
 
 require("trx.locale")
@@ -286,6 +285,30 @@ function M.to_string(key, options)
   return raw.to_string(key, options.human == true, options.value)
 end
 
+local ROW_CALLBACKS = {
+  "format_value",
+  "is_available",
+  "is_visible",
+  "can_change_value",
+  "request_change_value",
+}
+
+-- The rows declared so far, in order.
+local declared_rows = {}
+
+-- Raises where a row names no tab, or gives something other than a function
+-- for a callback. Which tabs exist is the settings menu's to say.
+local function check_row(row)
+  if type(row.tab) ~= "string" then
+    error("a settings row needs a tab", 3)
+  end
+  for _, name in ipairs(ROW_CALLBACKS) do
+    if row[name] ~= nil and type(row[name]) ~= "function" then
+      error(("settings row field '%s' must be a function"):format(name), 3)
+    end
+  end
+end
+
 ---Adds a setting of the game's own.
 ---
 ---The declaration carries no text. The engine derives `settings/<key>/title`,
@@ -314,10 +337,30 @@ end
 ---```
 ---@param spec trx.config.Shape The setting's declaration.
 function M.declare(spec)
+  if spec.ui ~= nil then
+    check_row(spec.ui)
+  end
   raw.declare(spec)
   if spec.ui ~= nil then
-    raw_settings.add_row(spec.key, spec.ui)
+    declared_rows[#declared_rows + 1] = { key = spec.key, row = spec.ui }
   end
+end
+
+---A setting a script declared with a row in the settings menu.
+---@trx.record
+---@class trx.config.DeclaredRow
+---@field key string The setting.
+---@field row trx.config.Row The row, as the declaration gave it.
+
+---The rows that scripts asked for in the settings menu, in the order the
+---settings were declared. The settings menu reads them to place each row.
+---@return trx.config.DeclaredRow[] # The rows.
+function M.declared_rows()
+  local result = {}
+  for i, entry in ipairs(declared_rows) do
+    result[i] = { key = entry.key, row = entry.row }
+  end
+  return result
 end
 
 -- What on_change hands back. The engine keys a watcher by a number, and the

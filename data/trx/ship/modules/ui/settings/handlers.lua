@@ -468,12 +468,69 @@ function M.get(key)
   return HANDLERS[key] or NONE
 end
 
--- Gives a setting's row a handler of its own, as a script that declares a
--- setting does, or takes it away for nil.
+-- Calls one of a declared row's functions. A function that raises is logged
+-- and answered as though the row had none, so that a broken script does not
+-- stop the dialog.
+local function call(key, row, name, ...)
+  local ok, result = pcall(row[name], ...)
+  if not ok then
+    trx.log.error(
+      ("settings row %s: %s handler failed: %s"):format(key, name, result)
+    )
+    return false, nil
+  end
+  return true, result
+end
+
+local function predicate(key, row, name)
+  if row[name] == nil then
+    return nil
+  end
+  return function(_, dir)
+    local ok, result = call(key, row, name, get(key), dir)
+    return not ok or result == true
+  end
+end
+
+-- The handler of a row that a script declared with its setting.
 ---@param key string
----@param handler? table
-function M.set(key, handler)
-  HANDLERS[key] = handler
+---@param row trx.config.Row
+---@return table
+function M.from_row(key, row)
+  local available = predicate(key, row, "is_available")
+  local visible = predicate(key, row, "is_visible")
+  local handler = {
+    slow = row.delta_slow,
+    fast = row.delta_fast,
+    can_change = predicate(key, row, "can_change_value"),
+    available = available and function()
+      return available()
+    end,
+    visible = visible and function()
+      return visible()
+    end,
+  }
+  if row.format_value ~= nil then
+    handler.key_format = function(value)
+      local ok, text = call(key, row, "format_value", value)
+      return ok and text ~= nil and tostring(text) or nil
+    end
+  end
+  if row.request_change_value ~= nil then
+    handler.takes_over = function(_, dir)
+      local ok, taken = call(key, row, "request_change_value", get(key), dir)
+      return ok and taken == true
+    end
+  end
+  return handler
+end
+
+-- Gives the rows that scripts declared the handlers that their declarations
+-- describe.
+function M.add_declared()
+  for _, entry in ipairs(trx.config.declared_rows()) do
+    HANDLERS[entry.key] = M.from_row(entry.key, entry.row)
+  end
 end
 
 return M

@@ -188,6 +188,7 @@
 - Added `scaled` to `trx.ui.widgets.Resize`, which gives a size at the default text size
 - Added `preview` to `trx.ui.widgets.Bar`, which sizes a bar by the text around it
 - Added `trx.strings.equivalent`, which says whether two texts differ only in case
+- Added `trx.config.declared_rows`, which lists the settings rows that scripts declared
 - Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
 - Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
