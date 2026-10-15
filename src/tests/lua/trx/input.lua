@@ -570,4 +570,8 @@ test("a grab still reads the keyboard", function()
   grab:release()
 end)
 
+test("a device with no touchscreen says so", function()
+  assert(trx.input.has_touchscreen == false)
+end)
+
 return h.report()

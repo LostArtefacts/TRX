@@ -276,6 +276,7 @@ trxc = {}
 ---@field clear_suppressed fun()
 ---@field grab_is_held fun(role: trx.input.Role): boolean
 ---@field grab_is_pressed fun(role: trx.input.Role): boolean
+---@field has_touchscreen fun(): boolean
 ---@field hold fun(held?: boolean)
 ---@field hold_off fun(role: trx.input.Role)
 ---@field hold_off_skip fun(context: trx.input.SkipContext)

@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/input.h>
+#include <trx/game/input/backends/touch.h>
 #include <trx/game/input/raw.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/module.h>
@@ -385,6 +386,13 @@ static int M_L_InputIsListening(lua_State *const L)
     return 1;
 }
 
+// trxc.input.has_touchscreen(): boolean
+static int M_L_InputHasTouchscreen(lua_State *const L)
+{
+    lua_pushboolean(L, Touch_HasHardwareSupport());
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "axis", M_L_InputAxis },
     { "backend", M_L_InputBackend },
@@ -392,6 +400,7 @@ static const luaL_Reg m_Module[] = {
     { "clear_suppressed", M_L_InputClearSuppressed },
     { "grab_is_held", M_L_InputGrabIsHeld },
     { "grab_is_pressed", M_L_InputGrabIsPressed },
+    { "has_touchscreen", M_L_InputHasTouchscreen },
     { "hold", M_L_InputHold },
     { "hold_off", M_L_InputHoldOff },
     { "hold_off_skip", M_L_InputHoldOffSkip },

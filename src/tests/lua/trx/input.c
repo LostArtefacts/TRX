@@ -399,6 +399,12 @@ bool InputRaw_IsAxisKnown(const char *const axis)
     return false;
 }
 
+// No screen to touch here.
+bool Touch_HasHardwareSupport(void)
+{
+    return false;
+}
+
 bool Input_IsBackendEnabled(const INPUT_BACKEND backend)
 {
     return backend == INPUT_BACKEND_KEYBOARD;
