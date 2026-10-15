@@ -143,4 +143,45 @@ test("the dialog keeps its size whichever tab is active", function()
   d:close()
 end)
 
+-- The text of every label under a widget, in order.
+local function texts(widget, out)
+  out = out or {}
+  if not widget:is_shown() then
+    return out
+  end
+  local text = rawget(widget, "text")
+  if text ~= nil then
+    out[#out + 1] = type(text) == "table" and text:get() or text
+  end
+  local child = rawget(widget, "child")
+  if child ~= nil then
+    texts(child, out)
+  end
+  for _, other in ipairs(rawget(widget, "children") or {}) do
+    texts(other, out)
+  end
+  return out
+end
+
+test("the rows show the settings of the active tab", function()
+  local d, layer = open({ "sound_volume", "sound_misc" })
+  fake.scene()
+  local function has(title)
+    for _, text in ipairs(texts(d.widget)) do
+      if text:find(title, 1, true) then
+        return true
+      end
+    end
+    return false
+  end
+  local volume = trx.locale.get("settings/audio.master_volume/title")
+  local misc = trx.locale.get("settings/audio.enable_music_in_menu/title")
+  assert(has(volume) and not has(misc))
+  press(Role.MENU_RIGHT)
+  fake.scene()
+  assert(has(misc) and not has(volume))
+  layer:close()
+  d:close()
+end)
+
 return h.report()

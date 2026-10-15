@@ -12,6 +12,7 @@
 --   ctx:push({ root = settings_dialog.widget, place = dialog.PLACE })
 
 local metrics = require("common.ui.metrics")
+local editor = require("common.ui.settings.editor")
 local value = require("common.ui.value")
 local tab_switch = require("common.ui.widgets.tab_switch")
 local window = require("common.ui.widgets.window")
@@ -24,7 +25,6 @@ local MEASURE_SLACK = 1.08
 local TAB_BAR_SPACING = 8
 local FOOTER_SPACING = 5
 local MIN_VISIBLE_ROWS = 5
-local MAX_VISIBLE_ROWS = 16
 
 local Role = trx.input.Role
 
@@ -44,7 +44,7 @@ local function visible_rows()
   local line = metrics.line_height()
   local room = trx.ui.safe_area.height / trx.ui.text_scale
   local rows = math.floor((room - chrome_height(line)) / line)
-  return math.max(MIN_VISIBLE_ROWS, math.min(rows, MAX_VISIBLE_ROWS))
+  return math.max(MIN_VISIBLE_ROWS, math.min(rows, metrics.MAX_DIALOG_ROWS))
 end
 
 -- The size of the dialog: how wide its rows are, how many it shows, and
@@ -105,7 +105,7 @@ end
 ---@class common.ui.settings.Tab
 ---@field title string The name on the tab bar.
 ---@field scroll common.ui.Scroll The tab's rows.
----@field widget trx.ui.Widget The rows.
+---@field widget? trx.ui.Widget What the tab shows. An editor tab has none of its own and shows the rows the dialog shares.
 ---@field footer trx.ui.Widget The hints under the dialog.
 ---@field widths fun(self: common.ui.settings.Tab): number, number
 ---@field control fun(self: common.ui.settings.Tab, keys: trx.ui.LayerKeys): boolean, boolean
@@ -240,16 +240,37 @@ function M.new(settings)
   apply(size:get())
   self.listeners[#self.listeners + 1] = size:on(apply)
 
-  local contents, footers = {}, {}
+  -- The editor tabs share one set of rows. A tab of another kind brings its
+  -- own widget.
+  local contents = {
+    trx.ui.widgets.Stack({
+      align = trx.ui.HAlign.SPAN,
+      shown = self.active:map(function(active)
+        return self.tabs[active].widget == nil
+      end),
+      children = {
+        editor.rows({
+          tabs = self.tabs,
+          active = self.active,
+          editing = self.editing,
+          width = self.width,
+          changed = self.changed,
+        }),
+      },
+    }),
+  }
+  local footers = {}
   for i, tab in ipairs(self.tabs) do
     local is_active = self.active:map(function(active)
       return active == i
     end)
-    contents[i] = trx.ui.widgets.Stack({
-      align = trx.ui.HAlign.SPAN,
-      shown = is_active,
-      children = { tab.widget },
-    })
+    if tab.widget ~= nil then
+      contents[#contents + 1] = trx.ui.widgets.Stack({
+        align = trx.ui.HAlign.SPAN,
+        shown = is_active,
+        children = { tab.widget },
+      })
+    end
     footers[i] = trx.ui.widgets.Stack({
       align = trx.ui.HAlign.SPAN,
       shown = is_active,

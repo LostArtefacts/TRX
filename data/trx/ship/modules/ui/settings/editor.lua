@@ -12,8 +12,9 @@
 --     width = width, dialog_width = dialog_width, push = push })
 
 local metrics = require("common.ui.metrics")
-local rows = require("common.ui.settings.rows")
 local scroll = require("common.ui.scroll")
+local rows = require("common.ui.settings.rows")
+local value = require("common.ui.value")
 local color = require("common.ui.widgets.color")
 local row_arrows = require("common.ui.widgets.row_arrows")
 local text_dialog = require("common.ui.widgets.text_dialog")
@@ -26,6 +27,7 @@ local BAR_WIDTH = 60
 local BAR_HEIGHT = 12
 local SWATCH_SPACING = 4
 local SWATCH_SIZE = metrics.TEXT_HEIGHT - 2
+local BLACK = trx.math.color("000000")
 
 local Role = trx.input.Role
 
@@ -49,13 +51,10 @@ end
 ---@class common.ui.settings.Editor: common.ui.settings.Tab
 ---@field keys string[] Every setting the tab lists that the game has.
 ---@field shown trx.signal.Signal The settings the tab shows, in order.
----@field private positions trx.signal.Signal Where each shown setting sits, counted from 1.
 ---@field scroll common.ui.Scroll The rows and the one under the cursor.
----@field widget trx.ui.Widget The rows.
 ---@field footer trx.ui.Widget The hints under the dialog.
 ---@field value_w trx.signal.Signal How wide the widest value is, with its arrows.
 ---@field private watch trx.signal.Listener
----@field private values table<string, { widget: trx.ui.Widget }>
 ---@field private changed trx.signal.Signal
 ---@field private layout trx.signal.Signal
 ---@field private widths_at? string
@@ -93,8 +92,18 @@ end
 local function measure_value(self, key)
   -- A bar and a swatch have sizes of their own, so the widget that shows them
   -- is measured rather than its text.
-  if rows.bar_type(key) ~= nil then
-    return self.values[key].widget:measure() / trx.ui.text_scale
+  local bar_type = rows.bar_type(key)
+  if bar_type ~= nil then
+    local bar = trx.ui.widgets.Bar({
+      type = bar_type,
+      value = 1,
+      w = BAR_WIDTH,
+      h = BAR_HEIGHT,
+      preview = true,
+    })
+    local width = bar:measure() / trx.ui.text_scale
+    bar:release()
+    return width
   end
   local result = 0.0
   for _, text in ipairs(rows.value_texts(key)) do
@@ -241,34 +250,53 @@ end
 
 -- The value side of a row: a bar for a bar's colors, a swatch beside the code
 -- for a color, and the value as text for the rest.
-local function value_widget(key)
-  local bar = rows.bar_type(key)
-  if bar ~= nil then
-    return trx.ui.widgets.Bar({
-      type = bar,
-      value = 1,
-      w = BAR_WIDTH,
-      h = BAR_HEIGHT,
-      preview = true,
-    })
-  end
-  local text = trx.ui.widgets.Label({
-    text = rows.state(key):map(function(state)
-      return state.value
-    end),
-  })
-  if not rows.is_color(key) then
-    return text
-  end
+-- The value side of a row: a bar for a bar's colors, a swatch beside the code
+-- for a color, and the value as text for the rest. `key` holds the setting
+-- the row shows, which can change as the list scrolls, and `changed` says when
+-- any setting changes.
+local function value_widget(key, changed)
+  local state = trx.signal.combine(key, changed, function(at)
+    if at == nil then
+      return { value = "", bar = false, color = false }
+    end
+    local row = rows.state(at):get()
+    return {
+      value = row.value,
+      bar = rows.bar_type(at) or false,
+      color = row.color or false,
+    }
+  end)
   return trx.ui.widgets.Stack({
     orientation = trx.ui.Orientation.HORIZONTAL,
     v_align = trx.ui.VAlign.CENTER,
     spacing = SWATCH_SPACING,
     children = {
-      text,
+      trx.ui.widgets.Bar({
+        shown = state:map(function(v)
+          return v.bar ~= false
+        end),
+        type = state:map(function(v)
+          return v.bar or trx.ui.BarType.LARA_HP
+        end),
+        value = 1,
+        w = BAR_WIDTH,
+        h = BAR_HEIGHT,
+        preview = true,
+      }),
+      trx.ui.widgets.Label({
+        shown = state:map(function(v)
+          return v.bar == false
+        end),
+        text = state:map(function(v)
+          return v.value
+        end),
+      }),
       color.swatch({
-        color = rows.state(key):map(function(state)
-          return state.color
+        shown = state:map(function(v)
+          return v.color ~= false
+        end),
+        color = state:map(function(v)
+          return v.color or BLACK
         end),
         w = SWATCH_SIZE,
         h = SWATCH_SIZE,
@@ -277,61 +305,59 @@ local function value_widget(key)
   })
 end
 
-local function row_widget(self, key, settings)
+-- One of the rows on screen, showing whichever setting sits at its place in
+-- the list of the active tab as it scrolls.
+local function slot_widget(self, index, settings)
   local changed = settings.changed
+  local key = trx.signal.combine(
+    self.shown,
+    self.scroll.first,
+    self.scroll.visible,
+    function(shown, first, visible)
+      if index > visible then
+        return nil
+      end
+      return shown[first + index - 1]
+    end
+  )
   -- Whether the cursor is on the row, the frame that follows from it, and
   -- which way the setting can step, worked out together.
   local look = trx.signal.combine(
     settings.editing,
     self.scroll.selected,
-    self.positions,
+    self.scroll.first,
+    key,
     changed,
-    function(editing, selected, positions)
-      local focused = editing
-        and selected ~= nil
-        and positions[key] == selected
+    function(editing, selected, first, at)
+      local focused = editing and at ~= nil and selected == first + index - 1
       return {
         style = focused and trx.ui.FrameStyle.SELECTED or false,
-        left = focused and rows.can_change(key, -1),
-        right = focused and rows.can_change(key, 1),
+        left = focused and rows.can_change(at, -1),
+        right = focused and rows.can_change(at, 1),
       }
-    end
-  )
-  local shown = trx.signal.combine(
-    self.positions,
-    self.scroll.first,
-    self.scroll.visible,
-    function(positions, first, visible)
-      local at = positions[key]
-      return at ~= nil and at >= first and at < first + visible
     end
   )
 
   -- The value takes the room its widest value needs, and more where the title
   -- leaves it; the title takes the rest.
-  local own_value = self:value_width(key) + arrows_width()
-  local function lanes(row_w, max_value_w)
-    local title_w = width_of(rows.title(key))
-    local value_lane = math.max(
-      math.min(max_value_w, row_w - COLUMN_SPACING - title_w),
-      own_value
-    )
-    return math.max(title_w, row_w - COLUMN_SPACING - value_lane), value_lane
-  end
-  local label_lane = trx.signal.combine(
+  local lanes = trx.signal.combine(
     settings.width,
     self.value_w,
+    key,
     changed,
-    function(row_w, max_value_w)
-      return (lanes(row_w, max_value_w))
-    end
-  )
-  local value_lane = trx.signal.combine(
-    settings.width,
-    self.value_w,
-    changed,
-    function(row_w, max_value_w)
-      return select(2, lanes(row_w, max_value_w))
+    function(row_w, max_value_w, at)
+      if at == nil then
+        return { label = 0, value = 0 }
+      end
+      local title_w = width_of(rows.title(at))
+      local value_lane = math.max(
+        math.min(max_value_w, row_w - COLUMN_SPACING - title_w),
+        self:value_width(at) + arrows_width()
+      )
+      return {
+        label = math.max(title_w, row_w - COLUMN_SPACING - value_lane),
+        value = value_lane,
+      }
     end
   )
   local content = trx.ui.widgets.Stack({
@@ -341,15 +367,19 @@ local function row_widget(self, key, settings)
     children = {
       trx.ui.widgets.Resize({
         scaled = true,
-        w = label_lane,
+        w = lanes:map(function(l)
+          return l.label
+        end),
         child = trx.ui.widgets.Label({
-          text = rows.state(key):map(function(state)
-            return state.title
+          text = trx.signal.combine(key, changed, function(at)
+            return at ~= nil and rows.state(at):get().title or ""
           end),
         }),
       }),
       lane(
-        value_lane,
+        lanes:map(function(l)
+          return l.value
+        end),
         trx.ui.HAlign.RIGHT,
         row_arrows.new({
           left = look:map(function(l)
@@ -358,11 +388,14 @@ local function row_widget(self, key, settings)
           right = look:map(function(l)
             return l.right
           end),
-          child = self.values[key].widget,
+          child = value_widget(key, changed),
         })
       ),
     },
   })
+  local shown = key:map(function(at)
+    return at ~= nil
+  end)
   local style = look:map(function(l)
     return l.style
   end)
@@ -458,6 +491,70 @@ local function footer_widget(self, settings)
   })
 end
 
+---@class common.ui.settings.Rows.settings
+---@field tabs common.ui.settings.Tab[] The tabs of the dialog. The rows show the settings of an editor tab, and nothing while another tab is active.
+---@field active trx.signal.Signal The active tab, counted from 1.
+---@field editing trx.signal.Signal Whether the cursor is on the rows rather than on the tab bar.
+---@field width trx.signal.Signal How wide a row is, in canvas units at the default text size.
+---@field changed trx.signal.Signal Says when any setting changes, for as long as the dialog is open.
+
+-- The rows on screen, which every editor tab of a dialog shares. They show
+-- the settings of the active tab, so that a dialog builds only as many rows as
+-- fit on screen, however many tabs and settings it has.
+---@param settings common.ui.settings.Rows.settings
+---@return trx.ui.Widget
+function M.rows(settings)
+  local tabs = settings.tabs
+  -- A signal that holds what the active tab's signal holds, or `idle` while
+  -- the active tab is not an editor.
+  local function pick(read, idle)
+    local signals = {}
+    for i, tab in ipairs(tabs) do
+      signals[i] = getmetatable(tab) == Editor and read(tab)
+        or trx.signal.new(idle)
+    end
+    return value.pick(settings.active, signals)
+  end
+  local view = {
+    shown = pick(function(tab)
+      return tab.shown
+    end, {}),
+    scroll = {
+      first = pick(function(tab)
+        return tab.scroll.first
+      end, 1),
+      visible = pick(function(tab)
+        return tab.scroll.visible
+      end, 0),
+      selected = pick(function(tab)
+        return tab.scroll.selected
+      end, nil),
+    },
+    value_w = pick(function(tab)
+      return tab.value_w
+    end, 0),
+  }
+  function view:value_width(key)
+    return tabs[settings.active:get()]:value_width(key)
+  end
+
+  local count = 0
+  for _, tab in ipairs(tabs) do
+    if getmetatable(tab) == Editor then
+      local keys = (tab --[[@as common.ui.settings.Editor]]).keys
+      count = math.max(count, math.min(#keys, metrics.MAX_DIALOG_ROWS))
+    end
+  end
+  local children = {}
+  for i = 1, count do
+    children[i] = slot_widget(view, i, settings)
+  end
+  return trx.ui.widgets.Stack({
+    align = trx.ui.HAlign.SPAN,
+    children = children,
+  })
+end
+
 ---@class common.ui.settings.Editor.settings
 ---@field title string The name on the tab bar.
 ---@field keys string[] The settings the tab lists, in order.
@@ -500,21 +597,10 @@ function M.new(settings)
     end
     return shown
   end)
-  self.positions = self.shown:map(function(shown)
-    local positions = {}
-    for i, key in ipairs(shown) do
-      positions[key] = i
-    end
-    return positions
-  end)
   self.scroll:set_count(#self.shown:get())
   self.watch = self.shown:on(function(shown)
     self.scroll:set_count(#shown)
   end)
-  self.values = {}
-  for _, key in ipairs(keys) do
-    self.values[key] = { widget = value_widget(key) }
-  end
   self.value_w = trx.signal.combine(changed, settings.layout, function()
     local arrows = arrows_width()
     local result = 0.0
@@ -524,14 +610,6 @@ function M.new(settings)
     return result
   end)
 
-  local children = {}
-  for i, key in ipairs(keys) do
-    children[i] = row_widget(self, key, settings)
-  end
-  self.widget = trx.ui.widgets.Stack({
-    align = trx.ui.HAlign.SPAN,
-    children = children,
-  })
   self.footer = footer_widget(self, settings)
   return self
 end

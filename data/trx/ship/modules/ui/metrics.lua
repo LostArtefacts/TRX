@@ -16,6 +16,9 @@ M.HINT_HEIGHT = 7
 -- The room above and below the body of a dialog.
 M.BODY_PAD_Y = 4
 
+-- The most rows of settings a dialog shows at once.
+M.MAX_DIALOG_ROWS = 16
+
 -- The room on each side of a dialog's heading, past the body's own.
 M.TITLE_PAD_X = 10
 
