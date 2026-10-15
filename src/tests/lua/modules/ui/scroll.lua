@@ -1,0 +1,93 @@
+-- The shipped scroll model, which the game's dialogs scroll their rows with.
+
+local h = require("harness")
+local test = h.test
+
+local scroll = require("common.ui.scroll")
+
+local function window(list)
+  return list.first:get(), list:last()
+end
+
+test("a cursor starts on no item", function()
+  local list = scroll.new({ count = 10, visible = 4 })
+  assert(list.selected:get() == nil)
+  assert(list.first:get() == 1)
+end)
+
+test("moving the cursor down scrolls the window after it", function()
+  local list = scroll.new({ count = 10, visible = 4 })
+  for _ = 1, 5 do
+    assert(list:select_next(false))
+  end
+  assert(list.selected:get() == 5)
+  local first, last = window(list)
+  assert(first == 2 and last == 5, first .. ".." .. last)
+end)
+
+test("the cursor stops at either end unless it wraps", function()
+  local list = scroll.new({ count = 3, visible = 2, selected = 3 })
+  assert(not list:select_next(false))
+  assert(list.selected:get() == 3)
+  assert(list:select_next(true))
+  assert(list.selected:get() == 1)
+  assert(list.first:get() == 1)
+  assert(not list:select_prev(false))
+  assert(list:select_prev(true))
+  assert(list.selected:get() == 3)
+  assert(list.first:get() == 2)
+end)
+
+test("moving up from no item wraps to the last", function()
+  local list = scroll.new({ count = 6, visible = 3 })
+  assert(not list:select_prev(false))
+  assert(list:select_prev(true))
+  assert(list.selected:get() == 6)
+  assert(list.first:get() == 4)
+end)
+
+test("scrolling moves the window and leaves the cursor", function()
+  local list = scroll.new({ count = 5, visible = 2 })
+  assert(list:scroll_down(false))
+  assert(list:scroll_down(false))
+  assert(list:scroll_down(false))
+  assert(not list:scroll_down(false))
+  assert(list.first:get() == 4)
+  assert(list.selected:get() == nil)
+  assert(list:scroll_down(true))
+  assert(list.first:get() == 1)
+  assert(list:scroll_up(true))
+  assert(list.first:get() == 4)
+end)
+
+test("fewer items keep the cursor and the window on them", function()
+  local list = scroll.new({ count = 10, visible = 4, selected = 9 })
+  list:set_count(5)
+  assert(list.selected:get() == 5)
+  local first, last = window(list)
+  assert(first == 2 and last == 5, first .. ".." .. last)
+end)
+
+test("a taller window shows more of the list", function()
+  local list = scroll.new({ count = 10, visible = 3, selected = 10 })
+  list:set_visible(6)
+  local first, last = window(list)
+  assert(first == 5 and last == 10, first .. ".." .. last)
+end)
+
+test("the window says what lies past its edges", function()
+  local list = scroll.new({ count = 5, visible = 2 })
+  local above = list:more_above()
+  local below = list:more_below()
+  local second = list:shows(2)
+  local fourth = list:shows(4)
+  assert(not above:get() and below:get())
+  assert(second:get() and not fourth:get())
+  list:select(4)
+  assert(above:get() and below:get())
+  assert(not second:get() and fourth:get())
+  list:select(5)
+  assert(not below:get())
+end)
+
+return h.report()
