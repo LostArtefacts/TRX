@@ -87,6 +87,8 @@ it is, so the code works with the current API.
 - [`ui/menu.lua`](ui/menu.lua) asks the player to pick one entry from a list.
 - [`ui/custom_widget.lua`](ui/custom_widget.lua) draws a widget with
   `trx.ui.primitive`.
+- [`ui/input_widget.lua`](ui/input_widget.lua) draws an input display widget 
+  using a custom grid layout.
 - [`ui/screen.lua`](ui/screen.lua) draws the pause screen in place of the
   shipped one.
 - [`ui/signals.lua`](ui/signals.lua) shows a value that changes, and hides it
