@@ -1,0 +1,97 @@
+-- The shipped settings editor: the rows of one tab of a settings dialog.
+
+local h = require("harness")
+local test = h.test
+
+local Role = trx.input.Role
+local editor = require("common.ui.settings.editor")
+
+local function press(role)
+  fake.release_all()
+  fake.press(role)
+  fake.tick()
+  fake.release_all()
+  fake.tick()
+end
+
+local function make(keys)
+  trx.config.set("ui.text_scale", 1.0)
+  local pushed = {}
+  local tab = editor.new({
+    title = "Tab",
+    keys = keys,
+    editing = trx.signal.new(true),
+    width = trx.signal.new(300),
+    dialog_width = trx.signal.new(320),
+    push = function(settings)
+      local layer = trx.ui.layers.push(settings)
+      pushed[#pushed + 1] = layer
+      return layer
+    end,
+  })
+  tab.scroll:set_visible(10)
+  return tab, pushed
+end
+
+local function on_layer(tab)
+  local layer = trx.ui.layers.push({
+    root = tab.widget,
+    on_input = function(_, keys)
+      tab:control(keys)
+    end,
+  })
+  fake.tick()
+  return layer
+end
+
+test("a setting the game lacks has no row", function()
+  local tab = make({ "visuals.fov", "visuals.no_such_setting" })
+  assert(#tab.keys == 1)
+  tab:close()
+end)
+
+test("a row goes and comes back with the setting that hides it", function()
+  trx.config.set("ui.show_loading_bar", true)
+  local tab = make({ "ui.show_loading_bar", "ui.progressbar_look" })
+  assert(#tab.shown:get() == 2)
+  trx.config.set("ui.show_loading_bar", false)
+  assert(#tab.shown:get() == 1)
+  assert(tab.scroll.count:get() == 1)
+  trx.config.set("ui.show_loading_bar", true)
+  assert(#tab.shown:get() == 2)
+  tab:close()
+end)
+
+test("show info opens the description over the rows", function()
+  local tab, pushed = make({ "visuals.fov" })
+  local layer = on_layer(tab)
+  tab.scroll:select(1)
+  press(Role.MENU_SHOW_INFO)
+  assert(#pushed == 1)
+  press(Role.MENU_BACK)
+  assert(not pushed[1].is_open)
+  layer:close()
+  tab:close()
+end)
+
+test("unbind restores the setting under the cursor", function()
+  local tab = make({ "visuals.fov" })
+  local layer = on_layer(tab)
+  tab.scroll:select(1)
+  trx.config.set("visuals.fov", 70)
+  if not trx.config.is_default("visuals.fov") then
+    press(Role.UNBIND_KEY)
+    assert(trx.config.is_default("visuals.fov"))
+  end
+  layer:close()
+  tab:close()
+end)
+
+test("the tab measures its widest row", function()
+  local tab = make({ "visuals.fov", "ui.enable_wraparound" })
+  local content, least = tab:widths()
+  assert(content >= least and least > 0, content .. " " .. least)
+  tab:close()
+end)
+
+return h.report()

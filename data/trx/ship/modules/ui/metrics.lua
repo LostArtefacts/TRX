@@ -58,6 +58,13 @@ function M.chrome_height(title_spacing, scrolls)
   return height
 end
 
+-- The height that a line of text takes as the font measures it, in canvas
+-- units at the default text size.
+function M.line_height()
+  local _, h = trx.ui.primitive.measure_text("0", 1.0)
+  return h / trx.ui.text_scale
+end
+
 -- The gap between two rows of a list.
 function M.row_spacing()
   return trx.game.tr_version == 1 and 2 or 3
