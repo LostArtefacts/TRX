@@ -27,7 +27,6 @@
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/input.h>
-#include <trx/game/ui/dialogs/controls_editor.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -562,65 +561,6 @@ TEST(ui_font_metrics)
             TEST_FAIL(
                 "tr%d: expected width %.1f, got %.1f", expected[i].tr_version,
                 expected[i].width, width);
-        }
-    }
-    Subsystem_ShutdownAll();
-}
-
-TEST(ui_controls_editor_fits_4_3)
-{
-    Subsystem_InitAll();
-    for (size_t i = 0; i < ARRAY_SIZE(m_Languages); i++) {
-        M_SetLanguage(m_Languages[i]);
-        for (int32_t tr_version = 1; tr_version <= TR_VERSION_COUNT;
-             tr_version++) {
-            for (size_t k = 0; k < ARRAY_SIZE(m_TextScales); k++) {
-                M_SetUp(tr_version, m_Languages[i], m_TextScales[k]);
-
-                UI_CONTROLS_EDITOR_STATE state = {};
-                EVENT_MANAGER *const events = EventManager_Create();
-                UI_ForgetSmallestFitScale();
-                UI_Measure_Forget();
-                UI_ControlsEditor_Init(
-                    &state, INPUT_BACKEND_KEYBOARD, INPUT_LAYOUT_CUSTOM_1,
-                    events);
-
-                UI_BeginScene();
-                UI_ControlsEditor(&state);
-                UI_EndScene();
-                M_OVERFLOW over = M_MeasureScene();
-                over.fit_scale = UI_GetSmallestFitScale();
-                over.reached_scale = M_GetReachedScale();
-
-                const char *const lang =
-                    m_Languages[i] != nullptr ? m_Languages[i] : "en";
-                if (over.reached_scale < M_GetScaleTarget()) {
-                    TEST_FAIL(
-                        "%s tr%d controls at %.0f%%: text reaches %.1f%%, "
-                        "short of %.0f%%; %s",
-                        lang, tr_version, m_TextScales[k] * 100.0f,
-                        over.reached_scale * 100.0f,
-                        M_GetScaleTarget() * 100.0f, M_DescribeWidest());
-                } else if (over.screen > M_GetSlack(M_SLACK)) {
-                    TEST_FAIL(
-                        "%s tr%d controls at %.0f%%: %.0f units too %s in %s: "
-                        "%s",
-                        lang, tr_version, m_TextScales[k] * 100.0f, over.screen,
-                        over.screen_axis,
-                        M_DescribeOverflow(over.screen_node, over.screen_axis),
-                        M_DescribeWidest());
-                }
-                if (over.box > M_GetSlack(M_BOX_SLACK)) {
-                    TEST_FAIL(
-                        "%s tr%d controls at %.0f%%: %.0f units outside its "
-                        "box: %s",
-                        lang, tr_version, m_TextScales[k] * 100.0f, over.box,
-                        M_Describe(over.box_node));
-                }
-
-                UI_ControlsEditor_Free(&state);
-                EventManager_Free(events);
-            }
         }
     }
     Subsystem_ShutdownAll();

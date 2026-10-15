@@ -2263,6 +2263,20 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'modules/ui/settings/controls',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'src': ['fakes/path.c'],
+  'engine': ['game/lua/capi/json.c', 'gl/enum.c'],
+  'stubs': false,
+}
+
+unit_tests += {
   'name': 'modules/ui/settings/dialog',
   'bundles': [
     b_lua_surface,
@@ -2896,7 +2910,6 @@ unit_tests += {
     'game/rules.c',
     'game/ui/common.c',
     'game/ui/regions.c',
-    'game/ui/dialogs/controls_editor.c',
     'game/ui/events.c',
     'game/ui/fade.c',
     'game/ui/helpers.c',

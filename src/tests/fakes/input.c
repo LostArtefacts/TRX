@@ -1,7 +1,7 @@
 // The input system, reduced to what a surface test needs: every role is bound
 // to one key on the keyboard, nothing is pressed until a test presses it, and
-// rebinding does nothing. The real one reads devices and keeps the player's
-// layouts.
+// rebinding changes nothing but is counted. The real one reads devices and
+// keeps the player's layouts.
 
 #include <fakes/input.h>
 
@@ -21,6 +21,14 @@ static int32_t m_SavedCount = 0;
 
 // Whether the on-screen controls are being picked from.
 static bool m_Selecting = false;
+
+// What else the bindings were asked to do, and whether the next read of a
+// binding takes a key.
+static int32_t m_BoundCount = 0;
+static int32_t m_UnboundCount = 0;
+static int32_t m_ResetCount = 0;
+static bool m_BindNext = false;
+static bool m_Listening = false;
 
 // The menu keys that repeat while held, in ticks, as the real input repeats
 // them after 0.4 seconds every 0.1 seconds, or every 0.2 for left and right.
@@ -75,6 +83,34 @@ static int M_L_ReleaseAll(lua_State *const L)
 static int M_L_HeldOff(lua_State *const L)
 {
     lua_pushboolean(L, m_HeldOff[M_CheckRole(L, 1)]);
+    return 1;
+}
+
+// fake.land_capture() - the next read of a binding takes a key.
+static int M_L_LandCapture(lua_State *const L)
+{
+    m_BindNext = true;
+    return 0;
+}
+
+// fake.bindings() -> table - how many times a binding was taken, cleared, a
+// layout reset and the bindings saved, whether the game is listening for a
+// key, and whether the on-screen controls are being picked from.
+static int M_L_Bindings(lua_State *const L)
+{
+    lua_createtable(L, 0, 6);
+    lua_pushinteger(L, m_BoundCount);
+    lua_setfield(L, -2, "bound");
+    lua_pushinteger(L, m_UnboundCount);
+    lua_setfield(L, -2, "unbound");
+    lua_pushinteger(L, m_ResetCount);
+    lua_setfield(L, -2, "reset");
+    lua_pushinteger(L, m_SavedCount);
+    lua_setfield(L, -2, "saved");
+    lua_pushboolean(L, m_Listening);
+    lua_setfield(L, -2, "listening");
+    lua_pushboolean(L, m_Selecting);
+    lua_setfield(L, -2, "selecting");
     return 1;
 }
 
@@ -263,17 +299,24 @@ bool Input_ReadAndAssignRole(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)
 {
-    return false;
+    if (!m_BindNext) {
+        return false;
+    }
+    m_BindNext = false;
+    m_BoundCount++;
+    return true;
 }
 
 void Input_UnassignRole(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)
 {
+    m_UnboundCount++;
 }
 
 void Input_ResetLayout(const INPUT_BACKEND backend, const INPUT_LAYOUT layout)
 {
+    m_ResetCount++;
 }
 
 void Input_SaveBindings(void)
@@ -283,15 +326,17 @@ void Input_SaveBindings(void)
 
 void Input_EnterListenMode(void)
 {
+    m_Listening = true;
 }
 
 void Input_ExitListenMode(void)
 {
+    m_Listening = false;
 }
 
 bool Input_IsInListenMode(void)
 {
-    return false;
+    return m_Listening;
 }
 
 bool InputState_IsAnyPressed(const INPUT_STATE state)
@@ -324,4 +369,8 @@ void FakeInput_PushLua(lua_State *const L)
     lua_setfield(L, -2, "release_all");
     lua_pushcfunction(L, M_L_HeldOff);
     lua_setfield(L, -2, "held_off");
+    lua_pushcfunction(L, M_L_LandCapture);
+    lua_setfield(L, -2, "land_capture");
+    lua_pushcfunction(L, M_L_Bindings);
+    lua_setfield(L, -2, "bindings");
 }

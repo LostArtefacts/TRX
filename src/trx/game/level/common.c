@@ -18,7 +18,6 @@
 #include <trx/game/lua/store.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/option.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
@@ -139,7 +138,6 @@ RESULT Level_Initialise(
     Level_ResetSettingOverrides();
     Sparks_Reset();
 
-    Option_Reset();
     Overlay_Reset();
 
     // Every other level type reaches Lara_Initialise through the sequencer;

@@ -6,7 +6,6 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
-#include <trx/game/option/controls.h>
 #include <trx/game/output.h>
 #include <trx/game/replay/test_replay.h>
 #include <trx/game/savegame.h>
@@ -220,12 +219,10 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
 
     if (L_CHANGED(input.enable_touch_controls)) {
         TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
-        Option_Controls_RefreshBackendPicker();
     }
 
     if (L_CHANGED(input.enable_controller)) {
         Input_Discover();
-        Option_Controls_RefreshBackendPicker();
     }
 
     // The frame pacing reads the multiplier live, but the sim-time clock caches

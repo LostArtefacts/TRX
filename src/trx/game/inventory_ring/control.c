@@ -26,7 +26,6 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/links.h>
-#include <trx/game/option.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
@@ -285,6 +284,69 @@ static void M_RingActive(void)
 {
     InvRing_RemoveItemTexts();
     InvRing_ShowItemActions((INV_ITEM_ACTIONS) {});
+}
+
+// Reads the menu keys for an entry that no screen takes over. A weapon or an
+// item is used straight away, and any other entry is put away by any key.
+static void M_ControlEntry(INVENTORY_ITEM *const inv_item, const bool is_busy)
+{
+    // A script examines an entry, or combines it. Where none does, any key
+    // puts it away rather than using it.
+    if (inv_item->action == ACTION_EXAMINE
+        || inv_item->action == ACTION_COMBINE) {
+        if (!is_busy && (g_InputDB.menu_confirm || g_InputDB.menu_show_info)) {
+            g_InputDB.menu_back = true;
+            g_InputDB.menu_confirm = false;
+        }
+        return;
+    }
+
+    switch (inv_item->object_id) {
+    case O_PISTOLS_OPTION:
+    case O_SHOTGUN_OPTION:
+    case O_MAGNUMS_OPTION:
+    case O_AUTOS_OPTION:
+    case O_DESERT_EAGLE_OPTION:
+    case O_UZIS_OPTION:
+    case O_HARPOON_GUN_OPTION:
+    case O_M16_OPTION:
+    case O_MP5_OPTION:
+    case O_GRENADE_GUN_OPTION:
+    case O_ROCKET_GUN_OPTION:
+    case O_SMALL_MEDIPACK_OPTION:
+    case O_LARGE_MEDIPACK_OPTION:
+        if (!is_busy) {
+            g_InputDB.menu_confirm = true;
+        }
+        break;
+
+    case O_PISTOLS_AMMO_OPTION:
+    case O_SHOTGUN_AMMO_OPTION:
+    case O_MAGNUMS_AMMO_OPTION:
+    case O_AUTOS_AMMO_OPTION:
+    case O_DESERT_EAGLE_AMMO_OPTION:
+    case O_UZIS_AMMO_OPTION:
+    case O_HARPOON_GUN_AMMO_OPTION:
+    case O_M16_AMMO_OPTION:
+    case O_MP5_AMMO_OPTION:
+    case O_GRENADE_AMMO_OPTION:
+    case O_ROCKET_AMMO_OPTION:
+        break;
+
+    default:
+        if (inv_item->object_id == O_SCION_OPTION
+            || ObjectFamily_Has(
+                inv_item->object_id, OBJ_FAMILY_GENERIC_INV_OPTION)) {
+            if (!is_busy) {
+                g_InputDB.menu_confirm = true;
+            }
+        } else if (
+            !is_busy && (g_InputDB.menu_confirm || g_InputDB.menu_back)) {
+            inv_item->goal_frame = 0;
+            inv_item->anim_direction = -1;
+        }
+        break;
+    }
 }
 
 static bool M_AnimateInventoryItem(INVENTORY_ITEM *const inv_item)
@@ -791,7 +853,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             break;
         }
 
-        Option_Control(inv_item, busy);
+        M_ControlEntry(inv_item, busy);
 
         if (!busy) {
             if (g_InputDB.menu_back) {
@@ -836,7 +898,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
     case RNG_DESELECT: {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
-        Option_Close(inv_item);
         M_RefreshAfterScript(ring, inv_item);
         Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
         InvRing_SetStatusTransition(
@@ -1112,7 +1173,6 @@ void InvRing_Close(INV_RING *const ring)
                     M_EndTakeover(screens[i], inv_item);
                 }
             }
-            Option_Close(inv_item);
             if (ring->type < RT_NUMBER_OF) {
                 m_LastRingObject[ring->type] = inv_item->object_id;
             }
