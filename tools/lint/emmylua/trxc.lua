@@ -371,7 +371,10 @@ trxc = {}
 ---@class (exact) trxc.locale
 ---@field declare fun(key: string, text: string)
 ---@field get fun(key: string): string?
+---@field language_name fun(code: string): string?
 ---@field reload fun(): boolean
+---@field text_languages fun(): string[]
+---@field voice_languages fun(): string[]
 
 ---@class (exact) trxc.log
 ---@field log fun(level: trx.log.LogLevel, msg: string)

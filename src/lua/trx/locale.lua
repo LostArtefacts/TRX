@@ -34,6 +34,24 @@ function M.declare(strings)
   end
 end
 
+---The languages that the game has strings files for, by the codes that the
+---`language` setting takes. <!--noref: language-->
+---@return string[] # The codes.
+---@type fun(): string[]
+M.text_languages = raw.text_languages
+
+---The dubs installed beside the retail files, by the codes that the
+---`audio.media_language` setting takes. <!--noref: audio.media_language-->
+---@return string[] # The codes.
+---@type fun(): string[]
+M.voice_languages = raw.voice_languages
+
+---The name a language gives itself in its strings file.
+---@param code string The language code, such as `fr`. <!--noref: fr-->
+---@return string? # The name, or `nil` where no strings file names it.
+---@type fun(code: string): string?
+M.language_name = raw.language_name
+
 ---The text behind a game string key.
 ---
 ---```lua

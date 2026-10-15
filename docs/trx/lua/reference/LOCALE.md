@@ -35,6 +35,26 @@ The text the player reads, in the player's own language.
   })
   ```
 
+- <a id="locale.text_languages" name="locale.text_languages"></a>[lua]`trx.locale.text_languages()`  
+  The languages that the game has strings files for, by the codes that the
+  `language` setting takes.
+
+  Returns: a list of string. The codes.
+
+- <a id="locale.voice_languages" name="locale.voice_languages"></a>[lua]`trx.locale.voice_languages()`  
+  The dubs installed beside the retail files, by the codes that the
+  `audio.media_language` setting takes.
+
+  Returns: a list of string. The codes.
+
+- <a id="locale.language_name" name="locale.language_name"></a>[lua]`trx.locale.language_name(code)`  
+  The name a language gives itself in its strings file.
+
+  Parameters:
+  - <a id="locale.language_name.code" name="locale.language_name.code"></a>**`code`** (string). The language code, such as `fr`.
+
+  Returns: string or `nil`. The name, or `nil` where no strings file names it.
+
 - <a id="locale.get" name="locale.get"></a>[lua]`trx.locale.get(key)`  
   The text behind a game string key.
 

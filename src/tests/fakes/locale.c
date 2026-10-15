@@ -5,7 +5,9 @@
 // game_strings/entries.def and has cfg/base_strings.json5 and its translations
 // layered over it.
 
+#include <trx/core/memory.h>
 #include <trx/core/result.h>
+#include <trx/core/vector.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/locale/common.h>
@@ -29,6 +31,31 @@ static int32_t m_EntryCount = 0;
 const char *Locale_GetCode(const LOCALE_ROLE role)
 {
     return "en";
+}
+
+// Two languages with strings files, and one dub beside the retail files.
+VECTOR *Locale_GetAvailable(const LOCALE_ROLE role)
+{
+    VECTOR *const codes = Vector_Create(sizeof(char *));
+    const char *const *const list = role == LOCALE_ROLE_TEXT
+        ? (const char *const[]) { "en", "fr", nullptr }
+        : (const char *const[]) { "fr", nullptr };
+    for (int32_t i = 0; list[i] != nullptr; i++) {
+        char *const code = Memory_DupStr(list[i]);
+        Vector_Add(codes, &code);
+    }
+    return codes;
+}
+
+const char *Locale_GetLanguageName(const char *const code)
+{
+    if (strcmp(code, "en") == 0) {
+        return "English";
+    }
+    if (strcmp(code, "fr") == 0) {
+        return "Français";
+    }
+    return nullptr;
 }
 
 // trx.locale.reload() reloads the language files from disk. There is no disk
