@@ -189,4 +189,9 @@ test("lower turns capitals beyond ASCII to small letters", function()
   assert(trx.strings.lower("A \\{SECRET 1}") == "a \\{SECRET 1}")
 end)
 
+test("two texts that differ in case alone are equivalent", function()
+  assert(trx.strings.equivalent("en-GB", "en-gb"))
+  assert(not trx.strings.equivalent("en", "en-gb"))
+end)
+
 return h.report()

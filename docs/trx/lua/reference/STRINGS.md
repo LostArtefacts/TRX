@@ -153,6 +153,21 @@ player gets.
   trx.strings.lower("ŻÓŁW") -- "żółw"
   ```
 
+- <a id="strings.equivalent" name="strings.equivalent"></a>[lua]`trx.strings.equivalent(a, b)`  
+  Whether two texts are the same but for the case of their ASCII letters, as
+  the engine compares names such as language codes.
+
+  Parameters:
+  - <a id="strings.equivalent.a" name="strings.equivalent.a"></a>**`a`** (string). The one text.
+  - <a id="strings.equivalent.b" name="strings.equivalent.b"></a>**`b`** (string). The other text.
+
+  Returns: boolean. True where they match.
+
+  Example:
+  ```lua
+  trx.strings.equivalent("en-GB", "en-gb") -- true
+  ```
+
 - <a id="strings.dash_case" name="strings.dash_case"></a>[lua]`trx.strings.dash_case(text)`  
   Spells a name the way the console shows one: lower case, with underscores
   read as dashes. This is how an enum constant is offered for completion, and a

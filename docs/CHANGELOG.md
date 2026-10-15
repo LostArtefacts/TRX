@@ -181,6 +181,7 @@
 - Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
 - Added `false` as a style of `trx.ui.widgets.Frame`, which draws no frame, so that a frame can come and go with the cursor
 - Added `trx.config.signals.changed`, which says when any setting changes
+- Added `trx.strings.equivalent`, which says whether two texts differ only in case
 - Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
 - Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)

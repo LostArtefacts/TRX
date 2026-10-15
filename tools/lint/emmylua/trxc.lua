@@ -518,6 +518,7 @@ trxc = {}
 ---@field level table
 
 ---@class (exact) trxc.strings
+---@field equivalent fun(a: string, b: string): boolean
 ---@field fuzzy_match fun(input: string, sources: trx.strings.fuzzy_match.sources[]): trx.strings.Match[]
 ---@field lower fun(text: string): string
 ---@field paginate fun(text: string, max_lines: integer): string[]

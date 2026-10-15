@@ -149,6 +149,18 @@ M.upper = raw.upper
 ---@type fun(text: string): string
 M.lower = raw.lower
 
+---Whether two texts are the same but for the case of their ASCII letters, as
+---the engine compares names such as language codes.
+---
+---```lua
+---trx.strings.equivalent("en-GB", "en-gb") -- true
+---```
+---@param a string The one text.
+---@param b string The other text.
+---@return boolean # True where they match.
+---@type fun(a: string, b: string): boolean
+M.equivalent = raw.equivalent
+
 ---Spells a name the way the console shows one: lower case, with underscores
 ---read as dashes. This is how an enum constant is offered for completion, and a
 ---catalog name resolves in either spelling.
