@@ -133,6 +133,8 @@ local function opener(which)
               editing = self.editing,
               width = self.width,
               dialog_width = self.dialog_width,
+              changed = self.changed,
+              layout = self.layout,
               push = push,
               edit_color = function(key)
                 color_editor.open(push, key)

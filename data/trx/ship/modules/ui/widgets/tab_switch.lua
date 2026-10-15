@@ -37,6 +37,7 @@ end
 ---@field mode trx.signal.Signal How the bar draws, one of `common.ui.widgets.tab_switch.Mode`.
 ---@field single trx.signal.Signal Whether the bar shows the active tab alone.
 ---@field count integer How many tabs there are.
+---@field private wraps trx.signal.Signal
 local TabSwitch = {}
 TabSwitch.__index = TabSwitch
 
@@ -138,6 +139,7 @@ end
 ---@field titles any[] The tab names, or signals carrying them, in order.
 ---@field active? integer The tab active at first. `1` by default.
 ---@field mode? common.ui.TabSwitch.Mode How the bar draws at first. `IDLE` by default.
+---@field wraps? trx.signal.Signal Whether the tabs wrap around, which decides the arrows. The `ui.enable_wraparound` setting by default.
 ---@field single? boolean Whether the bar shows the active tab alone at first.
 
 -- Creates a tab bar.
@@ -148,6 +150,7 @@ function M.new(settings)
     active = trx.signal.new(settings.active or 1),
     mode = trx.signal.new(settings.mode or M.Mode.IDLE),
     single = trx.signal.new(settings.single == true),
+    wraps = settings.wraps or trx.signal.config("ui.enable_wraparound"),
     count = #settings.titles,
   }, TabSwitch)
 
@@ -160,7 +163,7 @@ function M.new(settings)
     return trx.signal.combine(
       self.active,
       self.mode,
-      trx.signal.config("ui.enable_wraparound"),
+      self.wraps,
       function(active, mode, wrap)
         if mode == M.Mode.IDLE or self.count == 0 then
           return false

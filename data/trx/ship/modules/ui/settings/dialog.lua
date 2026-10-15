@@ -123,6 +123,8 @@ end
 ---@field editing trx.signal.Signal Whether the cursor is on the rows.
 ---@field width trx.signal.Signal How wide the rows are, in canvas units at the default text size.
 ---@field dialog_width trx.signal.Signal How wide the dialog is, in the same units.
+---@field changed trx.signal.Signal Says when any setting changes, for as long as the dialog is open.
+---@field layout trx.signal.Signal Says when the room the interface lays out in changes, for as long as the dialog is open.
 ---@field tabs common.ui.settings.Tab[]
 ---@field widget trx.ui.Widget The dialog.
 ---@field private bar common.ui.TabSwitch
@@ -199,7 +201,20 @@ function M.new(settings)
     editing = trx.signal.new(false),
     width = trx.signal.new(0),
     dialog_width = trx.signal.new(0),
+    changed = trx.signal.new(trx.config.signals.changed:get()),
+    layout = trx.signal.new(trx.ui.signals.layout:get()),
   }, Dialog)
+  -- The dialog follows the settings and the room it lays out in through
+  -- signals of its own, and stops following the engine's as it closes, so
+  -- that nothing it built goes on listening once it has gone.
+  self.listeners = {
+    trx.config.signals.changed:on(function(count)
+      self.changed:set(count)
+    end),
+    trx.ui.signals.layout:on(function(count)
+      self.layout:set(count)
+    end),
+  }
   self.tabs = settings.tabs(self)
 
   local titles = {}
@@ -209,23 +224,20 @@ function M.new(settings)
   self.bar = tab_switch.new({
     titles = titles,
     mode = tab_switch.Mode.FOCUSED,
+    wraps = self.changed:map(function()
+      return trx.config.get("ui.enable_wraparound")
+    end),
   })
   self.active = self.bar.active
-  self.listeners = {
-    self.editing:on(function(editing)
-      self.bar.mode:set(
-        editing and tab_switch.Mode.ARROWS or tab_switch.Mode.FOCUSED
-      )
-    end),
-  }
+  self.listeners[#self.listeners + 1] = self.editing:on(function(editing)
+    self.bar.mode:set(
+      editing and tab_switch.Mode.ARROWS or tab_switch.Mode.FOCUSED
+    )
+  end)
 
-  local size = trx.signal.combine(
-    trx.ui.signals.layout,
-    trx.config.signals.changed,
-    function()
-      return lay_out(self.tabs, titles)
-    end
-  )
+  local size = trx.signal.combine(self.layout, self.changed, function()
+    return lay_out(self.tabs, titles)
+  end)
   local function apply(layout)
     self.width:set(layout.width)
     self.dialog_width:set(layout.width + window.chrome_width())
