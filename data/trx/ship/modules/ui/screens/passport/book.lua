@@ -246,7 +246,7 @@ function Passport:push_list(role, req, extra)
   end
   entry.layer = self.ctx:push({
     root = trx.ui.widgets.Stack({
-      shown = entry.shown,
+      visible = entry.shown,
       children = { req.widget },
     }),
     place = req.place,
@@ -354,7 +354,7 @@ function Passport:open_page(role)
   self:sync_delete()
   self.book:set_root(
     trx.ui.widgets.Stack({
-      shown = self.page_shown,
+      visible = self.page_shown,
       children = { req.widget },
     }),
     req.place
@@ -795,7 +795,7 @@ function M.open(ctx, book_pages, index, mode)
     orientation = trx.ui.Orientation.HORIZONTAL,
     v_align = trx.ui.VAlign.CENTER,
     spacing = CAPTION_ARROW_GAP,
-    shown = self.caption_shown,
+    visible = self.caption_shown,
     children = {
       arrow_label("\\{button left}", self.arrow_left),
       trx.ui.widgets.Label({ text = self.caption }),

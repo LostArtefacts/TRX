@@ -52,7 +52,7 @@ end
 ---@return trx.ui.Widget
 function M.swatch(settings)
   return trx.ui.widgets.Custom({
-    shown = settings.shown,
+    visible = settings.visible,
     hidden = settings.hidden,
     measure = function()
       local scale = trx.ui.text_scale
@@ -91,7 +91,7 @@ end
 ---@return trx.ui.Widget
 function M.slider(settings)
   return trx.ui.widgets.Custom({
-    shown = settings.shown,
+    visible = settings.visible,
     hidden = settings.hidden,
     measure = function()
       local scale = trx.ui.text_scale

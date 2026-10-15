@@ -86,7 +86,7 @@ trx.ui.regions.place(
     text = text:map(function(value)
       return value or ""
     end),
-    shown = text:map(function(value)
+    visible = text:map(function(value)
       return value ~= nil
     end),
   })

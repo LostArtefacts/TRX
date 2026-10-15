@@ -306,6 +306,9 @@
 - Changed the drawing events to belong to the modules that draw
     - `trx.events.on_ui_draw` → `trx.ui.on_reserve`
     - `trx.events.on_ui_paint` → `trx.ui.on_paint`
+- Changed the name of the setting that takes a widget out of the layout
+    - `shown` → `visible`
+    - `trx.ui.Widget:is_shown` → `trx.ui.Widget:is_visible`
 - Changed `hidden` to a setting that every widget takes beside `shown`, in place of a field of `trx.ui.Widget`
 - Changed script widgets to stay behind the game interface when they overlap
 - Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.

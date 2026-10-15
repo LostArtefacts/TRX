@@ -176,7 +176,7 @@ trx.ui.on_reserve(function(region)
     return
   end
   slots[root] = nil
-  if root:is_shown() then
+  if root:is_visible() then
     local w, h = root:measure()
     if w > 0 and h > 0 then
       slots[root] = primitive.reserve(region, w, h)

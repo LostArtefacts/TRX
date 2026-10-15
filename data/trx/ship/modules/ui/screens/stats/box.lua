@@ -109,7 +109,7 @@ end
 local function centered_widget(state, text, shown)
   return trx.ui.widgets.Stack({
     align = trx.ui.HAlign.CENTER,
-    shown = shown,
+    visible = shown,
     children = { label(state, text) },
   })
 end
@@ -128,13 +128,13 @@ local function pair_widget(state, key, value, shown)
   if listing.is_bare(state) then
     return trx.ui.widgets.Stack({
       orientation = trx.ui.Orientation.HORIZONTAL,
-      shown = shown,
+      visible = shown,
       children = { label(state, key), label(state, " "), label(state, value) },
     })
   end
   return trx.ui.widgets.Stack({
     orientation = trx.ui.Orientation.HORIZONTAL,
-    shown = shown,
+    visible = shown,
     spacing = state.look.row_spacing,
     align = trx.ui.HAlign.DISTRIBUTE,
     children = { label(state, key), label(state, value) },
@@ -310,7 +310,7 @@ function M.build(state)
   return trx.ui.widgets.Pad({
     x = fitted(state, box.margin),
     y = fitted(state, box.margin),
-    shown = state.shown,
+    visible = state.shown,
     child = dialog,
   })
 end

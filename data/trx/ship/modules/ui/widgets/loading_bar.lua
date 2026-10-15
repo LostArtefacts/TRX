@@ -16,7 +16,7 @@ local M = {}
 
 ---@class common.ui.LoadingBar.settings
 ---@field progress any How full the bar is, from 0 to 1, or a tween or a signal that holds it.
----@field shown? any Whether the bar is shown, or a signal that holds it.
+---@field visible? any Whether the bar is visible, or a signal that holds it.
 ---@field width number The width, as a share of the canvas width.
 ---@field height number The height, in canvas units.
 ---@field y number Where the middle of the bar stands, as a share of the canvas height.
@@ -38,7 +38,7 @@ function M.new(settings)
     widget = trx.ui.widgets.Resize({
       child = bar,
       w = width,
-      shown = settings.shown,
+      visible = settings.visible,
     }),
     place = function(w, h)
       return (trx.ui.canvas.width - w) / 2,

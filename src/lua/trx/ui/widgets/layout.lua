@@ -242,7 +242,7 @@ function widgets.Stack(settings)
     local along_total, across_total = 0.0, 0.0
     local first = true
     for _, child in ipairs(w.children) do
-      if child:is_shown() then
+      if child:is_visible() then
         local size = { child:measure() }
         if not first then
           along_total = along_total + spacing
@@ -274,7 +274,7 @@ function widgets.Stack(settings)
     local shown = {}
     local total = 0.0
     for _, child in ipairs(w.children) do
-      if child:is_shown() then
+      if child:is_visible() then
         local size = { child:measure() }
         shown[#shown + 1] = { child, size }
         total = total + size[along.i]

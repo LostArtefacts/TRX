@@ -245,7 +245,7 @@ function M.new(settings)
   local contents = {
     trx.ui.widgets.Stack({
       align = trx.ui.HAlign.SPAN,
-      shown = self.active:map(function(active)
+      visible = self.active:map(function(active)
         return self.tabs[active].widget == nil
       end),
       children = {
@@ -267,13 +267,13 @@ function M.new(settings)
     if tab.widget ~= nil then
       contents[#contents + 1] = trx.ui.widgets.Stack({
         align = trx.ui.HAlign.SPAN,
-        shown = is_active,
+        visible = is_active,
         children = { tab.widget },
       })
     end
     footers[i] = trx.ui.widgets.Stack({
       align = trx.ui.HAlign.SPAN,
-      shown = is_active,
+      visible = is_active,
       children = { tab.footer },
     })
   end

@@ -26,7 +26,7 @@ local function open(ctx)
   })
   local bar = loading_bar.new({
     progress = show.progress,
-    shown = trx.signal.config("ui.show_loading_bar"),
+    visible = trx.signal.config("ui.show_loading_bar"),
     width = BAR.width,
     height = BAR.height,
     y = BAR.y,

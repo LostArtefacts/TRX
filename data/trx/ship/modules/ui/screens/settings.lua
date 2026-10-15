@@ -155,7 +155,7 @@ local function opener(which)
     end)
     return ctx:push({
       root = trx.ui.widgets.Stack({
-        shown = resting,
+        visible = resting,
         children = { settings_dialog.widget },
       }),
       place = dialog.PLACE,

@@ -88,7 +88,7 @@ function M.setup(source)
     trx.ui.Region.BOTTOM_CENTER,
     trx.ui.widgets.Label({
       text = text,
-      shown = clear & running,
+      visible = clear & running,
     })
   )
 end

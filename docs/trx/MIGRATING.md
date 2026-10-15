@@ -103,9 +103,9 @@ order: 3
     reads it. Remove the calls.
 
 14. **`trx.ui.regions.fallback` is gone**
-    A region draws nothing while every widget in it is not shown. A script
-    that drew something in that case gives that widget to `shown` signals of
-    its own, such as `~bar_shown`, and places it in the region.
+    A region draws nothing while no widget in it is visible. A script that
+    drew something in that case gives that widget a `visible` signal of its
+    own, such as `~bar_visible`, and places it in the region.
 
 15. **`trx.ui.widgets.Row` is gone**
     Build the row as a horizontal `trx.ui.widgets.Stack`: a `Label` of
@@ -119,6 +119,12 @@ order: 3
 17. **`trx.signal.Signal:above` is gone**
     Use `trx.signal.Signal:map`: `poison:above(0)` becomes
     `poison:map(function(value) return type(value) == "number" and value > 0 end)`.
+
+18. **`shown` is now `visible`**
+    Every widget takes `visible` in place of `shown`, with the same meaning: a
+    widget that is not visible keeps no room and leaves no gap.
+    - `shown` → `visible`
+    - `trx.ui.Widget:is_shown` → `trx.ui.Widget:is_visible`
 
 ### Version 1.10 to 1.11
 

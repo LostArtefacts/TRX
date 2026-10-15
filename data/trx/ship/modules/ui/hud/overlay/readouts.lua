@@ -47,7 +47,7 @@ function M.setup(state)
     local function readout(shown, read)
       return ui.widgets.Label({
         text = signal.polled_while(shown, read, ""),
-        shown = shown,
+        visible = shown,
       })
     end
 
@@ -65,7 +65,7 @@ function M.setup(state)
     local function title(shown, read)
       return ui.widgets.Label({
         text = language:map(read),
-        shown = shown,
+        visible = shown,
       })
     end
 
@@ -229,7 +229,7 @@ function M.setup(state)
           return trx.locale.get("general/overlay/debug_immune")
         end),
         scale = 0.8,
-        shown = debuggable
+        visible = debuggable
           & signal.config("debug.enable_debug_status")
           & signal.config("debug.enable_invulnerability"),
       }),
@@ -274,7 +274,7 @@ function M.setup(state)
         text = fps:map(function(value)
           return string.format("%d FPS", value)
         end),
-        shown = shown,
+        visible = shown,
       })
     )
   end

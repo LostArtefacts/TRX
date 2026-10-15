@@ -146,7 +146,7 @@ end)
 -- The text of every label under a widget, in order.
 local function texts(widget, out)
   out = out or {}
-  if not widget:is_shown() then
+  if not widget:is_visible() then
     return out
   end
   local text = rawget(widget, "text")

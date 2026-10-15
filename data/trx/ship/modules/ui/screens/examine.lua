@@ -133,7 +133,7 @@ local function open(ctx)
     return ctx:push({ root = trx.ui.widgets.Spacer(), on_input = on_input })
   end
   state.dialog = text_dialog.new({
-    shown = state.shown,
+    visible = state.shown,
     footer = trx.ui.widgets.Stack({
       align = trx.ui.HAlign.CENTER,
       children = {

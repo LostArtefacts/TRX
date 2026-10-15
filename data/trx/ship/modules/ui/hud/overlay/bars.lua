@@ -185,7 +185,7 @@ function M.setup(shared)
       ui.widgets.Bar({
         type = ui.BarType.LARA_HP,
         value = value,
-        shown = shown & ~poisoned,
+        visible = shown & ~poisoned,
       })
     )
 
@@ -194,7 +194,7 @@ function M.setup(shared)
       ui.widgets.Bar({
         type = ui.BarType.LARA_HP_POISON,
         value = value,
-        shown = shown & poisoned,
+        visible = shown & poisoned,
       })
     )
   end
@@ -231,7 +231,7 @@ function M.setup(shared)
       ui.widgets.Bar({
         type = ui.BarType.LARA_AIR,
         value = value,
-        shown = state.lara_bars
+        visible = state.lara_bars
           & state.playing
           & state.bars_enabled
           & (
@@ -258,7 +258,7 @@ function M.setup(shared)
       ui.widgets.Bar({
         type = ui.BarType.LARA_STAMINA,
         value = sprint,
-        shown = state.lara_bars
+        visible = state.lara_bars
           & state.playing
           & state.bars_enabled
           & sprint:map(function(fill)
@@ -294,7 +294,7 @@ function M.setup(shared)
       ui.widgets.Bar({
         type = ui.BarType.LARA_EXPOSURE,
         value = value,
-        shown = state.lara_bars
+        visible = state.lara_bars
           & state.playing
           & state.bars_enabled
           & exposure:map(function(fill)
@@ -368,7 +368,7 @@ function M.setup(shared)
       ui.widgets.Bar({
         type = ui.BarType.ENEMY_HP,
         value = health,
-        shown = shown & ~is_ally,
+        visible = shown & ~is_ally,
       })
     )
 
@@ -377,7 +377,7 @@ function M.setup(shared)
       ui.widgets.Bar({
         type = ui.BarType.ALLY_HP,
         value = health,
-        shown = shown & is_ally,
+        visible = shown & is_ally,
       })
     )
   end

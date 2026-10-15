@@ -72,7 +72,7 @@ For a selectable list, use `trx.ui.widgets.List:control(keys)` from the layer's
 local visible = trx.lara.signals.is_poisoned
 local label = trx.ui.widgets.Label({
   text = "Poisoned",
-  shown = visible,
+  visible = visible,
 })
 trx.ui.regions.place(trx.ui.Region.TOP_RIGHT, label)
 ```
