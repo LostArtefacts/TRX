@@ -12,6 +12,7 @@
 --   ctx:push({ root = settings_dialog.widget, place = dialog.PLACE })
 
 local metrics = require("common.ui.metrics")
+local value = require("common.ui.value")
 local tab_switch = require("common.ui.widgets.tab_switch")
 local window = require("common.ui.widgets.window")
 
@@ -72,13 +73,6 @@ local function lay_out(tabs, titles)
   }
 end
 
--- A signal that holds what the active tab's signal holds.
-local function pick(active, signals)
-  return trx.signal.combine(active, table.unpack(signals), function(i, ...)
-    return (select(i, ...))
-  end)
-end
-
 -- What the window reads of the active tab's list for its scroll arrows.
 local function active_scroll(active, tabs)
   local function each(read)
@@ -86,7 +80,7 @@ local function active_scroll(active, tabs)
     for i, tab in ipairs(tabs) do
       signals[i] = read(tab.scroll)
     end
-    return pick(active, signals)
+    return value.pick(active, signals)
   end
   return { --[[@as common.ui.ScrollHints]]
     visible = each(function(s)

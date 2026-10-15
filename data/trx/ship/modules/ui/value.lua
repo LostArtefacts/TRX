@@ -32,4 +32,20 @@ function M.signal(setting)
   return trx.signal.new(setting)
 end
 
+-- A signal that holds what the signal at `index` holds, out of `signals`.
+---@param index trx.signal.Signal Which signal, counted from 1.
+---@param signals trx.signal.Signal[]
+---@return trx.signal.Signal
+function M.pick(index, signals)
+  ---@type any[]
+  local args = { index }
+  for _, signal in ipairs(signals) do
+    args[#args + 1] = signal
+  end
+  args[#args + 1] = function(at, ...)
+    return (select(at, ...))
+  end
+  return trx.signal.combine(table.unpack(args))
+end
+
 return M
