@@ -1416,12 +1416,16 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── widgets
 │   │   │   ├── hold_button.lua
 │   │   │   ├── loading_bar.lua
-│   │   │   └── requester.lua
+│   │   │   ├── requester.lua
+│   │   │   ├── row_arrows.lua
+│   │   │   ├── tab_switch.lua
+│   │   │   └── window.lua
 │   │   ├── fade.lua
 │   │   ├── level_start.lua
 │   │   ├── metrics.lua
 │   │   ├── ring.lua
-│   │   └── scroll.lua
+│   │   ├── scroll.lua
+│   │   └── value.lua
 │   ├── inv_ring.lua
 │   ├── ngplus.lua
 │   ├── save_crystal.lua
@@ -2880,12 +2884,16 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── widgets
     │   │   │   │   ├── hold_button.lua
     │   │   │   │   ├── loading_bar.lua
-    │   │   │   │   └── requester.lua
+    │   │   │   │   ├── requester.lua
+    │   │   │   │   ├── row_arrows.lua
+    │   │   │   │   ├── tab_switch.lua
+    │   │   │   │   └── window.lua
     │   │   │   ├── fade.lua
     │   │   │   ├── level_start.lua
     │   │   │   ├── metrics.lua
     │   │   │   ├── ring.lua
-    │   │   │   └── scroll.lua
+    │   │   │   ├── scroll.lua
+    │   │   │   └── value.lua
     │   │   ├── inv_ring.lua
     │   │   ├── ngplus.lua
     │   │   ├── save_crystal.lua

@@ -2229,6 +2229,42 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'modules/ui/widgets/row_arrows',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'stubs': false,
+}
+
+unit_tests += {
+  'name': 'modules/ui/widgets/tab_switch',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'stubs': false,
+}
+
+unit_tests += {
+  'name': 'modules/ui/widgets/window',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'stubs': false,
+}
+
+unit_tests += {
   'name': 'modules/ui/screens/picture',
   'bundles': [
     b_lua_surface,
