@@ -232,24 +232,19 @@ end
 ---@param settings common.ui.settings.Dialog.settings
 ---@return common.ui.settings.Dialog
 function M.new(settings)
+  -- The dialog follows the settings and the room it lays out in through
+  -- signals of its own, and stops following the engine's as it closes, so
+  -- that nothing it built goes on listening once it has gone.
+  local changed, follow_changed = value.mirror(trx.config.signals.changed)
+  local layout, follow_layout = value.mirror(trx.ui.signals.layout)
   local self = setmetatable({
     editing = trx.signal.new(false),
     width = trx.signal.new(0),
     dialog_width = trx.signal.new(0),
-    changed = trx.signal.new(trx.config.signals.changed:get()),
-    layout = trx.signal.new(trx.ui.signals.layout:get()),
+    changed = changed,
+    layout = layout,
+    listeners = { follow_changed, follow_layout },
   }, Dialog)
-  -- The dialog follows the settings and the room it lays out in through
-  -- signals of its own, and stops following the engine's as it closes, so
-  -- that nothing it built goes on listening once it has gone.
-  self.listeners = {
-    trx.config.signals.changed:on(function(count)
-      self.changed:set(count)
-    end),
-    trx.ui.signals.layout:on(function(count)
-      self.layout:set(count)
-    end),
-  }
   self.tabs = settings.tabs(self)
 
   local titles = {}
