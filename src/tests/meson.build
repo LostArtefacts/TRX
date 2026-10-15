@@ -2340,6 +2340,18 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'modules/ui/value',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'stubs': false,
+}
+
+unit_tests += {
   'name': 'modules/ui/widgets/color',
   'bundles': [
     b_lua_surface,
