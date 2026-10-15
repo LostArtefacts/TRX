@@ -1414,6 +1414,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── pause.lua
 │   │   │   └── picture.lua
 │   │   ├── settings
+│   │   │   ├── color_editor.lua
 │   │   │   ├── dialog.lua
 │   │   │   ├── editor.lua
 │   │   │   ├── handlers.lua
@@ -2890,6 +2891,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── pause.lua
     │   │   │   │   └── picture.lua
     │   │   │   ├── settings
+    │   │   │   │   ├── color_editor.lua
     │   │   │   │   ├── dialog.lua
     │   │   │   │   ├── editor.lua
     │   │   │   │   ├── handlers.lua
