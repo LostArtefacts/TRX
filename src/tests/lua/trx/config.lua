@@ -301,6 +301,14 @@ test("a declared setting takes a row on a tab", function()
     ui = { tab = "graphic_visuals", after = "visuals.fov" },
   })
   assert(trx.config.get("mod.grain") == 2)
+  local found = nil
+  for _, entry in ipairs(trx.config.declared_rows()) do
+    if entry.key == "mod.grain" then
+      found = entry.row
+    end
+  end
+  assert(found ~= nil, "the row was not kept")
+  assert(found.tab == "graphic_visuals" and found.after == "visuals.fov")
 end)
 
 test("a row does what its handlers say", function()
@@ -327,15 +335,15 @@ test("a row does what its handlers say", function()
   available = true
 end)
 
-test("a tab no dialog shows raises", function()
+test("a row callback that is not a function raises", function()
   raises(function()
     trx.config.declare({
-      key = "mod.vignette",
+      key = "mod.halo",
       kind = "boolean",
       default = false,
-      ui = { tab = "nowhere" },
+      ui = { tab = "graphic_visuals", is_available = true },
     })
-  end)
+  end, "must be a function")
 end)
 
 test("a declaration that could hold nothing it allows raises", function()

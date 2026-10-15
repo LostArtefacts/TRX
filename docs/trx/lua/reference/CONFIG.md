@@ -81,6 +81,14 @@ belongs to that game and goes when it does.
     - <a id="config.Label.label" name="config.Label.label"></a>**`label`**: string. What the menu shows for it, in the player's language.
     - <a id="config.Label.value" name="config.Label.value"></a>**`value`**: string. The value, as [`trx.config.set`](#config.set) takes it.
 
+- <a id="config.DeclaredRow" name="config.DeclaredRow"></a>[lua]`trx.config.DeclaredRow`
+
+    A setting a script declared with a row in the settings menu.
+
+    Properties:
+    - <a id="config.DeclaredRow.key" name="config.DeclaredRow.key"></a>**`key`**: string. The setting.
+    - <a id="config.DeclaredRow.row" name="config.DeclaredRow.row"></a>**`row`**: [trx.config.Row](#config.Row). The row, as the declaration gave it.
+
 - <a id="config.Watcher" name="config.Watcher"></a>[lua]`trx.config.Watcher`
 
     A setting being watched. [`trx.config.on_change`](#config.on_change) hands one back, and holding
@@ -302,6 +310,12 @@ belongs to that game and goes when it does.
     },
   })
   ```
+
+- <a id="config.declared_rows" name="config.declared_rows"></a>[lua]`trx.config.declared_rows()`  
+  The rows that scripts asked for in the settings menu, in the order the
+  settings were declared. The settings menu reads them to place each row.
+
+  Returns: a list of [trx.config.DeclaredRow](#config.DeclaredRow). The rows.
 
 - <a id="config.on_change" name="config.on_change"></a>[lua]`trx.config.on_change(key, fn)`  
   Calls `fn(value)` whenever the setting changes, and once as the watcher is
