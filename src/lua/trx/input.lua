@@ -40,8 +40,9 @@ require("trx.signal")
 ---`"righty"`, `"lefttrigger"` and `"righttrigger"`.
 ---@trx.module 42 Input
 ---@class (exact) trx.input
----@trx.readonly backend, is_listening, layout
+---@trx.readonly backend, has_touchscreen, is_listening, layout
 ---@field backend trx.input.Backend The current input source.
+---@field has_touchscreen boolean Whether the device has a screen the player touches. A trackpad does not count.
 ---@field layout trx.input.Layout The current layout for the current input source.
 ---@field is_listening boolean Whether script input capture is on.
 local M = h.module("input")
@@ -443,6 +444,7 @@ M.is_suppressed = raw.is_suppressed
 
 h.properties(M, "input", {
   backend = { get = raw.backend },
+  has_touchscreen = { get = raw.has_touchscreen },
   layout = { get = raw.layout },
 })
 

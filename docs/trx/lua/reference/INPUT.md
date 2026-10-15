@@ -47,6 +47,7 @@ buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
 ### Properties
 
 - <a id="input.backend" name="input.backend"></a>**`trx.input.backend`** ([trx.input.Backend](#input.Backend)). The current input source. *(read-only)*
+- <a id="input.has_touchscreen" name="input.has_touchscreen"></a>**`trx.input.has_touchscreen`** (boolean). Whether the device has a screen the player touches. A trackpad does not count. *(read-only)*
 - <a id="input.layout" name="input.layout"></a>**`trx.input.layout`** ([trx.input.Layout](#input.Layout)). The current layout for the current input source. *(read-only)*
 - <a id="input.is_listening" name="input.is_listening"></a>**`trx.input.is_listening`** (boolean). Whether script input capture is on. *(read-only)*
 

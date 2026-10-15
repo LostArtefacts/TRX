@@ -98,6 +98,12 @@ const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout)
     return &names[layout];
 }
 
+// No screen to touch here.
+bool Touch_HasHardwareSupport(void)
+{
+    return false;
+}
+
 bool Input_IsBackendEnabled(const INPUT_BACKEND backend)
 {
     return backend == INPUT_BACKEND_KEYBOARD;
