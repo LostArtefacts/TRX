@@ -16,12 +16,10 @@ local HINT_SCALE = 0.7
 local HINT_ANCHOR_UP = 1.5
 local HINT_ANCHOR_DOWN = -1.0
 
--- A row the height of a scroll arrow, holding the arrow while `hidden` is
--- false.
-local function hint_row(glyph, anchor, shown, hidden)
-  return trx.ui.widgets.Custom({
-    visible = shown,
-    hidden = hidden,
+-- A row the height of a scroll arrow, there while `visible` holds and holding
+-- the arrow while `blank` does not.
+local function hint_row(glyph, anchor, visible, blank)
+  local arrow = trx.ui.widgets.Custom({
     measure = function()
       return 0, metrics.HINT_HEIGHT * trx.ui.text_scale
     end,
@@ -35,6 +33,11 @@ local function hint_row(glyph, anchor, shown, hidden)
         0
       )
     end,
+  })
+  return trx.ui.widgets.Blank({
+    visible = visible,
+    when = blank,
+    child = arrow,
   })
 end
 

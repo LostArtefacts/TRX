@@ -789,7 +789,10 @@ function M.open(ctx, book_pages, index, mode)
   -- Unlit arrows keep their room, so the caption does not move as they come
   -- and go.
   local function arrow_label(glyph, lit)
-    return trx.ui.widgets.Label({ text = glyph, hidden = ~lit })
+    return trx.ui.widgets.Blank({
+      when = ~lit,
+      child = trx.ui.widgets.Label({ text = glyph }),
+    })
   end
   local caption = trx.ui.widgets.Stack({
     orientation = trx.ui.Orientation.HORIZONTAL,

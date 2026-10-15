@@ -42,6 +42,30 @@ function widgets.Resize(settings)
   return self
 end
 
+---@class (exact) trx.ui.widgets.Blank.settings: trx.ui.widgets.settings
+---@field child trx.ui.Widget The child widget.
+---@field when any Whether to leave the child blank, or a signal that holds that value.
+
+---Leaves a child widget blank while a condition holds: it keeps its room, so
+---nothing around it moves, and draws nothing.
+---
+---```lua
+---trx.ui.widgets.Blank({ when = ~can_step_left, child = left_arrow })
+---```
+---@param settings trx.ui.widgets.Blank.settings The settings.
+---@return trx.ui.Widget # The widget.
+function widgets.Blank(settings)
+  local self = new_widget(settings, function(w)
+    return w.child:measure()
+  end, function(w, x, y, bw, bh)
+    if value_of(w.when) ~= true then
+      w.child:paint(x, y, bw, bh)
+    end
+  end)
+  hold(self.child, self)
+  return self
+end
+
 ---@class (exact) trx.ui.widgets.Spacer.settings: trx.ui.widgets.settings
 ---@field w? any The width, in canvas units at the default text size, or a signal that holds it. `0` by default.
 ---@field h? any The height, in canvas units at the default text size, or a signal that holds it. `0` by default.

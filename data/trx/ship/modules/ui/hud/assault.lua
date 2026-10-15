@@ -155,11 +155,13 @@ function M.setup()
           visible = penalty.shown,
         })
       end
-      return ui.widgets.Stack({
-        spacing = 3,
-        align = ui.HAlign.RIGHT,
-        hidden = hidden,
-        children = children,
+      return ui.widgets.Blank({
+        when = hidden,
+        child = ui.widgets.Stack({
+          spacing = 3,
+          align = ui.HAlign.RIGHT,
+          children = children,
+        }),
       })
     end
 

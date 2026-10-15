@@ -1111,4 +1111,31 @@ test("a preview bar takes the size of the text", function()
   assert(near(w, 60 * trx.ui.text_scale), w)
 end)
 
+test("a blank widget keeps its room and draws nothing", function()
+  local painted = false
+  local blank = widgets.Blank({
+    when = true,
+    child = widgets.Custom({
+      measure = function()
+        return 5, 5
+      end,
+      paint = function()
+        painted = true
+      end,
+    }),
+  })
+  assert(blank:measure() == 5)
+  blank:paint(0, 0, 5, 5)
+  assert(not painted)
+end)
+
+test("the old names of the visibility settings raise", function()
+  raises(function()
+    widgets.Label({ text = "a", shown = false })
+  end, "use visible")
+  raises(function()
+    widgets.Label({ text = "a", hidden = true })
+  end, "trx.ui.widgets.Blank")
+end)
+
 return h.report()

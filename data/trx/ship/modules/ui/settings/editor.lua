@@ -470,22 +470,26 @@ local function footer_widget(self, settings)
           return f.first
         end),
         trx.ui.HAlign.LEFT,
-        trx.ui.widgets.Label({
-          scale = scale,
-          hidden = hints:map(function(h)
+        trx.ui.widgets.Blank({
+          when = hints:map(function(h)
             return not h.help
           end),
-          text = hints:map(function(h)
-            return h.edit and edit_hint() or help_hint()
-          end),
+          child = trx.ui.widgets.Label({
+            scale = scale,
+            text = hints:map(function(h)
+              return h.edit and edit_hint() or help_hint()
+            end),
+          }),
         })
       ),
-      trx.ui.widgets.Label({
-        scale = scale,
-        hidden = hints:map(function(h)
+      trx.ui.widgets.Blank({
+        when = hints:map(function(h)
           return not h.restore
         end),
-        text = restore_hint(),
+        child = trx.ui.widgets.Label({
+          scale = scale,
+          text = restore_hint(),
+        }),
       }),
     },
   })
