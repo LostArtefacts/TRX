@@ -1418,6 +1418,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── rows.lua
 │   │   │   └── tabs.lua
 │   │   ├── widgets
+│   │   │   ├── color.lua
 │   │   │   ├── hold_button.lua
 │   │   │   ├── loading_bar.lua
 │   │   │   ├── requester.lua
@@ -2891,6 +2892,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── rows.lua
     │   │   │   │   └── tabs.lua
     │   │   │   ├── widgets
+    │   │   │   │   ├── color.lua
     │   │   │   │   ├── hold_button.lua
     │   │   │   │   ├── loading_bar.lua
     │   │   │   │   ├── requester.lua
