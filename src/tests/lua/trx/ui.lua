@@ -1088,4 +1088,27 @@ test("a bar says whether it takes the PS1 look", function()
   assert(not trx.ui.is_ps1_bar(trx.ui.BarType.LARA_HP))
 end)
 
+test("a scaled resize follows the text scale", function()
+  local box = widgets.Resize({
+    w = 40,
+    h = 10,
+    scaled = true,
+    child = widgets.Spacer({ w = 100, h = 100 }),
+  })
+  local w, hh = box:measure()
+  assert(near(w, 40 * trx.ui.text_scale) and near(hh, 10 * trx.ui.text_scale))
+end)
+
+test("a preview bar takes the size of the text", function()
+  local bar = widgets.Bar({
+    type = trx.ui.BarType.LARA_HP,
+    value = 1,
+    w = 60,
+    h = 12,
+    preview = true,
+  })
+  local w = bar:measure()
+  assert(near(w, 60 * trx.ui.text_scale), w)
+end)
+
 return h.report()
