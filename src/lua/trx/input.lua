@@ -565,7 +565,7 @@ h.properties(M, "input", {
 ---
 ---Returns false if no input is held. Call it each frame while waiting for
 ---input, with `trx.input.listen` on or from inside `trx.input.with_listen`.
----The default layout is read-only.
+---The default layout is read-only. A new binding is saved with the settings.
 ---
 ---Use `trx.input.Binding` to choose a slot, input source, or layout without
 ---placeholder nils. Positional arguments still work.
@@ -655,7 +655,7 @@ function M.capture(role, opts, done)
   return capture
 end
 
----Clears one role binding.
+---Clears one role binding, and saves the bindings with the settings.
 ---
 ---The default layout is read-only, and roles reserved by the game cannot be
 ---left unbound.
@@ -670,7 +670,8 @@ function M.unbind(role, opts, backend, layout)
   return raw.unbind(role, binding_args(opts, backend, layout))
 end
 
----Restores a custom layout to the default bindings.
+---Restores a custom layout to the default bindings, and saves the bindings
+---with the settings.
 ---
 ---Use `trx.input.Binding` to choose an input source or layout without
 ---placeholder nils. Positional arguments still work.

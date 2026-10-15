@@ -127,6 +127,9 @@ const char *Input_GetKeyName(
 // Resets a layout to the default bindings.
 void Input_ResetLayout(INPUT_BACKEND backend, INPUT_LAYOUT layout);
 
+// Saves the bindings to the settings file, as a change the player made.
+void Input_SaveBindings(void);
+
 // Disables updating g_Input.
 void Input_EnterListenMode(void);
 

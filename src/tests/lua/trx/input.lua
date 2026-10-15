@@ -167,10 +167,12 @@ test("binding takes the key the player is holding", function()
   assert(calls.bind.slot == 0, "the engine counts slots from zero")
   assert(calls.bind.backend == input.Backend.KEYBOARD)
   assert(calls.bind.layout == input.Layout.CUSTOM_1)
+  assert(calls.save.count == 1, "the binding was not saved")
 
   -- With no key held, nothing is taken and the script asks again next frame.
   fake.set_anything_down(false)
   assert(input.bind_pressed(Role.JUMP, 1, nil, input.Layout.CUSTOM_1) == false)
+  assert(fake.calls().save.count == 1, "nothing to save")
 end)
 
 test("unbinding leaves the role with no key", function()
@@ -184,11 +186,13 @@ test("unbinding leaves the role with no key", function()
   assert(calls.unbind.slot == 1)
   assert(calls.unbind.backend == input.Backend.CONTROLLER)
   assert(calls.unbind.layout == input.Layout.CUSTOM_2)
+  assert(calls.save.count == 1, "the bindings were not saved")
 end)
 
 test("a layout goes back to what the game ships with", function()
   input.reset_layout({ layout = input.Layout.CUSTOM_3 })
   assert(fake.calls().reset_layout.layout == input.Layout.CUSTOM_3)
+  assert(fake.calls().save.count == 1, "the bindings were not saved")
 end)
 
 -- The default layout is read-only because custom layouts reset from it.

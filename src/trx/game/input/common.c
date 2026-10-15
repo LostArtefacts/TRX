@@ -429,6 +429,12 @@ void Input_ResetLayout(const INPUT_BACKEND backend, const INPUT_LAYOUT layout)
     Input_GetBackendImpl(backend)->reset_layout(layout);
 }
 
+void Input_SaveBindings(void)
+{
+    Config_SectionChanged();
+    Config_Update();
+}
+
 void Input_EnterListenMode(void)
 {
     m_ListenMode = true;

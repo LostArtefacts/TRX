@@ -338,7 +338,11 @@ static int M_L_InputBindPressed(lua_State *const L)
     if (!Input_IsRoleRebindable(role)) {
         return luaL_error(L, "the role cannot be rebound");
     }
-    lua_pushboolean(L, Input_ReadAndAssignRole(backend, layout, role, slot));
+    const bool bound = Input_ReadAndAssignRole(backend, layout, role, slot);
+    if (bound) {
+        Input_SaveBindings();
+    }
+    lua_pushboolean(L, bound);
     return 1;
 }
 
@@ -353,6 +357,7 @@ static int M_L_InputUnbind(lua_State *const L)
         return luaL_error(L, "the role cannot be unbound");
     }
     Input_UnassignRole(backend, layout, role, slot);
+    Input_SaveBindings();
     return 0;
 }
 
@@ -362,6 +367,7 @@ static int M_L_InputResetLayout(lua_State *const L)
     const INPUT_BACKEND backend = M_OptBackend(L, 1);
     const INPUT_LAYOUT layout = M_CheckCustomLayout(L, 2, backend);
     Input_ResetLayout(backend, layout);
+    Input_SaveBindings();
     return 0;
 }
 
