@@ -131,6 +131,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_HEADING, "heading");
     ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_SELECTED_OPTION, "selected");
     ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_OUTLINE_ONLY, "outline");
+    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_HEADING_OUTLINE, "heading_outline");
 
     // LUA_EVENT_NUMBER_OF is a sentinel, not an event.
     ENUM_MAP(UI_STACK_ORIENTATION, UI_STACK_VERTICAL, "vertical");
