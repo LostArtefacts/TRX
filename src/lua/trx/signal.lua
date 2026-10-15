@@ -70,6 +70,7 @@ local derive
 ---@field private _bound trx.signal.Listener[]?
 ---@field private _dormant boolean?
 ---@field private _count integer?
+---@field private _read_at integer?
 ---@field private _pull fun(): any
 ---@field private _attach fun()
 ---@operator band(trx.signal.Signal): trx.signal.Signal
@@ -121,6 +122,11 @@ end
 ---@type table<trx.signal.Signal, integer>
 local kept = {}
 
+-- Counts every change to any signal. A derived signal that nothing listens to
+-- works its value out when read, and keeps it until the count moves, so that
+-- reading it again before anything changes costs nothing.
+local epoch = 0
+
 -- Derived signals keep the listeners they attach to their sources, so they can
 -- detach them later. Level-script signals are stopped when the level ends.
 local function bind(derived, listeners)
@@ -162,6 +168,7 @@ local function attach(signal, fn, keeps)
   if signal._bound ~= nil then
     if signal._dormant then
       signal._dormant = nil
+      signal._read_at = nil
       signal._value = signal._pull()
       signal._attach()
     end
@@ -187,7 +194,10 @@ derive = function(sources, fn)
     return fn(table.unpack(args, 1, count))
   end
 
-  local derived = new_signal(value_of())
+  -- The signal works its value out on first read rather than as it is made,
+  -- so one that is never read costs nothing.
+  local derived = new_signal(nil)
+  derived._dormant = true
   local listeners = {}
   -- The sources reach the signal through a weak reference alone, and not
   -- through the function that works its value out, so a source that outlives
@@ -201,7 +211,6 @@ derive = function(sources, fn)
       listeners[i] = attach(source, recompute, false)
     end
   end
-  derived._attach()
   return bind(derived, listeners)
 end
 
@@ -233,8 +242,9 @@ end
 ---@return any # What it holds.
 function Signal:get()
   report(self)
-  if self._dormant then
+  if self._dormant and self._read_at ~= epoch then
     self._value = self._pull()
+    self._read_at = epoch
   end
   return self._value
 end
@@ -248,6 +258,7 @@ function Signal:set(value)
     return false
   end
   self._value = value
+  epoch = epoch + 1
   -- Copy listeners before running them, so detaching during a callback
   -- does not change the current dispatch pass.
   local listeners = self._listeners
@@ -299,6 +310,9 @@ function Signal:stop()
   if bound == nil then
     return false
   end
+  if self._dormant then
+    self._value = self:get()
+  end
   for _, listener in ipairs(bound) do
     listener:detach()
   end
@@ -339,6 +353,7 @@ function Listener:detach()
       bound:detach()
     end
     signal._dormant = true
+    signal._read_at = epoch
   end
   return true
 end

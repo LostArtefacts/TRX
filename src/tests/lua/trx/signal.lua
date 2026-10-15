@@ -440,6 +440,28 @@ test("a derived signal nothing listens to still reads its sources", function()
   assert(heard == 14, heard)
 end)
 
+test("a derived signal works its value out when first read", function()
+  local runs = 0
+  local doubled = signal.new(2):map(function(value)
+    runs = runs + 1
+    return value * 2
+  end)
+  assert(runs == 0, "it worked its value out as it was made")
+  assert(doubled:get() == 4)
+  assert(doubled:get() == 4)
+  assert(runs == 1, "a second read worked it out again: " .. runs)
+end)
+
+test("a derived signal read again after a change sees it", function()
+  local source = signal.new(1)
+  local doubled = source:map(function(value)
+    return value * 2
+  end)
+  assert(doubled:get() == 2)
+  source:set(3)
+  assert(doubled:get() == 6)
+end)
+
 test("a polled signal that nothing holds stops reading", function()
   local reads = 0
   do
