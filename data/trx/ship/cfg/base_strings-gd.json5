@@ -151,7 +151,6 @@
         },
         "settings": {
             "common": {
-                "all_hidden_disclaimer": "Tha na roghainnean ciorramach airson nan ìrean seo.",
                 "chroma": "Chroma",
                 "edit_value": "\\{review}Deasaich",
                 "frozen_option_disclaimer": "Tha an suidheachadh seo air a chur an gnìomh le ùghdar nan ìrean agus chan urrainnear ga atharrachadh.",

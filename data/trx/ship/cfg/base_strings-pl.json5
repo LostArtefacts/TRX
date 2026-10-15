@@ -151,7 +151,6 @@
         },
         "settings": {
             "common": {
-                "all_hidden_disclaimer": "Ustawienia są wyłączone dla tego zestawu poziomów.",
                 "chroma": "Chroma",
                 "edit_value": "\\{review}Edytuj",
                 "frozen_option_disclaimer": "To ustawienie jest wymuszane przez twórcę poziomu i nie może być zmienione.",

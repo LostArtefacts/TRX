@@ -151,7 +151,6 @@
         },
         "settings": {
             "common": {
-                "all_hidden_disclaimer": "\\{review}Les paramètres sont désactivés pour cet ensemble de niveaux.",
                 "chroma": "Chroma",
                 "edit_value": "\\{review}Modifier",
                 "frozen_option_disclaimer": "Ce paramètre est imposé par le créateur du niveau et ne peut pas être modifié.",

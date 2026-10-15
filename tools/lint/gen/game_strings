@@ -64,6 +64,10 @@ RE_LUA_HELP_ID_USAGE = re.compile(
     r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
 )
 RE_LUA_DECLARE_CALL = re.compile(r"\btrx\.locale\.declare\s*\(")
+# The settings dialogs list their rows in one shipped table, one setting key a
+# line, and every row shows the title and the description of its setting.
+SETTINGS_TABS_SUFFIX = "modules/ui/settings/tabs.lua"
+RE_LUA_SETTINGS_ROW = re.compile(r'^\s*"([a-z0-9_.]+)",\s*$', flags=re.M)
 # The ["key"] = part of a trx.locale.declare{} row. What follows it is read by
 # read_lua_string_expr, which a regex cannot do: the text may be a long-bracket
 # string or several pieces joined with `..`.
@@ -494,6 +498,11 @@ def strip_lua_noncode(source: str, *, strip_long_strings: bool = True) -> str:
 def get_used_lua_strings(path: Path) -> Iterable[tuple[int, str]]:
     """Game string keys named from a Lua script."""
     source = strip_lua_noncode(path.read_text())
+    if path.as_posix().endswith(SETTINGS_TABS_SUFFIX):
+        for match in re.finditer(RE_LUA_SETTINGS_ROW, source):
+            line = source.count("\n", 0, match.start()) + 1
+            yield line, f"settings/{match.group(1)}/title"
+            yield line, f"settings/{match.group(1)}/description"
     for regex in (RE_LUA_GAME_STRING_USAGE, RE_LUA_HELP_ID_USAGE):
         for match in re.finditer(regex, source):
             literal = match.group(1) if match.group(1) is not None else match.group(2)

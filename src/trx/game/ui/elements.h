@@ -2,10 +2,8 @@
 
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/elements/bar.h>
-#include <trx/game/ui/elements/color_swatch.h>
 #include <trx/game/ui/elements/flash.h>
 #include <trx/game/ui/elements/frame.h>
-#include <trx/game/ui/elements/gradient_slider.h>
 #include <trx/game/ui/elements/hide.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/modal.h>

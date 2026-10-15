@@ -863,7 +863,6 @@ GS_DEFINE(general/actions/use_item,                           "Use")
 GS_DEFINE(general/actions/reset_defaults,                     "Reset All")
 GS_DEFINE(general/actions/unbind,                             "Unbind")
 
-GS_DEFINE(general/settings/common/all_hidden_disclaimer,    "Settings are disabled for this level set.")
 GS_DEFINE(general/settings/common/chroma,                   "Chroma")
 GS_DEFINE(general/settings/common/edit_value,               "Edit")
 GS_DEFINE(general/settings/common/frozen_option_disclaimer, "This setting is enforced by the level builder and cannot be changed.")
