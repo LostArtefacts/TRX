@@ -1230,10 +1230,17 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/trx/config',
   'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
-  'src': ['fakes/level.c', 'harness/stubs_console.c', 'fakes/locale.c'],
+  'src': [
+    'fakes/level.c',
+    'harness/stubs_console.c',
+    'harness/stubs_item_action.c',
+    'fakes/locale.c',
+  ],
   'engine': [
     'game/lua/capi/config.c',
+    'game/lua/capi/events.c',
     'game/lua/capi/locale.c',
+    'game/lua/events/manager.c',
     'game/ui/dialogs/settings_handlers.c',
     'game/ui/dialogs/settings_lua.c',
     'game/ui/dialogs/settings_rows.c',

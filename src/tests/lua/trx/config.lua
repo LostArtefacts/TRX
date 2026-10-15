@@ -517,4 +517,13 @@ test("a watcher owed a call and dropped with its level stays quiet", function()
   assert(heard == 0, "a dropped watcher was still called: " .. heard)
 end)
 
+test("the change signal counts every change to any setting", function()
+  local changed = trx.config.signals.changed
+  local before = changed:get()
+  trx.config.set("ui.enable_wraparound", false)
+  trx.config.set("visuals.fov", 70)
+  assert(changed:get() >= before + 2, changed:get() - before)
+  trx.config.set("ui.enable_wraparound", true)
+end)
+
 return h.report()

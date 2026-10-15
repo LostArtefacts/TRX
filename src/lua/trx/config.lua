@@ -376,3 +376,31 @@ end
 ---@return table # Maps each option's key to its value.
 ---@type fun(): table
 M.list = raw.list
+
+---What the settings tell a script about themselves.
+---@class (exact) trx.config.signals
+---@trx.readonly changed
+---@field changed trx.signal.Signal Says when any setting changes. It holds a count that goes up with each change, whichever settings moved. A widget that follows several settings at once listens to this rather than to each of them.
+M.signals = h.namespace("config.signals")
+
+-- The engine says when the settings change, so the signal follows without a
+-- poll. The hook is attached as the module loads, so it belongs to no level.
+local changed = nil --[[@as trx.signal.Signal?]]
+local changed_count = 0
+raw.on_any_change(function()
+  changed_count = changed_count + 1
+  if changed ~= nil then
+    changed:set(changed_count)
+  end
+end)
+
+h.properties(M.signals, "config.signals", {
+  changed = {
+    get = function()
+      if changed == nil then
+        changed = trx.signal.new(changed_count)
+      end
+      return changed
+    end,
+  },
+})
