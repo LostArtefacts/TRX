@@ -121,6 +121,38 @@ where the engine would. [`trx.math.Angle`](#math.Angle) says what an angle is he
   local teal = trx.math.color(51, 229, 255)
   ```
 
+- <a id="math.from_oklch" name="math.from_oklch"></a>[lua]`trx.math.from_oklch(l, c, h)`  
+  Builds a color out of OKLCH, the space in which equal steps of lightness,
+  chroma or hue look equal: the settings menu picks colors in it.
+
+  Parameters:
+  - <a id="math.from_oklch.l" name="math.from_oklch.l"></a>**`l`** (number). The lightness, from `0` to `1`.
+  - <a id="math.from_oklch.c" name="math.from_oklch.c"></a>**`c`** (number). The chroma, from `0` for grey upwards.
+  - <a id="math.from_oklch.h" name="math.from_oklch.h"></a>**`h`** (number). The hue, in degrees.
+
+  Returns: [trx.math.Color](#math.Color).
+
+  Example:
+  ```lua
+  local orange = trx.math.from_oklch(0.75, 0.15, 60)
+  ```
+
+- <a id="math.to_oklch" name="math.to_oklch"></a>[lua]`trx.math.to_oklch(color)`  
+  Reads a color as OKLCH, the space [`trx.math.from_oklch`](#math.from_oklch) builds one from.
+
+  Parameters:
+  - <a id="math.to_oklch.color" name="math.to_oklch.color"></a>**`color`** ([trx.math.Color](#math.Color)). The color.
+
+  Returns:
+  - number. The lightness, from `0` to `1`.
+  - number. The chroma.
+  - number. The hue, in degrees from `0` up to `360`.
+
+  Example:
+  ```lua
+  local l, c, h = trx.math.to_oklch(trx.math.color("ff8000"))
+  ```
+
 - <a id="math.degrees" name="math.degrees"></a>[lua]`trx.math.degrees(degrees)`  
   Converts an angle from degrees. A whole degree and a part of one both
   remain exact. [`trx.math.DEG_1`](#math.DEG_1) uses the nearest whole unit and falls four

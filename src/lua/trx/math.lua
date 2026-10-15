@@ -191,6 +191,91 @@ function M.color(value, g, b)
   return make_color(value, g, b)
 end
 
+local function clamp(value, low, high)
+  return math.max(low, math.min(high, value))
+end
+
+local function srgb_to_linear(c)
+  if c <= 0.04045 then
+    return c / 12.92
+  end
+  return ((c + 0.055) / 1.055) ^ 2.4
+end
+
+local function linear_to_srgb(c)
+  if c <= 0.0031308 then
+    return c * 12.92
+  end
+  return 1.055 * c ^ (1 / 2.4) - 0.055
+end
+
+local function round_byte(value)
+  return math.floor(value * 255 + 0.5)
+end
+
+---Builds a color out of OKLCH, the space in which equal steps of lightness,
+---chroma or hue look equal: the settings menu picks colors in it.
+---
+---```lua
+---local orange = trx.math.from_oklch(0.75, 0.15, 60)
+---```
+---@param l number The lightness, from `0` to `1`.
+---@param c number The chroma, from `0` for grey upwards.
+---@param h number The hue, in degrees.
+---@return trx.math.Color
+function M.from_oklch(l, c, h)
+  local lightness = clamp(l, 0, 1)
+  local chroma = clamp(c, 0, 1)
+  local hue = clamp(h < 0 and 0 or math.fmod(h, 360), 0, 360)
+  local hue_rad = hue * math.pi / 180
+  local a = chroma * math.cos(hue_rad)
+  local b = chroma * math.sin(hue_rad)
+
+  local l_ = lightness + 0.3963377774 * a + 0.2158037573 * b
+  local m_ = lightness - 0.1055613458 * a - 0.0638541728 * b
+  local s_ = lightness - 0.0894841775 * a - 1.2914855480 * b
+  local l3, m3, s3 = l_ * l_ * l_, m_ * m_ * m_, s_ * s_ * s_
+
+  local r = 4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3
+  local g = -1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3
+  local bl = -0.0041960863 * l3 - 0.7034186147 * m3 + 1.7076147010 * s3
+  return make_color(
+    round_byte(linear_to_srgb(clamp(r, 0, 1))),
+    round_byte(linear_to_srgb(clamp(g, 0, 1))),
+    round_byte(linear_to_srgb(clamp(bl, 0, 1)))
+  )
+end
+
+---Reads a color as OKLCH, the space `trx.math.from_oklch` builds one from.
+---
+---```lua
+---local l, c, h = trx.math.to_oklch(trx.math.color("ff8000"))
+---```
+---@param color trx.math.Color The color.
+---@return number # The lightness, from `0` to `1`.
+---@return number # The chroma.
+---@return number # The hue, in degrees from `0` up to `360`.
+function M.to_oklch(color)
+  local r = srgb_to_linear(color.r / 255)
+  local g = srgb_to_linear(color.g / 255)
+  local b = srgb_to_linear(color.b / 255)
+  local function cbrt(value)
+    return value < 0 and -((-value) ^ (1 / 3)) or value ^ (1 / 3)
+  end
+  local l = cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+  local m = cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+  local s = cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+
+  local lightness = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s
+  local a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s
+  local b_comp = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+  local hue = math.atan(b_comp, a) * 180 / math.pi
+  if hue < 0 then
+    hue = hue + 360
+  end
+  return clamp(lightness, 0, 1), math.sqrt(a * a + b_comp * b_comp), hue
+end
+
 ---Converts an angle from degrees. A whole degree and a part of one both
 ---remain exact. `trx.math.DEG_1` uses the nearest whole unit and falls four
 ---units short over a quarter turn.
