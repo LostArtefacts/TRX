@@ -169,6 +169,14 @@ static int M_L_StringsLower(lua_State *const L)
     return 1;
 }
 
+// trxc.strings.equivalent(a: string, b: string): boolean
+static int M_L_StringsEquivalent(lua_State *const L)
+{
+    lua_pushboolean(
+        L, String_Equivalent(luaL_checkstring(L, 1), luaL_checkstring(L, 2)));
+    return 1;
+}
+
 // trxc.strings.paginate(text: string, max_lines: integer): string[]
 static int M_L_StringsPaginate(lua_State *const L)
 {
@@ -188,6 +196,7 @@ static int M_L_StringsPaginate(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
+    { "equivalent", M_L_StringsEquivalent },
     { "fuzzy_match", M_L_StringsFuzzyMatch },
     { "regex_match", M_L_StringsRegexMatch },
     { "paginate", M_L_StringsPaginate },
