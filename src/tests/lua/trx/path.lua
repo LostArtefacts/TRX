@@ -27,6 +27,32 @@ test("the parts of a path are read off it", function()
   assert((trx.path.config_dir / "README").suffix == "", "a file may have none")
 end)
 
+test("a directory that is not there lists nothing", function()
+  local missing = trx.path.config_dir / "nothing-here"
+  assert(#missing:list() == 0)
+end)
+
+test("a directory lists what it holds in name order", function()
+  local dir = trx.path.config_dir / "listed"
+  (dir / "b.json5"):write_text("{}");
+  (dir / "a.json5"):write_text("{}");
+  (dir / "deeper" / "c.json5"):write_text("{}")
+  local names = {}
+  for i, entry in ipairs(dir:list()) do
+    names[i] = entry.name
+  end
+  assert(
+    table.concat(names, ",") == "a.json5,b.json5,deeper",
+    table.concat(names, ",")
+  )
+end)
+
+test("listing outside the reachable directories raises", function()
+  h.raises(function()
+    trx.path.new("/etc"):list()
+  end, "outside the places")
+end)
+
 test("two paths with the same text are equal", function()
   assert(trx.path.config_dir / "a" == trx.path.config_dir / "a")
   assert(trx.path.config_dir / "a" ~= trx.path.config_dir / "b")

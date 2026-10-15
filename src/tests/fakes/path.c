@@ -13,6 +13,7 @@
 
 #include <lauxlib.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
 
 // What a file the store holds is.
@@ -146,6 +147,54 @@ static int M_L_WriteText(lua_State *const L)
     return 0;
 }
 
+static int M_CompareNames(const void *const a, const void *const b)
+{
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+
+// The entries the store holds right under a directory: its files, and the
+// directories that deeper files sit in, each once and in name order.
+static int M_L_List(lua_State *const L)
+{
+    const char *const raw = M_CheckReachable(L, 1);
+    const size_t len = strlen(raw);
+    VECTOR *const names = Vector_Create(sizeof(char *));
+    for (int32_t i = 0; m_Files != nullptr && i < m_Files->count; i++) {
+        const M_FILE *const held = Vector_Get(m_Files, i);
+        if (strncmp(held->path, raw, len) != 0 || held->path[len] != '/') {
+            continue;
+        }
+        const char *const rest = held->path + len + 1;
+        const char *const sep = strchr(rest, '/');
+        char *const name = sep != nullptr
+            ? String_Format("%.*s", (int)(sep - rest), rest)
+            : Memory_DupStr(rest);
+        bool seen = false;
+        for (int32_t j = 0; j < names->count; j++) {
+            seen = seen || strcmp(*(char **)Vector_Get(names, j), name) == 0;
+        }
+        if (seen) {
+            Memory_Free(name);
+        } else {
+            Vector_Add(names, &name);
+        }
+    }
+    if (names->count > 1) {
+        qsort(
+            Vector_GetData(names), names->count, names->item_size,
+            M_CompareNames);
+    }
+    lua_createtable(L, names->count, 0);
+    for (int32_t i = 0; i < names->count; i++) {
+        char *const name = *(char **)Vector_Get(names, i);
+        lua_pushstring(L, name);
+        lua_rawseti(L, -2, i + 1);
+        Memory_Free(name);
+    }
+    Vector_Free(names);
+    return 1;
+}
+
 static int M_L_Root(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);
@@ -268,19 +317,13 @@ static int M_L_Stem(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "root", M_L_Root },
-    { "roots", M_L_Roots },
-    { "kinds", M_L_Kinds },
-    { "resolve", M_L_Resolve },
-    { "expand", M_L_Expand },
-    { "exists", M_L_Exists },
-    { "is_reachable", M_L_IsReachable },
-    { "read_text", M_L_ReadText },
-    { "write_text", M_L_WriteText },
-    { "parent", M_L_Parent },
-    { "name", M_L_Name },
-    { "stem", M_L_Stem },
-    { nullptr, nullptr },
+    { "root", M_L_Root },          { "roots", M_L_Roots },
+    { "kinds", M_L_Kinds },        { "resolve", M_L_Resolve },
+    { "expand", M_L_Expand },      { "exists", M_L_Exists },
+    { "list", M_L_List },          { "is_reachable", M_L_IsReachable },
+    { "read_text", M_L_ReadText }, { "write_text", M_L_WriteText },
+    { "parent", M_L_Parent },      { "name", M_L_Name },
+    { "stem", M_L_Stem },          { nullptr, nullptr },
 };
 
 static void M_Create(lua_State *const L)

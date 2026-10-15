@@ -171,6 +171,7 @@
 - Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
 - Added `trx.ui.screen`, the whole screen in canvas units, which reaches the edges that `trx.ui.canvas` can stop short of
 - Added `trx.config.labels`, `trx.config.to_string`, `trx.config.is_default` and `trx.config.is_hidden`, which tell a script what the settings menu shows of a setting
+- Added `trx.path.Path:list`, which lists the entries of a directory
 - Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
 - Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)

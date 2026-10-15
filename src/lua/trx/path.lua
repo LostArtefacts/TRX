@@ -145,6 +145,24 @@ function Path:exists()
   return raw.exists(rawget(self, "_raw"))
 end
 
+---The entries of a directory, in name order, as paths. A path that is not a
+---directory has none. Raises where the path is outside the directories a script
+---may reach.
+---
+---```lua
+---for _, file in ipairs(trx.path.config_dir:list()) do
+---  trx.log.info(file.name)
+---end
+---```
+---@return trx.path.Path[] # The entries.
+function Path:list()
+  local result = {}
+  for i, name in ipairs(raw.list(rawget(self, "_raw"))) do
+    result[i] = self / name
+  end
+  return result
+end
+
 ---Creates a path from text, which the engine opens as it stands. Every
 ---`%token%` in the text is expanded first, so `"%config_dir%/mymod"` says the
 ---same thing as `trx.path.config_dir / "mymod"`.
