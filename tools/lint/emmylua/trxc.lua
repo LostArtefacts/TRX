@@ -102,7 +102,10 @@ trxc = {}
 ---@field declare fun(spec: trx.config.Shape)
 ---@field describe fun(key: string): trx.config.Shape
 ---@field get fun(key: string): any
+---@field is_default fun(key: string): boolean
+---@field is_hidden fun(key: string): boolean
 ---@field is_overridden fun(key: string): boolean
+---@field labels fun(key: string): { value: string, label: string, enabled: boolean }[]
 ---@field list fun(): table<string, any>
 ---@field off_change fun(id: integer): boolean
 ---@field on_change fun(key: string, fn: fun(value: any)): integer
@@ -111,6 +114,7 @@ trxc = {}
 ---@field reset fun(key: string, force?: boolean): boolean
 ---@field restore fun(key: string): boolean
 ---@field set fun(key: string, value: any, force?: boolean)
+---@field to_string fun(key: string, human?: boolean, value?: any): string?
 
 ---@class (exact) trxc.console
 ---@field clear fun()

@@ -68,6 +68,15 @@ belongs to that game and goes when it does.
     - <a id="config.Row.request_change_value" name="config.Row.request_change_value"></a>**`request_change_value`**: function, optional. Called with the value and the direction. Return true to take the press over; the row is left alone, and moving the setting is the script's to do.
     - <a id="config.Row.tab" name="config.Row.tab"></a>**`tab`**: string. Settings tab the row sits on: `gameplay_general`, `gameplay_controls`, `gameplay_mods`, `gameplay_fixes`, `graphic_visuals`, `graphic_ui`, `graphic_ui_stats`, `graphic_ui_bars`, `graphic_rendering`, `sound_volume` or `sound_misc`.
 
+- <a id="config.Label" name="config.Label"></a>[lua]`trx.config.Label`
+
+    One value that an enum setting takes, as the settings menu shows it.
+
+    Properties:
+    - <a id="config.Label.enabled" name="config.Label.enabled"></a>**`enabled`**: boolean. Whether the value can be picked now. A dynamic enum can switch values off, such as a language whose files are missing.
+    - <a id="config.Label.label" name="config.Label.label"></a>**`label`**: string. What the menu shows for it, in the player's language.
+    - <a id="config.Label.value" name="config.Label.value"></a>**`value`**: string. The value, as [`trx.config.set`](#config.set) takes it.
+
 - <a id="config.Watcher" name="config.Watcher"></a>[lua]`trx.config.Watcher`
 
     A setting being watched. [`trx.config.on_change`](#config.on_change) hands one back, and holding
@@ -202,6 +211,58 @@ belongs to that game and goes when it does.
   - <a id="config.is_overridden.key" name="config.is_overridden.key"></a>**`key`** (string). Dotted path.
 
   Returns: boolean. True while an override stands, and false once the last is lifted.
+
+- <a id="config.is_default" name="config.is_default"></a>[lua]`trx.config.is_default(key)`  
+  Whether a setting holds the value it falls back to.
+
+  Parameters:
+  - <a id="config.is_default.key" name="config.is_default.key"></a>**`key`** (string). Dotted path.
+
+  Returns: boolean. True where the value equals the default.
+
+- <a id="config.is_hidden" name="config.is_hidden"></a>[lua]`trx.config.is_hidden(key)`  
+  Whether the game flow keeps a setting out of the settings menu, as it does
+  for one that a game does not use.
+
+  Parameters:
+  - <a id="config.is_hidden.key" name="config.is_hidden.key"></a>**`key`** (string). Dotted path.
+
+  Returns: boolean. True where the setting is hidden.
+
+- <a id="config.labels" name="config.labels"></a>[lua]`trx.config.labels(key)`  
+  The values that an enum setting takes, in the order the game defines them,
+  with what the settings menu shows for each. Any other setting has none.
+
+  Parameters:
+  - <a id="config.labels.key" name="config.labels.key"></a>**`key`** (string). Dotted path.
+
+  Returns: a list of [trx.config.Label](#config.Label). The values, empty for a setting that is not an enum.
+
+  Example:
+  ```lua
+  for _, entry in ipairs(trx.config.labels("visuals.shadow_type")) do
+    trx.log.info(entry.value .. " = " .. entry.label)
+  end
+  ```
+
+- <a id="config.to_string" name="config.to_string"></a>[lua]`trx.config.to_string(key, [options])`  
+  A setting's value as text: as the settings file stores it, or as the
+  settings menu shows it.
+
+  Parameters:
+  - <a id="config.to_string.key" name="config.to_string.key"></a>**`key`** (string). Dotted path.
+  - <a id="config.to_string.options" name="config.to_string.options"></a>**`options`** (table, optional). How to write it, and which value.
+
+    Keys:
+    - <a id="config.to_string.options.human" name="config.to_string.options.human"></a>**`human`** (boolean, optional). Whether to write the text as the settings menu shows it, with labels in the player's language, rather than as the settings file stores it. `false` by default.
+    - <a id="config.to_string.options.value" name="config.to_string.options.value"></a>**`value`** (any, optional). A value to write in place of the setting's own. It is read as [`trx.config.set`](#config.set) reads it.
+
+  Returns: string or `nil`. The text, or `nil` where `value` is one the setting does not accept.
+
+  Example:
+  ```lua
+  local shown = trx.config.to_string("visuals.shadow_type", { human = true })
+  ```
 
 - <a id="config.declare" name="config.declare"></a>[lua]`trx.config.declare(spec)`  
   Adds a setting of the game's own.

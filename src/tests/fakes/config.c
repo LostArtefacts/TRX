@@ -10,6 +10,7 @@
 #include <trx/config/priv.h>
 #include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
+#include <trx/core/memory.h>
 #include <trx/core/utils.h>
 
 #include <stdio.h>
@@ -178,6 +179,25 @@ const char *Config_Option_GetValueAsString(
     default:
         return "";
     }
+}
+
+bool Config_Option_AcceptsString(
+    const CONFIG_OPTION *const option, const char *const value)
+{
+    TRX_VALUE parsed;
+    return M_Parse(option, value, &parsed);
+}
+
+char *Config_Option_NormalizeValueString(
+    const CONFIG_OPTION *const option, const char *const value,
+    const bool human_readable)
+{
+    CONFIG_OPTION parsed = *option;
+    if (!M_Parse(option, value, &parsed.value)) {
+        return Memory_DupStr(value != nullptr ? value : "");
+    }
+    return Memory_DupStr(
+        Config_Option_GetValueAsString(&parsed, human_readable));
 }
 
 bool Config_Option_SetFromString(

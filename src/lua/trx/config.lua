@@ -235,6 +235,57 @@ M.restore = raw.restore
 ---@type fun(key: string): boolean
 M.is_overridden = raw.is_overridden
 
+---Whether a setting holds the value it falls back to.
+---@param key string Dotted path.
+---@return boolean # True where the value equals the default.
+---@type fun(key: string): boolean
+M.is_default = raw.is_default
+
+---Whether the game flow keeps a setting out of the settings menu, as it does
+---for one that a game does not use.
+---@param key string Dotted path.
+---@return boolean # True where the setting is hidden.
+---@type fun(key: string): boolean
+M.is_hidden = raw.is_hidden
+
+---One value that an enum setting takes, as the settings menu shows it.
+---@trx.record
+---@class trx.config.Label
+---@field value string The value, as `trx.config.set` takes it.
+---@field label string What the menu shows for it, in the player's language.
+---@field enabled boolean Whether the value can be picked now. A dynamic enum can switch values off, such as a language whose files are missing.
+
+---The values that an enum setting takes, in the order the game defines them,
+---with what the settings menu shows for each. Any other setting has none.
+---
+---```lua
+---for _, entry in ipairs(trx.config.labels("visuals.shadow_type")) do
+---  trx.log.info(entry.value .. " = " .. entry.label)
+---end
+---```
+---@param key string Dotted path.
+---@return trx.config.Label[] # The values, empty for a setting that is not an enum.
+---@type fun(key: string): trx.config.Label[]
+M.labels = raw.labels
+
+---@class (exact) trx.config.to_string.options
+---@field human? boolean Whether to write the text as the settings menu shows it, with labels in the player's language, rather than as the settings file stores it. `false` by default.
+---@field value? any A value to write in place of the setting's own. It is read as `trx.config.set` reads it.
+
+---A setting's value as text: as the settings file stores it, or as the
+---settings menu shows it.
+---
+---```lua
+---local shown = trx.config.to_string("visuals.shadow_type", { human = true })
+---```
+---@param key string Dotted path.
+---@param options? trx.config.to_string.options How to write it, and which value.
+---@return string? # The text, or `nil` where `value` is one the setting does not accept. <!--noref: value-->
+function M.to_string(key, options)
+  options = options or {}
+  return raw.to_string(key, options.human == true, options.value)
+end
+
 ---Adds a setting of the game's own.
 ---
 ---The declaration carries no text. The engine derives `settings/<key>/title`,
