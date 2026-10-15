@@ -13,7 +13,7 @@ typedef PHASE_CONTROL (*PHASE_CONTROL_FUNC)(PHASE *phase);
 typedef void (*PHASE_DRAW_FUNC)(PHASE *phase);
 typedef bool (*PHASE_REQUEST_FADE_TO_BLACK_FUNC)(
     PHASE *phase, FADER_ARGS *out_args);
-typedef bool (*PHASE_USES_CROSS_FADE_IN_FUNC)(PHASE *phase);
+typedef bool (*PHASE_USES_CROSS_FADE_IN_FUNC)(const PHASE *phase);
 
 typedef struct PHASE {
     PHASE_START_FUNC start;

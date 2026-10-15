@@ -20,9 +20,9 @@ typedef struct {
     FADER cross_fader;
 } M_PRIV;
 
-static bool M_UsesCrossFadeIn(PHASE *const phase)
+static bool M_UsesCrossFadeIn(const PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
+    const M_PRIV *const p = phase->priv;
     return p->args.cross_fade_in && g_Config.visuals.enable_fade_effects
         && g_TRVersion == 3;
 }
