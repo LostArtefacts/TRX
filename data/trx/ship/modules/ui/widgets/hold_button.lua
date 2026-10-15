@@ -15,8 +15,6 @@ local metrics = require("common.ui.metrics")
 
 local M = {}
 
-local ROLE = trx.input.Role.UNBIND_KEY
-
 local TEXT_SCALE = 0.85
 local PAD_X = 6.0
 local PAD_Y = 3.0
@@ -37,6 +35,7 @@ M.HEIGHT = 2.0 * PAD_Y
 -- A button: its widget, and the hold it counts.
 ---@class common.ui.HoldButton
 ---@field widget trx.ui.Widget The button, to push or to place in another widget.
+---@field private role trx.input.Role
 ---@field private has_key boolean
 ---@field private enabled trx.signal.Signal
 ---@field private hidden trx.signal.Signal
@@ -49,10 +48,10 @@ local Button = {}
 Button.__index = Button
 
 -- The words and the key to hold, or nil while the key is not bound. The
--- player cannot bind keys while a screen with the button is open, so the
--- button reads this once, as it is built.
-local function label_of(words)
-  local key = trx.input.key_name(ROLE)
+-- controls dialog does not list the keys that a button holds, so the button
+-- reads this once, as it is built.
+local function label_of(words, role)
+  local key = trx.input.key_name(role)
   if key == nil then
     return nil
   end
@@ -91,7 +90,7 @@ end
 function Button:control(keys, enabled)
   local fired = false
   if enabled then
-    local held = keys:held_for(ROLE)
+    local held = keys:held_for(self.role)
     if held == 0 then
       self.armed = true
     end
@@ -141,6 +140,7 @@ end
 
 ---@class common.ui.HoldButton.settings
 ---@field words string What the button does.
+---@field role? trx.input.Role The key to hold. `UNBIND_KEY` by default.
 ---@field align? trx.ui.HAlign Where the button sits in the width it is given. Centered by default.
 ---@field scale? number How many times its size the button is drawn. `1` by default.
 ---@field from? common.ui.HoldButton A button that this one stands in for, whose hold it carries on.
@@ -152,8 +152,10 @@ function M.new(settings)
   local from = settings.from
   local enabled = trx.signal.new(false)
   local filling = trx.signal.new(from ~= nil and from.filling:get() or false)
-  local label = label_of(settings.words)
+  local role = settings.role or trx.input.Role.UNBIND_KEY
+  local label = label_of(settings.words, role)
   local self = setmetatable({
+    role = role,
     has_key = label ~= nil,
     enabled = enabled,
     hidden = ~enabled,
