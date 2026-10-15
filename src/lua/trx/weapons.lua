@@ -135,11 +135,12 @@ local Anim = h.handle("weapons.Anim", "WEAPON_ANIM_INFO", {
 
 ---A weapon definition, reached as `trx.weapons.uzis` or by id.
 ---@class (exact) trx.weapons.Weapon
----@trx.readonly id, is_launcher, is_machine_gun
+---@trx.readonly equip_key, id, is_launcher, is_machine_gun
 ---@field id trx.catalog.weapons Which weapon this is, for the calls that take one: `trx.inventory.set_shots(weapon.id, 100)`.
 ---@field kind trx.weapons.Kind How the engine holds and fires it.
 ---@field is_available boolean Whether the game allows the weapon at all. Turning one off keeps it out of the cheats and off the controls list, and a save that carries it arrives without it.
 ---@field is_machine_gun boolean Whether it keeps firing while the trigger is held.
+---@field equip_key trx.input.Role? The role that draws the weapon, or `nil` for none. A spec sets it as `equip_key`. <!--noref: equip_key-->
 ---@field is_launcher boolean Whether it throws an explosive that flies on its own, rather than sending a round straight at the target.
 ---@field given_in_ngplus boolean Whether a bonus game gives Lara the weapon, loaded, at level start. A weapon added by a script is not given unless this is true.
 ---@field aim_speed trx.math.Angle How far the arms swing towards the target each frame, in engine units. A spec says the same thing in degrees, as `aim.speed`. <!--noref: aim.speed-->
@@ -173,6 +174,7 @@ local Weapon = h.handle("weapons.Weapon", "WEAPON_INFO", {
     given_in_ngplus = "given_in_ngplus",
     is_machine_gun = "is_machine_gun",
     is_launcher = "is_launcher",
+    equip_key = "equip_input_role",
     aim_speed = "aim_speed",
     shot_accuracy = "shot_accuracy",
     gun_height = "gun_height",
