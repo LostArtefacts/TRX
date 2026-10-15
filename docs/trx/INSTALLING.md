@@ -1418,6 +1418,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── dialog.lua
 │   │   │   ├── editor.lua
 │   │   │   ├── handlers.lua
+│   │   │   ├── preset_tab.lua
+│   │   │   ├── presets.lua
 │   │   │   ├── rows.lua
 │   │   │   └── tabs.lua
 │   │   ├── widgets
@@ -2895,6 +2897,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── dialog.lua
     │   │   │   │   ├── editor.lua
     │   │   │   │   ├── handlers.lua
+    │   │   │   │   ├── preset_tab.lua
+    │   │   │   │   ├── presets.lua
     │   │   │   │   ├── rows.lua
     │   │   │   │   └── tabs.lua
     │   │   │   ├── widgets
