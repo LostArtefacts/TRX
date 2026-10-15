@@ -15,6 +15,7 @@ local value_of = base.value_of
 ---@field child trx.ui.Widget The child widget.
 ---@field w? any The width, in canvas units, or a signal that holds it. Its own by default.
 ---@field h? any The height, in canvas units, or a signal that holds it. Its own by default.
+---@field scaled? any Whether `w` and `h` are at the default text size, and follow the text scale as `trx.ui.widgets.Spacer` does, or a signal that holds that value. `false` by default. <!--noref: w, h-->
 
 ---Gives a child widget an explicit size.
 ---@param settings trx.ui.widgets.Resize.settings The resize settings.
@@ -22,8 +23,11 @@ local value_of = base.value_of
 function widgets.Resize(settings)
   local self = new_widget(settings, function(w)
     local cw, ch = w.child:measure()
+    local scale = value_of(w.scaled) and raw.drawn_text_scale() or 1
     local fixed_w = value_of(w.w)
     local fixed_h = value_of(w.h)
+    fixed_w = fixed_w ~= nil and fixed_w * scale or nil
+    fixed_h = fixed_h ~= nil and fixed_h * scale or nil
     if fixed_w ~= nil then
       cw = fixed_w
     end

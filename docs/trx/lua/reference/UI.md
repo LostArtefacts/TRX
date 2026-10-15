@@ -1279,6 +1279,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Bar.settings.w" name="ui.widgets.Bar.settings.w"></a>**`w`** (any, optional). The width, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
     - <a id="ui.widgets.Bar.settings.h" name="ui.widgets.Bar.settings.h"></a>**`h`** (any, optional). The height, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
     - <a id="ui.widgets.Bar.settings.smooth" name="ui.widgets.Bar.settings.smooth"></a>**`smooth`** (any, optional). Whether the fill shades one band into the next, or a signal that holds that value. The player's smooth bars setting by default.
+    - <a id="ui.widgets.Bar.settings.preview" name="ui.widgets.Bar.settings.preview"></a>**`preview`** (any, optional). Whether the bar takes the size of the text around it rather than the player's bar size, as a bar shown beside its setting does, or a signal that holds that value. `false` by default.
 
   Returns: [trx.ui.Widget](#ui.Widget). The bar.
 
@@ -1451,6 +1452,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Resize.settings.child" name="ui.widgets.Resize.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
     - <a id="ui.widgets.Resize.settings.w" name="ui.widgets.Resize.settings.w"></a>**`w`** (any, optional). The width, in canvas units, or a signal that holds it. Its own by default.
     - <a id="ui.widgets.Resize.settings.h" name="ui.widgets.Resize.settings.h"></a>**`h`** (any, optional). The height, in canvas units, or a signal that holds it. Its own by default.
+    - <a id="ui.widgets.Resize.settings.scaled" name="ui.widgets.Resize.settings.scaled"></a>**`scaled`** (any, optional). Whether `w` and `h` are at the default text size, and follow the text scale as [`Spacer`](#ui.widgets.Spacer) does, or a signal that holds that value. `false` by default.
     - <a id="ui.widgets.Resize.settings.shown" name="ui.widgets.Resize.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
     - <a id="ui.widgets.Resize.settings.hidden" name="ui.widgets.Resize.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
