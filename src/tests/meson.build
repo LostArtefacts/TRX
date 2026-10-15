@@ -2811,11 +2811,6 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'trx/game/ui/scrollable',
-  'engine': ['game/ui/scrollable.c'],
-}
-
-unit_tests += {
   'name': 'trx/game/ui/tween',
   'engine': ['game/ui/tween.c'],
 }
@@ -2915,7 +2910,6 @@ unit_tests += {
     'game/ui/helpers.c',
     'game/ui/scaler.c',
     'game/ui/scaler.c',
-    'game/ui/scrollable.c',
     'game/ui/settings.c',
     'game/ui/text.c',
     'version.c',
@@ -2926,21 +2920,14 @@ unit_tests += {
     'game/ui/elements/frame.c',
     'game/ui/elements/hide.c',
     'game/ui/elements/label.c',
-    'game/ui/elements/modal.c',
     'game/ui/elements/offset.c',
     'game/ui/elements/pad.c',
-    'game/ui/elements/progress_button.c',
-    'game/ui/elements/requester.c',
     'game/ui/elements/resize.c',
     'game/ui/elements/row_arrows.c',
-    'game/ui/elements/scrollable_stack.c',
-    'game/ui/elements/sleek_bar.c',
     'game/ui/elements/spacer.c',
     'game/ui/elements/stack.c',
     'game/ui/helpers.c',
     'game/ui/scaler.c',
-    'game/ui/elements/tab_switch.c',
-    'game/ui/elements/window.c',
     'game/ui/tween.c',
   ],
   'deps': [dep_mathlibrary, dep_pcre2, dep_zlib],
