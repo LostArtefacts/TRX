@@ -9,6 +9,7 @@
 --   ctx:push({ root = req.widget, place = req.place, on_input = ... })
 
 local metrics = require("common.ui.metrics")
+local window = require("common.ui.widgets.window")
 
 local M = {}
 
@@ -146,41 +147,11 @@ function M.new(settings)
   })
 
   ---@type trx.signal.Signal?
-  local title = nil
-  local children = {}
-  if settings.title ~= nil then
-    title = trx.signal.new(settings.title)
-    children[#children + 1] = trx.ui.widgets.Frame({
-      style = trx.ui.FrameStyle.HEADING,
-      z = 160,
-      child = trx.ui.widgets.Pad({
-        x = metrics.TITLE_PAD_X + metrics.body_pad_x(),
-        y = metrics.title_pad_y(),
-        child = trx.ui.widgets.Stack({
-          align = trx.ui.HAlign.CENTER,
-          children = { trx.ui.widgets.Label({ text = title }) },
-        }),
-      }),
-    })
-  end
-  children[#children + 1] = trx.ui.widgets.Pad({
-    x = metrics.body_pad_x(),
-    y = metrics.BODY_PAD_Y,
-    child = list,
-  })
-
-  local frame = trx.ui.widgets.Frame({
-    style = trx.ui.FrameStyle.DIALOG,
-    z = 170,
-    child = trx.ui.widgets.Pad({
-      x = metrics.outer_pad(),
-      y = metrics.outer_pad(),
-      child = trx.ui.widgets.Stack({
-        spacing = TITLE_SPACING,
-        align = trx.ui.HAlign.SPAN,
-        children = children,
-      }),
-    }),
+  local title = settings.title ~= nil and trx.signal.new(settings.title) or nil
+  local frame = window.new({
+    title = title,
+    title_pad_x = metrics.TITLE_PAD_X + metrics.body_pad_x(),
+    content = list,
   })
 
   panel = frame
@@ -195,7 +166,9 @@ function M.new(settings)
   end
 
   return setmetatable({
-    widget = trx.ui.widgets.Fit({ child = body }),
+    widget = trx.ui.widgets.Fit({
+      child = body --[[@as trx.ui.Widget]],
+    }),
     rows = rows,
     list = list,
     title = title,
