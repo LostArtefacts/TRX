@@ -151,7 +151,6 @@
         },
         "settings": {
             "common": {
-                "all_hidden_disclaimer": "\\{review}Настройки отключены для этого набора уровней.",
                 "chroma": "Chroma",
                 "edit_value": "\\{review}Изменить",
                 "frozen_option_disclaimer": "Этот параметр принудительно установлен редактором уровней и не может быть изменён.",

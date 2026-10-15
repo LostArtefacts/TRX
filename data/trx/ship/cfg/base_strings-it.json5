@@ -151,7 +151,6 @@
         },
         "settings": {
             "common": {
-                "all_hidden_disclaimer": "Le impostazioni sono disabilitate per questo gruppo di livelli.",
                 "chroma": "Chroma",
                 "edit_value": "Modifica",
                 "frozen_option_disclaimer": "Questa impostazione è applicata dal generatore di livelli e non può essere modificata.",

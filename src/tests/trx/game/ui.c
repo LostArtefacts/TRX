@@ -1,9 +1,9 @@
-// The settings dialogs size themselves from the text they hold, so a long
-// translation can push one past the edge of the screen. 4:3 is where that
+// The controls dialog sizes itself from the text it holds, so a long
+// translation can push it past the edge of the screen. 4:3 is where that
 // bites: the canvas is 640 units wide there against 853 at 16:9, so a dialog
 // that fits a widescreen window has 213 units less to work with.
 //
-// These tests lay the dialogs out for real - the same measure and layout passes
+// These tests lay the dialog out for real - the same measure and layout passes
 // the game runs - at 640x480, for every game and every shipped language, and
 // check that nothing ends up outside the canvas.
 
@@ -16,7 +16,6 @@
 
 #include <trx/config.h>
 #include <trx/config/registry.h>
-#include <trx/config/presets.h>
 #include <trx/core/json.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -28,13 +27,7 @@
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/input.h>
-#include <trx/game/ui/dialogs/config_presets.h>
 #include <trx/game/ui/dialogs/controls_editor.h>
-#include <trx/game/ui/dialogs/gameplay_settings.h>
-#include <trx/game/ui/dialogs/graphic_settings.h>
-#include <trx/game/ui/dialogs/settings.h>
-#include <trx/game/ui/dialogs/settings.h>
-#include <trx/game/ui/dialogs/sound_settings.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -53,13 +46,6 @@
 #define M_TEXT_BUF_SIZE 256
 #define M_KEY_BUF_SIZE 256
 
-typedef struct {
-    const char *name;
-    UI_SETTINGS_DIALOG_STATE *(*init)(void);
-    void (*draw)(UI_SETTINGS_DIALOG_STATE *);
-    void (*free)(UI_SETTINGS_DIALOG_STATE *);
-} M_DIALOG;
-
 // How far the worst node reaches outside the screen, and outside its own box.
 typedef struct {
     float screen;
@@ -70,14 +56,6 @@ typedef struct {
     float fit_scale;
     float reached_scale;
 } M_OVERFLOW;
-
-static const M_DIALOG m_Dialogs[] = {
-    { "gameplay", UI_GameplaySettings_Init, UI_GameplaySettings,
-      UI_GameplaySettings_Free },
-    { "graphics", UI_GraphicSettings_Init, UI_GraphicSettings,
-      UI_GraphicSettings_Free },
-    { "sound", UI_SoundSettings_Init, UI_SoundSettings, UI_SoundSettings_Free },
-};
 
 // The languages the game ships, base_strings.json5 being the English one.
 static const char *m_Languages[] = {
@@ -337,21 +315,6 @@ static M_OVERFLOW M_MeasureScene(void)
     return result;
 }
 
-static M_OVERFLOW M_MeasureDialogOverflow(const M_DIALOG *const dialog)
-{
-    UI_ForgetSmallestFitScale();
-    UI_Measure_Forget();
-    UI_SETTINGS_DIALOG_STATE *const state = dialog->init();
-    UI_BeginScene();
-    dialog->draw(state);
-    UI_EndScene();
-    M_OVERFLOW result = M_MeasureScene();
-    result.fit_scale = UI_GetSmallestFitScale();
-    result.reached_scale = M_GetReachedScale();
-    dialog->free(state);
-    return result;
-}
-
 static void M_SetLanguage(const char *const lang)
 {
     GameString_Reset();
@@ -370,17 +333,6 @@ static void M_SetUp(
     CONFIG_SET(g_Config.ui.enable_wraparound, false);
     FakeUI_SetKeyName("R");
     UI_LoadText();
-}
-
-// Reserves screen-edge text at the player's text scale.
-static void M_ReserveScreenEdges(void)
-{
-    UI_BeginRegion(UI_REGION_TOP_CENTER);
-    UI_Label("Heading");
-    UI_EndRegion();
-    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
-    UI_Label("Item name");
-    UI_EndRegion();
 }
 
 static bool M_IsNear(const float actual, const float expected)
@@ -615,63 +567,6 @@ TEST(ui_font_metrics)
     Subsystem_ShutdownAll();
 }
 
-// The list of settings a preset would change is the longest text in any of
-// these dialogs: a setting title and its before/after values, for every key the
-// preset touches. It wraps rather than sizing the dialog to the widest of them.
-TEST(ui_config_presets_confirm_fits_4_3)
-{
-    Subsystem_InitAll();
-    Config_Presets_ScanFiles();
-
-    for (size_t i = 0; i < ARRAY_SIZE(m_Languages); i++) {
-        M_SetLanguage(m_Languages[i]);
-        for (int32_t tr_version = 1; tr_version <= TR_VERSION_COUNT;
-             tr_version++) {
-            M_SetUp(tr_version, m_Languages[i], 1.0f);
-
-            const int32_t preset_count = Config_Presets_GetCount();
-            if (preset_count == 0) {
-                TEST_FAIL("no presets found to confirm");
-                break;
-            }
-
-            for (int32_t preset = 0; preset < preset_count; preset++) {
-                UI_CONFIG_PRESETS_STATE *const state = UI_ConfigPresets_Init();
-                // Walk the list to the preset, then accept it, the way a player
-                // reaches the confirmation.
-                for (int32_t row = 0; row <= preset; row++) {
-                    g_InputDB = (INPUT_STATE) { .menu_down = true };
-                    UI_ConfigPresets_Control(state);
-                }
-                g_InputDB = (INPUT_STATE) { .menu_confirm = true };
-                UI_ConfigPresets_Control(state);
-                g_InputDB = (INPUT_STATE) {};
-
-                UI_BeginScene();
-                UI_ConfigPresetsApplyModal(state);
-                UI_EndScene();
-
-                const M_OVERFLOW over = M_MeasureScene();
-                const char *const lang =
-                    m_Languages[i] != nullptr ? m_Languages[i] : "en";
-                if (over.screen > M_GetSlack(M_SLACK)) {
-                    TEST_FAIL(
-                        "%s tr%d preset %d: %.0f units off screen; %s", lang,
-                        tr_version, preset, over.screen, M_DescribeWidest());
-                }
-                if (over.box > M_GetSlack(M_BOX_SLACK)) {
-                    TEST_FAIL(
-                        "%s tr%d preset %d: %.0f units outside its box: %s",
-                        lang, tr_version, preset, over.box,
-                        M_Describe(over.box_node));
-                }
-                UI_ConfigPresets_Free(state);
-            }
-        }
-    }
-    Subsystem_ShutdownAll();
-}
-
 TEST(ui_controls_editor_fits_4_3)
 {
     Subsystem_InitAll();
@@ -725,97 +620,6 @@ TEST(ui_controls_editor_fits_4_3)
 
                 UI_ControlsEditor_Free(&state);
                 EventManager_Free(events);
-            }
-        }
-    }
-    Subsystem_ShutdownAll();
-}
-
-TEST(ui_settings_dialogs_fit_4_3)
-{
-    Subsystem_InitAll();
-    for (size_t i = 0; i < ARRAY_SIZE(m_Languages); i++) {
-        M_SetLanguage(m_Languages[i]);
-        for (int32_t tr_version = 1; tr_version <= TR_VERSION_COUNT;
-             tr_version++) {
-            for (size_t k = 0; k < ARRAY_SIZE(m_TextScales); k++) {
-                M_SetUp(tr_version, m_Languages[i], m_TextScales[k]);
-                for (size_t j = 0; j < ARRAY_SIZE(m_Dialogs); j++) {
-                    const M_OVERFLOW over =
-                        M_MeasureDialogOverflow(&m_Dialogs[j]);
-                    const char *const lang =
-                        m_Languages[i] != nullptr ? m_Languages[i] : "en";
-                    if (over.reached_scale < M_GetScaleTarget()) {
-                        TEST_FAIL(
-                            "%s tr%d %s at %.0f%%: text reaches %.1f%%, short "
-                            "of %.0f%%; %s",
-                            lang, tr_version, m_Dialogs[j].name,
-                            m_TextScales[k] * 100.0f,
-                            over.reached_scale * 100.0f,
-                            M_GetScaleTarget() * 100.0f, M_DescribeWidest());
-                    } else if (over.screen > M_GetSlack(M_SLACK)) {
-                        TEST_FAIL(
-                            "%s tr%d %s at %.0f%%: %.0f units too %s in %s; "
-                            "%s",
-                            lang, tr_version, m_Dialogs[j].name,
-                            m_TextScales[k] * 100.0f, over.screen,
-                            over.screen_axis,
-                            M_DescribeOverflow(
-                                over.screen_node, over.screen_axis),
-                            M_DescribeWidest());
-                    } else if (over.box > M_GetSlack(M_BOX_SLACK)) {
-                        TEST_FAIL(
-                            "%s tr%d %s at %.0f%%: %.0f units outside its box "
-                            "in %s; %s",
-                            lang, tr_version, m_Dialogs[j].name,
-                            m_TextScales[k] * 100.0f, over.box,
-                            M_NodeName(over.box_node) != nullptr
-                                ? M_NodeName(over.box_node)
-                                : "?",
-                            M_Describe(over.box_node));
-                    }
-                }
-            }
-        }
-    }
-    Subsystem_ShutdownAll();
-}
-
-// The inventory ring names the item under the dialog, and the overlay draws
-// that text at the bottom of the screen. A dialog that reaches past what those
-// keep clear lands on top of them.
-TEST(ui_settings_dialogs_clear_the_screen_edges)
-{
-    Subsystem_InitAll();
-    M_SetLanguage(nullptr);
-    for (int32_t tr_version = 1; tr_version <= TR_VERSION_COUNT; tr_version++) {
-        for (size_t k = 0; k < ARRAY_SIZE(m_TextScales); k++) {
-            M_SetUp(tr_version, nullptr, m_TextScales[k]);
-            for (size_t j = 0; j < ARRAY_SIZE(m_Dialogs); j++) {
-                UI_ForgetSmallestFitScale();
-                UI_Measure_Forget();
-                UI_SETTINGS_DIALOG_STATE *const state = m_Dialogs[j].init();
-
-                // Region and dialog layout settle across frames in game.
-                for (int32_t frame = 0; frame < 3; frame++) {
-                    g_InputDB = (INPUT_STATE) { .menu_down = frame == 0 };
-                    UI_SettingsDialog_Control(state);
-                    g_InputDB = (INPUT_STATE) {};
-                    UI_BeginScene();
-                    M_ReserveScreenEdges();
-                    m_Dialogs[j].draw(state);
-                    UI_EndScene();
-                }
-
-                const M_OVERFLOW over = M_MeasureScene();
-                if (over.screen > M_GetSlack(M_SLACK)) {
-                    TEST_FAIL(
-                        "tr%d %s at %.0f%%: %.0f units too %s in %s",
-                        tr_version, m_Dialogs[j].name, m_TextScales[k] * 100.0f,
-                        over.screen, over.screen_axis,
-                        M_DescribeOverflow(over.screen_node, over.screen_axis));
-                }
-                m_Dialogs[j].free(state);
             }
         }
     }

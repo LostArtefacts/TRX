@@ -39,7 +39,6 @@
 ---@field savegame trxc.savegame
 ---@field scene trxc.scene
 ---@field screens trxc.screens
----@field settings trxc.settings
 ---@field sound trxc.sound
 ---@field stats trxc.stats
 ---@field store trxc.store
@@ -493,9 +492,6 @@ trxc = {}
 
 ---@class (exact) trxc.screens
 ---@field close fun(screen: trx.ui.Screen, choice: integer)
-
----@class (exact) trxc.settings
----@field add_row fun(key: string, ui: trx.config.Row)
 
 ---@class (exact) trxc.sound
 ---@field sample_available_count fun(): integer

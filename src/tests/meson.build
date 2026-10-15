@@ -302,9 +302,6 @@ b_screen_module = {
     'game/lua/events/ui.c',
     'game/rules.c',
     'game/ui/common.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_lua.c',
-    'game/ui/dialogs/settings_rows.c',
     'game/ui/dialogs/takeover.c',
     'game/ui/elements/anchor.c',
     'game/ui/elements/frame.c',
@@ -802,9 +799,6 @@ unit_tests += {
     'game/lua/capi/events.c',
     'game/lua/capi/locale.c',
     'game/lua/events/manager.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_lua.c',
-    'game/ui/dialogs/settings_rows.c',
   ],
 }
 
@@ -870,9 +864,6 @@ unit_tests += {
     'game/lua/events/manager.c',
     'game/lua/events/ui.c',
     'game/ui/common.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_lua.c',
-    'game/ui/dialogs/settings_rows.c',
     'game/ui/elements/anchor.c',
     'game/ui/elements/frame.c',
     'game/ui/elements/hide.c',
@@ -1059,9 +1050,6 @@ unit_tests += {
     'game/lua/events/manager.c',
     'game/lua/events/ui.c',
     'game/ui/common.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_lua.c',
-    'game/ui/dialogs/settings_rows.c',
     'game/ui/elements/anchor.c',
     'game/ui/elements/frame.c',
     'game/ui/elements/hide.c',
@@ -1116,9 +1104,6 @@ unit_tests += {
     'game/lua/events/ui.c',
     'game/lua/hooks/screens.c',
     'game/ui/common.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_lua.c',
-    'game/ui/dialogs/settings_rows.c',
     'game/ui/dialogs/takeover.c',
     'game/ui/elements/anchor.c',
     'game/ui/elements/frame.c',
@@ -1241,9 +1226,6 @@ unit_tests += {
     'game/lua/capi/events.c',
     'game/lua/capi/locale.c',
     'game/lua/events/manager.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_lua.c',
-    'game/ui/dialogs/settings_rows.c',
   ],
 }
 
@@ -2846,32 +2828,8 @@ unit_tests += {
   ],
 }
 
-# Where a settings row sits: the tab lists and the placement a declared row
-# resolves to. The options are real; nothing draws.
-unit_tests += {
-  'name': 'trx/game/ui/dialogs/settings_rows',
-  'bundles': [b_value],
-  'engine': [
-    'config/common.c',
-    'config/legacy.c',
-    'config/option.c',
-    'config/priv.c',
-    'config/registry.c',
-    'config/section.c',
-    'core/event_manager.c',
-    'core/json/base.c',
-    'core/json/parse.c',
-    'core/result.c',
-    'core/subsystem.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_rows.c',
-    'version.c',
-  ],
-  'src': ['harness/stubs_config_file.c', 'harness/stubs_result.c'],
-}
-
-# The UI layout test is the widest of the unit tests: it stands up the settings
-# dialogs and runs the real measure and layout passes over them. It reads the
+# The UI layout test is the widest of the unit tests: it stands up the controls
+# dialog and runs the real measure and layout passes over them. It reads the
 # shipped font.bin for glyph metrics and the shipped config for the strings -
 # both versioned in this repository - so it still needs no window and no build
 # of the game.
@@ -2895,7 +2853,6 @@ unit_tests += {
     'config/map.c',
     'config/option.c',
     'config/option_text.c',
-    'config/presets.c',
     'config/registry.c',
     'config/section.c',
     'core/colors.c',
@@ -2927,20 +2884,7 @@ unit_tests += {
     'game/rules.c',
     'game/ui/common.c',
     'game/ui/regions.c',
-    'game/ui/dialogs/color_editor.c',
-    'game/ui/dialogs/config_presets.c',
     'game/ui/dialogs/controls_editor.c',
-    'game/ui/dialogs/gameplay_settings.c',
-    'game/ui/dialogs/graphic_settings.c',
-    'game/ui/dialogs/setting_helpers/handlers.c',
-    'game/ui/dialogs/setting_helpers/handlers_language.c',
-    'game/ui/dialogs/settings.c',
-    'game/ui/dialogs/settings_editor.c',
-    'game/ui/dialogs/settings_handlers.c',
-    'game/ui/dialogs/settings_rows.c',
-    'game/ui/dialogs/settings_tabs.c',
-    'game/ui/dialogs/sound_settings.c',
-    'game/ui/dialogs/text.c',
     'game/ui/events.c',
     'game/ui/fade.c',
     'game/ui/helpers.c',
@@ -2953,10 +2897,8 @@ unit_tests += {
     'gl/enum.c',
     'game/ui/elements/anchor.c',
     'game/ui/elements/bar.c',
-    'game/ui/elements/color_swatch.c',
     'game/ui/elements/flash.c',
     'game/ui/elements/frame.c',
-    'game/ui/elements/gradient_slider.c',
     'game/ui/elements/hide.c',
     'game/ui/elements/label.c',
     'game/ui/elements/modal.c',
