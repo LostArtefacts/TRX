@@ -431,6 +431,7 @@ trxc = {}
 ---@field expand fun(text: string): string
 ---@field is_reachable fun(raw: string): boolean
 ---@field kinds fun(): string[]
+---@field list fun(raw: string): string[]
 ---@field name fun(raw: string): string
 ---@field parent fun(raw: string): string
 ---@field read_text fun(raw: string): string?

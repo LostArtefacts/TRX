@@ -10,6 +10,7 @@
 
 #include <ctype.h>
 #include <lauxlib.h>
+#include <stdlib.h>
 #include <string.h>
 
 static GAME_PATH M_CheckRoot(lua_State *const L, const int arg)
@@ -171,6 +172,43 @@ static int M_L_Exists(lua_State *const L)
     return 1;
 }
 
+static int M_CompareNames(const void *const a, const void *const b)
+{
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+
+// trxc.path.list(raw: string): string[]
+static int M_L_List(lua_State *const L)
+{
+    const char *const raw = M_CheckReachable(L, 1);
+    VECTOR *const names = Vector_Create(sizeof(char *));
+    FS_DIR *const dir = FS_OpenDirectory(raw);
+    if (dir != nullptr) {
+        const char *name;
+        while ((name = FS_ReadDirectory(dir)) != nullptr) {
+            if (strcmp(name, ".") != 0 && strcmp(name, "..") != 0) {
+                char *const copy = Memory_DupStr(name);
+                Vector_Add(names, &copy);
+            }
+        }
+        FS_CloseDirectory(dir);
+    }
+    if (names->count > 1) {
+        qsort(
+            Vector_GetData(names), names->count, names->item_size,
+            M_CompareNames);
+    }
+    lua_createtable(L, names->count, 0);
+    for (int32_t i = 0; i < names->count; i++) {
+        char *const name = *(char **)Vector_Get(names, i);
+        lua_pushstring(L, name);
+        lua_rawseti(L, -2, i + 1);
+        Memory_Free(name);
+    }
+    Vector_Free(names);
+    return 1;
+}
+
 // trxc.path.read_text(raw: string): string?
 static int M_L_ReadText(lua_State *const L)
 {
@@ -247,6 +285,7 @@ static int M_L_Stem(lua_State *const L)
     return 1;
 }
 
+// clang-format off
 static const luaL_Reg m_Module[] = {
     { "root", M_L_Root },
     { "roots", M_L_Roots },
@@ -254,6 +293,7 @@ static const luaL_Reg m_Module[] = {
     { "resolve", M_L_Resolve },
     { "expand", M_L_Expand },
     { "exists", M_L_Exists },
+    { "list", M_L_List },
     { "is_reachable", M_L_IsReachable },
     { "read_text", M_L_ReadText },
     { "write_text", M_L_WriteText },
@@ -262,6 +302,7 @@ static const luaL_Reg m_Module[] = {
     { "stem", M_L_Stem },
     { nullptr, nullptr },
 };
+// clang-format on
 
 static void M_Create(lua_State *const L)
 {

@@ -63,6 +63,20 @@ under the game's own directories, and nowhere else.
 
       Returns: boolean. Whether reading and writing are allowed.
 
+    - <a id="path.Path.list" name="path.Path.list"></a>[lua]`path:list()`  
+      The entries of a directory, in name order, as paths. A path that is not a
+      directory has none. Raises where the path is outside the directories a script
+      may reach.
+
+      Returns: a list of [trx.path.Path](#path.Path). The entries.
+
+      Example:
+      ```lua
+      for _, file in ipairs(trx.path.config_dir:list()) do
+        trx.log.info(file.name)
+      end
+      ```
+
     - <a id="path.Path.read_text" name="path.Path.read_text"></a>[lua]`path:read_text()`  
       Reads the file as text, or returns `nil` where no file is present. Raises
       where the path is outside the directories a script may reach.
