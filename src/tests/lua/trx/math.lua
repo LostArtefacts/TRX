@@ -178,4 +178,21 @@ test("an angle blends the short way round", function()
   assert(trx.math.lerp_angle(0, trx.math.DEG_90, 0.5) == trx.math.DEG_90 // 2)
 end)
 
+test("a color goes to OKLCH and back unchanged", function()
+  for _, hex in ipairs({ "ffffff", "000000", "ff0000", "33e5ff", "804020" }) do
+    local color = trx.math.color(hex)
+    local back = trx.math.from_oklch(trx.math.to_oklch(color))
+    assert(back.hex == hex, hex .. " came back as " .. back.hex)
+  end
+end)
+
+test("OKLCH reads red and white as the space defines them", function()
+  local l, c, h_ = trx.math.to_oklch(trx.math.color("ff0000"))
+  assert(math.abs(l - 0.628) < 0.001, l)
+  assert(math.abs(c - 0.2577) < 0.001, c)
+  assert(math.abs(h_ - 29.23) < 0.01, h_)
+  local white_l, white_c = trx.math.to_oklch(trx.math.color("ffffff"))
+  assert(math.abs(white_l - 1) < 0.001 and white_c < 0.001)
+end)
+
 return h.report()
