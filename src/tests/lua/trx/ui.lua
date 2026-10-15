@@ -456,7 +456,7 @@ test("a signal read twice while measuring detaches with the widget", function()
   label:measure()
   assert(listeners_of(text) == 2, listeners_of(text))
   label:release()
-  assert(listeners_of(text) == 1, "a listener outlived the release")
+  assert(listeners_of(text) == 0, "a listener outlived the release")
   label:release()
 end)
 
