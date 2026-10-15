@@ -182,6 +182,7 @@
 - Added `trx.input.can_unbind`, which says whether a binding can be cleared
 - Added `trx.stats.has_crystals`, which says whether any level of the game holds a save crystal
 - Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
+- Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
 - Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
 - Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
 - Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look

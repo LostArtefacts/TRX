@@ -160,6 +160,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     Properties:
     - <a id="weapons.Weapon.aim_speed" name="weapons.Weapon.aim_speed"></a>**`aim_speed`**: [trx.math.Angle](MATH.md#math.Angle). How far the arms swing towards the target each frame, in engine units. A spec says the same thing in degrees, as `aim.speed`.
     - <a id="weapons.Weapon.damage" name="weapons.Weapon.damage"></a>**`damage`**: integer. Hit points one shot takes off what it hits.
+    - <a id="weapons.Weapon.equip_key" name="weapons.Weapon.equip_key"></a>**`equip_key`**: [trx.input.Role](INPUT.md#input.Role). The role that draws the weapon, or `nil` for none. A spec sets it as `equip_key`. *(read-only)*
     - <a id="weapons.Weapon.fire_overlay_pitch" name="weapons.Weapon.fire_overlay_pitch"></a>**`fire_overlay_pitch`**: integer. The pitch at which to play the overlay sample.
     - <a id="weapons.Weapon.fire_overlay_sample" name="weapons.Weapon.fire_overlay_sample"></a>**`fire_overlay_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The overlay sample a shot plays. One this game has no sound for is silent.
     - <a id="weapons.Weapon.fire_sample" name="weapons.Weapon.fire_sample"></a>**`fire_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The sample a shot plays. One this game has no sound for is silent.

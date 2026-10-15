@@ -46,6 +46,7 @@ static lua_State *m_L = nullptr;
 
 static const WEAPON_INFO *M_WeaponOfAnim(const void *anim);
 static bool M_GetID(const void *self, TRX_VALUE *out);
+static bool M_GetEquipKey(const void *self, TRX_VALUE *out);
 static const char *M_SetKind(void *self, const TRX_VALUE *in);
 static const char *M_SetSample(void *self, const TRX_VALUE *in);
 static const char *M_SetOverlaySample(void *self, const TRX_VALUE *in);
@@ -98,6 +99,7 @@ static const FIELD_DESC m_WeaponFields[] = {
     FIELD(WEAPON_INFO, given_in_ngplus),
     FIELD_RO(WEAPON_INFO, is_machine_gun),
     FIELD_RO(WEAPON_INFO, is_launcher),
+    FIELD_FN("equip_input_role", TVT_S32, M_GetEquipKey, nullptr),
 
     FIELD(WEAPON_INFO, aim_speed),
     FIELD(WEAPON_INFO, shot_accuracy),
@@ -150,6 +152,16 @@ static bool M_GetID(const void *const self, TRX_VALUE *const out)
         .type = TVT_S32,
         .as_int = ((const WEAPON_INFO *)self)->gun_type,
     };
+    return true;
+}
+
+static bool M_GetEquipKey(const void *const self, TRX_VALUE *const out)
+{
+    const INPUT_ROLE role = ((const WEAPON_INFO *)self)->equip_input_role;
+    if ((int32_t)role < 0) {
+        return false;
+    }
+    *out = (TRX_VALUE) { .type = TVT_S32, .as_int = role };
     return true;
 }
 
