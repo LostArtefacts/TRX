@@ -232,4 +232,8 @@ test(
   end
 )
 
+test("a game without save crystals says so", function()
+  assert(trx.stats.has_crystals() == false)
+end)
+
 return h.report()

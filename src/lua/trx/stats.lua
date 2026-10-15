@@ -165,4 +165,9 @@ function M.take_secret(secret_num)
   return stats ~= nil and stats:take_secret(secret_num)
 end
 
+---Whether any level of the game holds a save crystal.
+---@return boolean # True where one does.
+---@type fun(): boolean
+M.has_crystals = raw.has_crystals
+
 local _ = Category

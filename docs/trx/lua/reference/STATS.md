@@ -138,3 +138,8 @@ everything here reads `nil`.
   - <a id="stats.take_secret.secret_num" name="stats.take_secret.secret_num"></a>**`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
 
   Returns: boolean. `false` if no level is being played, the level has no such secret, or Lara does not have it.
+
+- <a id="stats.has_crystals" name="stats.has_crystals"></a>[lua]`trx.stats.has_crystals()`  
+  Whether any level of the game holds a save crystal.
+
+  Returns: boolean. True where one does.

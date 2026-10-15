@@ -174,6 +174,7 @@
 - Added `trx.path.Path:list`, which lists the entries of a directory
 - Added `trx.locale.text_languages`, `trx.locale.voice_languages` and `trx.locale.language_name`, which list the languages and the dubs the game has
 - Added `trx.input.has_touchscreen`, which says whether the device has a touchscreen
+- Added `trx.stats.has_crystals`, which says whether any level of the game holds a save crystal
 - Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
 - Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
