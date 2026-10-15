@@ -88,4 +88,23 @@ test("a row on a tab that does not exist is left out", function()
   finish()
 end)
 
+test("a closed dialog leaves nothing following the game", function()
+  local function listeners_of(signal)
+    local count = 0
+    for _ in pairs(rawget(signal, "_listeners")) do
+      count = count + 1
+    end
+    return count
+  end
+  local changed = listeners_of(trx.config.signals.changed)
+  local layout = listeners_of(trx.ui.signals.layout)
+  for _ = 1, 3 do
+    open(trx.catalog.objects.PDA_OPTION)
+    press(Role.MENU_DOWN)
+    finish()
+  end
+  assert(listeners_of(trx.config.signals.changed) == changed)
+  assert(listeners_of(trx.ui.signals.layout) == layout)
+end)
+
 return h.report()

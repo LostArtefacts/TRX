@@ -3,8 +3,8 @@
 -- that say what the keys do to the row under the cursor.
 --
 -- A row is built once for every setting the tab lists. The rows follow the
--- settings through trx.config.signals.changed, so a row that a setting hides
--- or greys out does so as that setting moves.
+-- settings through the dialog's signal of their changes, so a row that a
+-- setting hides or greys out does so as that setting moves.
 --
 -- Usage:
 --   local editor = require("common.ui.settings.editor")
@@ -75,6 +75,10 @@ end
 ---@field value_w trx.signal.Signal How wide the widest value is, with its arrows.
 ---@field private watch trx.signal.Listener
 ---@field private values table<string, { state: trx.signal.Signal, widget: trx.ui.Widget }>
+---@field private changed trx.signal.Signal
+---@field private layout trx.signal.Signal
+---@field private widths_at? string
+---@field private value_widths table<string, number>
 ---@field private push fun(settings: trx.ui.layers.push.settings): trx.ui.StackLayer
 ---@field private edit_color? fun(key: string)
 local Editor = {}
@@ -104,10 +108,8 @@ function Editor:widths()
   return label_w + COLUMN_SPACING + value_w, row_w
 end
 
--- How wide the value of a row can get, without its arrows.
----@param key string
----@return number
-function Editor:value_width(key)
+-- How wide the value of a row can get, measured afresh.
+local function measure_value(self, key)
   -- A bar and a swatch have sizes of their own, so the widget that shows them
   -- is measured rather than its text.
   if rows.bar_type(key) ~= nil then
@@ -123,6 +125,29 @@ function Editor:value_width(key)
       + SWATCH_SIZE
   end
   return result
+end
+
+-- How wide the value of a row can get, without its arrows.
+---@param key string
+---@return number
+function Editor:value_width(key)
+  -- The widths hold until a setting or the room changes, and the rows, the
+  -- tab and the dialog each ask for every one of them.
+  local revision = ("%s:%s:%s"):format(
+    self.changed:get(),
+    self.layout:get(),
+    trx.ui.text_scale
+  )
+  if self.widths_at ~= revision then
+    self.widths_at = revision
+    self.value_widths = {}
+  end
+  local cached = self.value_widths[key]
+  if cached == nil then
+    cached = measure_value(self, key)
+    self.value_widths[key] = cached
+  end
+  return cached
 end
 
 -- The texts of the hints under the dialog.
@@ -272,7 +297,7 @@ local function value_widget(key, state)
 end
 
 local function row_widget(self, key, settings)
-  local changed = trx.config.signals.changed
+  local changed = settings.changed
   local state = self.values[key].state
   local position = self.shown:map(function(shown)
     for i, shown_key in ipairs(shown) do
@@ -371,7 +396,7 @@ local function row_widget(self, key, settings)
 end
 
 local function footer_widget(self, settings)
-  local changed = trx.config.signals.changed
+  local changed = settings.changed
   local hints = trx.signal.combine(
     settings.editing,
     self.scroll.selected,
@@ -394,7 +419,7 @@ local function footer_widget(self, settings)
   -- whichever it shows.
   local fit = trx.signal.combine(
     settings.dialog_width,
-    trx.ui.signals.layout,
+    settings.layout,
     function(dialog_w)
       local first, texts = hint_widths()
       local scale = texts > 0
@@ -443,6 +468,8 @@ end
 ---@field editing trx.signal.Signal Whether the cursor is on the rows rather than on the tab bar.
 ---@field width trx.signal.Signal How wide a row is, in canvas units at the default text size.
 ---@field dialog_width trx.signal.Signal How wide the dialog is, in the same units.
+---@field changed trx.signal.Signal Says when any setting changes, as `trx.config.signals.changed` does, for as long as the dialog is open.
+---@field layout trx.signal.Signal Says when the room the interface lays out in changes, as `trx.ui.signals.layout` does, for as long as the dialog is open.
 ---@field push fun(settings: trx.ui.layers.push.settings): trx.ui.StackLayer Opens a layer over the dialog.
 ---@field edit_color? fun(key: string) Opens the color editor for a setting.
 
@@ -459,12 +486,15 @@ function M.new(settings)
   local self = setmetatable({
     keys = keys,
     title = settings.title,
+    changed = settings.changed,
+    layout = settings.layout,
+    value_widths = {},
     push = settings.push,
     edit_color = settings.edit_color,
     scroll = scroll.new(),
   }, Editor)
 
-  local changed = trx.config.signals.changed
+  local changed = settings.changed
   self.shown = changed:map(function()
     local shown = {}
     for _, key in ipairs(keys) do
@@ -485,7 +515,7 @@ function M.new(settings)
     end)
     self.values[key] = { state = state, widget = value_widget(key, state) }
   end
-  self.value_w = trx.signal.combine(changed, trx.ui.signals.layout, function()
+  self.value_w = trx.signal.combine(changed, settings.layout, function()
     local arrows = arrows_width()
     local result = 0.0
     for _, key in ipairs(keys) do

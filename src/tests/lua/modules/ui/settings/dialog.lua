@@ -32,6 +32,8 @@ local function open(names)
           editing = self.editing,
           width = self.width,
           dialog_width = self.dialog_width,
+          changed = self.changed,
+          layout = self.layout,
           push = trx.ui.layers.push,
         })
         result[i] = tab

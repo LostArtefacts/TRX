@@ -23,6 +23,8 @@ local function make(keys)
     editing = trx.signal.new(true),
     width = trx.signal.new(300),
     dialog_width = trx.signal.new(320),
+    changed = trx.config.signals.changed,
+    layout = trx.ui.signals.layout,
     push = function(settings)
       local layer = trx.ui.layers.push(settings)
       pushed[#pushed + 1] = layer
