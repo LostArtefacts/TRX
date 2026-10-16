@@ -20,7 +20,6 @@
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
-#include <trx/game/overlay.h>
 #include <trx/game/pathing.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sound.h>
@@ -137,8 +136,6 @@ RESULT Level_Initialise(
     FX_Weather_SetWeather(level->weather_type);
     Level_ResetSettingOverrides();
     Sparks_Reset();
-
-    Overlay_Reset();
 
     // Every other level type reaches Lara_Initialise through the sequencer;
     // the title is loaded on its own, and still has to dress her for the

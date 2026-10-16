@@ -197,7 +197,8 @@
 - Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
 - Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
 - Added `order` and `alone` to `trx.ui.regions.place`, which say where a widget stacks in its region and whether it shows only while the region holds nothing else
-- Added `top_text`, `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
+- Added `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
+- Added `trx.overlay.show_version`, which asks for the game's version on screen as the title screen does
 - Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
 - Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
 - Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
@@ -341,6 +342,7 @@
 - Removed `trx.ui.widgets.Row`, which was a horizontal `trx.ui.widgets.Stack` of two arrows and a widget
 - Removed `h_bars` from `trx.ui.widgets.Resize`, as a `trx.ui.widgets.Bar` already follows the player's bar scale
 - Removed `trx.signal.Signal:above` in favour of `trx.signal.Signal:map`
+- Removed `trx.overlay.signals.health_bar_forced` in favour of the `health_bar` signal of the shipped `common.ui.ring` module
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.ui.primitive.panel` and `trx.ui.widgets.Frame` drawing a frame a pixel away from where the game draws its own
 - Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes

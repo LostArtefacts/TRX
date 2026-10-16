@@ -3,17 +3,9 @@
 #include <trx/game/lua/utils/args.h>
 #include <trx/game/lua/utils/module.h>
 #include <trx/game/output/overlay.h>
-#include <trx/game/overlay.h>
 #include <trx/game/ui/menu.h>
 
 #include <lauxlib.h>
-
-// trxc.overlay.is_health_bar_forced(): boolean
-static int M_L_OverlayIsHealthBarForced(lua_State *const L)
-{
-    lua_pushboolean(L, Overlay_IsHealthBarForced());
-    return 1;
-}
 
 // trxc.overlay.has_letterbox(): boolean
 static int M_L_OverlayHasLetterbox(lua_State *const L)
@@ -46,36 +38,10 @@ static int M_L_OverlayShowPickup(lua_State *const L)
     return 0;
 }
 
-static void M_PushText(lua_State *const L, const char *const text)
-{
-    if (text == nullptr) {
-        lua_pushnil(L);
-    } else {
-        lua_pushstring(L, text);
-    }
-}
-
-// trxc.overlay.top_text(): string?
-static int M_L_OverlayTopText(lua_State *const L)
-{
-    M_PushText(L, Overlay_GetTopText());
-    return 1;
-}
-
-// trxc.overlay.is_version_shown(): boolean
-static int M_L_OverlayIsVersionShown(lua_State *const L)
-{
-    lua_pushboolean(L, Overlay_IsVersionShown());
-    return 1;
-}
-
 static const luaL_Reg m_Module[] = {
     { "get_letterbox", M_L_OverlayGetLetterbox },
     { "has_letterbox", M_L_OverlayHasLetterbox },
     { "set_letterbox", M_L_OverlaySetLetterbox },
-    { "top_text", M_L_OverlayTopText },
-    { "is_version_shown", M_L_OverlayIsVersionShown },
-    { "is_health_bar_forced", M_L_OverlayIsHealthBarForced },
     { "show_pickup", M_L_OverlayShowPickup },
     { nullptr, nullptr },
 };
