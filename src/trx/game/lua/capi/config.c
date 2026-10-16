@@ -126,9 +126,13 @@ static const char *M_KindName(const TRX_VALUE_TYPE type)
 }
 
 // Pushes the enum name with `_` separators regardless of the separator used in
-// the settings file.
+// the settings file. A value the enum map has no name for reads as nil.
 static void M_PushEnumName(lua_State *const L, const char *const name)
 {
+    if (name == nullptr) {
+        lua_pushnil(L);
+        return;
+    }
     lua_pushstring(L, EnumMap_NormalizeName(name));
 }
 
