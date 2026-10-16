@@ -176,6 +176,7 @@ test("binding takes the key the player is holding", function()
 end)
 
 test("unbinding leaves the role with no key", function()
+  fake.set_spare(true)
   input.unbind(Role.JUMP, {
     slot = 2,
     backend = input.Backend.CONTROLLER,
@@ -225,6 +226,34 @@ test("a role the game holds for itself cannot be bound", function()
     input.unbind(Role.JUMP, 1, nil, input.Layout.CUSTOM_1)
   end, "cannot be unbound")
   assert(input.is_unbindable(Role.JUMP) == false)
+end)
+
+test("a role that must keep a key loses either of two", function()
+  fake.set_unbindable(false)
+  fake.set_spare(true)
+  local custom = input.Layout.CUSTOM_1
+  assert(input.can_unbind(Role.JUMP, { slot = 1, layout = custom }))
+  assert(input.can_unbind(Role.JUMP, { slot = 2, layout = custom }))
+  assert(not input.can_unbind(Role.JUMP, { slot = 2 }), "the default layout")
+  input.unbind(Role.JUMP, { slot = 2, layout = custom })
+  assert(fake.calls().unbind.slot == 1)
+end)
+
+test("the last key of a role that must keep one stays", function()
+  fake.set_unbindable(false)
+  local custom = input.Layout.CUSTOM_1
+  assert(not input.can_unbind(Role.JUMP, { slot = 1, layout = custom }))
+  raises(function()
+    input.unbind(Role.JUMP, { slot = 1, layout = custom })
+  end, "cannot be unbound")
+end)
+
+test("an empty slot has nothing to clear", function()
+  local custom = input.Layout.CUSTOM_1
+  assert(not input.can_unbind(Role.JUMP, { slot = 2, layout = custom }))
+  input.unbind(Role.JUMP, { slot = 2, layout = custom })
+  assert(fake.calls().unbind.count == 0, "an empty slot reached the engine")
+  assert(fake.calls().save.count == 0, "nothing changed, yet it saved")
 end)
 
 -------------------------------------------------------------------------------

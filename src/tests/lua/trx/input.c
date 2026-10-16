@@ -15,6 +15,7 @@
 // Sets the faked device state. Every role is bound to one key in one slot
 // unless a test says otherwise.
 static bool m_Bound = true;
+static bool m_Spare = false;
 static bool m_Held = false;
 static bool m_Pressed = false;
 static bool m_Rebindable = true;
@@ -60,6 +61,7 @@ static struct {
 static void M_Reset(void)
 {
     m_Bound = true;
+    m_Spare = false;
     m_Held = false;
     m_Pressed = false;
     m_Rebindable = true;
@@ -87,6 +89,13 @@ FAKE_ON_RESET(M_Reset)
 static int M_FakeSetBound(lua_State *const L)
 {
     m_Bound = lua_toboolean(L, 1);
+    return 0;
+}
+
+// fake.set_spare(bound) - whether the second slot holds a key too.
+static int M_FakeSetSpare(lua_State *const L)
+{
+    m_Spare = lua_toboolean(L, 1);
     return 0;
 }
 
@@ -212,6 +221,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_key_pressed");
     lua_pushcfunction(L, M_FakeSetBound);
     lua_setfield(L, -2, "set_bound");
+    lua_pushcfunction(L, M_FakeSetSpare);
+    lua_setfield(L, -2, "set_spare");
     lua_pushcfunction(L, M_FakeSetHeld);
     lua_setfield(L, -2, "set_held");
     lua_pushcfunction(L, M_FakeSetPressed);
@@ -420,6 +431,27 @@ bool Input_IsRoleUnbindable(const INPUT_ROLE role)
     return m_Unbindable;
 }
 
+// As the real one: a role that must keep a key loses one binding only while
+// another slot holds a key.
+bool Input_CanUnassignRole(
+    const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
+    const INPUT_ROLE role, const int32_t slot)
+{
+    if (Input_GetKeyName(backend, layout, role, slot) == nullptr) {
+        return false;
+    }
+    if (m_Unbindable) {
+        return true;
+    }
+    for (int32_t other = 0; other < INPUT_BINDING_SLOTS; other++) {
+        if (other != slot
+            && Input_GetKeyName(backend, layout, role, other) != nullptr) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Input_IsKeyConflicted(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role)
@@ -431,7 +463,10 @@ const char *Input_GetKeyName(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)
 {
-    return m_Bound && slot == 0 ? "K" : nullptr;
+    if (slot == 0) {
+        return m_Bound ? "K" : nullptr;
+    }
+    return m_Spare ? "J" : nullptr;
 }
 
 const char *Input_GetRoleName(const INPUT_ROLE role)

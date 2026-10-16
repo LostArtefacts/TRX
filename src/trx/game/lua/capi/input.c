@@ -347,6 +347,20 @@ static int M_L_InputBindPressed(lua_State *const L)
     return 1;
 }
 
+// trxc.input.can_unbind(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout): boolean
+static int M_L_InputCanUnbind(lua_State *const L)
+{
+    const INPUT_ROLE role = M_CheckRole(L, 1);
+    const int32_t slot = M_OptSlot(L, 2);
+    const INPUT_BACKEND backend = M_OptBackend(L, 3);
+    const INPUT_LAYOUT layout = M_OptLayout(L, 4, backend);
+    lua_pushboolean(
+        L,
+        layout != INPUT_LAYOUT_DEFAULT
+            && Input_CanUnassignRole(backend, layout, role, slot));
+    return 1;
+}
+
 // trxc.input.unbind(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout)
 static int M_L_InputUnbind(lua_State *const L)
 {
@@ -354,7 +368,10 @@ static int M_L_InputUnbind(lua_State *const L)
     const int32_t slot = M_OptSlot(L, 2);
     const INPUT_BACKEND backend = M_OptBackend(L, 3);
     const INPUT_LAYOUT layout = M_CheckCustomLayout(L, 4, backend);
-    if (!Input_IsRoleUnbindable(role)) {
+    if (Input_GetKeyName(backend, layout, role, slot) == nullptr) {
+        return 0;
+    }
+    if (!Input_CanUnassignRole(backend, layout, role, slot)) {
         return luaL_error(L, "the role cannot be unbound");
     }
     Input_UnassignRole(backend, layout, role, slot);
@@ -419,6 +436,7 @@ static const luaL_Reg m_Module[] = {
     { "axis", M_L_InputAxis },
     { "backend", M_L_InputBackend },
     { "bind_pressed", M_L_InputBindPressed },
+    { "can_unbind", M_L_InputCanUnbind },
     { "clear_suppressed", M_L_InputClearSuppressed },
     { "grab_is_held", M_L_InputGrabIsHeld },
     { "grab_is_pressed", M_L_InputGrabIsPressed },

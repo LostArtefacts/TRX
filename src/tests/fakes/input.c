@@ -135,6 +135,13 @@ bool Input_IsRoleUnbindable(const INPUT_ROLE role)
     return true;
 }
 
+bool Input_CanUnassignRole(
+    const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
+    const INPUT_ROLE role, const int32_t slot)
+{
+    return true;
+}
+
 bool Input_IsKeyConflicted(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role)

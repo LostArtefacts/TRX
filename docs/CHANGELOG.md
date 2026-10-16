@@ -47,6 +47,7 @@
 - Fixed the game not fading to black when it was exited during an FMV (TRX1616)
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 - Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
+- Fixed being unable to unbind the second key of a movement, jump, action or draw weapon binding while the first key stays bound
 - Fixed dialogs moving down when the FPS counter or another corner element is shown, even where the dialog does not reach it
 - Fixed the screen jumping when a loading screen was skipped while it was still fading in
 
@@ -181,6 +182,7 @@
 - Added `trx.path.Path:list`, which lists the entries of a directory
 - Added `trx.locale.text_languages`, `trx.locale.voice_languages` and `trx.locale.language_name`, which list the languages and the dubs the game has
 - Added `trx.input.has_touchscreen`, which says whether the device has a touchscreen
+- Added `trx.input.can_unbind`, which says whether a binding can be cleared
 - Added `trx.stats.has_crystals`, which says whether any level of the game holds a save crystal
 - Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
 - Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH

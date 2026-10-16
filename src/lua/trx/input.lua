@@ -667,8 +667,9 @@ end
 
 ---Clears one role binding, and saves the bindings with the settings.
 ---
----The default layout is read-only, and roles reserved by the game cannot be
----left unbound.
+---The default layout is read-only. A slot that holds no key is left as it is.
+---A role that must keep a key, such as jumping, loses a binding only while
+---another slot still holds a key; see `trx.input.can_unbind`.
 ---
 ---Use `trx.input.Binding` to choose a slot, input source, or layout without
 ---placeholder nils. Positional arguments still work.
@@ -678,6 +679,22 @@ end
 ---@param layout? trx.input.Layout The layout to write. Defaults to the current one.
 function M.unbind(role, opts, backend, layout)
   return raw.unbind(role, binding_args(opts, backend, layout))
+end
+
+---Whether `trx.input.unbind` can clear a role binding.
+---
+---It cannot on the default layout, for a slot that holds no key, nor for the
+---last key of a role that must keep one, such as jumping.
+---
+---Use `trx.input.Binding` to choose a slot, input source, or layout without
+---placeholder nils. Positional arguments still work.
+---@param role trx.input.Role The role to ask about.
+---@param opts? trx.input.Slot|trx.input.Binding Binding to clear. Defaults to the first slot on the current source and layout.
+---@param backend? trx.input.Backend The input source to ask about. Defaults to the current one.
+---@param layout? trx.input.Layout The layout to ask about. Defaults to the current one.
+---@return boolean # Whether the binding can be cleared.
+function M.can_unbind(role, opts, backend, layout)
+  return raw.can_unbind(role, binding_args(opts, backend, layout))
 end
 
 ---Restores a custom layout to the default bindings, and saves the bindings

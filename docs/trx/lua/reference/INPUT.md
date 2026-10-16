@@ -537,8 +537,9 @@ buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
 - <a id="input.unbind" name="input.unbind"></a>[lua]`trx.input.unbind(role, [opts], [backend], [layout])`  
   Clears one role binding, and saves the bindings with the settings.
 
-  The default layout is read-only, and roles reserved by the game cannot be
-  left unbound.
+  The default layout is read-only. A slot that holds no key is left as it is.
+  A role that must keep a key, such as jumping, loses a binding only while
+  another slot still holds a key; see [`trx.input.can_unbind`](#input.can_unbind).
 
   Use [`trx.input.Binding`](#input.Binding) to choose a slot, input source, or layout without
   placeholder nils. Positional arguments still work.
@@ -548,6 +549,23 @@ buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
   - <a id="input.unbind.opts" name="input.unbind.opts"></a>**`opts`** ([trx.input.Slot](#input.Slot) or [trx.input.Binding](#input.Binding), optional). Binding to clear. Defaults to the first slot on the current source and layout.
   - <a id="input.unbind.backend" name="input.unbind.backend"></a>**`backend`** ([trx.input.Backend](#input.Backend), optional). The input source to write. Defaults to the current one.
   - <a id="input.unbind.layout" name="input.unbind.layout"></a>**`layout`** ([trx.input.Layout](#input.Layout), optional). The layout to write. Defaults to the current one.
+
+- <a id="input.can_unbind" name="input.can_unbind"></a>[lua]`trx.input.can_unbind(role, [opts], [backend], [layout])`  
+  Whether [`trx.input.unbind`](#input.unbind) can clear a role binding.
+
+  It cannot on the default layout, for a slot that holds no key, nor for the
+  last key of a role that must keep one, such as jumping.
+
+  Use [`trx.input.Binding`](#input.Binding) to choose a slot, input source, or layout without
+  placeholder nils. Positional arguments still work.
+
+  Parameters:
+  - <a id="input.can_unbind.role" name="input.can_unbind.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to ask about.
+  - <a id="input.can_unbind.opts" name="input.can_unbind.opts"></a>**`opts`** ([trx.input.Slot](#input.Slot) or [trx.input.Binding](#input.Binding), optional). Binding to clear. Defaults to the first slot on the current source and layout.
+  - <a id="input.can_unbind.backend" name="input.can_unbind.backend"></a>**`backend`** ([trx.input.Backend](#input.Backend), optional). The input source to ask about. Defaults to the current one.
+  - <a id="input.can_unbind.layout" name="input.can_unbind.layout"></a>**`layout`** ([trx.input.Layout](#input.Layout), optional). The layout to ask about. Defaults to the current one.
+
+  Returns: boolean. Whether the binding can be cleared.
 
 - <a id="input.reset_layout" name="input.reset_layout"></a>[lua]`trx.input.reset_layout([opts], [layout])`  
   Restores a custom layout to the default bindings, and saves the bindings

@@ -273,6 +273,7 @@ trxc = {}
 ---@field axis fun(axis: string): number
 ---@field backend fun(): trx.input.Backend
 ---@field bind_pressed fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout): boolean
+---@field can_unbind fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout): boolean
 ---@field clear_suppressed fun()
 ---@field grab_is_held fun(role: trx.input.Role): boolean
 ---@field grab_is_pressed fun(role: trx.input.Role): boolean
