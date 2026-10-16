@@ -242,6 +242,7 @@ trxc = {}
 ---@field get_level fun(table_type: trx.game.LevelTable, num: integer): trx.game.Level?
 ---@field get_version fun(): integer
 ---@field globe fun(): trx.game.GlobeArea[]
+---@field is_leaving fun(): boolean
 ---@field is_loaded fun(): boolean
 ---@field is_ngplus fun(): boolean
 ---@field is_photo_mode fun(): boolean
