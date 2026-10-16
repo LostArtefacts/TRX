@@ -36,8 +36,6 @@ typedef enum {
 void Overlay_Reset(void);
 void Overlay_Control(void);
 
-void Overlay_DrawGameInfo(void);
-
 // Returns the line at the top of the screen and the caption at the bottom in
 // the player's language, or nullptr for none. A script draws both.
 const char *Overlay_GetTopText(void);
