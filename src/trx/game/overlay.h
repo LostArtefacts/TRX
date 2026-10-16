@@ -23,16 +23,6 @@ typedef struct {
     };
 } OVERLAY_TEXT;
 
-typedef enum {
-    OVERLAY_ARROW_TL, // top-left screen corner
-    OVERLAY_ARROW_TR, // top-right screen corner
-    OVERLAY_ARROW_BL, // bottom-left screen corner
-    OVERLAY_ARROW_BR, // bottom-right screen corner
-    OVERLAY_ARROW_BCL, // low text left side
-    OVERLAY_ARROW_BCR, // low text right side
-    OVERLAY_ARROW_NUMBER_OF,
-} OVERLAY_ARROW;
-
 void Overlay_Reset(void);
 void Overlay_Control(void);
 
@@ -40,7 +30,6 @@ void Overlay_Control(void);
 // nullptr for none. A script draws it.
 const char *Overlay_GetTopText(void);
 
-bool Overlay_IsArrowShown(OVERLAY_ARROW arrow);
 bool Overlay_IsVersionShown(void);
 
 // Shows the health bar for the current frame.
@@ -50,7 +39,6 @@ void Overlay_ForceHealthBar(bool show);
 // does while it shows a medipack.
 bool Overlay_IsHealthBarForced(void);
 
-void Overlay_ShowArrow(OVERLAY_ARROW arrow, bool show);
 void Overlay_ShowVersion(bool show);
 
 void Overlay_SetTopText(OVERLAY_TEXT text);
