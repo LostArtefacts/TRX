@@ -351,6 +351,25 @@ bool Input_IsRoleUnbindable(const INPUT_ROLE role)
     return !m_IsRoleNonUnbindable[role];
 }
 
+bool Input_CanUnassignRole(
+    const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
+    const INPUT_ROLE role, const int32_t slot)
+{
+    if (Input_GetKeyName(backend, layout, role, slot) == nullptr) {
+        return false;
+    }
+    if (Input_IsRoleUnbindable(role)) {
+        return true;
+    }
+    for (int32_t other = 0; other < INPUT_BINDING_SLOTS; other++) {
+        if (other != slot
+            && Input_GetKeyName(backend, layout, role, other) != nullptr) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Input_IsRoleImmediate(const INPUT_ROLE role)
 {
     return m_IsRoleImmediate[role];

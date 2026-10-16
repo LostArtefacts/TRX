@@ -67,6 +67,12 @@ bool Input_IsRoleRebindable(INPUT_ROLE role);
 // Checks whether the given role can be completely unbound by the player.
 bool Input_IsRoleUnbindable(INPUT_ROLE role);
 
+// Checks whether the player can clear one binding of a role: whether the slot
+// holds a key, and for a role that must keep a key, whether another slot holds
+// one too.
+bool Input_CanUnassignRole(
+    INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
+
 // Checks whether the given role uses keys that fire immediately and cannot
 // be the first key of a combo (movement, jump, action, roll).
 bool Input_IsRoleImmediate(INPUT_ROLE role);
