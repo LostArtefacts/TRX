@@ -111,10 +111,7 @@ typedef struct {
     struct {
         bool enable_game_ui;
         bool enable_photo_mode_ui;
-        bool enable_wraparound;
         bool enable_fps_counter;
-        bool show_pickups_overlay;
-        bool show_title_version;
 
         float text_scale;
         float bar_scale;
@@ -123,17 +120,6 @@ typedef struct {
         UI_STYLE menu_style;
         struct {
             STATS_STYLE style;
-            bool show_totals;
-            bool show_level_header;
-            bool show_time_taken;
-            bool show_secrets;
-            bool show_crystals;
-            bool show_pickups;
-            bool show_kills;
-            bool show_ammo;
-            bool show_medipacks_used;
-            bool show_distance_travelled;
-            bool show_deaths;
         } stats;
 
         BACKGROUND_TYPE inventory_background_style;
@@ -141,14 +127,10 @@ typedef struct {
         BACKGROUND_TYPE pause_background_style;
         float background_blur;
         bool inventory_fade_effects;
-        bool stats_fade_effects;
         bool pause_fade_effects;
         bool instant_save_load_screen;
 
-        bool enable_smooth_bars;
-        bool show_bars;
         bool show_loading_bar;
-        bool enable_bar_flashing;
         struct {
             UI_ELEMENT_LOCATION location;
         } lara_health_bar, lara_air_bar, lara_sprint_bar, lara_exposure_bar;

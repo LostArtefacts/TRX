@@ -6,6 +6,62 @@ local metrics = require("common.ui.metrics")
 
 local M = {}
 
+trx.config.declare({
+  key = "ui.stats.show_ammo",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_crystals",
+  kind = "boolean",
+  default = false,
+})
+trx.config.declare({
+  key = "ui.stats.show_deaths",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_distance_travelled",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_kills",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_level_header",
+  kind = "boolean",
+  default = false,
+})
+trx.config.declare({
+  key = "ui.stats.show_medipacks_used",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_pickups",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_secrets",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_time_taken",
+  kind = "boolean",
+  default = true,
+})
+trx.config.declare({
+  key = "ui.stats.show_totals",
+  kind = "boolean",
+  default = true,
+})
+
 M.Mode = {
   LEVEL = "level",
   FINAL = "final",

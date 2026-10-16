@@ -4,6 +4,7 @@ local h = require("harness")
 local test = h.test
 
 local presets = require("common.ui.settings.presets")
+require("common.ui.scroll")
 
 local function preset(config)
   local settings = {}

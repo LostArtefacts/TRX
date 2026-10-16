@@ -330,7 +330,10 @@ end
 -- Reads a setting, or nil where no option has that key.
 local function read(key)
   local ok, value = pcall(trx.config.get, key)
-  return ok and value or nil
+  if ok then
+    return value
+  end
+  return nil
 end
 
 local function declare(setting, values, default)
@@ -348,6 +351,13 @@ local function declare(setting, values, default)
 end
 
 local function declare_settings()
+  if not pcall(trx.config.describe, "ui.enable_smooth_bars") then
+    trx.config.declare({
+      key = "ui.enable_smooth_bars",
+      kind = "boolean",
+      default = false,
+    })
+  end
   local look_values = {}
   for _, look in ipairs(looks) do
     look_values[#look_values + 1] = { value = look.name, label = look.label }

@@ -6,6 +6,13 @@ local timer = require("common.timer")
 
 local M = {}
 
+trx.config.declare({ key = "ui.show_bars", kind = "boolean", default = true })
+trx.config.declare({
+  key = "ui.enable_bar_flashing",
+  kind = "boolean",
+  default = true,
+})
+
 -- Builds the bars and places them. `shared` holds what the rest of the
 -- overlay reads too.
 ---@param shared common.ui.hud.overlay.Shared

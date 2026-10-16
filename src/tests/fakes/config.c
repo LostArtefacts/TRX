@@ -24,6 +24,8 @@ static double m_Brightness;
 static double m_MasterVolume;
 static RGB_888 m_WaterColor;
 static int32_t m_ShadowType;
+static bool m_EnableSmoothBars;
+static bool m_EnableWraparound;
 
 static const CONFIG_OPTION_DESC m_Descs[] = {
     { .name = "audio.enable_music",
@@ -57,11 +59,11 @@ static const CONFIG_OPTION_DESC m_Descs[] = {
       .percent = true },
     { .name = "ui.enable_smooth_bars",
       .default_value = { .type = TVT_BOOL, .as_bool = true },
-      .mirror = &g_ConfigStorage.ui.enable_smooth_bars },
+      .mirror = &m_EnableSmoothBars },
     // Lists read this option to decide whether the cursor wraps around.
     { .name = "ui.enable_wraparound",
       .default_value = { .type = TVT_BOOL, .as_bool = true },
-      .mirror = &g_ConfigStorage.ui.enable_wraparound },
+      .mirror = &m_EnableWraparound },
 };
 
 static int32_t m_Listener = -1;

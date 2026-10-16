@@ -8,8 +8,14 @@
 
 local M = {}
 
+-- Reads a setting, or nil where the game lacks it, as a game does whose
+-- scripts leave out the module that declares it.
 local function get(key)
-  return trx.config.get(key)
+  local ok, value = pcall(trx.config.get, key)
+  if ok then
+    return value
+  end
+  return nil
 end
 
 local function weapon_available(id)

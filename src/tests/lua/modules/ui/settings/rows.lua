@@ -4,6 +4,8 @@ local h = require("harness")
 local test = h.test
 
 local rows = require("common.ui.settings.rows")
+require("common.ui.scroll")
+require("common.ui.hud.overlay.bars")
 
 local function with(key, value, fn)
   local old = trx.config.get(key)

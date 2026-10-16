@@ -8,8 +8,15 @@ local counts = require("common.ui.screens.stats.counts")
 local fade = require("common.ui.fade")
 local listing = require("common.ui.screens.stats.rows")
 local ring = require("common.ui.ring")
+require("common.ui.scroll")
 
 local M = {}
+
+trx.config.declare({
+  key = "ui.stats_fade_effects",
+  kind = "boolean",
+  default = true,
+})
 
 local Mode = listing.Mode
 
