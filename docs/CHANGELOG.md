@@ -17,6 +17,7 @@
 - Fixed Lara not being able to do a turn around move in monkey bars by pressing the forward and backward keys simultaneously (#6850)
 - Fixed Lara's torso not being reset to a neutral position when boarding certain vehicles if she was looking away somewhere beforehand (OG bug, #6859)
 - Fixed Lara getting thrown to the side of a pole after dismount (OG bug) (TRX1753)
+- Fixed Lara embedding slightly into the floor after descending a pole and dismounting (TRX1763, regression from 1.9)
 
 **Music and sound**
 - Added an option to choose the dub apart from the text language, which plays FMVs, music and speech from a language folder beside the retail files (Sound → Voice language) (#1021 / TRX1710)
