@@ -6,8 +6,8 @@
 //     left          center          right
 //     bottom-left   bottom-center   bottom-right
 //
-// The eight edge regions stack their children away from the edge. The center
-// region is reserved for dialogs.
+// Each region stacks the slots reserved in it away from the screen edge, the
+// first slot nearest the top. The center region is reserved for dialogs.
 
 #include <stdint.h>
 
@@ -24,15 +24,11 @@ typedef enum {
     UI_REGION_NUMBER_OF,
 } UI_REGION;
 
-// Opens a region and stacks children there until UI_EndRegion.
-// Opening the same region twice in one scene reuses its stack. Regions may not
-// be nested.
-void UI_BeginRegion(UI_REGION region);
-void UI_EndRegion(void);
+// Forgets the slots of the last scene. Called as a scene begins.
+void UI_Region_Clear(void);
 
-// Lays the regions out and updates the middle box. Called once per scene,
-// after every widget is measured and before the scene is laid out, so that
-// the middle box describes the current scene.
+// Lays the slots out and updates the middle box. Called once per scene, after
+// every slot is reserved, so that the middle box describes the current scene.
 void UI_Region_Layout(void);
 
 // Returns the middle box from the last call to UI_Region_Layout.
@@ -44,11 +40,9 @@ void UI_Region_GetCenterBox(float *x, float *y, float *w, float *h);
 void UI_Region_GetCenterBoxFor(
     float width, float *x, float *y, float *w, float *h);
 
-// Reserves space in a region and returns its slot for the current scene.
+// Reserves space in a region and returns its slot for the current scene, or
+// -1 where the scene has no room left for one.
 int32_t UI_Region_Reserve(UI_REGION region, float w, float h);
 
 // Returns a reservation box from the last layout, or false for a stale slot.
 bool UI_Region_GetSlotBox(int32_t slot, float *x, float *y, float *w, float *h);
-
-// Returns whether a region has no children in the current scene.
-bool UI_Region_IsEmpty(UI_REGION region);

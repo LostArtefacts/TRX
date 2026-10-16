@@ -18,8 +18,6 @@
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
-#include <trx/game/ui/elements/bar.h>
-#include <trx/game/ui/elements/label.h>
 #include <trx/game/viewport.h>
 
 #include <lauxlib.h>
@@ -88,26 +86,22 @@ static int M_FakePaint(lua_State *const L)
     return 1;
 }
 
-// fake.draw_regions() -> description, balanced
+// fake.draw_regions() -> description
 //
 // Draws all overlay regions and returns the recorded scene.
 static int M_FakeDrawRegions(lua_State *const L)
 {
     m_ErrorCount = 0;
     UI_BeginScene();
-    const UI_NODE *const before = UI_GetCurrent();
     LUA_UI_SetReserving(true);
     LUA_UI_ReserveRegions();
     LUA_UI_SetReserving(false);
-    // A handler error can leave the widget tree unbalanced.
-    const bool balanced = UI_GetCurrent() == before;
     UI_EndScene();
 
     char *description = FakeUIDraw_Describe();
     lua_pushstring(L, description);
     Memory_FreePointer(&description);
-    lua_pushboolean(L, balanced);
-    return 2;
+    return 1;
 }
 
 // fake.hide_next_frame() - the next frame is drawn for a screenshot.
@@ -195,29 +189,6 @@ int main(void)
 }
 
 // Leaf widgets are recorded through fakes/ui_draw.c.
-void UI_Label(const char *const text)
-{
-}
-
-void UI_LabelEx(const char *const text, const UI_LABEL_SETTINGS settings)
-{
-}
-
-void UI_Label_MeasureEx(
-    const char *const text, float *const out_w, float *const out_h,
-    const UI_LABEL_SETTINGS settings)
-{
-    if (out_w != nullptr) {
-        *out_w = (float)strlen(text) * 8.0f * settings.scale;
-    }
-    if (out_h != nullptr) {
-        *out_h = 16.0f * settings.scale;
-    }
-}
-
-void UI_Bar(const UI_BAR_SETTINGS settings)
-{
-}
 
 void UI_InitText(void)
 {

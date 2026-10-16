@@ -24,8 +24,6 @@
 #include <trx/game/shell/common.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
-#include <trx/game/ui/elements/bar.h>
-#include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
@@ -107,13 +105,11 @@ static int M_FakeScene(lua_State *const L)
     FakeUIDraw_Forget();
     UI_SetPaintHook(LUA_UI_PaintRegions);
     UI_BeginScene();
+    LUA_UI_SetReserving(true);
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
-        UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetReserving(true);
         LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
-        LUA_UI_SetReserving(false);
-        UI_EndRegion();
     }
+    LUA_UI_SetReserving(false);
     UI_EndScene();
     UI_SetPaintHook(nullptr);
 
@@ -389,30 +385,6 @@ int ScreenModule_RunWith(
         test.deps[count++] = extra_deps[i];
     }
     return LuaSurface_Run(&test);
-}
-
-void UI_Label(const char *const text)
-{
-}
-
-void UI_LabelEx(const char *const text, const UI_LABEL_SETTINGS settings)
-{
-}
-
-void UI_Label_MeasureEx(
-    const char *const text, float *const out_w, float *const out_h,
-    const UI_LABEL_SETTINGS settings)
-{
-    if (out_w != nullptr) {
-        *out_w = (float)strlen(text) * 8.0f * settings.scale;
-    }
-    if (out_h != nullptr) {
-        *out_h = 15.0f * settings.scale;
-    }
-}
-
-void UI_Bar(const UI_BAR_SETTINGS settings)
-{
 }
 
 void UI_InitText(void)

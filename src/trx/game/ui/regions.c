@@ -3,9 +3,8 @@
 #include <trx/core/log.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
-#include <trx/game/ui/elements/pad.h>
-#include <trx/game/ui/elements/stack.h>
-#include <trx/game/ui/helpers.h>
+#include <trx/game/ui/common.h>
+#include <trx/game/ui/scaler.h>
 
 // Maximum reservations per scene.
 #define M_MAX_SLOTS 64
@@ -14,99 +13,90 @@
 #define M_PAD_Y 14.0f
 #define M_SPACING 3.0f
 
-// Region anchor and horizontal alignment.
+// Where a region sits on the screen and where its slots sit across it, each
+// as a fraction from the left or the top.
 typedef struct {
     float x;
     float y;
-    UI_STACK_H_ALIGN h_align;
 } M_REGION_DESC;
 
 typedef struct {
-    UI_NODE *slots[UI_REGION_NUMBER_OF];
-} M_DATA;
-
-typedef struct {
-    float w;
-    float h;
-} M_SLOT_DATA;
-
-static const M_REGION_DESC m_Regions[UI_REGION_NUMBER_OF] = {
-    [UI_REGION_TOP_LEFT] = { 0.0f, 0.0f, UI_STACK_H_ALIGN_LEFT },
-    [UI_REGION_TOP_CENTER] = { 0.5f, 0.0f, UI_STACK_H_ALIGN_CENTER },
-    [UI_REGION_TOP_RIGHT] = { 1.0f, 0.0f, UI_STACK_H_ALIGN_RIGHT },
-    [UI_REGION_LEFT] = { 0.0f, 0.5f, UI_STACK_H_ALIGN_LEFT },
-    [UI_REGION_CENTER] = { 0.5f, 0.5f, UI_STACK_H_ALIGN_CENTER },
-    [UI_REGION_RIGHT] = { 1.0f, 0.5f, UI_STACK_H_ALIGN_RIGHT },
-    [UI_REGION_BOTTOM_LEFT] = { 0.0f, 1.0f, UI_STACK_H_ALIGN_LEFT },
-    [UI_REGION_BOTTOM_CENTER] = { 0.5f, 1.0f, UI_STACK_H_ALIGN_CENTER },
-    [UI_REGION_BOTTOM_RIGHT] = { 1.0f, 1.0f, UI_STACK_H_ALIGN_RIGHT },
-};
-
-// Container and stacks for the current scene's regions.
-static UI_NODE *m_Container;
-static UI_NODE *m_Stacks[UI_REGION_NUMBER_OF];
-
-// Reserved slots for the current scene.
-static UI_NODE *m_Slots[M_MAX_SLOTS];
-static int32_t m_SlotCount;
-
-// Region currently being built. Regions do not nest.
-static int32_t m_OpenRegion = -1;
-
-// Caller node restored by UI_EndRegion.
-static UI_NODE *m_Caller;
-
-// Scene counter for the nodes above.
-static uint32_t m_Generation;
-
-// Middle box from the last call to UI_Region_Layout.
-static struct {
+    UI_REGION region;
     float x;
     float y;
     float w;
     float h;
-} m_CenterBox;
+} M_SLOT;
 
-// What the last call to UI_Region_Layout laid the regions out in, and where
-// each top and bottom region ended up across it. A box that reaches no corner
-// need not keep clear of the band the corner sets.
-static struct {
+typedef struct {
+    float x;
     float y;
+    float w;
     float h;
-} m_Area;
+} M_BOX;
 
-static struct {
-    float x0;
-    float x1;
-    float h;
-} m_Edges[UI_REGION_NUMBER_OF];
+static const M_REGION_DESC m_Regions[UI_REGION_NUMBER_OF] = {
+    [UI_REGION_TOP_LEFT] = { 0.0f, 0.0f },
+    [UI_REGION_TOP_CENTER] = { 0.5f, 0.0f },
+    [UI_REGION_TOP_RIGHT] = { 1.0f, 0.0f },
+    [UI_REGION_LEFT] = { 0.0f, 0.5f },
+    [UI_REGION_CENTER] = { 0.5f, 0.5f },
+    [UI_REGION_RIGHT] = { 1.0f, 0.5f },
+    [UI_REGION_BOTTOM_LEFT] = { 0.0f, 1.0f },
+    [UI_REGION_BOTTOM_CENTER] = { 0.5f, 1.0f },
+    [UI_REGION_BOTTOM_RIGHT] = { 1.0f, 1.0f },
+};
 
-static float M_MeasuredHeight(const M_DATA *const data, const UI_REGION region)
+static M_SLOT m_Slots[M_MAX_SLOTS];
+static int32_t m_SlotCount;
+
+// Each region as the last layout placed it, with its padding.
+static M_BOX m_Boxes[UI_REGION_NUMBER_OF];
+
+// The middle box from the last layout, and what the regions were laid out in.
+static M_BOX m_CenterBox;
+static M_BOX m_Area;
+
+// The size of a region's slots stacked with their padding, in canvas units.
+static void M_MeasureRegion(
+    const UI_REGION region, float *const out_w, float *const out_h)
 {
-    const UI_NODE *const slot = data->slots[region];
-    return slot != nullptr ? slot->measure_h : 0.0f;
+    const float scale = UI_Scaler_GetTextScale();
+    float w = 0.0f;
+    float h = 0.0f;
+    int32_t count = 0;
+    for (int32_t i = 0; i < m_SlotCount; i++) {
+        if (m_Slots[i].region != region) {
+            continue;
+        }
+        w = MAX(w, m_Slots[i].w);
+        h += m_Slots[i].h;
+        count++;
+    }
+    if (count > 1) {
+        h += (count - 1) * M_SPACING * scale;
+    }
+    *out_w = w + 2.0f * M_PAD_X * scale;
+    *out_h = h + 2.0f * M_PAD_Y * scale;
 }
 
-static float M_MeasuredWidth(const M_DATA *const data, const UI_REGION region)
+// Stacks the slots of a region down its box, each set across it as the region
+// sits on the screen.
+static void M_LayoutRegion(const UI_REGION region, const M_BOX box)
 {
-    const UI_NODE *const slot = data->slots[region];
-    return slot != nullptr ? slot->measure_w : 0.0f;
-}
-
-// The tallest region in a row sets that row's band height.
-static float M_BandHeight(
-    const M_DATA *const data, const UI_REGION left, const UI_REGION center,
-    const UI_REGION right)
-{
-    return MAX(
-        MAX(M_MeasuredHeight(data, left), M_MeasuredHeight(data, center)),
-        M_MeasuredHeight(data, right));
-}
-
-static void M_Measure(UI_NODE *const node)
-{
-    node->measure_w = UI_GetCanvasWidth();
-    node->measure_h = UI_GetCanvasHeight();
+    const float scale = UI_Scaler_GetTextScale();
+    const float inner_x = box.x + M_PAD_X * scale;
+    const float inner_w = box.w - 2.0f * M_PAD_X * scale;
+    float y = box.y + M_PAD_Y * scale;
+    for (int32_t i = 0; i < m_SlotCount; i++) {
+        M_SLOT *const slot = &m_Slots[i];
+        if (slot->region != region) {
+            continue;
+        }
+        slot->x = inner_x + (inner_w - slot->w) * m_Regions[region].x;
+        slot->y = y;
+        y += slot->h + M_SPACING * scale;
+    }
 }
 
 static float M_Offset(const float slack, const float ratio)
@@ -114,67 +104,16 @@ static float M_Offset(const float slack, const float ratio)
     return slack > 0.0f ? slack * ratio : 0.0f;
 }
 
-static void M_Layout(
-    UI_NODE *const node, const float x, const float y, const float w,
-    const float h)
+// The height of a row of regions: that of its tallest region.
+static float M_BandHeight(
+    const float *const heights, const UI_REGION left, const UI_REGION center,
+    const UI_REGION right)
 {
-    UI_LayoutBasic(node, x, y, w, h);
-    const M_DATA *const data = node->data;
-
-    const float top = M_BandHeight(
-        data, UI_REGION_TOP_LEFT, UI_REGION_TOP_CENTER, UI_REGION_TOP_RIGHT);
-    const float bottom = M_BandHeight(
-        data, UI_REGION_BOTTOM_LEFT, UI_REGION_BOTTOM_CENTER,
-        UI_REGION_BOTTOM_RIGHT);
-    const float left = M_MeasuredWidth(data, UI_REGION_LEFT);
-    const float right = M_MeasuredWidth(data, UI_REGION_RIGHT);
-
-    const float middle_y = y + top;
-    const float middle_h = MAX(0.0f, h - top - bottom);
-    m_CenterBox.x = x + left;
-    m_CenterBox.y = middle_y;
-    m_CenterBox.w = MAX(0.0f, w - left - right);
-    m_CenterBox.h = middle_h;
-    m_Area.y = y;
-    m_Area.h = h;
-    for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
-        m_Edges[i].h = 0.0f;
-    }
-
-    for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
-        UI_NODE *const slot = data->slots[i];
-        if (slot == nullptr || slot->ops.layout == nullptr) {
-            continue;
-        }
-
-        float box_x = x;
-        float box_y = middle_y;
-        float box_w = w;
-        float box_h = middle_h;
-        if (m_Regions[i].y == 0.0f) {
-            box_y = y;
-            box_h = top;
-        } else if (m_Regions[i].y == 1.0f) {
-            box_y = y + h - bottom;
-            box_h = bottom;
-        } else if (i == UI_REGION_CENTER) {
-            box_x = m_CenterBox.x;
-            box_w = m_CenterBox.w;
-        }
-
-        const float cw = slot->measure_w;
-        const float ch = slot->measure_h;
-        const float cx = box_x + M_Offset(box_w - cw, m_Regions[i].x);
-        slot->ops.layout(
-            slot, cx, box_y + M_Offset(box_h - ch, m_Regions[i].y), cw, ch);
-        m_Edges[i].x0 = cx;
-        m_Edges[i].x1 = cx + cw;
-        m_Edges[i].h = ch;
-    }
+    return MAX(MAX(heights[left], heights[center]), heights[right]);
 }
 
 // The height a row of regions takes from a box of the given width, centered:
-// only the regions the box would reach.
+// that of the tallest region the box would reach.
 static float M_BandHeightFor(
     const float width, const UI_REGION left, const UI_REGION center,
     const UI_REGION right)
@@ -185,128 +124,27 @@ static float M_BandHeightFor(
     const UI_REGION regions[] = { left, center, right };
     float result = 0.0f;
     for (int32_t i = 0; i < 3; i++) {
-        const UI_REGION region = regions[i];
-        if (m_Edges[region].h > 0.0f && m_Edges[region].x0 < x1
-            && m_Edges[region].x1 > x0) {
-            result = MAX(result, m_Edges[region].h);
+        const M_BOX *const box = &m_Boxes[regions[i]];
+        if (box->h > 0.0f && box->x < x1 && box->x + box->w > x0) {
+            result = MAX(result, box->h);
         }
     }
     return result;
 }
 
-static void M_ForgetStaleNodes(void)
+void UI_Region_Clear(void)
 {
-    const uint32_t generation = UI_GetSceneGeneration();
-    if (generation == m_Generation) {
-        return;
-    }
-    m_Generation = generation;
-    m_Container = nullptr;
-    for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
-        m_Stacks[i] = nullptr;
-    }
-    m_Caller = nullptr;
-    m_OpenRegion = -1;
-    for (int32_t i = 0; i < m_SlotCount; i++) {
-        m_Slots[i] = nullptr;
-    }
     m_SlotCount = 0;
-}
-
-// A reservation measures to its requested size and draws nothing.
-static void M_MeasureSlot(UI_NODE *const node)
-{
-    const M_SLOT_DATA *const data = node->data;
-    node->measure_w = data->w;
-    node->measure_h = data->h;
-}
-
-static void M_EnsureContainer(void)
-{
-    if (m_Container != nullptr) {
-        return;
-    }
-    UI_SetCurrent(UI_GetBuildRoot());
-    m_Container = UI_AllocNode(
-        &(UI_WIDGET_OPS) {
-            .measure = M_Measure,
-            .layout = M_Layout,
-            .draw = UI_DrawWrapper,
-        },
-        sizeof(M_DATA));
-    m_Container->name = UI_NODE_NAME_REGIONS;
-    UI_AddChild(m_Container);
-}
-
-void UI_BeginRegion(const UI_REGION region)
-{
-    ASSERT(region >= 0 && region < UI_REGION_NUMBER_OF);
-    M_ForgetStaleNodes();
-    ASSERT(m_Caller == nullptr);
-    m_Caller = (UI_NODE *)UI_GetCurrent();
-    m_OpenRegion = region;
-
-    if (m_Stacks[region] != nullptr) {
-        UI_SetCurrent(m_Stacks[region]);
-        return;
-    }
-
-    // Attach regions to the shared container.
-    M_EnsureContainer();
-    UI_SetCurrent(m_Container);
-    UI_BeginPad(M_PAD_X, M_PAD_Y);
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = m_Regions[region].h_align },
-        .spacing = { .v = M_SPACING },
-    });
-    m_Stacks[region] = (UI_NODE *)UI_GetCurrent();
-
-    M_DATA *const data = m_Container->data;
-    data->slots[region] = m_Container->last_child;
-}
-
-void UI_EndRegion(void)
-{
-    UI_SetCurrent(m_Caller);
-    m_Caller = nullptr;
-    m_OpenRegion = -1;
 }
 
 int32_t UI_Region_Reserve(const UI_REGION region, const float w, const float h)
 {
+    ASSERT(region >= 0 && region < UI_REGION_NUMBER_OF);
     if (m_SlotCount >= M_MAX_SLOTS) {
         LOG_WARNING("no room left for a reservation");
         return -1;
     }
-
-    // Join the open region when reserving from its draw event.
-    const bool was_open = m_OpenRegion == (int32_t)region;
-    if (!was_open) {
-        if (m_OpenRegion != -1) {
-            LOG_WARNING(
-                "a reservation names a region that is not the open one");
-            return -1;
-        }
-        UI_BeginRegion(region);
-    }
-
-    UI_NODE *const node = UI_AllocNode(
-        &(UI_WIDGET_OPS) {
-            .measure = M_MeasureSlot,
-            .layout = UI_LayoutBasic,
-        },
-        sizeof(M_SLOT_DATA));
-    M_SLOT_DATA *const data = node->data;
-    data->w = w;
-    data->h = h;
-    UI_AddChild(node);
-
-    if (!was_open) {
-        UI_EndRegion();
-    }
-
-    m_Slots[m_SlotCount] = node;
+    m_Slots[m_SlotCount] = (M_SLOT) { .region = region, .w = w, .h = h };
     return m_SlotCount++;
 }
 
@@ -314,30 +152,65 @@ bool UI_Region_GetSlotBox(
     const int32_t slot, float *const x, float *const y, float *const w,
     float *const h)
 {
-    M_ForgetStaleNodes();
-    if (slot < 0 || slot >= m_SlotCount || m_Slots[slot] == nullptr) {
+    if (slot < 0 || slot >= m_SlotCount) {
         return false;
     }
-    const UI_NODE *const node = m_Slots[slot];
-    *x = node->x;
-    *y = node->y;
-    *w = node->w;
-    *h = node->h;
+    *x = m_Slots[slot].x;
+    *y = m_Slots[slot].y;
+    *w = m_Slots[slot].w;
+    *h = m_Slots[slot].h;
     return true;
 }
 
 void UI_Region_Layout(void)
 {
-    M_ForgetStaleNodes();
-    if (m_Container == nullptr) {
-        m_CenterBox.w = 0.0f;
-        m_CenterBox.h = 0.0f;
-        return;
+    float widths[UI_REGION_NUMBER_OF];
+    float heights[UI_REGION_NUMBER_OF];
+    for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
+        M_MeasureRegion(i, &widths[i], &heights[i]);
     }
-    const float top = UI_GetWorkingCanvasTop();
-    m_Container->ops.layout(
-        m_Container, 0.0f, top, UI_GetCanvasWidth(),
-        UI_GetWorkingCanvasBottom() - top);
+
+    const float y = UI_GetWorkingCanvasTop();
+    const float w = UI_GetCanvasWidth();
+    const float h = UI_GetWorkingCanvasBottom() - y;
+    const float top = M_BandHeight(
+        heights, UI_REGION_TOP_LEFT, UI_REGION_TOP_CENTER, UI_REGION_TOP_RIGHT);
+    const float bottom = M_BandHeight(
+        heights, UI_REGION_BOTTOM_LEFT, UI_REGION_BOTTOM_CENTER,
+        UI_REGION_BOTTOM_RIGHT);
+    const float left = widths[UI_REGION_LEFT];
+    const float right = widths[UI_REGION_RIGHT];
+
+    m_Area = (M_BOX) { .x = 0.0f, .y = y, .w = w, .h = h };
+    m_CenterBox = (M_BOX) {
+        .x = left,
+        .y = y + top,
+        .w = MAX(0.0f, w - left - right),
+        .h = MAX(0.0f, h - top - bottom),
+    };
+
+    for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
+        M_BOX band = {
+            .x = 0.0f, .y = m_CenterBox.y, .w = w, .h = m_CenterBox.h
+        };
+        if (m_Regions[i].y == 0.0f) {
+            band.y = y;
+            band.h = top;
+        } else if (m_Regions[i].y == 1.0f) {
+            band.y = y + h - bottom;
+            band.h = bottom;
+        } else if (i == UI_REGION_CENTER) {
+            band.x = m_CenterBox.x;
+            band.w = m_CenterBox.w;
+        }
+        m_Boxes[i] = (M_BOX) {
+            .x = band.x + M_Offset(band.w - widths[i], m_Regions[i].x),
+            .y = band.y + M_Offset(band.h - heights[i], m_Regions[i].y),
+            .w = widths[i],
+            .h = heights[i],
+        };
+        M_LayoutRegion(i, m_Boxes[i]);
+    }
 }
 
 void UI_Region_GetCenterBox(
@@ -372,11 +245,4 @@ void UI_Region_GetCenterBoxFor(
         UI_REGION_BOTTOM_RIGHT);
     *y = m_Area.y + top;
     *h = MAX(0.0f, m_Area.h - top - bottom);
-}
-
-bool UI_Region_IsEmpty(const UI_REGION region)
-{
-    M_ForgetStaleNodes();
-    const UI_NODE *const stack = m_Stacks[region];
-    return stack == nullptr || stack->first_child == nullptr;
 }

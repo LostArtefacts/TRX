@@ -1,10 +1,6 @@
 #pragma once
 
-#include <trx/game/ui/common.h>
-
-#include <stdint.h>
-
-// Stack several widgets vertically or horizontally.
+// The orientations and the alignments that script widgets take.
 
 typedef enum {
     UI_STACK_VERTICAL,
@@ -26,19 +22,3 @@ typedef enum {
     UI_STACK_V_ALIGN_SPAN,
     UI_STACK_V_ALIGN_DISTRIBUTE,
 } UI_STACK_V_ALIGN;
-
-typedef struct {
-    UI_STACK_ORIENTATION orientation;
-    struct {
-        UI_STACK_H_ALIGN h;
-        UI_STACK_V_ALIGN v;
-    } align;
-    struct {
-        float h;
-        float v;
-    } spacing;
-} UI_STACK_SETTINGS;
-
-void UI_BeginStack(UI_STACK_ORIENTATION orientation);
-void UI_BeginStackEx(UI_STACK_SETTINGS settings);
-void UI_EndStack(void);

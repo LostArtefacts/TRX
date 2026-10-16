@@ -17,73 +17,15 @@
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
-#include <trx/game/ui/elements/bar.h>
-#include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
 
 #include <lauxlib.h>
 #include <string.h>
 
-// The label as the scene records it. Standing the real one up would bring the
-// text renderer, the fonts and the game strings with it, and the bindings are
-// not tested for any of those.
 // The viewport matches the canvas unless a test changes it.
 static int32_t m_ViewportW = 640;
 static int32_t m_ViewportH = 480;
-
-static char m_LastLabel[64] = {};
-static int32_t m_LastBarValue = -1;
-
-// fake.last_label() -> string or nil
-static int M_FakeLastLabel(lua_State *const L)
-{
-    if (m_LastLabel[0] == '\0') {
-        lua_pushnil(L);
-    } else {
-        lua_pushstring(L, m_LastLabel);
-    }
-    return 1;
-}
-
-// fake.last_bar() -> integer or nil
-static int M_FakeLastBar(lua_State *const L)
-{
-    if (m_LastBarValue < 0) {
-        lua_pushnil(L);
-    } else {
-        lua_pushinteger(L, m_LastBarValue);
-    }
-    return 1;
-}
-
-// fake.draw(body) -> balanced, error
-//
-// Opens a scene the way the engine does around the reserve event, runs the body
-// inside it, and answers whether the node stack came back to where it started.
-// Anything else means a widget was left open for the next frame to draw into.
-static int M_FakeDraw(lua_State *const L)
-{
-    luaL_checktype(L, 1, LUA_TFUNCTION);
-
-    m_LastLabel[0] = '\0';
-    m_LastBarValue = -1;
-    UI_BeginScene();
-    const UI_NODE *const before = UI_GetCurrent();
-    LUA_UI_SetReserving(true);
-    lua_pushvalue(L, 1);
-    const int status = lua_pcall(L, 0, 0, 0);
-    LUA_UI_SetReserving(false);
-    const bool balanced = UI_GetCurrent() == before;
-    UI_EndScene();
-
-    lua_pushboolean(L, balanced);
-    if (status != LUA_OK) {
-        lua_insert(L, -2);
-        return 2;
-    }
-    return 1;
-}
 
 // fake.paint(body) -> table of scheduled operations
 //
@@ -139,13 +81,11 @@ static int M_FakeScene(lua_State *const L)
     FakeUIDraw_Forget();
     UI_SetPaintHook(LUA_UI_PaintRegions);
     UI_BeginScene();
+    LUA_UI_SetReserving(true);
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
-        UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetReserving(true);
         LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
-        LUA_UI_SetReserving(false);
-        UI_EndRegion();
     }
+    LUA_UI_SetReserving(false);
     UI_EndScene();
     UI_SetPaintHook(nullptr);
 
@@ -245,41 +185,6 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "scene");
     lua_pushcfunction(L, M_FakeSceneLayers);
     lua_setfield(L, -2, "scene_layers");
-    lua_pushcfunction(L, M_FakeDraw);
-    lua_setfield(L, -2, "draw");
-    lua_pushcfunction(L, M_FakeLastLabel);
-    lua_setfield(L, -2, "last_label");
-    lua_pushcfunction(L, M_FakeLastBar);
-    lua_setfield(L, -2, "last_bar");
-}
-
-void UI_Label(const char *const text)
-{
-    snprintf(m_LastLabel, sizeof(m_LastLabel), "%s", text);
-}
-
-void UI_LabelEx(const char *const text, const UI_LABEL_SETTINGS settings)
-{
-    UI_Label(text);
-}
-
-// Works a size out from the length of the text, so that a measurement can be
-// checked without the fonts the real one loads.
-void UI_Label_MeasureEx(
-    const char *const text, float *const out_w, float *const out_h,
-    const UI_LABEL_SETTINGS settings)
-{
-    if (out_w != nullptr) {
-        *out_w = (float)strlen(text) * 8.0f * settings.scale;
-    }
-    if (out_h != nullptr) {
-        *out_h = 16.0f * settings.scale;
-    }
-}
-
-void UI_Bar(const UI_BAR_SETTINGS settings)
-{
-    m_LastBarValue = settings.value;
 }
 
 // Stands in for what ui/common.c links against and the bindings never reach:

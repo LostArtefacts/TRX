@@ -7,6 +7,8 @@
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 
+#include <stddef.h>
+
 static bool m_HideNextFrame = false;
 static bool m_IsFrameHidden = false;
 // What the interface was laid out in when scripts were last told.
@@ -90,13 +92,11 @@ void LUA_UI_ReserveRegions(void)
     if (m_IsFrameHidden) {
         return;
     }
+    LUA_UI_SetReserving(true);
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
-        UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetReserving(true);
         LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
-        LUA_UI_SetReserving(false);
-        UI_EndRegion();
     }
+    LUA_UI_SetReserving(false);
 }
 
 REGISTER_SUBSYSTEM(.init = M_Init)

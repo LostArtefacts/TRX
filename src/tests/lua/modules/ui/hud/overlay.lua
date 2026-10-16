@@ -11,8 +11,7 @@ require("common.ui.hud.overlay").setup()
 
 -- Draws all overlay regions and returns the recorded scene.
 local function draw()
-  local description, balanced = fake.draw_regions()
-  assert(balanced, "a widget was left open for the next frame to draw into")
+  local description = fake.draw_regions()
   -- The dispatcher logs a handler's error and carries on, so a region that
   -- raised would otherwise read as a region that drew nothing.
   assert(

@@ -15,8 +15,7 @@
 #include <trx/game/paths.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
-#include <trx/game/ui/elements.h>
-#include <trx/game/ui/elements/frame.h>
+#include <trx/game/ui/frame.h>
 #include <trx/game/ui/keys.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
