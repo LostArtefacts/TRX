@@ -906,7 +906,6 @@ common_sources = [
   'trx/game/output/water/common.c',
   'trx/game/output/water/tr123.c',
   'trx/game/output/water/tr4.c',
-  'trx/game/overlay.c',
   'trx/game/pathing/box.c',
   'trx/game/pathing/lot.c',
   'trx/game/paths.c',

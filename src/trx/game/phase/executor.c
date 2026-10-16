@@ -19,7 +19,6 @@
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
-#include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
@@ -154,7 +153,6 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
             m_CurrentFrame++;
 
             Shell_ProcessEvents();
-            Overlay_Control();
 
             const GF_COMMAND gf_cmd = M_HandleOverride(phase);
             if (gf_cmd.action == GF_EXIT_GAME) {
@@ -199,7 +197,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     m_CurrentFrame++;
     Shell_ProcessEvents();
-    Overlay_Control();
 
     const GF_COMMAND gf_cmd = M_HandleOverride(phase);
     if (gf_cmd.action == GF_EXIT_GAME) {

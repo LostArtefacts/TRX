@@ -1,6 +1,6 @@
--- The lines of text and the arrows that the game asks for over the play: the
--- line at the top of the screen, the caption at the bottom with the arrows
--- beside it, the arrows in the corners, and the version on the title screen.
+-- The text and the arrows that the game asks for over the play: the caption
+-- at the bottom of the screen with the arrows beside it, the arrows in the
+-- corners, and the version on the title screen.
 -- A demo names itself in the caption.
 --
 -- The game decides what they say, through `trx.overlay.signals`. They stack
@@ -96,13 +96,6 @@ function M.setup()
       return shown[arrow] == true
     end)
   end
-
-  local top = signals.top_text
-  ui.regions.place(
-    ui.Region.TOP_CENTER,
-    ui.widgets.Label({ text = text_of(top), visible = has(top) }),
-    ORDER
-  )
 
   local caption = signals.caption
   ui.regions.place(

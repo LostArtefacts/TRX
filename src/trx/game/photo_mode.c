@@ -17,7 +17,6 @@
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
-#include <trx/game/overlay.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>

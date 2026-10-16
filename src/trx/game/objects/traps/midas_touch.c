@@ -5,7 +5,6 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
-#include <trx/game/overlay.h>
 #include <trx/game/sound.h>
 
 #define M_RANGE_H (STEP_L * 2)
