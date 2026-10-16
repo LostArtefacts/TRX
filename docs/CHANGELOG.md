@@ -299,7 +299,7 @@
 - Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes
 - Added the `common.timer` module, which runs a function after some ticks or every few ticks, counted while the level runs or on every tick
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks, after a delay if asked, and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the pause screen, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the pause screen, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from. A script can also open one of these screens itself
     - `trx.ui.Screen` and `trx.ui.ScreenContext`, and a context for each kind of screen: `trx.ui.EntryContext`, `trx.ui.PauseContext`, `trx.ui.SaveLoadContext`, `trx.ui.StatsContext` and `trx.ui.GlobeContext`
     - `trx.ui.StatsContext.level`, `trx.ui.StatsContext.is_final` and `trx.ui.StatsContext.is_bare`, which say what the statistics screen shows
     - `background` in `trx.ui.StatsContext` and `trx.ui.GlobeContext`, the picture a screen stands on
