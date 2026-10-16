@@ -98,7 +98,7 @@ function M.setup()
 
   -- Returns the model the ring uses, or nil when the object has none.
   local function model_of(object)
-    local icon = trx.inventory_ring.icon_of(object)
+    local icon = trx.inventory.icon_of(object)
     if icon == nil or not trx.objects.get(icon).loaded then
       return nil
     end

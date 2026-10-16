@@ -166,12 +166,6 @@ function M.set_input_hints(hints)
   raw.set_hint(table.unpack(parts))
 end
 
----Returns the inventory icon for a pickup, whether or not Lara has one.
----@param object trx.catalog.objects The pickup to check.
----@return trx.catalog.objects? # The icon's object id, or `nil` for a pickup that has none.
----@type fun(object: trx.catalog.objects): trx.catalog.objects?
-M.icon_of = raw.icon_of
-
 ---Returns the ring entry for an object.
 ---
 ---Returns `nil` when no entry names the object.

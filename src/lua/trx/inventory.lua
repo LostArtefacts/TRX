@@ -274,6 +274,12 @@ M.combine_partners = raw.combine_partners
 ---@type fun(object_id: trx.catalog.objects, partner_id: trx.catalog.objects): trx.catalog.objects?
 M.combine = raw.combine
 
+---Returns the inventory icon for a pickup, whether or not Lara has one.
+---@param object trx.catalog.objects The pickup to check.
+---@return trx.catalog.objects? # The icon's object id, or `nil` for a pickup that has none.
+---@type fun(object: trx.catalog.objects): trx.catalog.objects?
+M.icon_of = raw.icon_of
+
 ---Uses something Lara carries, as choosing it in the inventory ring does:
 ---she draws a weapon, takes a medipack, lights a flare, or uses a key on what
 ---she stands at. Something that has no use does nothing.

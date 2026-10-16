@@ -126,14 +126,6 @@ A script draws what an entry opens by defining the
   })
   ```
 
-- <a id="inventory_ring.icon_of" name="inventory_ring.icon_of"></a>[lua]`trx.inventory_ring.icon_of(object)`  
-  Returns the inventory icon for a pickup, whether or not Lara has one.
-
-  Parameters:
-  - <a id="inventory_ring.icon_of.object" name="inventory_ring.icon_of.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup to check.
-
-  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The icon's object id, or `nil` for a pickup that has none.
-
 - <a id="inventory_ring.item" name="inventory_ring.item"></a>[lua]`trx.inventory_ring.item(object)`  
   Returns the ring entry for an object.
 

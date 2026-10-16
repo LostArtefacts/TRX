@@ -341,6 +341,14 @@ end
   local made = trx.inventory.combine(item, partner)
   ```
 
+- <a id="inventory.icon_of" name="inventory.icon_of"></a>[lua]`trx.inventory.icon_of(object)`  
+  Returns the inventory icon for a pickup, whether or not Lara has one.
+
+  Parameters:
+  - <a id="inventory.icon_of.object" name="inventory.icon_of.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup to check.
+
+  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The icon's object id, or `nil` for a pickup that has none.
+
 - <a id="inventory.use" name="inventory.use"></a>[lua]`trx.inventory.use(object_id)`  
   Uses something Lara carries, as choosing it in the inventory ring does:
   she draws a weapon, takes a medipack, lights a flare, or uses a key on what

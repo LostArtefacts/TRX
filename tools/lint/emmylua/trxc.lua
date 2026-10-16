@@ -315,6 +315,7 @@ trxc = {}
 ---@field combine_partners fun(object: trx.catalog.objects): trx.catalog.objects[]
 ---@field get fun(level_num: trx.game.LevelNum): trx.inventory.Inventory?
 ---@field get_current fun(): trx.inventory.Inventory
+---@field icon_of fun(object: trx.catalog.objects): trx.catalog.objects?
 ---@field use fun(object: trx.catalog.objects)
 
 ---@class (exact) trxc.inventory_ring
@@ -323,7 +324,6 @@ trxc = {}
 ---@field declare_item fun(spec: table)
 ---@field hint fun(): string...
 ---@field hint_revision fun(): integer
----@field icon_of fun(object: trx.catalog.objects): trx.catalog.objects?
 ---@field item fun(object_id: trx.catalog.objects): table?
 ---@field mode fun(): trx.inventory_ring.Mode?
 ---@field selection_anim fun(): trx.inventory_ring.EntryAnim?
