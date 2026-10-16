@@ -75,6 +75,14 @@ static void M_PushArgs(lua_State *const L, const LUA_HOOK_ARG *const arg)
         M_SetBool(L, "is_loading", args->is_loading);
         M_SetBool(L, "can_cross_fade_in", args->can_cross_fade_in);
         break;
+    case UI_TAKEOVER_MENU:
+        M_SetInt(L, "mode", args->mode);
+        if (args->object_id != NO_OBJECT) {
+            M_SetInt(L, "object", args->object_id);
+        }
+        M_SetBackground(L, args);
+        M_SetBool(L, "is_live", args->is_live);
+        break;
     case UI_TAKEOVER_PAUSE:
     case UI_TAKEOVER_NUMBER_OF:
         break;

@@ -100,6 +100,10 @@ local Screen = {
   ---picture ends with `trx.ui.ScreenContext:confirm` or
   ---`trx.ui.ScreenContext:cancel`.
   PICTURE = h.IntegerConstant,
+  ---The menu the game opens over the play and on the title screen, such as
+  ---the inventory ring, with a `trx.ui.MenuContext`. The menu ends with
+  ---`trx.ui.ScreenContext:confirm` once it has done what the player chose.
+  MENU = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
@@ -388,6 +392,24 @@ local PictureContext = h.class("ui.PictureContext", {
 
 -- The context class of each screen.
 ---@type table<integer, table>
+---The context of the game's menu, for `trx.ui.Screen.MENU`.
+---@class (exact) trx.ui.MenuContext: trx.ui.ScreenContext
+---@trx.readonly mode, object, background, is_live
+---@field mode trx.ui.MenuMode What the menu opened for.
+---@field object trx.catalog.objects? The entry the menu opens on, such as the crowbar a door asks for, or `nil` for none.
+---@field background string? The picture the title's menu stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
+---@field is_live boolean Whether the title level runs behind the menu, in place of a picture.
+local MenuContext = h.class("ui.MenuContext", {
+  extends = "ui.ScreenContext",
+  fields = {
+    mode = reported("mode"),
+    object = reported("object"),
+    background = background,
+    is_live = reported("is_live"),
+  },
+})
+
+---@type table<trx.ui.Screen, table>
 local KINDS = {
   [trx.ui.Screen.RING_ENTRY] = EntryContext,
   [trx.ui.Screen.EXAMINE] = EntryContext,
@@ -398,6 +420,7 @@ local KINDS = {
   [trx.ui.Screen.GLOBE_SELECT] = GlobeContext,
   [trx.ui.Screen.LEVEL_VIEW] = TimedContext,
   [trx.ui.Screen.PICTURE] = PictureContext,
+  [trx.ui.Screen.MENU] = MenuContext,
 }
 
 -- `args` is what the engine reports as it opens the screen, keyed by the
