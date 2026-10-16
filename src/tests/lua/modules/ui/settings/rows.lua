@@ -121,4 +121,12 @@ test("a setting this game lacks does not exist", function()
   assert(not rows.exists("visuals.no_such_setting"))
 end)
 
+-- This suite leaves out the names of the texture filters, so one setting holds
+-- an enum value with no name.
+test("every setting is listed, even one whose value has no name", function()
+  local settings = trx.config.list()
+  assert(settings["ui.menu_style"] ~= nil)
+  assert(settings["rendering.fmv_filter"] == nil)
+end)
+
 return h.report()
