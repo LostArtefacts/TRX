@@ -112,6 +112,21 @@ primitive.to_canvas = raw.to_canvas
 ---@type fun(x0: number, x1: number, y: number, z?: integer)
 primitive.horizontal_line = raw.horizontal_line
 
+-- What each frame style draws: the menu colors of one text style, and whether
+-- it fills the box behind its child or draws only the outline.
+local frames = (function()
+  local look = h.constants("TEXT_STYLE")
+  local FrameStyle = ui.FrameStyle
+  return {
+    [FrameStyle.DIALOG] = { look = look.BACKGROUND, fill = true },
+    [FrameStyle.DIALOG_HEAVY] = { look = look.BACKGROUND_HEAVY, fill = true },
+    [FrameStyle.HEADING] = { look = look.HEADING, fill = true },
+    [FrameStyle.SELECTED] = { look = look.REQUESTED, fill = true },
+    [FrameStyle.OUTLINE] = { look = look.REQUESTED, fill = false },
+    [FrameStyle.HEADING_OUTLINE] = { look = look.HEADING, fill = false },
+  }
+end)()
+
 ---Draws the box the game draws behind a dialog, in the style the player chose.
 ---
 ---The look follows the menu style setting, so a panel drawn this way matches
@@ -122,8 +137,13 @@ primitive.horizontal_line = raw.horizontal_line
 ---@param w number The width.
 ---@param h number The height.
 ---@param style trx.ui.FrameStyle Which of the game's frames to draw.
----@type fun(x: number, y: number, z: integer, w: number, h: number, style: trx.ui.FrameStyle)
-primitive.panel = raw.panel
+function primitive.panel(x, y, z, w, h, style)
+  local frame = frames[style]
+  if frame == nil then
+    error("unknown frame style", 2)
+  end
+  raw.panel(x, y, z, w, h, frame.look, frame.fill)
+end
 
 ---Draws a rectangle of one color.
 ---@param x number The left edge.
