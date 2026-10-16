@@ -160,7 +160,7 @@ local function finish(ctx, choice)
 
   local layers = ctx._layers
   ctx._layers = {}
-  if choice ~= nil then
+  if choice ~= nil and ctx._report == nil then
     raw.close(ctx.screen, choice)
   end
   local failed = nil
@@ -172,6 +172,10 @@ local function finish(ctx, choice)
   ctx._ended = {}
   for _, callback in ipairs(ended) do
     local err = h.failure(callback)
+    failed = failed or err
+  end
+  if ctx._report ~= nil then
+    local err = h.failure(ctx._report, choice == choices.CONFIRM)
     failed = failed or err
   end
   if failed ~= nil then
@@ -209,6 +213,7 @@ local background = reported("background")
 ---@field private _ended function[]
 ---@field private _done boolean
 ---@field private _main? trx.ui.StackLayer
+---@field private _report? function
 local Context = h.class("ui.ScreenContext", {
   fields = {
     screen = {
@@ -466,18 +471,18 @@ function screens.define(screen, open, options)
   end)
 end
 
--------------------------------------------------------------------------------
--- The engine's side
--------------------------------------------------------------------------------
-
-local function open_screen(screen, args)
+-- Opens a screen's definition and returns its context, or nil where no
+-- definition draws the screen. A context opened with a report tells it how
+-- the screen ended instead of telling the engine.
+local function start(screen, args, report)
   local object = screen == trx.ui.Screen.RING_ENTRY and args.object or nil
   local definition = definition_of(screen, object)
   if definition == nil then
-    return false
+    return nil
   end
 
   local ctx = new_context(screen, args)
+  ctx._report = report
   local ok, result = pcall(definition.open, ctx)
   if not ok then
     finish(ctx, nil)
@@ -485,7 +490,7 @@ local function open_screen(screen, args)
   end
   if result == nil then
     finish(ctx, nil)
-    return false
+    return nil
   end
 
   local owned = false
@@ -498,6 +503,40 @@ local function open_screen(screen, args)
   end
 
   ctx._main = result
+  return ctx
+end
+
+---Opens a screen from a script, as the engine opens one, with its definition
+---drawing it. This is how a menu that a script draws opens what an entry
+---leads to, such as `trx.ui.Screen.EXAMINE`.
+---
+---The fields are what the screen reports to its definition, such as the
+---object of a ring entry's screens. The function given runs once the screen
+---ends, after its layers have closed, and is told whether it ended with
+---`trx.ui.ScreenContext:confirm`.
+---
+---```lua
+---trx.ui.screens.open(trx.ui.Screen.EXAMINE, { object = object }, function(confirmed)
+---  trx.log.info(confirmed and "confirmed" or "put away")
+---end)
+---```
+---@param screen trx.ui.Screen The screen.
+---@param fields table What the screen reports to its definition.
+---@param on_end? function Runs once the screen ends, with whether it ended confirmed.
+---@return trx.ui.ScreenContext? # The screen's context, or `nil` where no definition draws the screen, in which case the function given never runs.
+function screens.open(screen, fields, on_end)
+  return start(screen, fields, on_end or function() end)
+end
+
+-------------------------------------------------------------------------------
+-- The engine's side
+-------------------------------------------------------------------------------
+
+local function open_screen(screen, args)
+  local ctx = start(screen, args, nil)
+  if ctx == nil then
+    return false
+  end
   held[screen] = ctx
   return true
 end
