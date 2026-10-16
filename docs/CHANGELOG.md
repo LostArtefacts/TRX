@@ -316,6 +316,7 @@
 - Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.TimedContext`, which reports how long the view shows and fades
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
+- Changed `trx.config.declare` so that a value of a declared setting can carry a label of its own
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed the drawing events to belong to the modules that draw
     - `trx.events.on_ui_draw` → `trx.ui.on_reserve`
