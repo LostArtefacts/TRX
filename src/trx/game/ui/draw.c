@@ -103,6 +103,13 @@ typedef struct {
 
 typedef struct {
     M_DRAW_OP base;
+    BACKGROUND_TYPE style;
+    float progress;
+    const char *path;
+} M_DRAW_OP_BACKDROP;
+
+typedef struct {
+    M_DRAW_OP base;
     void (*draw)(const void *args);
     max_align_t args[];
 } M_DRAW_OP_OVERLAY;
@@ -493,6 +500,14 @@ static void M_DrawOp_Background(const M_DRAW_OP *const base)
     M_EndScene();
 }
 
+static void M_DrawOp_Backdrop(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_BACKDROP *const op = (const M_DRAW_OP_BACKDROP *)base;
+    M_BeginScene();
+    Output_Overlay_DrawBackground(op->style, op->progress, op->path);
+    M_EndScene();
+}
+
 // Allocate a new deferred draw operation in the arena.
 static inline void *M_ArenaAlloc(const size_t sz)
 {
@@ -821,6 +836,24 @@ void UI_ScheduleDrawBackground(
             .path = owned_path,
             .mono = mono,
             .dim = dim,
+        }));
+}
+
+void UI_ScheduleDrawBackdrop(
+    const BACKGROUND_TYPE style, const float progress, const char *const path)
+{
+    char *owned_path = nullptr;
+    if (path != nullptr) {
+        const size_t size = strlen(path) + 1;
+        owned_path = M_ArenaAlloc(size);
+        memcpy(owned_path, path, size);
+    }
+    M_SCHEDULE_OP(
+        M_DrawOp_Backdrop,
+        ((M_DRAW_OP_BACKDROP) {
+            .style = style,
+            .progress = progress,
+            .path = owned_path,
         }));
 }
 

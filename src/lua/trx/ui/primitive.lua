@@ -401,6 +401,20 @@ primitive.world_model = raw.draw_world_model
 ---@type fun(opacity: number)
 primitive.darken = raw.darken
 
+---Draws a backdrop behind the whole interface, as the game draws the ones
+---behind its menus, part way in by the opacity. It goes under any model in a
+---world of its own drawn after it, as the inventory ring's models stand on
+---their backdrop.
+---
+---```lua
+---trx.ui.primitive.backdrop("transparent", 0.5)
+---```
+---@param style string The backdrop style, by the names that the `ui.inventory_background_style` setting takes. <!--noref: ui.inventory_background_style-->
+---@param opacity number How far it has come in, from `0` for not at all to `1`.
+---@param path? string The picture of an `image` backdrop, as `trx.ui.primitive.background` takes it. <!--noref: image-->
+---@type fun(style: string, opacity: number, path?: string)
+primitive.backdrop = raw.draw_backdrop
+
 ---Draws an image behind the whole interface, as the game draws the pictures
 ---behind its screens, fitted to the screen's shape and darkened by the dim.
 ---Without an image, or where it does not exist, the screen behind the

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/config/enum.h>
 #include <trx/core/colors.h>
 #include <trx/core/math/types.h>
 #include <trx/game/objects/ids.h>
@@ -154,6 +155,11 @@ void UI_ScheduleDrawModelInWorld(
 // colour, then darkens it by the dim. Without an image the screen behind the
 // interface is black.
 void UI_ScheduleDrawBackground(const char *path, bool mono, float dim);
+// Draws a backdrop behind the whole interface as the engine draws the ones
+// behind its menus, in a style, by how far it has come in, from 0 to 1. A
+// picture takes the path of its image.
+void UI_ScheduleDrawBackdrop(
+    BACKGROUND_TYPE style, float progress, const char *path);
 // Darkens the scene behind the whole interface by the opacity, as the engine
 // darkens it behind a screen and fades it to black.
 void UI_ScheduleDrawDarken(float opacity);
