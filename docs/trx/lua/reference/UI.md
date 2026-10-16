@@ -1278,7 +1278,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Bar.settings.w" name="ui.widgets.Bar.settings.w"></a>**`w`** (any, optional). The width, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
     - <a id="ui.widgets.Bar.settings.h" name="ui.widgets.Bar.settings.h"></a>**`h`** (any, optional). The height, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
     - <a id="ui.widgets.Bar.settings.smooth" name="ui.widgets.Bar.settings.smooth"></a>**`smooth`** (any, optional). Whether the fill shades one band into the next, or a signal that holds that value. The player's smooth bars setting by default.
-    - <a id="ui.widgets.Bar.settings.preview" name="ui.widgets.Bar.settings.preview"></a>**`preview`** (any, optional). Whether the bar takes the size of the text around it rather than the player's bar size, as a bar shown beside its setting does, or a signal that holds that value. `false` by default.
+    - <a id="ui.widgets.Bar.settings.preview" name="ui.widgets.Bar.settings.preview"></a>**`preview`** (any, optional). Whether the bar takes the size of the text around it rather than the player's bar size and the size its style gives it, as a bar shown beside its setting does, or a signal that holds that value. `false` by default.
 
   Returns: [trx.ui.Widget](#ui.Widget). The bar.
 
