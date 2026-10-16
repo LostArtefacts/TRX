@@ -322,6 +322,7 @@
 - Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes
 - Fixed `trx.item.anim_num` not being accurate when the item is Lara and she is either on a vehicle or performing an extra animation (TRX1644)
 - Fixed `trx.input.with_listen()` always failing with an error
+- Fixed a derived signal sometimes giving its old value when read from a listener of the signal it follows, such as a settings row showing its old value after the first change
 - Fixed iterating over `trx.fx.fog_bulbs` and `trx.fx.sparks.pool` skipping the last entry
 
 
