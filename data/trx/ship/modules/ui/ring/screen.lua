@@ -1317,6 +1317,7 @@ local function open(ctx)
   state.backdrop = trx.ui.tween(0):to(1, state.fades:ticks(FADE_TICKS))
 
   if ctx.mode == MenuMode.TITLE then
+    trx.overlay.show_version(true)
     -- The title comes in from black before its ring spins in.
     state.waiting = true
     state.hidden = true
@@ -1358,6 +1359,7 @@ local function open(ctx)
     ring.set_count(nil)
     ring.show_health_bar(false)
     ring.set_rest_frame(nil)
+    trx.overlay.show_version(false)
     ring.detach(state)
   end)
 

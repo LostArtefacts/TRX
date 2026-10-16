@@ -6,8 +6,8 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---@field overlay trx.overlay
 
 ---What the game shows over the play: the pickups that slide in, the cinematic
----bars, and the lines of text and the arrows that the inventory ring, a demo
----or a film asks for. The shipped scripts draw all of it; the signals here
+---bars, and the caption and the arrows that the inventory ring, a demo or an
+---FMV asks for. The shipped scripts draw all of it; the signals here
 ---say what to draw.
 ---@trx.module 41 Overlay
 ---@class (exact) trx.overlay
@@ -18,14 +18,12 @@ local M = h.module("overlay")
 
 ---What the overlay tells a script, for the parts of it a script draws.
 ---@class (exact) trx.overlay.signals
----@trx.readonly arrows, caption, caption_flashing, health_bar_forced, letterbox, top_text, version_shown
----@field top_text trx.signal.Signal Holds the line the game shows at the top of the screen, such as the name of the inventory ring, in the player's language, or nil for none.
+---@trx.readonly arrows, caption, caption_flashing, letterbox, version_shown
 ---@field caption trx.signal.Signal Holds the caption at the bottom of the screen, such as the name of the entry under the cursor of the inventory ring, in the player's language, or nil for none.
 ---@field caption_flashing trx.signal.Signal Holds whether the caption flashes, as it does while a demo plays.
 ---@field arrows trx.signal.Signal Holds the arrows on screen, as a table that maps each `trx.overlay.Arrow` that shows to `true`.
 ---@field version_shown trx.signal.Signal Holds whether the game asks for its version on screen, as the title screen does. The `ui.show_title_version` setting decides whether it shows. <!--noref: ui.show_title_version-->
 ---@field letterbox trx.signal.Signal Says when the cinematic bars take the screen and when they give it back. True while they are moving, so a script can hold something back until they have gone.
----@field health_bar_forced trx.signal.Signal Says when something asks for Lara's health bar whatever else is on screen, which the inventory ring does while it shows a medipack.
 M.signals = h.namespace("overlay.signals")
 
 local polled = {}
@@ -94,6 +92,14 @@ function M.set_caption(text, opts)
 end
 
 local arrows = trx.signal.new({})
+local version_shown = trx.signal.new(false)
+
+---Asks for the game's version on screen, as the title screen does. The
+---`ui.show_title_version` setting decides whether it shows. <!--noref: ui.show_title_version-->
+---@param shown boolean Whether it is asked for.
+function M.show_version(shown)
+  version_shown:set(shown == true)
+end
 
 -- A caption or an arrow that its screen left up goes with the level.
 trx.events.on_level_unload(function()
@@ -135,11 +141,6 @@ h.properties(M, "overlay", {
 })
 
 h.properties(M.signals, "overlay.signals", {
-  top_text = {
-    get = lasting("top_text", function()
-      return lasting_polled(raw.top_text)
-    end),
-  },
   caption = {
     get = function()
       return caption
@@ -156,18 +157,13 @@ h.properties(M.signals, "overlay.signals", {
     end,
   },
   version_shown = {
-    get = lasting("version_shown", function()
-      return lasting_polled(raw.is_version_shown)
-    end),
+    get = function()
+      return version_shown
+    end,
   },
   letterbox = {
     get = lasting("letterbox", function()
       return lasting_polled(raw.has_letterbox)
-    end),
-  },
-  health_bar_forced = {
-    get = lasting("health_bar_forced", function()
-      return lasting_polled(raw.is_health_bar_forced)
     end),
   },
 })

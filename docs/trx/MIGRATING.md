@@ -131,6 +131,12 @@ order: 3
     `trx.ui.widgets.Blank`: `Label({ text = t, hidden = h })` becomes
     `Blank({ when = h, child = Label({ text = t }) })`.
 
+20. **`trx.overlay.signals.health_bar_forced` is gone**
+    The inventory ring says when it asks for Lara's health bar through the
+    signals of the shipped `common.ui.ring` module:
+    - `trx.overlay.signals.health_bar_forced` →
+      `require("common.ui.ring").signals.health_bar`
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

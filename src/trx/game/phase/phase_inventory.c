@@ -15,7 +15,6 @@
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
-#include <trx/game/overlay.h>
 #include <trx/game/random.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
@@ -89,7 +88,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         if (g_Config.audio.enable_music_in_menu && level->music_track >= 0) {
             Music_PlayBySlot(level->music_track, MPM_LOOP);
         }
-        Overlay_ShowVersion(true);
         SG_Manager_ScanSavedGames();
         Camera_Initialise();
         LUA_FireEvent(LUA_EVENT_TITLE_START);
@@ -101,7 +99,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             Random_FreezeDraw(false);
         }
     } else {
-        Overlay_ShowVersion(false);
         // The snapshot re-renders the scene, so it must happen before the
         // inventory lighting mode kicks in.
         Output_Overlay_CaptureGameSnapshot();
@@ -186,7 +183,6 @@ static void M_End(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     UI_Takeover_Release(UI_TAKEOVER_MENU);
     Output_SetInventoryLightingMode(false);
-    Overlay_ShowVersion(false);
     if (p->mode == INV_TITLE_MODE) {
         Music_Stop();
         Sound_StopAll();

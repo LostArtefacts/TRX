@@ -19,7 +19,6 @@
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/quad.h>
-#include <trx/game/overlay.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
@@ -266,7 +265,6 @@ static RESULT M_Play(const char *const file_name)
             paused = should_pause;
         }
 
-        Overlay_Control();
         LUA_Tick();
 
         IGNORE(Audio_Stream_SetVolume(audio_id, M_GetAudioVolume()));

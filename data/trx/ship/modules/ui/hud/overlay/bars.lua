@@ -82,8 +82,7 @@ function M.setup(shared)
     flashing_enabled = signal.config("ui.enable_bar_flashing"),
 
     -- The inventory ring asks for the health bar while it shows a medipack.
-    health_bar_forced = trx.overlay.signals.health_bar_forced
-      | ring.signals.health_bar,
+    health_bar_forced = ring.signals.health_bar,
 
     -- The blink a low bar flashes with, and whether Lara was hurt just now.
     -- Both are counted in the block below, so a widget reads an answer rather
