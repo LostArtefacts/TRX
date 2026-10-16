@@ -5,6 +5,7 @@
 -- picked.
 
 local fade = require("common.ui.fade")
+local motion = require("common.ui.ring.motion")
 local timer = require("common.timer")
 
 local M = {}
@@ -38,29 +39,8 @@ local DEG_90 = trx.math.DEG_90
 -- The ring
 -------------------------------------------------------------------------------
 
--- The inventory ring the globe stands on, as the game moves it: in whole
--- world units and angles, a step of its motion at a time, two steps a tick.
-local RING = {
-  radius = 688,
-  -- How far the camera stands beyond the ring's near edge, how high it
-  -- starts and how high it comes down to, and how high the point it looks at
-  -- stands.
-  camera_gap = 598,
-  camera_start = -1536,
-  camera_height = -256,
-  look_y = -96,
-  -- The camera's field of view.
-  fov = 80 * trx.math.DEG_1,
-  open_frames = 32,
-  close_frames = 32,
-  select_frames = 16,
-  -- How far the ring turns as it opens, and again as it closes.
-  turn = -2 * DEG_90,
-  -- Where the globe comes forward to once picked.
-  y_trans = -176,
-  z_trans = 256,
-  steps_per_tick = 2,
-}
+-- The globe is the ring's one entry, and comes this far forward once picked.
+local GLOBE = { y_trans_sel = -176, z_trans_sel = 256 }
 
 local Status = {
   OPENING = "opening",
@@ -74,121 +54,28 @@ local Status = {
   DONE = "done",
 }
 
-local wrap = trx.math.wrap_angle
-local div = trx.math.idiv
-
-local MOVED = { "radius", "camera_y", "rot", "y_trans", "z_trans" }
--- What is drawn part way between one tick and the next.
-local DRAWN = { "radius", "camera_y", "rot", "y_trans", "z_trans", "y_rot" }
-
-local function keep_last(ring)
-  for _, key in ipairs(DRAWN) do
-    ring.prev[key] = ring[key]
-  end
-end
-
--- Sets what each moving value heads for, and how far it goes each step.
-local function head_for(ring, key, target, rate)
-  ring.target[key] = target
-  ring.rate[key] = rate
-end
-
-local function set_status(ring, status, status_target, frames)
-  ring.status = status
-  ring.status_target = status_target
-  ring.frames = frames
-  ring.rate.radius = 0
-  ring.rate.camera_y = 0
-  if status == Status.SELECTING then
-    head_for(ring, "rot", -DEG_90, 0)
-    head_for(ring, "y_trans", RING.y_trans, div(RING.y_trans, frames))
-    head_for(ring, "z_trans", RING.z_trans, div(RING.z_trans, frames))
-  elseif status == Status.EXITING then
-    head_for(ring, "y_trans", 0, -div(RING.y_trans, frames))
-    head_for(ring, "z_trans", 0, -div(RING.z_trans, frames))
-  elseif status == Status.CLOSING then
-    head_for(ring, "radius", 0, div(-ring.radius, frames))
-    head_for(
-      ring,
-      "camera_y",
-      RING.camera_start,
-      div(RING.camera_start - ring.camera_y, frames)
-    )
-    head_for(ring, "rot", wrap(ring.rot - RING.turn), div(RING.turn, frames))
-  end
-end
+-- What the ring does once each motion ends.
+local AFTER = {
+  [Status.OPENING] = Status.OPEN,
+  [Status.SELECTING] = Status.SELECTED,
+  [Status.EXITING] = Status.EXITING,
+  [Status.CLOSING] = Status.FADING_OUT,
+}
 
 local function open_ring()
   local ring = {
-    radius = 0,
-    camera_y = RING.camera_start,
-    rot = 0,
-    y_trans = 0,
-    z_trans = 0,
-    y_rot = 0,
-    target = {},
-    rate = {},
+    view = motion.new({ entries = { GLOBE } }),
+    status = Status.OPENING,
   }
-  for _, key in ipairs(MOVED) do
-    ring.target[key] = ring[key]
-    ring.rate[key] = 0
-  end
-  ring.status = Status.OPENING
-  ring.status_target = Status.OPEN
-  ring.frames = RING.open_frames
-  head_for(ring, "radius", RING.radius, div(RING.radius, ring.frames))
-  head_for(
-    ring,
-    "camera_y",
-    RING.camera_height,
-    div(RING.camera_height - RING.camera_start, ring.frames)
-  )
-  head_for(ring, "rot", -DEG_90, div(RING.turn, ring.frames))
-  ring.rot = wrap(-DEG_90 - RING.turn)
-  ring.prev = {}
-  keep_last(ring)
+  ring.view:start(motion.Motion.OPEN)
   return ring
 end
 
-local function step(ring)
-  if ring.frames == 0 then
-    return
-  end
-  ring.radius = ring.radius + ring.rate.radius
-  ring.camera_y = ring.camera_y + ring.rate.camera_y
-  ring.rot = wrap(ring.rot + ring.rate.rot)
-  ring.y_trans = ring.y_trans + ring.rate.y_trans
-  ring.z_trans = ring.z_trans + ring.rate.z_trans
-  ring.frames = ring.frames - 1
-  if ring.frames == 0 then
-    ring.status = ring.status_target
-    for _, key in ipairs(MOVED) do
-      if ring.rate[key] ~= 0 then
-        ring.rate[key] = 0
-        ring[key] = ring.target[key]
-      end
-    end
-  end
-end
-
--- Turns the globe on its own axis: back to facing the camera while it is
--- picked, and round and round on a ring of one otherwise.
-local function spin(ring)
-  local held = ring.status == Status.SELECTED
-    or ring.status == Status.SELECTING
-    or ring.status == Status.CLOSING_ITEM
-  if held then
-    local delta = -ring.y_rot
-    if delta ~= 0 then
-      if delta > 0 and delta < 2 * DEG_90 then
-        ring.y_rot = ring.y_rot + 1024
-      else
-        ring.y_rot = ring.y_rot - 1024
-      end
-      ring.y_rot = wrap(ring.y_rot - ring.y_rot % 1024)
-    end
-  else
-    ring.y_rot = wrap(ring.y_rot + 256)
+-- Moves the ring on to a status, starting the motion that takes it there.
+local function set_status(ring, status, name)
+  ring.status = status
+  if name ~= nil then
+    ring.view:start(name)
   end
 end
 
@@ -289,6 +176,8 @@ local function mesh_mask(state)
   return mask
 end
 
+local wrap = trx.math.wrap_angle
+
 -- Turns one axis an eighth of the way to its target, or onto it once close.
 local function approach(current, target)
   local gap = wrap(target - current)
@@ -312,33 +201,13 @@ local function turn(state)
   return rest_x and rest_y and rest_z
 end
 
-local blend = trx.math.lerp
-local blend_angle = trx.math.lerp_angle
-
 local function paint_globe(state)
-  local ring = state.ring
-  local prev = ring.prev
-  local rate = trx.ui.interpolation_rate()
-  local radius = blend(prev.radius, ring.radius, rate)
-  local camera_y = blend(prev.camera_y, ring.camera_y, rate)
-  local rot = blend_angle(prev.rot, ring.rot, rate)
-  local y_rot = blend_angle(prev.y_rot, ring.y_rot, rate)
-  local y_trans = blend(prev.y_trans, ring.y_trans, rate)
-  local z_trans = blend(prev.z_trans, ring.z_trans, rate)
+  local view = state.ring.view
   trx.ui.primitive.world_model(trx.catalog.objects.GLOBE_OPTION, {
-    camera = {
-      pos = { x = 0, y = camera_y, z = radius + RING.camera_gap },
-      target = { x = 0, y = RING.look_y, z = radius },
-      fov = RING.fov,
-    },
-    pose = {
-      { turn = { x = 0, y = rot, z = 0 } },
-      { move = { x = radius, y = 0, z = 0 } },
-      { turn = { x = 0, y = DEG_90, z = 0 } },
-      { move = { x = 0, y = y_trans, z = z_trans } },
-      { turn = { x = 0, y = y_rot, z = 0 } },
+    camera = view:camera(),
+    pose = view:pose(1, {
       { turn = { x = state.rot.x, y = state.rot.y, z = state.rot.z } },
-    },
+    }),
     mesh_mask = mesh_mask(state),
     light = light(state),
   })
@@ -455,26 +324,25 @@ local function go(state)
   trx.game.play_level(state.areas[state.selection].start_level.num)
 end
 
--- Runs the ring a tick, as the inventory ring ran: what it does next, how
--- the globe spins, then two steps of its motion.
+-- Runs the ring a tick, as the inventory ring ran: what it does next, then
+-- how the globe spins and the ring moves.
 local function run_ring(state, keys)
   local ring = state.ring
-  keep_last(ring)
 
   if ring.status == Status.OPENING and not ring.spun_in then
     trx.sound.play(trx.catalog.samples.MENU_SPININ)
     ring.spun_in = true
   elseif ring.status == Status.OPEN then
     trx.sound.play(trx.catalog.samples.MENU_CHOOSE)
-    set_status(ring, Status.SELECTING, Status.SELECTED, RING.select_frames)
+    set_status(ring, Status.SELECTING, motion.Motion.SELECT)
   elseif ring.status == Status.SELECTED then
     if choose(state, keys) then
-      set_status(ring, Status.CLOSING_ITEM, Status.EXITING, 0)
+      set_status(ring, Status.CLOSING_ITEM)
     end
   elseif ring.status == Status.CLOSING_ITEM then
-    set_status(ring, Status.EXITING, Status.EXITING, RING.select_frames)
-  elseif ring.status == Status.EXITING and ring.frames == 0 then
-    set_status(ring, Status.CLOSING, Status.FADING_OUT, RING.close_frames)
+    set_status(ring, Status.EXITING, motion.Motion.DESELECT)
+  elseif ring.status == Status.EXITING and not ring.view:is_moving() then
+    set_status(ring, Status.CLOSING, motion.Motion.CLOSE)
   elseif ring.status == Status.FADING_OUT and not state.leaving then
     state.leaving = true
     state.fades:leave({
@@ -490,18 +358,22 @@ local function run_ring(state, keys)
   end
   show_names(state, ring.status == Status.SELECTED)
 
-  local still = ring.status == Status.OPENING
+  local spin = motion.Spin.IDLE
+  if
+    ring.status == Status.OPENING
     or ring.status == Status.DONE
     or ring.status == Status.FADING_OUT
-  if not still then
-    for _ = 1, RING.steps_per_tick do
-      spin(ring)
-    end
+  then
+    spin = motion.Spin.STILL
+  elseif
+    ring.status == Status.SELECTED
+    or ring.status == Status.SELECTING
+    or ring.status == Status.CLOSING_ITEM
+  then
+    spin = motion.Spin.HELD
   end
-  if ring.status ~= Status.DONE then
-    for _ = 1, RING.steps_per_tick do
-      step(ring)
-    end
+  if ring.view:tick(spin) and AFTER[ring.status] ~= nil then
+    ring.status = AFTER[ring.status]
   end
 end
 
