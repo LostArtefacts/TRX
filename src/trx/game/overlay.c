@@ -1,12 +1,9 @@
 #include <trx/game/overlay.h>
 
 #include <trx/core/strings.h>
-#include <trx/game/camera.h>
-#include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/names.h>
-#include <trx/game/output/sources/ui.h>
 
 // Last requested overlay state for the current frame.
 typedef struct {
@@ -52,17 +49,6 @@ void Overlay_Reset(void)
 void Overlay_Control(void)
 {
     Overlay_ForceHealthBar(false);
-}
-
-void Overlay_DrawGameInfo(void)
-{
-    if (!Game_IsPlaying()) {
-        return;
-    }
-
-    if (Camera_Binoculars_IsActive()) {
-        OutputSource_UI_StageBinocularMask();
-    }
 }
 
 const char *Overlay_GetTopText(void)

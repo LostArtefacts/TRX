@@ -172,3 +172,7 @@ void UI_ShutdownDraw(void);
 
 // Execute all scheduled UI draw operations in order.
 void UI_Draw(void);
+
+// Draws the mask Lara looks through while she holds binoculars to her eyes,
+// over a level that is being played.
+void UI_DrawBinocularMask(void);

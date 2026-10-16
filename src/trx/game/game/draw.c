@@ -4,7 +4,7 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/lua/events/scene.h>
 #include <trx/game/output.h>
-#include <trx/game/overlay.h>
+#include <trx/game/ui/draw.h>
 
 void Game_Draw(const bool draw_overlay)
 {
@@ -15,7 +15,7 @@ void Game_Draw(const bool draw_overlay)
     Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
     LUA_Scene_Paint();
     if (draw_overlay && !CutSeq_IsActive()) {
-        Overlay_DrawGameInfo();
+        UI_DrawBinocularMask();
     }
     CutSeq_DrawOverlay();
     Output_Overlay_DrawLetterbox();
