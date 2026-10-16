@@ -154,6 +154,32 @@ void Overlay_DrawUI(void)
     }
 }
 
+const char *Overlay_GetTopText(void)
+{
+    return M_ResolveText(&m_State.top_text);
+}
+
+const char *Overlay_GetBottomText(void)
+{
+    return M_ResolveText(&m_State.bottom_text);
+}
+
+bool Overlay_IsBottomTextFlashing(void)
+{
+    return m_State.bottom_text.kind != OVERLAY_TEXT_NONE
+        && m_State.bottom_text.flash_enabled;
+}
+
+bool Overlay_IsArrowShown(const OVERLAY_ARROW arrow)
+{
+    return m_State.arrows[arrow];
+}
+
+bool Overlay_IsVersionShown(void)
+{
+    return m_State.show_version;
+}
+
 void Overlay_ForceHealthBar(const bool show)
 {
     m_State.force_health_bar = show;
