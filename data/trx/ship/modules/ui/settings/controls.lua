@@ -412,6 +412,43 @@ function Editor:navigate(keys)
   return nil
 end
 
+-- Where the player was in the editor: the bar or the rows the cursor is on,
+-- the group, the row under it and the first row in view, and the binding.
+---@class common.ui.controls.Place
+---@field focus common.ui.controls.Focus
+---@field group integer
+---@field first integer
+---@field selected integer?
+---@field slot integer
+
+---@return common.ui.controls.Place
+function Editor:remember()
+  return {
+    focus = self.focus:get(),
+    group = self.groups.active:get(),
+    first = self.scroll.first:get(),
+    selected = self.scroll.selected:get(),
+    slot = self.slot:get(),
+  }
+end
+
+-- Puts the player back where `Editor:remember` found them. The rows of the
+-- default layout take no cursor, so a cursor left on them goes to the bar of
+-- groups.
+---@param place common.ui.controls.Place
+function Editor:restore(place)
+  self.groups.active:set(place.group)
+  self.scroll.first:set(place.first)
+  self.scroll:select(place.selected)
+  self.slot:set(place.slot)
+  local focus = place.focus
+  if focus == "inputs" and self:layout() == Layout.DEFAULT then
+    focus = "group"
+  end
+  self.focus:set(focus)
+  self:show_buttons()
+end
+
 -- Stops reading keys and following the settings, once the dialog has closed.
 function Editor:close()
   if self.capture ~= nil then
@@ -751,6 +788,16 @@ end
 -- the list of input sources
 -------------------------------------------------------------------------------
 
+-- Where the player left the dialog: the source whose editor was open, if any,
+-- and where they were in the editor of each source.
+local places = { editors = {} }
+
+-- Forgets where the player left the dialog, so that it opens on the list of
+-- sources again, as it does when a level starts.
+function M.forget()
+  places = { editors = {} }
+end
+
 ---@class common.ui.controls.open.settings
 ---@field push fun(settings: trx.ui.layers.push.settings): trx.ui.StackLayer Opens a layer.
 ---@field finish fun(confirmed: boolean) Closes the dialog: `true` where the player confirmed out of the editor, `false` where they backed out.
@@ -759,7 +806,8 @@ end
 
 -- Opens the dialog: the list of input sources, and the editor of the source
 -- picked over it. Where only one source is enabled, the editor opens alone,
--- and backing out of it closes the dialog. Returns the layer of the list, and
+-- and backing out of it closes the dialog. The dialog opens where the player
+-- left it until `forget`. Returns the layer of the list, and
 -- a function that closes whatever the dialog still has open.
 ---@param settings common.ui.controls.open.settings
 ---@return trx.ui.StackLayer
@@ -798,6 +846,10 @@ function M.open(settings)
     trx.config.set("input.backend", entry.setting)
     editor =
       M.editor({ backend = entry.backend, layout_setting = entry.layout })
+    if places.editors[entry.backend] ~= nil then
+      editor:restore(places.editors[entry.backend])
+    end
+    places.backend = entry.backend
     choosing:set(false)
     editor_layer = settings.push({
       root = trx.ui.widgets.Stack({
@@ -813,11 +865,13 @@ function M.open(settings)
           if #available == 1 then
             settings.finish(false)
           else
+            places.backend = nil
             layer:close()
           end
         end
       end),
       on_close = function()
+        places.editors[entry.backend] = editor:remember()
         editor:close()
         editor = nil
         editor_layer = nil
@@ -856,8 +910,15 @@ function M.open(settings)
       end
     end),
   })
+  -- The dialog opens again on the editor that the player left it on.
   if #available == 1 then
     edit(available[1])
+  else
+    for _, entry in ipairs(available) do
+      if entry.backend == places.backend then
+        edit(entry)
+      end
+    end
   end
 
   return layer,

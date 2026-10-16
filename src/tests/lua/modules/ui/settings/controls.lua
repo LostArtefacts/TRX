@@ -32,9 +32,13 @@ local function hold(role)
   fake.tick()
 end
 
-local function open(mode)
+-- Opens the dialog on the default layout, or on the layout it holds where
+-- `again` is set.
+local function open(mode, again)
   trx.config.set("ui.text_scale", 1.0)
-  trx.config.set("input.keyboard_layout", trx.input.Layout.DEFAULT)
+  if not again then
+    trx.config.set("input.keyboard_layout", trx.input.Layout.DEFAULT)
+  end
   fake.open_ring(mode or trx.inventory_ring.Mode.GAME, CONTROLS, 0, 10)
   assert(
     fake.offer(RING_ENTRY, { object = CONTROLS }),
@@ -44,11 +48,16 @@ local function open(mode)
   fake.tick()
 end
 
-local function finish()
+-- Puts the entry away. The level ends with it unless `keep` is set, so that
+-- the next dialog opens from the top.
+local function finish(keep)
   fake.release(RING_ENTRY)
   fake.take_choice(RING_ENTRY)
   fake.close_ring()
   fake.release_all()
+  if not keep then
+    fake.end_level()
+  end
   assert(fake.errors() == 0, "the module raised")
 end
 
@@ -154,6 +163,25 @@ test("the groups switch from the rows", function()
   press(Role.MENU_UP)
   press(Role.MENU_LEFT)
   assert(trx.config.get("input.keyboard_layout") == trx.input.Layout.DEFAULT)
+  finish()
+end)
+
+test("the dialog opens again where the player left it", function()
+  open()
+  to_rows()
+  finish(true)
+
+  -- The cursor is back on the rows, where confirm reads a key.
+  open(nil, true)
+  press(Role.MENU_CONFIRM)
+  fake.tick()
+  assert(fake.bindings().listening, "not on the rows")
+  finish()
+
+  -- The level ended with the entry, which opens the dialog on the bars.
+  open(nil, true)
+  press(Role.MENU_CONFIRM)
+  assert(fake.take_choice(RING_ENTRY) == CHOICE_CONFIRM, "not on the bars")
   finish()
 end)
 

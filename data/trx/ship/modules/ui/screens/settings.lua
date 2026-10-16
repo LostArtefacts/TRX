@@ -218,6 +218,7 @@ end
 function M.setup()
   trx.events.on_level_unload(function()
     places = {}
+    controls.forget()
   end)
   trx.ui.screens.define(
     trx.ui.Screen.RING_ENTRY,
