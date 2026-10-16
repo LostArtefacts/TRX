@@ -299,6 +299,37 @@ test("an enum rejects docs that are not a table", function()
   )
 end)
 
+test("a coined enum holds the values the module gives it", function()
+  local env = fresh_env()
+  local Side = env.h.coined_enum("things.Side", { LEFT = 0, RIGHT = 4 })
+  assert(Side.LEFT == 0)
+  assert(Side.right == 4, "a name answers in any case")
+  assert(sorted_keys(Side) == "LEFT,RIGHT")
+  raises(function()
+    Side.LEFT = 1
+  end, "trx%.things%.Side%.LEFT: an enum cannot be written to")
+end)
+
+test("a coined enum rejects a value that is not an integer", function()
+  local env = fresh_env()
+  raises(
+    env.h.coined_enum,
+    "^helpers%.enum: things%.Side%.LEFT is not an integer$",
+    "things.Side",
+    { LEFT = "left" }
+  )
+end)
+
+test("a coined enum rejects two constants with one value", function()
+  local env = fresh_env()
+  raises(
+    env.h.coined_enum,
+    "^helpers%.enum: things%.Side%.%u+ has the value of things%.Side%.%u+$",
+    "things.Side",
+    { LEFT = 1, RIGHT = 1 }
+  )
+end)
+
 test("a bulk enum needs no docs and still holds every constant", function()
   local env = fresh_env()
   local State = env.h.enum("catalog.states", "WIDGET_STATE")
