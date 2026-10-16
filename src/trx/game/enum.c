@@ -35,7 +35,6 @@
 #include <trx/game/sparks/enum.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
-#include <trx/game/ui/frame.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/tween.h>
@@ -125,23 +124,12 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(PHOTO_MODE, PHOTO_MODE_CAMERA, "camera");
     ENUM_MAP(PHOTO_MODE, PHOTO_MODE_LARA_POS, "lara");
 
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND, "dialog");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND_HEAVY, "dialog_heavy");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_HEADING, "heading");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_SELECTED_OPTION, "selected");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_OUTLINE_ONLY, "outline");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_HEADING_OUTLINE, "heading_outline");
+    ENUM_MAP(TEXT_STYLE, TS_HEADING, "heading");
+    ENUM_MAP(TEXT_STYLE, TS_BACKGROUND, "background");
+    ENUM_MAP(TEXT_STYLE, TS_BACKGROUND_HEAVY, "background_heavy");
+    ENUM_MAP(TEXT_STYLE, TS_REQUESTED, "requested");
 
     // LUA_EVENT_NUMBER_OF is a sentinel, not an event.
-
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND, "dialog_background");
-    ENUM_MAP(
-        UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND_HEAVY,
-        "dialog_background_heavy");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_HEADING, "dialog_heading");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_SELECTED_OPTION, "selected_option");
-    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_OUTLINE_ONLY, "outline_only");
-
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_GAME_START, "game_start");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TITLE_START, "title_start");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_PICKUP, "pickup");

@@ -15,7 +15,6 @@
 #include <trx/game/paths.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
-#include <trx/game/ui/frame.h>
 #include <trx/game/ui/keys.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
@@ -580,14 +579,15 @@ static int M_L_UIHorizontalLine(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.panel(x: number, y: number, z?: integer, w: number, h: number, style: trx.ui.FrameStyle)
+// trxc.ui.panel(x: number, y: number, z?: integer, w: number, h: number, look: integer, fill: boolean)
 static int M_L_UIPanel(lua_State *const L)
 {
     M_CheckPainting(L);
-    const lua_Integer style = luaL_checkinteger(L, 6);
-    if (style < 0 || style > UI_FRAME_HEADING_OUTLINE) {
-        return luaL_error(L, "unknown frame style");
+    const lua_Integer look = luaL_checkinteger(L, 6);
+    if (look < 0 || look > TS_REQUESTED) {
+        return luaL_error(L, "unknown text style");
     }
+    luaL_checktype(L, 7, LUA_TBOOLEAN);
 
     const float x = (float)luaL_checknumber(L, 1);
     const float y = (float)luaL_checknumber(L, 2);
@@ -600,8 +600,8 @@ static int M_L_UIPanel(lua_State *const L)
     const int32_t h = UI_ScaleY((float)luaL_checknumber(L, 5));
 
     const UI_STYLE ui_style = g_Config.ui.menu_style;
-    const TEXT_STYLE text_style = UI_Frame_GetTextStyle((UI_FRAME_STYLE)style);
-    if (UI_Frame_HasBackground((UI_FRAME_STYLE)style)) {
+    const TEXT_STYLE text_style = (TEXT_STYLE)look;
+    if (lua_toboolean(L, 7)) {
         UI_ScheduleDrawTextBackground(ui_style, x0, y0, z, w, h, text_style);
     }
     UI_ScheduleDrawTextOutline(ui_style, x0, y0, z, w, h, text_style);

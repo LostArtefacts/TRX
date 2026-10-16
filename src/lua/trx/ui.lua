@@ -167,20 +167,20 @@ M.on_paint = listen(types.UI_PAINT)
 ---@enum trx.ui.FrameStyle
 local FrameStyle = {
   ---The box a dialog sits in.
-  DIALOG = h.IntegerConstant,
+  DIALOG = 0,
   ---The box a dialog sits in, drawn solid.
-  DIALOG_HEAVY = h.IntegerConstant,
+  DIALOG_HEAVY = 1,
   ---The strip a dialog puts its title in.
-  HEADING = h.IntegerConstant,
+  HEADING = 2,
   ---The box around the option the player is on.
-  SELECTED = h.IntegerConstant,
+  SELECTED = 3,
   ---An outline with nothing behind it.
-  OUTLINE = h.IntegerConstant,
+  OUTLINE = 4,
   ---The outline of the strip a dialog puts its title in, with nothing behind
   ---it, as the game draws around a color swatch.
-  HEADING_OUTLINE = h.IntegerConstant,
+  HEADING_OUTLINE = 5,
 }
-M.FrameStyle = h.enum("ui.FrameStyle", "UI_FRAME_STYLE", FrameStyle)
+M.FrameStyle = h.coined_enum("ui.FrameStyle", FrameStyle)
 
 ---Which of the game's bars to draw, which decides its colors.
 ---@enum trx.ui.BarType
