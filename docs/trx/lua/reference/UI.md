@@ -160,7 +160,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - `trx.ui.Screen.RING_ENTRY`  
         An entry that the player uses in the inventory ring, with a [`trx.ui.EntryContext`](#ui.EntryContext). A definition can name the entry it draws. A ring opened to save or load leaves when the screen ends, and any ring leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
     - `trx.ui.Screen.PAUSE`  
-        The pause screen, from the moment the game pauses until it resumes or leaves for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
+        The pause screen, from the moment the game or an FMV pauses until it resumes or leaves for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
     - `trx.ui.Screen.SAVE_LOAD`  
         The quick save or load screen, with a [`trx.ui.SaveLoadContext`](#ui.SaveLoadContext). The save and load keys open it when the instant screen setting is on.
     - `trx.ui.Screen.STATS`  
