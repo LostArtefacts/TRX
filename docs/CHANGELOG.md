@@ -50,6 +50,7 @@
 - Fixed being unable to unbind the second key of a movement, jump, action or draw weapon binding while the first key stays bound
 - Fixed dialogs moving down when the FPS counter or another corner element is shown, even where the dialog does not reach it
 - Fixed the screen jumping when a loading screen was skipped while it was still fading in
+- Fixed the settings dialog showing no selected option after switching tabs with the sidestep keys (TRX1755, regression from 1.10.1)
 
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)

@@ -172,6 +172,11 @@ function Dialog:control(keys)
     and not keys:held(Role.MENU_RIGHT)
     and self.bar:control(keys, false)
   then
+    local now = self.tabs[self.active:get()] --[[@as common.ui.settings.Tab]]
+    if now ~= tab then
+      tab.scroll:select(nil)
+      now.scroll:select(1)
+    end
     return false
   end
   return keys:pressed(Role.MENU_BACK)
