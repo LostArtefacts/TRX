@@ -2,6 +2,11 @@
 require("common.ui.fade").setup()
 require("common.ui.level_start").setup()
 
+-- The lines of text, the arrows and the ring hints that the game asks for
+-- over the play.
+require("common.ui.captions").setup()
+require("common.ui.ring_hints").setup()
+
 -- The screens the interface draws in place of the engine's.
 require("common.ui.screens.combine").setup()
 require("common.ui.screens.examine").setup()

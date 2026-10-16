@@ -1433,10 +1433,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tab_switch.lua
 │   │   │   ├── text_dialog.lua
 │   │   │   └── window.lua
+│   │   ├── captions.lua
 │   │   ├── fade.lua
 │   │   ├── level_start.lua
 │   │   ├── metrics.lua
 │   │   ├── ring.lua
+│   │   ├── ring_hints.lua
 │   │   ├── scroll.lua
 │   │   └── value.lua
 │   ├── inv_ring.lua
@@ -2914,10 +2916,12 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tab_switch.lua
     │   │   │   │   ├── text_dialog.lua
     │   │   │   │   └── window.lua
+    │   │   │   ├── captions.lua
     │   │   │   ├── fade.lua
     │   │   │   ├── level_start.lua
     │   │   │   ├── metrics.lua
     │   │   │   ├── ring.lua
+    │   │   │   ├── ring_hints.lua
     │   │   │   ├── scroll.lua
     │   │   │   └── value.lua
     │   │   ├── inv_ring.lua

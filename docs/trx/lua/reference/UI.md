@@ -643,9 +643,10 @@ arrow, and `\{button left}` draws the button the player has bound.
 - <a id="ui.regions" name="ui.regions"></a>[lua]`trx.ui.regions`  
   Places script widgets on the screen.
 
-  The screen has nine regions. Engine UI uses those regions for bars, overlay
-  text, inventory-ring hints, and dialogs. A widget placed in a region stacks
-  after the engine UI in that region, and draws under it.
+  The screen has nine regions. The shipped scripts place the bars, the
+  overlay text and the inventory ring hints in them, and dialogs keep clear
+  of them. A widget placed in a region stacks with the others there, in the
+  order that [`place.options`](#ui.regions.place.options) gives.
 
   Place a widget once when the script loads. Use signals when the widget must
   change later.
