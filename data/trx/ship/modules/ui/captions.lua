@@ -1,6 +1,7 @@
 -- The lines of text and the arrows that the game asks for over the play: the
 -- line at the top of the screen, the caption at the bottom with the arrows
 -- beside it, the arrows in the corners, and the version on the title screen.
+-- A demo names itself in the caption.
 --
 -- The game decides what they say, through `trx.overlay.signals`. They stack
 -- after the other widgets of their regions.
@@ -53,9 +54,38 @@ local function has(text)
   end)
 end
 
+-- Names a demo in the caption while it plays. The caption flashes while the
+-- demo runs and holds still as the demo fades out.
+local function follow_demos()
+  ---@type trx.signal.Listener?
+  local playing = nil
+  local function show(flashing)
+    trx.overlay.set_caption(
+      trx.locale.get("general/misc/demo_mode"),
+      { plain = true, flashing = flashing }
+    )
+  end
+  trx.events.on_game_start(function()
+    local level = trx.game.current_level
+    if level == nil or level.type ~= trx.game.LevelType.DEMO then
+      return
+    end
+    show(true)
+    playing = trx.game.signals.is_playing:on(show)
+  end)
+  trx.events.on_level_unload(function()
+    if playing ~= nil then
+      playing:detach()
+      playing = nil
+    end
+  end)
+end
+
 -- Builds the texts and the arrows and places them. Called once, as the
 -- interface scripts load.
 function M.setup()
+  follow_demos()
+
   local ui = trx.ui
   local overlay = trx.overlay
   local Arrow = overlay.Arrow

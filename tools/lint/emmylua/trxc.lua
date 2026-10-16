@@ -418,14 +418,11 @@ trxc = {}
 ---@field swap_sprite fun(obj1_id: trx.catalog.objects, obj2_id: trx.catalog.objects)
 
 ---@class (exact) trxc.overlay
----@field caption fun(): string?
 ---@field get_letterbox fun(): number
 ---@field has_letterbox fun(): boolean
 ---@field is_arrow_shown fun(arrow: trx.overlay.Arrow): boolean
----@field is_caption_flashing fun(): boolean
 ---@field is_health_bar_forced fun(): boolean
 ---@field is_version_shown fun(): boolean
----@field set_caption fun(text?: string)
 ---@field set_letterbox fun(depth: number)
 ---@field show_arrow fun(arrow: trx.overlay.Arrow, shown?: boolean)
 ---@field show_pickup fun(object: trx.catalog.objects)

@@ -543,7 +543,7 @@ test("the save crystal shows the save list and its own name", function()
   assert(has(drawn, L("general/passport/save_game")), table.concat(drawn, ","))
   assert(not has(drawn, "\\{button right}"), "the crystal drew page arrows")
   assert(
-    fake.calls().set_caption.caption == "objects/save_crystal_item/name",
+    trx.overlay.signals.caption:get() == "objects/save_crystal_item/name",
     "the crystal was not named"
   )
   finish()
@@ -566,9 +566,7 @@ end)
 test("the save crystal takes its name down as it closes", function()
   assert(open_crystal("save_pickup", 3))
   press(Role.MENU_BACK)
-  local calls = fake.calls()
-  assert(calls.set_caption.count > 1, "the caption was only ever set")
-  assert(calls.set_caption.caption == "", "the name stayed up")
+  assert(trx.overlay.signals.caption:get() == nil, "the name stayed up")
   local count = require("common.ui.ring").signals.count:get()
   assert(count == nil, "the count stayed up")
   finish()
@@ -576,7 +574,7 @@ end)
 
 test("the passport takes the name the ring gave the entry down", function()
   open(Mode.GAME)
-  assert(fake.calls().set_caption.caption == "", "the ring's name stayed up")
+  assert(trx.overlay.signals.caption:get() == nil, "the ring's name stayed up")
   finish()
 end)
 

@@ -74,17 +74,40 @@ local Arrow = {
 }
 M.Arrow = h.enum("overlay.Arrow", "OVERLAY_ARROW", Arrow)
 
+local caption = trx.signal.new(nil)
+local caption_flashing = trx.signal.new(false)
+
+---@class (exact) trx.overlay.set_caption.opts
+---@field flashing? boolean Whether the caption flashes, as it does while a demo plays. `false` by default.
+---@field plain? boolean Whether the text shows as given. By default it takes the style that the `general/inventory_ring/object_name_fmt` string gives the name of an entry.
+
 ---Sets the caption at the bottom of the screen.
 ---
 ---The inventory ring uses it for the selected entry. The caption reduces the
 ---safe area. Passing no value removes it.
+---
+---```lua
+---trx.overlay.set_caption(trx.locale.get("general/misc/demo_mode"), {
+---  plain = true,
+---  flashing = true,
+---})
+---```
 ---@param text? string Text to show. Omit this parameter to remove the caption.
-function M.set_caption(text)
-  raw.set_caption(text)
-  -- The signal takes the caption at once rather than on the next tick, so
-  -- that it shows on the same frame as whatever asked for it.
-  M.signals.caption:set(raw.caption())
+---@param opts? trx.overlay.set_caption.opts How it shows.
+function M.set_caption(text, opts)
+  opts = opts or {}
+  if text ~= nil and not opts.plain then
+    text =
+      trx.locale.get("general/inventory_ring/object_name_fmt"):format(text)
+  end
+  caption:set(text)
+  caption_flashing:set(text ~= nil and opts.flashing == true)
 end
+
+-- A caption that its screen left up goes with the level.
+trx.events.on_level_unload(function()
+  M.set_caption()
+end)
 
 ---Shows or hides an interface arrow.
 ---
@@ -115,14 +138,14 @@ h.properties(M.signals, "overlay.signals", {
     end),
   },
   caption = {
-    get = lasting("caption", function()
-      return lasting_polled(raw.caption)
-    end),
+    get = function()
+      return caption
+    end,
   },
   caption_flashing = {
-    get = lasting("caption_flashing", function()
-      return lasting_polled(raw.is_caption_flashing)
-    end),
+    get = function()
+      return caption_flashing
+    end,
   },
   arrows = {
     get = lasting("arrows", function()

@@ -7,7 +7,6 @@
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
-#include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/input.h>
@@ -15,7 +14,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/hair.h>
 #include <trx/game/music.h>
-#include <trx/game/overlay.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/version.h>
@@ -263,12 +261,6 @@ bool Demo_Start(const int32_t level_num)
         Random_SeedControl(M_SEED);
     }
     g_OverlayFlag = 1;
-
-    Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = OVERLAY_TEXT_GS_KEY,
-        .gs_key = GS_ID("general/misc/demo_mode"),
-        .flash_enabled = true,
-    });
     return true;
 }
 
@@ -276,7 +268,6 @@ void Demo_End(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
-    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
     Music_Stop();
 }
 
@@ -284,18 +275,12 @@ void Demo_Pause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
-    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
 }
 
 void Demo_Unpause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_PrepareConfig(p);
-    Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = OVERLAY_TEXT_GS_KEY,
-        .gs_key = GS_ID("general/misc/demo_mode"),
-        .flash_enabled = true,
-    });
 }
 
 int32_t Demo_ChooseLevel(const int32_t demo_num)
@@ -314,15 +299,6 @@ int32_t Demo_ChooseLevel(const int32_t demo_num)
 GF_COMMAND Demo_Control(void)
 {
     return Game_Control(true);
-}
-
-void Demo_StopFlashing(void)
-{
-    Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = OVERLAY_TEXT_GS_KEY,
-        .gs_key = GS_ID("general/misc/demo_mode"),
-        .flash_enabled = false,
-    });
 }
 
 REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)
