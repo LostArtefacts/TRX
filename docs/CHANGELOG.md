@@ -51,6 +51,7 @@
 - Fixed dialogs moving down when the FPS counter or another corner element is shown, even where the dialog does not reach it
 - Fixed the screen jumping when a loading screen was skipped while it was still fading in
 - Fixed the settings dialog showing no selected option after switching tabs with the sidestep keys (TRX1755, regression from 1.10.1)
+- Fixed key combos such as Alt+Enter working from only one of the two Alt keys, and not at all after jump was bound to that Alt (TRX1762)
 
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
