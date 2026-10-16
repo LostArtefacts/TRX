@@ -80,7 +80,7 @@ static int M_FakePaint(lua_State *const L)
     LUA_UI_SetPainting(false);
     UI_EndLayer(UI_LAYER_UNDER);
     char *description = FakeUIDraw_Describe();
-    UI_EndScene();
+    LUA_UI_EndScene();
     lua_pushstring(L, description);
     Memory_FreePointer(&description);
     return 1;
@@ -96,7 +96,7 @@ static int M_FakeDrawRegions(lua_State *const L)
     LUA_UI_SetReserving(true);
     LUA_UI_ReserveRegions();
     LUA_UI_SetReserving(false);
-    UI_EndScene();
+    LUA_UI_EndScene();
 
     char *description = FakeUIDraw_Describe();
     lua_pushstring(L, description);

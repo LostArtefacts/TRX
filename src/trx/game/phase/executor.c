@@ -90,7 +90,7 @@ static void M_DrawHeldScreen(void)
     UI_BeginScene();
     LUA_UI_ReserveRegions();
     TouchOverlay_Draw();
-    UI_EndScene();
+    LUA_UI_EndScene();
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_Draw();
@@ -251,7 +251,7 @@ static void M_Draw(PHASE *const phase)
 
     LUA_UI_ReserveRegions();
     TouchOverlay_Draw();
-    UI_EndScene();
+    LUA_UI_EndScene();
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_Draw();

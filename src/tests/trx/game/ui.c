@@ -34,7 +34,7 @@ TEST(ui_slots_of_a_region_stack_in_order)
     UI_BeginScene();
     const int32_t first = UI_Region_Reserve(UI_REGION_BOTTOM_RIGHT, 40, 10);
     const int32_t second = UI_Region_Reserve(UI_REGION_BOTTOM_RIGHT, 20, 10);
-    UI_EndScene();
+    UI_Region_Layout();
 
     float x1 = 0.0f;
     float y1 = 0.0f;
@@ -63,9 +63,9 @@ TEST(ui_a_new_scene_forgets_the_slots)
 
     UI_BeginScene();
     const int32_t slot = UI_Region_Reserve(UI_REGION_TOP_LEFT, 10, 10);
-    UI_EndScene();
+    UI_Region_Layout();
     UI_BeginScene();
-    UI_EndScene();
+    UI_Region_Layout();
 
     float x = 0.0f;
     float y = 0.0f;
@@ -91,7 +91,7 @@ TEST(ui_the_middle_region_gets_what_the_bands_leave)
     UI_BeginScene();
     UI_Region_Reserve(UI_REGION_TOP_CENTER, 60, 15);
     UI_Region_Reserve(UI_REGION_BOTTOM_CENTER, 80, 15);
-    UI_EndScene();
+    UI_Region_Layout();
 
     UI_Region_GetCenterBox(&x, &y, &w, &h);
     CHECK(y > 0);
@@ -114,7 +114,7 @@ TEST(ui_a_corner_narrows_only_a_box_that_reaches_it)
 
     UI_BeginScene();
     UI_Region_Reserve(UI_REGION_TOP_LEFT, 50, 15);
-    UI_EndScene();
+    UI_Region_Layout();
 
     float full_y = 0.0f;
     UI_Region_GetCenterBox(&x, &full_y, &w, &h);
@@ -141,7 +141,7 @@ TEST(ui_draw_describes_what_a_scene_scheduled)
     M_SetUp(1, 1.0f);
 
     UI_BeginScene();
-    UI_EndScene();
+    UI_Region_Layout();
     char *empty = FakeUIDraw_Describe();
     CHECK_EQ_STR(empty, "");
     Memory_FreePointer(&empty);
@@ -159,14 +159,14 @@ TEST(ui_draw_describes_what_a_scene_scheduled)
         "quad x=10 y=20 z=3 w=30 h=40 color=11223344\n"
         "circle cx=5 cy=6 r_inner=1 r_outer=2 z=7 color=aabbccdd\n");
     Memory_FreePointer(&described);
-    UI_EndScene();
+    UI_Region_Layout();
 
     // A new scene starts with no recorded draw calls.
     UI_BeginScene();
     char *fresh = FakeUIDraw_Describe();
     CHECK_EQ_STR(fresh, "");
     Memory_FreePointer(&fresh);
-    UI_EndScene();
+    UI_Region_Layout();
 
     Subsystem_ShutdownAll();
 }

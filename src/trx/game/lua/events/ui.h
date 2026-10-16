@@ -14,9 +14,10 @@ void LUA_UI_ReserveRegions(void);
 // only the picture. The console still draws.
 void LUA_UI_HideNextFrame(void);
 
-// Lets scripts draw a layer of the scene: the backdrop, the interface into the
-// boxes reserved during scene layout, the fades and the console.
-void LUA_UI_PaintRegions(UI_LAYER layer);
+// Ends a scene: lays the reserved region slots out, then lets scripts draw each
+// layer of it in turn: the backdrop, the interface into the reserved slots, the
+// fades, the console and the fade as the game exits.
+void LUA_UI_EndScene(void);
 
 // Sets and returns whether a script layer makes the engine wait to start its
 // next screen.
