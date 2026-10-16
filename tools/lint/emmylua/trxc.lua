@@ -554,6 +554,7 @@ trxc = {}
 ---@class (exact) trxc.ui
 ---@field bar_scale fun(): number
 ---@field darken fun(opacity: number)
+---@field draw_backdrop fun(style: string, opacity: number, path?: string)
 ---@field draw_background fun(path?: string, mono?: boolean, dim?: number): boolean
 ---@field draw_model fun(object: trx.catalog.objects, x: number, y: number, w: number, h: number, opts?: trx.ui.primitive.model.opts)
 ---@field draw_text fun(text: string, x: number, y: number, scale?: number, z?: integer)

@@ -255,6 +255,14 @@ void UI_ScheduleDrawBackground(
         mono, dim));
 }
 
+void UI_ScheduleDrawBackdrop(
+    const BACKGROUND_TYPE style, const float progress, const char *const path)
+{
+    FakeUIDraw_Record(String_FormatStatic(
+        "backdrop style=%d progress=%.2f path=%s", (int32_t)style, progress,
+        path != nullptr ? path : "-"));
+}
+
 void UI_Draw(void)
 {
 }
