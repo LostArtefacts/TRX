@@ -401,6 +401,18 @@ static int M_L_InvCombine(lua_State *const L)
     return 1;
 }
 
+// trxc.inventory.icon_of(object: trx.catalog.objects): trx.catalog.objects?
+static int M_L_InvIconOf(lua_State *const L)
+{
+    const OBJECT_ID icon_id = Inv_GetItemOption(LUA_CheckObjectID(L, 1));
+    if (icon_id == NO_OBJECT) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, icon_id);
+    }
+    return 1;
+}
+
 // trxc.inventory.use(object: trx.catalog.objects)
 static int M_L_InvUse(lua_State *const L)
 {
@@ -429,6 +441,7 @@ static const luaL_Reg m_Module[] = {
     { "combine_partners", M_L_InvCombinePartners },
     { "get_current", M_L_InvGetCurrent },
     { "get", M_L_InvGetLevel },
+    { "icon_of", M_L_InvIconOf },
     { "use", M_L_InvUse },
     { nullptr, nullptr },
 };
