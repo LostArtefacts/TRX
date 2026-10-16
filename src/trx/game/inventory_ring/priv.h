@@ -54,7 +54,6 @@ void InvRing_RemoveItemTexts(void);
 void InvRing_SelectMeshes(INVENTORY_ITEM *inv_item);
 void InvRing_ShowHeader(INV_RING *ring);
 void InvRing_RemoveHeader(void);
-void InvRing_SetButtonHintDrawer(void (*draw_func)(void *), void *user_data);
 void InvRing_ClearButtonHint(void);
 // What the ring offers for the item it rests on, which the button hints are
 // drawn from. Pass no action at all where the ring rests on nothing.

@@ -1161,7 +1161,7 @@ unit_tests += {
 # The catalog rides along: the weapons a script names are its enum.
 unit_tests += {
   'name': 'lua/trx/inventory',
-  'bundles': [b_lua_surface, b_lua_math, b_matrix],
+  'bundles': [b_lua_surface, b_lua_events, b_lua_math, b_matrix],
   'src': ['harness/stubs_console.c', 'fakes/game.c', 'fakes/lara.c', 'fakes/items.c'],
   'engine': [
     'game/lua/capi/catalog.c',

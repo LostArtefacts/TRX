@@ -23,6 +23,8 @@ A script draws what an entry opens by defining the
 
 ### Properties
 
+- <a id="inventory_ring.signals.hint" name="inventory_ring.signals.hint"></a>**`trx.inventory_ring.signals.hint`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Holds the key hints that the ring shows under the name of the selected entry, as a list of texts that stand apart from one another, empty while it shows none or no ring is open. [`trx.inventory_ring.set_input_hints`](#inventory_ring.set_input_hints) sets them. *(read-only)*
+- <a id="inventory_ring.signals.count" name="inventory_ring.signals.count"></a>**`trx.inventory_ring.signals.count`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Holds the count that the ring shows for an entry Lara carries more than one of, or nil while it shows none or no ring is open. *(read-only)*
 - <a id="inventory_ring.signals.rest_frame" name="inventory_ring.signals.rest_frame"></a>**`trx.inventory_ring.signals.rest_frame`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the entry that the player picked comes to rest, with the frame of its animation that it rests on, and when it moves again, goes back into the ring or the ring closes, with `nil`. A screen of an entry opens once the entry rests, and the passport reads the page it rests on. *(read-only)*
 
 ### Enums

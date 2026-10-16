@@ -267,8 +267,41 @@ static int M_L_RingSetHint(lua_State *const L)
     return 0;
 }
 
+// trxc.inventory_ring.hint(): string...
+static int M_L_RingHint(lua_State *const L)
+{
+    const char *const *parts = nullptr;
+    const int32_t count = InvRing_GetButtonHint(&parts);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushstring(L, parts[i]);
+    }
+    return count;
+}
+
+// trxc.inventory_ring.hint_revision(): integer
+static int M_L_RingHintRevision(lua_State *const L)
+{
+    lua_pushinteger(L, InvRing_GetButtonHintRevision());
+    return 1;
+}
+
+// trxc.inventory_ring.count(): string?
+static int M_L_RingCount(lua_State *const L)
+{
+    const char *const count = InvRing_GetItemQuantity();
+    if (count == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, count);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "animate_selection", M_L_RingAnimateSelection },
+    { "count", M_L_RingCount },
+    { "hint", M_L_RingHint },
+    { "hint_revision", M_L_RingHintRevision },
     { "declare_item", M_L_RingDeclareItem },
     { "icon_of", M_L_RingIconOf },
     { "item", M_L_RingItem },

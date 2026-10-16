@@ -746,6 +746,23 @@ void InvRing_SetButtonHintParts(
     }
 }
 
+// No ring is open here, so the ring shows no hint and no count.
+int32_t InvRing_GetButtonHint(const char *const **const out_parts)
+{
+    *out_parts = nullptr;
+    return 0;
+}
+
+int32_t InvRing_GetButtonHintRevision(void)
+{
+    return -1;
+}
+
+const char *InvRing_GetItemQuantity(void)
+{
+    return nullptr;
+}
+
 // Combines anything with a partner the held entry has, into the first
 // partner, so that a test sees what was asked for.
 OBJECT_ID Inv_Combine(const OBJECT_ID obj_id, const OBJECT_ID partner_id)

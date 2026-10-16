@@ -317,7 +317,10 @@ trxc = {}
 
 ---@class (exact) trxc.inventory_ring
 ---@field animate_selection fun(goal_frame: integer, direction: integer)
+---@field count fun(): string?
 ---@field declare_item fun(spec: table)
+---@field hint fun(): string...
+---@field hint_revision fun(): integer
 ---@field icon_of fun(object: trx.catalog.objects): trx.catalog.objects?
 ---@field item fun(object_id: trx.catalog.objects): table?
 ---@field mode fun(): trx.inventory_ring.Mode?

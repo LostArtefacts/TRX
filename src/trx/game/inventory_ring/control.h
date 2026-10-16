@@ -4,8 +4,6 @@
 #include <trx/game/inventory_ring/types.h>
 #include <trx/game/objects/types.h>
 
-typedef void (*INV_RING_BUTTON_HINT_DRAWER)(void *user_data);
-
 INV_RING *InvRing_Open(INVENTORY_MODE mode);
 void InvRing_Close(INV_RING *ring);
 
@@ -15,8 +13,6 @@ INV_RING *InvRing_GetActiveRing(void);
 
 void InvRing_AdjustMusicVolume(const INV_RING *ring);
 void InvRing_SetRequestedObjectID(OBJECT_ID obj_id);
-void InvRing_SetButtonHintDrawer(
-    INV_RING_BUTTON_HINT_DRAWER draw_func, void *user_data);
 void InvRing_ClearButtonHint(void);
 // Puts a line of text where the button hints go, or takes it down for nullptr.
 void InvRing_SetButtonHintText(const char *text);
@@ -28,6 +24,13 @@ void InvRing_SetButtonHintParts(const char *const *parts, int32_t count);
 // ring shows for an entry Lara carries more than one of.
 void InvRing_ShowItemQuantity(const char *fmt, int32_t qty);
 void InvRing_ClearItemQuantity(void);
+
+// Returns the parts of the button hint while a ring is open, and the count, or
+// nullptr for none. A script draws both. The revision changes whenever the
+// parts do, and is -1 while no ring is open.
+int32_t InvRing_GetButtonHint(const char *const **out_parts);
+int32_t InvRing_GetButtonHintRevision(void);
+const char *InvRing_GetItemQuantity(void);
 
 void InvRing_RemoveAllText(void);
 
