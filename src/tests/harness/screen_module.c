@@ -48,24 +48,11 @@ static SHELL_MOD m_Mods[] = {
 
 static SHELL_ARGS m_Args = { .startup = { .mod = &m_Mods[0] } };
 
-// Tells scripts when the fake ring's picked entry comes to rest and when it
-// moves again, as the ring does once a tick.
-static void M_ReportRingRest(void)
-{
-    static int32_t rest_frame = -1;
-    const int32_t frame = FakeGame_GetRingRestFrame();
-    if (frame != rest_frame) {
-        rest_frame = frame;
-        LUA_FireEventInt32(LUA_EVENT_RING_REST, frame);
-    }
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeCalls_Reset();
     FakeInput_Reset();
     m_ErrorCount = 0;
-    M_ReportRingRest();
     return 0;
 }
 
@@ -79,7 +66,6 @@ static int M_FakeErrors(lua_State *const L)
 // fake.tick()
 static int M_FakeTick(lua_State *const L)
 {
-    M_ReportRingRest();
     FakeInput_Tick();
     LUA_Tick();
     return 0;
@@ -130,7 +116,6 @@ static int M_FakeSetDescription(lua_State *const L)
 // level still, as the engine's own screens do.
 static int M_FakeOffer(lua_State *const L)
 {
-    M_ReportRingRest();
     const bool taken = UI_Takeover_Offer(
         (UI_TAKEOVER)luaL_checkinteger(L, 1), TakeoverArgs_Read(L, 2));
     if (taken) {
@@ -369,12 +354,11 @@ int ScreenModule_RunWith(
 {
     LUA_SURFACE_TEST test = {
         .module = "ui",
-        .deps = { "config",         "events",    "signal",       "catalog",
-                  "locale",         "math",      "input",        "sound",
-                  "game",           "savegame",  "mod",          "inventory",
-                  "inventory_ring", "overlay",   "ui.primitive", "ui.widgets",
-                  "ui.regions",     "ui.layers", "ui.screens",   "ui.tween",
-                  nullptr },
+        .deps = { "config",    "events",       "signal",     "catalog",
+                  "locale",    "math",         "input",      "sound",
+                  "game",      "savegame",     "mod",        "inventory",
+                  "overlay",   "ui.primitive", "ui.widgets", "ui.regions",
+                  "ui.layers", "ui.screens",   "ui.tween",   nullptr },
         .seal = true,
         .setup_extra = M_Setup,
         .push_fake = M_PushFake,

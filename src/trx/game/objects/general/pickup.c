@@ -9,7 +9,6 @@
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
-#include <trx/game/inventory_ring/control.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects/families.h>
@@ -22,6 +21,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/sparks.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui/menu.h>
 #include <trx/version.h>
 
 // clang-format off
@@ -777,7 +777,7 @@ static bool M_ShowCrowbarInventory(void)
         return false;
     }
 
-    InvRing_SetRequestedObjectID(O_CROWBAR_OPTION);
+    UI_RequestItem(O_CROWBAR_OPTION);
     const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
     if (gf_cmd.action != GF_NOOP) {
         GF_OverrideCommand(gf_cmd, true);

@@ -39,7 +39,7 @@ local function open(mode, again)
   if not again then
     trx.config.set("input.keyboard_layout", trx.input.Layout.DEFAULT)
   end
-  fake.open_ring(mode or trx.ui.MenuMode.GAME, CONTROLS, 0, 10)
+  h.open_ring(mode or trx.ui.MenuMode.GAME, CONTROLS, 0, 10)
   assert(
     fake.offer(RING_ENTRY, { object = CONTROLS }),
     "the entry was not taken"
@@ -53,7 +53,7 @@ end
 local function finish(keep)
   fake.release(RING_ENTRY)
   fake.take_choice(RING_ENTRY)
-  fake.close_ring()
+  h.close_ring()
   fake.release_all()
   if not keep then
     fake.end_level()
@@ -72,7 +72,7 @@ test("backing out puts the entry away", function()
   open()
   press(Role.MENU_BACK)
   assert(fake.take_choice(RING_ENTRY) == CHOICE_CANCEL)
-  local anim = trx.inventory_ring.selection_anim()
+  local anim = require("common.ui.ring").selection_anim()
   assert(anim.goal_frame == 0 and anim.direction == -1, "not put away")
   finish()
 end)
@@ -188,7 +188,7 @@ end)
 test("the reset hint shows as the editor opens", function()
   trx.config.set("ui.text_scale", 1.0)
   trx.config.set("input.keyboard_layout", trx.input.Layout.CUSTOM_1)
-  fake.open_ring(trx.ui.MenuMode.GAME, CONTROLS, 0, 10)
+  h.open_ring(trx.ui.MenuMode.GAME, CONTROLS, 0, 10)
   assert(fake.offer(RING_ENTRY, { object = CONTROLS }))
   fake.tick()
   local shown = false

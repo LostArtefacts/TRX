@@ -8,7 +8,6 @@
 
 #include <harness/fake_calls.h>
 
-#include <trx/game/inventory_ring/control.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
 
@@ -66,16 +65,6 @@ bool Overlay_IsArrowShown(const OVERLAY_ARROW arrow)
 bool Overlay_IsVersionShown(void)
 {
     return false;
-}
-
-void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
-{
-    FAKE_RECORD("set_caption_count", FV(qty));
-}
-
-void InvRing_ClearItemQuantity(void)
-{
-    FAKE_RECORD("clear_caption_count");
 }
 
 void Overlay_ShowArrow(const OVERLAY_ARROW which, const bool show)

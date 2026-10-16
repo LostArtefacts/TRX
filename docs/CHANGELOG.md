@@ -198,7 +198,6 @@
 - Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
 - Added `order` and `alone` to `trx.ui.regions.place`, which say where a widget stacks in its region and whether it shows only while the region holds nothing else
 - Added `top_text`, `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
-- Added `hint` and `count` to `trx.inventory_ring.signals`, which say what key hints and count the inventory ring shows
 - Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
 - Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
 - Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
@@ -252,9 +251,7 @@
     - `trx.savegame.play_story`
     - `trx.savegame.recent_slot`
     - `trx.mod.can_switch`
-- Added `trx.inventory_ring`, which holds what the inventory ring draws. `trx.inventory` now holds only what Lara carries.
-    - `trx.ui.MenuMode` and `trx.inventory_ring.mode`, which report what the open ring was opened for
-    - `trx.inventory_ring.EntryAnim`, `trx.inventory_ring.selection_anim` and `trx.inventory_ring.animate_selection`, which run the selected entry through its animation
+- Added `trx.ui.MenuMode`, which says what the game opened its menu for
 - Added `ng_plus` to `trx.game.play_level`, so a script can pick the game mode a level starts in
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
@@ -315,8 +312,6 @@
 - Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
-- Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
-- Added `trx.inventory_ring.signals.rest_frame`, which says when the entry the player picked in the inventory ring comes to rest
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
 - Added `trx.inventory.use`, which uses an entry as choosing it in the inventory ring does, and `trx.inventory.actions`, which says whether the ring offers to use, examine or combine it
 - Added fade layers, which the game draws over its interface, below the console or over it, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
@@ -326,6 +321,7 @@
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
 - Changed `trx.config.declare` so that a value of a declared setting can carry a label of its own
+- Changed the inventory ring to be drawn by the shipped interface scripts, where a script declares the ring's entries through the `common.ui.ring` module
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed the drawing events to belong to the modules that draw
     - `trx.events.on_ui_draw` → `trx.ui.on_reserve`

@@ -8,7 +8,6 @@
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
-#include <trx/game/inventory_ring/control.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/traps/scaled_spikes.h>
@@ -19,6 +18,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
+#include <trx/game/ui/menu.h>
 
 // clang-format off
 #define M_BRAKE_ON_BITS  0b00000010'01111111'11111111
@@ -282,7 +282,7 @@ static void M_ShowInventory(void)
         return;
     }
 
-    InvRing_SetRequestedObjectID(O_PUZZLE_ITEM_1);
+    UI_RequestItem(O_PUZZLE_ITEM_1);
     const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
     if (gf_cmd.action != GF_NOOP) {
         GF_OverrideCommand(gf_cmd, true);

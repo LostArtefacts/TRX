@@ -7,9 +7,6 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
-#include <trx/game/inventory_ring/control.h>
-#include <trx/game/inventory_ring/types.h>
-#include <trx/game/inventory_ring/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
@@ -395,8 +392,6 @@ static int M_L_InvCombine(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    // The ring rests on what the two made when it next settles.
-    InvRing_SetRequestedObjectID(result);
     lua_pushinteger(L, result);
     return 1;
 }
