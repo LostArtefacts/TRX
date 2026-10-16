@@ -9,6 +9,14 @@ trx.locale.declare({
 
 local M = {}
 
+trx.config.declare({
+  key = "ui.ammo_counter_location",
+  kind = "dynamic_enum",
+  values = place.LOCATIONS,
+  default = "top_right",
+})
+place.normalize("ui.ammo_counter_location")
+
 -- Builds the count and places it. `state` holds what the rest of the overlay
 -- reads too.
 ---@param state common.ui.hud.overlay.Shared

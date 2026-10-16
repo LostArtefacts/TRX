@@ -5,6 +5,7 @@ local test = h.test
 
 local presets = require("common.ui.settings.presets")
 require("common.ui.scroll")
+require("common.ui.hud.overlay.bars")
 
 local function preset(config)
   local settings = {}

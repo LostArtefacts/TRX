@@ -131,16 +131,6 @@ typedef struct {
         bool instant_save_load_screen;
 
         bool show_loading_bar;
-        struct {
-            UI_ELEMENT_LOCATION location;
-        } lara_health_bar, lara_air_bar, lara_sprint_bar, lara_exposure_bar;
-        struct {
-            BAR_SHOW_MODE show_mode;
-            UI_ELEMENT_LOCATION location;
-        } enemy_health_bar;
-        struct {
-            UI_ELEMENT_LOCATION location;
-        } ammo_counter;
     } ui;
 
     struct {
