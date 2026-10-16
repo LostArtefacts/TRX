@@ -782,6 +782,20 @@ void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)
     m_RequestedObject = obj_id;
 }
 
+void Lara_UseItem(const OBJECT_ID object_id)
+{
+    FAKE_RECORD("use_item", FV(object_id));
+}
+
+// An entry combines where it has partners, and is used otherwise.
+INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
+{
+    return (INV_ITEM_ACTIONS) {
+        .can_use = m_PartnerCount == 0,
+        .can_combine = m_PartnerCount > 0,
+    };
+}
+
 int32_t Inv_GetCombinePartners(
     const OBJECT_ID obj_id, OBJECT_ID *const partners, const int32_t max_count)
 {

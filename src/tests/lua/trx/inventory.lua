@@ -227,4 +227,20 @@ test("the picked entry has only the frames it holds", function()
   fake.close_ring()
 end)
 
+test("using an entry uses it as choosing it in the ring does", function()
+  trx.inventory.use(KEY)
+  local call = fake.calls().use_item
+  assert(call.count == 1, "it was not used")
+  assert(call.object_id == KEY, "the wrong entry was used")
+end)
+
+test("an entry combines rather than uses where it has a partner", function()
+  assert(trx.inventory.actions(KEY).use)
+  assert(not trx.inventory.actions(KEY).combine)
+  fake.set_combine_partners({ KEY + 1 })
+  local actions = trx.inventory.actions(KEY)
+  fake.set_combine_partners({})
+  assert(actions.combine and not actions.use)
+end)
+
 return h.report()

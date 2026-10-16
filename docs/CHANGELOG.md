@@ -313,6 +313,7 @@
 - Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
 - Added `trx.inventory_ring.signals.rest_frame`, which says when the entry the player picked in the inventory ring comes to rest
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
+- Added `trx.inventory.use`, which uses an entry as choosing it in the inventory ring does, and `trx.inventory.actions`, which says whether the ring offers to use, examine or combine it
 - Added fade layers, which the game draws over its interface, below the console or over it, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
 - Added `trx.events.on_screen_change`, `trx.events.on_exit` and the `holds_screen` setting of `trx.ui.layers.fade`, which let a script run the change from one screen to the next and the fade as the game exits

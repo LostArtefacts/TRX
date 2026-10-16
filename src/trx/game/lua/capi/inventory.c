@@ -10,6 +10,7 @@
 #include <trx/game/inventory_ring/control.h>
 #include <trx/game/inventory_ring/types.h>
 #include <trx/game/inventory_ring/vars.h>
+#include <trx/game/lara.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -400,11 +401,35 @@ static int M_L_InvCombine(lua_State *const L)
     return 1;
 }
 
+// trxc.inventory.use(object: trx.catalog.objects)
+static int M_L_InvUse(lua_State *const L)
+{
+    Lara_UseItem(LUA_CheckObjectID(L, 1));
+    return 0;
+}
+
+// trxc.inventory.actions(object: trx.catalog.objects): { use: boolean, examine: boolean, combine: boolean }
+static int M_L_InvActions(lua_State *const L)
+{
+    const INV_ITEM_ACTIONS actions =
+        Inv_GetItemActions(LUA_CheckObjectID(L, 1));
+    lua_createtable(L, 0, 3);
+    lua_pushboolean(L, actions.can_use);
+    lua_setfield(L, -2, "use");
+    lua_pushboolean(L, actions.can_examine);
+    lua_setfield(L, -2, "examine");
+    lua_pushboolean(L, actions.can_combine);
+    lua_setfield(L, -2, "combine");
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "actions", M_L_InvActions },
     { "combine", M_L_InvCombine },
     { "combine_partners", M_L_InvCombinePartners },
     { "get_current", M_L_InvGetCurrent },
     { "get", M_L_InvGetLevel },
+    { "use", M_L_InvUse },
     { nullptr, nullptr },
 };
 

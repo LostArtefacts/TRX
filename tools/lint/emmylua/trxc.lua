@@ -310,10 +310,12 @@ trxc = {}
 ---@field unbind fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout)
 
 ---@class (exact) trxc.inventory
+---@field actions fun(object: trx.catalog.objects): { use: boolean, examine: boolean, combine: boolean }
 ---@field combine fun(object: trx.catalog.objects, partner: trx.catalog.objects): trx.catalog.objects?
 ---@field combine_partners fun(object: trx.catalog.objects): trx.catalog.objects[]
 ---@field get fun(level_num: trx.game.LevelNum): trx.inventory.Inventory?
 ---@field get_current fun(): trx.inventory.Inventory
+---@field use fun(object: trx.catalog.objects)
 
 ---@class (exact) trxc.inventory_ring
 ---@field animate_selection fun(goal_frame: integer, direction: integer)
