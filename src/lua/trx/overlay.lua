@@ -40,39 +40,28 @@ local function lasting(name, read)
   end
 end
 
--- The arrows on screen, as a number with one bit for each, so that the poll
--- says only when one of them moves.
-local function arrow_bits()
-  local bits = 0
-  for _, arrow in pairs(M.Arrow) do
-    if raw.is_arrow_shown(arrow) then
-      bits = bits | (1 << arrow)
-    end
-  end
-  return bits
-end
-
-local polled_arrow_bits = lasting("arrow_bits", function()
-  return lasting_polled(arrow_bits)
-end)
-
 ---An arrow the interface can show.
 ---@enum trx.overlay.Arrow
 local Arrow = {
   ---The top-left screen corner.
-  TOP_LEFT = h.IntegerConstant,
+  TOP_LEFT = 0,
   ---The top-right screen corner.
-  TOP_RIGHT = h.IntegerConstant,
+  TOP_RIGHT = 1,
   ---The bottom-left screen corner.
-  BOTTOM_LEFT = h.IntegerConstant,
+  BOTTOM_LEFT = 2,
   ---The bottom-right screen corner.
-  BOTTOM_RIGHT = h.IntegerConstant,
+  BOTTOM_RIGHT = 3,
   ---To the left of the caption.
-  CAPTION_LEFT = h.IntegerConstant,
+  CAPTION_LEFT = 4,
   ---To the right of the caption.
-  CAPTION_RIGHT = h.IntegerConstant,
+  CAPTION_RIGHT = 5,
 }
-M.Arrow = h.enum("overlay.Arrow", "OVERLAY_ARROW", Arrow)
+M.Arrow = h.coined_enum("overlay.Arrow", Arrow)
+
+local is_arrow = {}
+for _, arrow in pairs(M.Arrow) do
+  is_arrow[arrow] = true
+end
 
 local caption = trx.signal.new(nil)
 local caption_flashing = trx.signal.new(false)
@@ -104,9 +93,12 @@ function M.set_caption(text, opts)
   caption_flashing:set(text ~= nil and opts.flashing == true)
 end
 
--- A caption that its screen left up goes with the level.
+local arrows = trx.signal.new({})
+
+-- A caption or an arrow that its screen left up goes with the level.
 trx.events.on_level_unload(function()
   M.set_caption()
+  arrows:set({})
 end)
 
 ---Shows or hides an interface arrow.
@@ -116,9 +108,20 @@ end)
 ---@param arrow trx.overlay.Arrow Which arrow to show.
 ---@param shown boolean Whether it is on screen.
 function M.show_arrow(arrow, shown)
-  raw.show_arrow(arrow, shown)
-  -- The signal takes the arrows at once, as `trx.overlay.set_caption` does.
-  polled_arrow_bits():set(arrow_bits())
+  if not is_arrow[arrow] then
+    error("unknown arrow", 2)
+  end
+  shown = shown == true
+  local now = arrows:get()
+  if (now[arrow] == true) == shown then
+    return
+  end
+  local next_arrows = {}
+  for other in pairs(now) do
+    next_arrows[other] = true
+  end
+  next_arrows[arrow] = shown or nil
+  arrows:set(next_arrows)
 end
 
 h.properties(M, "overlay", {
@@ -148,17 +151,9 @@ h.properties(M.signals, "overlay.signals", {
     end,
   },
   arrows = {
-    get = lasting("arrows", function()
-      return polled_arrow_bits():map(function(bits)
-        local shown = {}
-        for _, arrow in pairs(M.Arrow) do
-          if bits & (1 << arrow) ~= 0 then
-            shown[arrow] = true
-          end
-        end
-        return shown
-      end)
-    end),
+    get = function()
+      return arrows
+    end,
   },
   version_shown = {
     get = lasting("version_shown", function()

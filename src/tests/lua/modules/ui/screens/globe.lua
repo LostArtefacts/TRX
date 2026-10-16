@@ -58,18 +58,8 @@ local function last_caption()
 end
 
 local function arrows_shown()
-  -- The log answers any name it lacks, so ipairs would never stop on it.
-  local calls = fake.calls()
-  local shown = {}
-  local i = 1
-  while rawget(calls, i) ~= nil do
-    local call = rawget(calls, i)
-    if call.name == "show_arrow" then
-      shown[call.arrow] = call.show
-    end
-    i = i + 1
-  end
-  return shown[Arrow.CAPTION_LEFT], shown[Arrow.CAPTION_RIGHT]
+  local shown = trx.overlay.signals.arrows:get()
+  return shown[Arrow.CAPTION_LEFT] == true, shown[Arrow.CAPTION_RIGHT] == true
 end
 
 local function models()

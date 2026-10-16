@@ -46,15 +46,6 @@ static int M_L_OverlayShowPickup(lua_State *const L)
     return 0;
 }
 
-// trxc.overlay.show_arrow(arrow: trx.overlay.Arrow, shown?: boolean)
-static int M_L_OverlayShowArrow(lua_State *const L)
-{
-    const OVERLAY_ARROW arrow = (OVERLAY_ARROW)LUA_CheckRange(
-        L, 1, OVERLAY_ARROW_NUMBER_OF, "unknown arrow");
-    Overlay_ShowArrow(arrow, lua_toboolean(L, 2));
-    return 0;
-}
-
 static void M_PushText(lua_State *const L, const char *const text)
 {
     if (text == nullptr) {
@@ -71,15 +62,6 @@ static int M_L_OverlayTopText(lua_State *const L)
     return 1;
 }
 
-// trxc.overlay.is_arrow_shown(arrow: trx.overlay.Arrow): boolean
-static int M_L_OverlayIsArrowShown(lua_State *const L)
-{
-    const OVERLAY_ARROW arrow = (OVERLAY_ARROW)LUA_CheckRange(
-        L, 1, OVERLAY_ARROW_NUMBER_OF, "unknown arrow");
-    lua_pushboolean(L, Overlay_IsArrowShown(arrow));
-    return 1;
-}
-
 // trxc.overlay.is_version_shown(): boolean
 static int M_L_OverlayIsVersionShown(lua_State *const L)
 {
@@ -91,9 +73,7 @@ static const luaL_Reg m_Module[] = {
     { "get_letterbox", M_L_OverlayGetLetterbox },
     { "has_letterbox", M_L_OverlayHasLetterbox },
     { "set_letterbox", M_L_OverlaySetLetterbox },
-    { "show_arrow", M_L_OverlayShowArrow },
     { "top_text", M_L_OverlayTopText },
-    { "is_arrow_shown", M_L_OverlayIsArrowShown },
     { "is_version_shown", M_L_OverlayIsVersionShown },
     { "is_health_bar_forced", M_L_OverlayIsHealthBarForced },
     { "show_pickup", M_L_OverlayShowPickup },

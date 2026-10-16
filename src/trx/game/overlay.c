@@ -8,7 +8,6 @@
 // Last requested overlay state for the current frame.
 typedef struct {
     OVERLAY_TEXT top_text;
-    bool arrows[OVERLAY_ARROW_NUMBER_OF];
     bool show_version;
     bool force_health_bar;
 } M_STATE;
@@ -55,11 +54,6 @@ const char *Overlay_GetTopText(void)
     return M_ResolveText(&m_State.top_text);
 }
 
-bool Overlay_IsArrowShown(const OVERLAY_ARROW arrow)
-{
-    return m_State.arrows[arrow];
-}
-
 bool Overlay_IsVersionShown(void)
 {
     return m_State.show_version;
@@ -73,11 +67,6 @@ void Overlay_ForceHealthBar(const bool show)
 bool Overlay_IsHealthBarForced(void)
 {
     return m_State.force_health_bar;
-}
-
-void Overlay_ShowArrow(const OVERLAY_ARROW arrow, const bool show)
-{
-    m_State.arrows[arrow] = show;
 }
 
 void Overlay_ShowVersion(const bool show)
