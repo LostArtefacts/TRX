@@ -302,6 +302,14 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: [trx.ui.FadeLayer](#ui.FadeLayer). The same layer.
 
+- <a id="ui.regions.place.options" name="ui.regions.place.options"></a>[lua]`trx.ui.regions.place.options`
+
+    How a widget stands among the others in its region.
+
+    Properties:
+    - <a id="ui.regions.place.options.alone" name="ui.regions.place.options.alone"></a>**`alone`**: boolean, optional. Whether the widget shows only while nothing else in its region does, as an arrow in a corner that a bar can take. `false` by default.
+    - <a id="ui.regions.place.options.order" name="ui.regions.place.options.order"></a>**`order`**: number, optional. Where the widget stacks: a lower order stacks first, and widgets of the same order stack in the order they were placed. `0` by default.
+
 - <a id="ui.ScreenContext" name="ui.ScreenContext"></a>[lua]`trx.ui.ScreenContext`
 
     A screen that a script holds, which the definition receives. Each screen
@@ -1161,7 +1169,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.gradient_sprite.bl" name="ui.primitive.gradient_sprite.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-left color, in either form that [`quad`](#ui.primitive.quad) takes.
   - <a id="ui.primitive.gradient_sprite.br" name="ui.primitive.gradient_sprite.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-right color, in either form that [`quad`](#ui.primitive.quad) takes.
 
-- <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget)`  
+- <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget, [options])`  
   Places a widget in a region.
 
   If the region argument is a signal, the widget moves when the signal
@@ -1170,6 +1178,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   Parameters:
   - <a id="ui.regions.place.region" name="ui.regions.place.region"></a>**`region`** (any). The target region, or a signal that holds one.
   - <a id="ui.regions.place.widget" name="ui.regions.place.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The widget to place.
+  - <a id="ui.regions.place.options" name="ui.regions.place.options"></a>**`options`** ([trx.ui.regions.place.options](#ui.regions.place.options), optional). How it stands among the others.
 
   Example:
   ```lua
