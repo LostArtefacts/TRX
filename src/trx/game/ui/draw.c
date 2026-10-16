@@ -14,7 +14,6 @@
 #include <trx/game/output/state.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/game/ui/settings.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
 #include <trx/gl/renderer.h>
@@ -39,12 +38,14 @@ typedef struct M_DRAW_OP {
 typedef struct {
     M_DRAW_OP base;
     UI_STYLE ui_style;
+    UI_MENU_COLORS colors;
     int32_t x0, x1, y, z;
 } M_DRAW_OP_HORZ_LINE;
 
 typedef struct {
     M_DRAW_OP base;
     UI_STYLE ui_style;
+    UI_MENU_COLORS colors;
     int32_t x0, y0, x1, y1, z;
     TEXT_STYLE text_style;
 } M_DRAW_OP_TEXT_RECT;
@@ -189,7 +190,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP *const base)
     if (g_TRVersion == 1 && op->ui_style == UI_STYLE_PC) {
         const float e =
             UI_Scaler_Calc(M_OUTLINE_THICKNESS, UI_SCALER_TARGET_TEXT);
-        const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
+        const UI_MENU_COLORS_PC *const c = &op->colors.pc;
         M_DrawScreenQuad(
             op->x0, op->y - e, op->x1, op->y, op->z, c->outline_light,
             c->outline_light, c->outline_light, c->outline_light);
@@ -204,7 +205,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP *const base)
     } else if (g_TRVersion >= 3 && op->ui_style == UI_STYLE_PC) {
         const float e1 = UI_Scaler_Calc(1.0f, UI_SCALER_TARGET_TEXT);
         const float e2 = e1 / 3.0f;
-        const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
+        const UI_MENU_COLORS_PC *const c = &op->colors.pc;
         M_DrawScreenQuad(
             op->x0, op->y - e1, op->x1, op->y + e1, op->z, c->outline_dark,
             c->outline_dark, c->outline_dark, c->outline_dark);
@@ -214,7 +215,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP *const base)
     } else {
         const float e =
             UI_Scaler_Calc(M_OUTLINE_THICKNESS, UI_SCALER_TARGET_TEXT);
-        const UI_MENU_COLORS_PS1 *const c = UI_Settings_GetMenuColorsPS1();
+        const UI_MENU_COLORS_PS1 *const c = &op->colors.ps1;
         M_DrawScreenQuad(
             op->x0, op->y - e, op->x1, op->y + e, op->z, c->outline_bl,
             c->outline_br, c->outline_bl, c->outline_br);
@@ -226,7 +227,7 @@ static void M_DrawOp_TextBackground(const M_DRAW_OP *const base)
     const M_DRAW_OP_TEXT_RECT *const op = (const M_DRAW_OP_TEXT_RECT *)base;
     switch (op->ui_style) {
     case UI_STYLE_PC: {
-        const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
+        const UI_MENU_COLORS_PC *const c = &op->colors.pc;
         const RGBA_8888 *const ramp = op->text_style == TS_BACKGROUND_HEAVY
             ? c->background_heavy
             : c->background;
@@ -237,7 +238,7 @@ static void M_DrawOp_TextBackground(const M_DRAW_OP *const base)
     }
 
     case UI_STYLE_PS1: {
-        const UI_MENU_COLORS_PS1 *const c = UI_Settings_GetMenuColorsPS1();
+        const UI_MENU_COLORS_PS1 *const c = &op->colors.ps1;
         const int32_t xm = (op->x0 + op->x1) / 2;
         const int32_t ym = (op->y0 + op->y1) / 2;
         RGBA_8888 edge, center;
@@ -285,7 +286,7 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP *const base)
     switch (op->ui_style) {
     case UI_STYLE_PC:
         if (g_TRVersion == 1) {
-            const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
+            const UI_MENU_COLORS_PC *const c = &op->colors.pc;
             const float thickness =
                 UI_Scaler_Calc(M_OUTLINE_THICKNESS, UI_SCALER_TARGET_TEXT);
             Output_DrawScreenFrame(
@@ -326,7 +327,7 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP *const base)
             M_DrawScreenSprite(
                 x0, y0, op->z, scale_h, h, mesh_idx + 7, neutral);
         } else if (g_TRVersion >= 3) {
-            const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
+            const UI_MENU_COLORS_PC *const c = &op->colors.pc;
             const float thickness = UI_Scaler_Calc(1.0f, UI_SCALER_TARGET_TEXT);
             Output_DrawScreenFrame(
                 x0, y0, x1 - x0, y1 - y0, c->outline_dark, c->outline_dark,
@@ -339,7 +340,7 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP *const base)
         break;
 
     case UI_STYLE_PS1: {
-        const UI_MENU_COLORS_PS1 *const c = UI_Settings_GetMenuColorsPS1();
+        const UI_MENU_COLORS_PS1 *const c = &op->colors.ps1;
         switch (op->text_style) {
         case TS_BACKGROUND:
         case TS_BACKGROUND_HEAVY:
@@ -553,14 +554,15 @@ static OUTPUT_UI_MESH_LIGHT M_CopyLight(const UI_MODEL_LIGHT *const light)
 }
 
 void UI_ScheduleDrawTextBackground(
-    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
-    const int32_t z, const int32_t w, const int32_t h,
-    const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const UI_MENU_COLORS *const colors,
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const TEXT_STYLE text_style)
 {
     M_SCHEDULE_OP(
         M_DrawOp_TextBackground,
         ((M_DRAW_OP_TEXT_RECT) {
             .ui_style = ui_style,
+            .colors = *colors,
             .x0 = sx,
             .y0 = sy,
             .x1 = sx + w,
@@ -571,14 +573,15 @@ void UI_ScheduleDrawTextBackground(
 }
 
 void UI_ScheduleDrawTextOutline(
-    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
-    const int32_t z, const int32_t w, const int32_t h,
-    const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const UI_MENU_COLORS *const colors,
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const TEXT_STYLE text_style)
 {
     M_SCHEDULE_OP(
         M_DrawOp_TextOutline,
         ((M_DRAW_OP_TEXT_RECT) {
             .ui_style = ui_style,
+            .colors = *colors,
             .x0 = sx,
             .y0 = sy,
             .x1 = sx + w,
@@ -701,13 +704,14 @@ void UI_ScheduleDrawScreenGradientQuad(
 }
 
 void UI_ScheduleDrawHorizontalLine(
-    const UI_STYLE ui_style, const int32_t x0, const int32_t x1,
-    const int32_t y, const int32_t z)
+    const UI_STYLE ui_style, const UI_MENU_COLORS *const colors,
+    const int32_t x0, const int32_t x1, const int32_t y, const int32_t z)
 {
     M_SCHEDULE_OP(
         M_DrawOp_HorizontalLine,
         ((M_DRAW_OP_HORZ_LINE) {
             .ui_style = ui_style,
+            .colors = *colors,
             .x0 = x0,
             .x1 = x1,
             .y = y,

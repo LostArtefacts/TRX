@@ -5,15 +5,48 @@
 #include <trx/game/objects/ids.h>
 #include <trx/game/output/draw.h>
 
+typedef struct {
+    RGBA_8888 background[2]; // TS_BACKGROUND: [top, bottom]
+    RGBA_8888 background_heavy[2]; // TS_BACKGROUND_HEAVY: [top, bottom]
+    RGBA_8888 outline_light;
+    RGBA_8888 outline_dark;
+} UI_MENU_COLORS_PC;
+
+typedef struct {
+    RGBA_8888 background_edge;
+    RGBA_8888 background_center;
+    RGBA_8888 background_heavy_edge;
+    RGBA_8888 background_heavy_center;
+    RGBA_8888 heading_edge;
+    RGBA_8888 heading_center;
+    RGBA_8888 requested_edge;
+    RGBA_8888 requested_center;
+    RGBA_8888 requested_outline_ch;
+    RGBA_8888 requested_outline_cv;
+    RGBA_8888 requested_outline_edge;
+    RGBA_8888 outline_tl;
+    RGBA_8888 outline_tr;
+    RGBA_8888 outline_bl;
+    RGBA_8888 outline_br;
+    RGBA_8888 heading_outline;
+} UI_MENU_COLORS_PS1;
+
+// The colors of the game's menus in one style, which the UI_STYLE passed
+// alongside them selects.
+typedef union {
+    UI_MENU_COLORS_PC pc;
+    UI_MENU_COLORS_PS1 ps1;
+} UI_MENU_COLORS;
+
 // Schedule deferred UI draw operations to be executed by UI_Draw().
 // These record drawing commands during UI_EndScene instead of issuing them
 // immediately.
 void UI_ScheduleDrawTextBackground(
-    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h,
-    TEXT_STYLE text_style);
+    UI_STYLE ui_style, const UI_MENU_COLORS *colors, int32_t sx, int32_t sy,
+    int32_t z, int32_t w, int32_t h, TEXT_STYLE text_style);
 void UI_ScheduleDrawTextOutline(
-    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h,
-    TEXT_STYLE text_style);
+    UI_STYLE ui_style, const UI_MENU_COLORS *colors, int32_t sx, int32_t sy,
+    int32_t z, int32_t w, int32_t h, TEXT_STYLE text_style);
 void UI_ScheduleDrawScreenSprite(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprite_idx, const RGBA_F colors[4]);
@@ -36,7 +69,8 @@ void UI_ScheduleDrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 tl,
     RGBA_8888 tr, RGBA_8888 bl, RGBA_8888 br);
 void UI_ScheduleDrawHorizontalLine(
-    UI_STYLE ui_style, int32_t x0, int32_t x1, int32_t y, int32_t z);
+    UI_STYLE ui_style, const UI_MENU_COLORS *colors, int32_t x0, int32_t x1,
+    int32_t y, int32_t z);
 void UI_ScheduleDrawScreenCircle(
     int32_t cx, int32_t cy, int32_t r_inner, int32_t r_outer, int32_t z,
     RGBA_8888 color);

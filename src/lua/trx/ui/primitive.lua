@@ -1,5 +1,6 @@
 local raw = trxc.ui
 local h = require("trx.internal.helpers")
+local themes = require("trx.internal.themes")
 
 require("trx.ui")
 
@@ -109,8 +110,9 @@ primitive.to_canvas = raw.to_canvas
 ---@param x1 number The right end.
 ---@param y number The vertical position.
 ---@param z? integer The draw order.
----@type fun(x0: number, x1: number, y: number, z?: integer)
-primitive.horizontal_line = raw.horizontal_line
+function primitive.horizontal_line(x0, x1, y, z)
+  raw.horizontal_line(x0, x1, y, z, themes.menu())
+end
 
 -- What each frame style draws: the menu colors of one text style, and whether
 -- it fills the box behind its child or draws only the outline.
@@ -142,7 +144,7 @@ function primitive.panel(x, y, z, w, h, style)
   if frame == nil then
     error("unknown frame style", 2)
   end
-  raw.panel(x, y, z, w, h, frame.look, frame.fill)
+  raw.panel(x, y, z, w, h, frame.look, frame.fill, themes.menu())
 end
 
 ---Draws a rectangle of one color.

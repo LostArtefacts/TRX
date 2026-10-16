@@ -35,7 +35,6 @@
 #include <trx/game/sparks/enum.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/regions.h>
-#include <trx/game/ui/settings.h>
 #include <trx/game/ui/takeover.h>
 #include <trx/game/ui/tween.h>
 
@@ -176,6 +175,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_FADE, "ui_paint_fade");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_EXIT, "ui_paint_exit");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_EXIT, "exit");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_STARTUP, "startup");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_RING_REST, "ring_rest");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_LAYOUT, "ui_layout");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCREEN_CHANGE, "screen_change");
@@ -417,15 +417,6 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(STOW_PLACE, STOW_PLACE_NONE, "none");
     ENUM_MAP(STOW_PLACE, STOW_PLACE_HOLSTER, "holster");
     ENUM_MAP(STOW_PLACE, STOW_PLACE_BACK, "back");
-
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_LARA_HP, "lara_hp");
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_LARA_HP_POISON, "lara_hp_poison");
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_LARA_AIR, "lara_air");
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_LARA_STAMINA, "lara_stamina");
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_LARA_EXPOSURE, "lara_exposure");
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_ENEMY_HP, "enemy_hp");
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_ALLY_HP, "ally_hp");
-    ENUM_MAP(UI_BAR_TYPE, UI_BAR_PROGRESS, "progress");
 
     ENUM_MAP(LARA_MESH, LM_HIPS, "hips");
     ENUM_MAP(LARA_MESH, LM_THIGH_L, "thigh_l");

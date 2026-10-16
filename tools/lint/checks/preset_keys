@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from harness import LintWarning, repo_check
 from shared.json_utils import load_json5
-from shared.paths import CommonPaths
+from shared.paths import SRC_DIR, CommonPaths
 
 # Match the first argument of X_CFG_* macros:
 # - bare key form: X_CFG_BOOL(audio.master_volume, ...)
@@ -86,9 +86,10 @@ def check():
         return
 
     # A game adds settings of its own as its script runs, so a preset may name
-    # one that no map*.def knows.
+    # one that no map*.def knows. The engine's own scripts declare some too.
     known_keys |= _declared_config_keys(
         sorted(CommonPaths.shipped_data_dir.rglob("*.lua"))
+        + sorted((SRC_DIR / "lua").rglob("*.lua"))
     )
 
     presets_dir = CommonPaths.shipped_data_dir / "cfg/presets"

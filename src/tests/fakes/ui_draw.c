@@ -112,9 +112,9 @@ void UI_ScheduleDrawImage(
 }
 
 void UI_ScheduleDrawTextBackground(
-    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
-    const int32_t z, const int32_t w, const int32_t h,
-    const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const UI_MENU_COLORS *const colors,
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const TEXT_STYLE text_style)
 {
     FakeUIDraw_Record(String_FormatStatic(
         "text_background style=%d x=%d y=%d z=%d w=%d h=%d text_style=%d",
@@ -122,9 +122,9 @@ void UI_ScheduleDrawTextBackground(
 }
 
 void UI_ScheduleDrawTextOutline(
-    const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
-    const int32_t z, const int32_t w, const int32_t h,
-    const TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const UI_MENU_COLORS *const colors,
+    const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
+    const int32_t h, const TEXT_STYLE text_style)
 {
     FakeUIDraw_Record(String_FormatStatic(
         "text_outline style=%d x=%d y=%d z=%d w=%d h=%d text_style=%d",
@@ -156,8 +156,8 @@ void UI_ScheduleDrawScreenGradientQuad(
 }
 
 void UI_ScheduleDrawHorizontalLine(
-    const UI_STYLE ui_style, const int32_t x0, const int32_t x1,
-    const int32_t y, const int32_t z)
+    const UI_STYLE ui_style, const UI_MENU_COLORS *const colors,
+    const int32_t x0, const int32_t x1, const int32_t y, const int32_t z)
 {
     FakeUIDraw_Record(String_FormatStatic(
         "line style=%d x0=%d x1=%d y=%d z=%d", (int32_t)ui_style, x0, x1, y,

@@ -7,6 +7,8 @@
 local h = require("harness")
 local test = h.test
 
+h.load_themes()
+
 require("common.ui.hud.overlay").setup()
 
 -- Draws all overlay regions and returns the recorded scene.

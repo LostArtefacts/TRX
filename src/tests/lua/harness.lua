@@ -28,6 +28,71 @@ function M.raises(fn, needle)
   end
 end
 
+-- Gives the bars and menus a theme of their own, as the game takes one from
+-- cfg/ui.json5 at startup: a PC look, a PS1 look, and a PC look half the size,
+-- each with one color, and black menus.
+function M.load_themes()
+  local function ramp(hex)
+    return { hex, hex, hex, hex, hex }
+  end
+  local function pc(scale)
+    return {
+      name_gs = "dynamic/enums/bar_look/tr1_pc",
+      scale = scale,
+      style = "pc",
+      border_light = "#FFFFFF",
+      border_dark = "#000000",
+      colors = { red = ramp("#FF0000") },
+    }
+  end
+  local menu = {
+    pc = {
+      background = { "#00000080", "#00000080" },
+      background_heavy = { "#000000E0", "#000000E0" },
+      outline_light = "#FFFFFF",
+      outline_dark = "#000000",
+    },
+    ps1 = {},
+  }
+  for _, field in ipairs({
+    "background_edge",
+    "background_center",
+    "background_heavy_edge",
+    "background_heavy_center",
+    "heading_edge",
+    "heading_center",
+    "requested_edge",
+    "requested_center",
+    "requested_outline_ch",
+    "requested_outline_cv",
+    "requested_outline_edge",
+    "outline_tl",
+    "outline_tr",
+    "outline_bl",
+    "outline_br",
+    "heading_outline",
+  }) do
+    menu.ps1[field] = "#000000"
+  end
+  require("trx.internal.themes").load({
+    bars = {
+      pc = pc(1),
+      ps1 = {
+        name_gs = "dynamic/enums/bar_look/tr2_ps1",
+        scale = 1,
+        style = "ps1",
+        border_tl = "#FFFFFF",
+        border_tr = "#FFFFFF",
+        border_bl = "#000000",
+        border_br = "#000000",
+        colors = { red = { ramp("#FF0000"), ramp("#800000") } },
+      },
+      small = pc(0.5),
+    },
+    ui = { tr1 = menu, tr2 = menu, tr3 = menu, tr4 = menu },
+  })
+end
+
 function M.report()
   -- A suite that registered nothing reports "0 failed" and the runner takes the
   -- zero for a pass, which reads exactly like a suite that ran.

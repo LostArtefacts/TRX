@@ -5,6 +5,8 @@
 local h = require("harness")
 local test = h.test
 
+h.load_themes()
+
 local Role = trx.input.Role
 local PICTURE = trx.ui.Screen.PICTURE
 

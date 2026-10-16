@@ -6,6 +6,7 @@
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/events/manager.h>
 #include <trx/game/paths.h>
 
 #include <stdlib.h>
@@ -118,6 +119,7 @@ RESULT LUA_RunStartupScripts(void)
 {
     const char *root;
     MUST(GamePath_Resolve(GAME_DYNAMIC_PATH_STARTUP_SCRIPT_DIR, "", &root));
+    LUA_FireEvent(LUA_EVENT_STARTUP);
 
     RESULT result = OK;
     VECTOR *const paths = M_ListStartupScripts(root);

@@ -547,6 +547,7 @@ for _, scale in ipairs({ 0.5, 1.0, 1.3, 1.75, 2.0 }) do
   test(("a bar borders evenly at bar scale %s"):format(scale), function()
     -- Use a viewport that does not divide evenly into the canvas, so edges
     -- land on fractional pixels before rounding.
+    h.load_themes()
     fake.set_viewport(1707, 963)
     trx.config.set("ui.bar_scale", scale)
     local bar = widgets.Bar({ type = trx.ui.BarType.LARA_HP, value = 0.5 })
@@ -1084,8 +1085,12 @@ test("a carousel keeps items beyond the neighbours out of sight", function()
 end)
 
 test("a bar says whether it takes the PS1 look", function()
+  h.load_themes()
+  trx.config.set("ui.progressbar_look", "ps1")
   assert(trx.ui.is_ps1_bar(trx.ui.BarType.PROGRESS))
   assert(not trx.ui.is_ps1_bar(trx.ui.BarType.LARA_HP))
+  trx.config.set("ui.progressbar_look", "same")
+  assert(not trx.ui.is_ps1_bar(trx.ui.BarType.PROGRESS))
 end)
 
 test("a scaled resize follows the text scale", function()
@@ -1100,6 +1105,7 @@ test("a scaled resize follows the text scale", function()
 end)
 
 test("a preview bar takes the size of the text", function()
+  h.load_themes()
   local bar = widgets.Bar({
     type = trx.ui.BarType.LARA_HP,
     value = 1,
@@ -1112,6 +1118,8 @@ test("a preview bar takes the size of the text", function()
 end)
 
 test("a preview bar keeps the size of the text whatever its style", function()
+  h.load_themes()
+  trx.config.set("ui.bar_look", "small")
   local function width(preview)
     return widgets
       .Bar({
