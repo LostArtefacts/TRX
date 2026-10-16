@@ -69,8 +69,12 @@ static OBJECT_ID m_RequestedObject;
 static GF_GLOBE_ENTRY m_Globe[8];
 static int32_t m_GlobeCount;
 
+// The last command the play_* verbs queued, which the game leaves for.
+static GF_COMMAND m_Override = { .action = GF_NOOP };
+
 static void M_Reset(void)
 {
+    m_Override = (GF_COMMAND) { .action = GF_NOOP };
     m_RingHint[0] = '\0';
     m_PartnerCount = 0;
     m_Combined[0] = NO_OBJECT;
@@ -587,8 +591,19 @@ GF_LEVEL *GF_GetLevelByOrdinalNumber(
 
 // The gameflow command the play_* verbs queue, and the savegame bookkeeping
 // they do on the way. Recorded, not performed.
+GF_COMMAND GF_GetOverrideCommand(void)
+{
+    return m_Override;
+}
+
+bool Shell_IsExiting(void)
+{
+    return false;
+}
+
 void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
 {
+    m_Override = command;
     const int32_t num = command.param;
     switch (command.action) {
     case GF_START_GAME:

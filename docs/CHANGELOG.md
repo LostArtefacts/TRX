@@ -224,6 +224,7 @@
 - Added `trx.items.EarthquakeMode`, the values that an earthquake's `mode` property takes
 - Added `trx.objects.Object:set_hit_effect()`, so a script can decide whether a bullet hit spawns blood, a ricochet, smoke or nothing (`trx.items.HitEffect`) (TRX1676)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
+- Added `trx.game.is_leaving`, which says whether the game has been told what to play next once the screens on show end
 - Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
 - Added `trx.events.on_show_pickup`, which happens when the game announces an object in the corner of the screen
 - Added the ability for a script to draw outlines in the world the camera is looking at

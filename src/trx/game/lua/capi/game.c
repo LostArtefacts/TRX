@@ -21,6 +21,7 @@
 #include <trx/game/photo_mode.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
+#include <trx/game/shell/common.h>
 #include <trx/version.h>
 
 #include <lauxlib.h>
@@ -276,6 +277,14 @@ static int M_L_GameTRVersion(lua_State *const L)
 static int M_L_GameIsSuspended(lua_State *const L)
 {
     lua_pushboolean(L, Game_IsLoaded() && !Game_IsPlaying());
+    return 1;
+}
+
+// trxc.game.is_leaving(): boolean
+static int M_L_GameIsLeaving(lua_State *const L)
+{
+    lua_pushboolean(
+        L, Shell_IsExiting() || GF_GetOverrideCommand().action != GF_NOOP);
     return 1;
 }
 
@@ -612,6 +621,7 @@ static const luaL_Reg m_Module[] = {
     { "real_time", M_L_GameRealTime },
     { "sim_time", M_L_GameSimTime },
     { "is_suspended", M_L_GameIsSuspended },
+    { "is_leaving", M_L_GameIsLeaving },
     { "is_photo_mode", M_L_GameIsPhotoMode },
     { "photo_mode_target", M_L_GamePhotoModeTarget },
     { "is_ngplus", M_L_GameIsNGPlus },
