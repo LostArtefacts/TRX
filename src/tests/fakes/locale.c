@@ -1,7 +1,8 @@
 // The game string table, reduced to what a surface test needs: the fixtures
 // below - one plain, one with a placeholder, one with two, and one a translator
-// wrote a bare percent sign into - plus the keys the scripts under test declare
-// through trx.locale.declare(). The real one starts from
+// wrote a bare percent sign into - the style a caption takes, which leaves its
+// text as it is, plus the keys the scripts under test declare through
+// trx.locale.declare(). The real one starts from
 // game_strings/entries.def and has cfg/base_strings.json5 and its translations
 // layered over it.
 
@@ -98,6 +99,9 @@ const char *GameString_Get(const char *const key)
     }
     if (strcmp(key, "test/percent") == 0) {
         return "100% of the text";
+    }
+    if (strcmp(key, "general/inventory_ring/object_name_fmt") == 0) {
+        return "%s";
     }
     return nullptr;
 }

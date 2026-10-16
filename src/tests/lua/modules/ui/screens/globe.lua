@@ -54,7 +54,7 @@ local function open(completed, areas, background)
 end
 
 local function last_caption()
-  return fake.calls().set_caption.caption
+  return trx.overlay.signals.caption:get() or ""
 end
 
 local function arrows_shown()

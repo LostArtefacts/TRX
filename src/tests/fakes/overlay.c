@@ -1,7 +1,7 @@
 // The overlay flags a script reads: whether something asks for Lara's health
 // bar, and how deep the cinematic bars are. A script asking for bars sets
-// where they are going; the test says where they are. The caption and the
-// arrows a script sets read back as the overlay holds them.
+// where they are going; the test says where they are. The arrows a script
+// sets read back as the overlay holds them.
 
 #include <fakes/overlay.h>
 
@@ -13,7 +13,6 @@
 static bool m_ForcedHealthBar;
 static float m_Letterbox;
 static float m_LetterboxTarget;
-static OVERLAY_TEXT m_Caption;
 static bool m_Arrows[OVERLAY_ARROW_NUMBER_OF];
 
 static void M_Reset(void)
@@ -21,7 +20,6 @@ static void M_Reset(void)
     m_ForcedHealthBar = false;
     m_Letterbox = 0.0f;
     m_LetterboxTarget = 0.0f;
-    m_Caption = (OVERLAY_TEXT) {};
     for (int32_t i = 0; i < OVERLAY_ARROW_NUMBER_OF; i++) {
         m_Arrows[i] = false;
     }
@@ -32,28 +30,9 @@ void FakeOverlay_ForceHealthBar(const bool show)
     m_ForcedHealthBar = show;
 }
 
-// Record interface requests without performing them.
-void Overlay_SetBottomText(const OVERLAY_TEXT text)
-{
-    const char *const caption =
-        text.kind == OVERLAY_TEXT_LITERAL ? text.literal : "";
-    FAKE_RECORD("set_caption", FV_STR(caption));
-    m_Caption = text;
-}
-
 const char *Overlay_GetTopText(void)
 {
     return nullptr;
-}
-
-const char *Overlay_GetBottomText(void)
-{
-    return m_Caption.kind == OVERLAY_TEXT_LITERAL ? m_Caption.literal : nullptr;
-}
-
-bool Overlay_IsBottomTextFlashing(void)
-{
-    return false;
 }
 
 bool Overlay_IsArrowShown(const OVERLAY_ARROW arrow)

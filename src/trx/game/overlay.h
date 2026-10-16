@@ -36,13 +36,9 @@ typedef enum {
 void Overlay_Reset(void);
 void Overlay_Control(void);
 
-// Returns the line at the top of the screen and the caption at the bottom in
-// the player's language, or nullptr for none. A script draws both.
+// Returns the line at the top of the screen in the player's language, or
+// nullptr for none. A script draws it.
 const char *Overlay_GetTopText(void);
-const char *Overlay_GetBottomText(void);
-
-// Returns whether the caption flashes, as it does while a demo plays.
-bool Overlay_IsBottomTextFlashing(void);
 
 bool Overlay_IsArrowShown(OVERLAY_ARROW arrow);
 bool Overlay_IsVersionShown(void);
@@ -58,4 +54,3 @@ void Overlay_ShowArrow(OVERLAY_ARROW arrow, bool show);
 void Overlay_ShowVersion(bool show);
 
 void Overlay_SetTopText(OVERLAY_TEXT text);
-void Overlay_SetBottomText(OVERLAY_TEXT text);
