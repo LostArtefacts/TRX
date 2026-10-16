@@ -170,6 +170,7 @@ local TABS = {
     "gameplay.fix_alligator_ai",
     "gameplay.fix_bear_ai",
     "gameplay.fix_bird_start_pos",
+    "gameplay.fix_enemy_route_delay",
     "gameplay.fix_monkey_pickup_priority",
     "gameplay.fix_pipeman_aim",
     "audio.fix_chainblock_secret_sound",
