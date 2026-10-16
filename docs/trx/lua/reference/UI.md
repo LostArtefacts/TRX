@@ -265,10 +265,10 @@ arrow, and `\{button left}` draws the button the player has bound.
 
 - <a id="ui.FadeLayer" name="ui.FadeLayer"></a>[lua]`trx.ui.FadeLayer`
 
-    A layer that the engine draws over its interface: one colour, or the frame as
-    it was when the layer was made. Its opacity moves on a curve that the engine
-    runs, so nothing is painted by the script. Fade layers stack in the order
-    they were made, above every engine screen and below the console.
+    A layer drawn over the interface: one colour, or the frame as it was when
+    the layer was made. Its opacity moves on a curve, and the layer paints
+    itself, so the script that made it paints nothing. Fade layers stack in the
+    order they were made, above every screen and below the console.
 
     A backdrop layer is drawn under the interface instead, as the backdrop that
     the game draws behind its screens. Its opacity says how far the backdrop has

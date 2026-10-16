@@ -8,7 +8,6 @@
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/events.h>
 #include <trx/game/ui/exit_fade.h>
-#include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
@@ -74,9 +73,10 @@ void UI_SetPaintHook(void (*const hook)(UI_LAYER))
 void UI_EndScene(void)
 {
     UI_Region_Layout();
+    M_Paint(UI_LAYER_BACKDROP);
     M_Paint(UI_LAYER_UNDER);
     M_Paint(UI_LAYER_OVER);
-    UI_Fade_Draw();
+    M_Paint(UI_LAYER_FADE);
     M_Paint(UI_LAYER_CONSOLE);
     UI_DrawExitFade();
 }

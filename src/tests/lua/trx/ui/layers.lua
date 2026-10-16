@@ -870,6 +870,30 @@ test("a move takes its ticks whatever the fade setting", function()
   fake.set_fade_effects(true)
 end)
 
+test("fade layers paint in the fade layer, in the order made", function()
+  local first = trx.ui.layers.fade({ fill = BLACK, opacity = 0.5 })
+  local second = trx.ui.layers.fade({ fill = trx.math.color("ffffff") })
+  local ops, layers = fake.scene(), fake.scene_layers()
+  first:close()
+  second:close()
+  local quads = {}
+  for i, op in ipairs(ops) do
+    if op:match("^quad") and layers[i] == "fade" then
+      quads[#quads + 1] = op
+    end
+  end
+  assert(#quads == 2, "painted " .. #quads .. " fades")
+  assert(quads[1]:find("color=00000080", 1, true), quads[1])
+  assert(quads[2]:find("color=ffffffff", 1, true), quads[2])
+end)
+
+test("a closed fade layer paints nothing", function()
+  trx.ui.layers.fade({ fill = BLACK }):close()
+  for i, op in ipairs(fake.scene()) do
+    assert(fake.scene_layers()[i] ~= "fade", op)
+  end
+end)
+
 test("a snapshot fade layer opens and closes", function()
   local layer = trx.ui.layers.fade({ snapshot = true })
   assert(layer.is_open and layer.opacity == 1)

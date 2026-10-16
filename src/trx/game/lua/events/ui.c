@@ -3,7 +3,6 @@
 #include <trx/core/subsystem.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/ui/common.h>
-#include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 
@@ -11,13 +10,9 @@
 
 static bool m_HideNextFrame = false;
 static bool m_IsFrameHidden = false;
+static bool m_HoldingScreen = false;
 // What the interface was laid out in when scripts were last told.
 static float m_Layout[9] = {};
-
-static void M_FadeDone(const int32_t id)
-{
-    LUA_FireEventInt32(LUA_EVENT_UI_FADE_DONE, id);
-}
 
 // Tells scripts when the room the interface lays out in has changed since
 // the last tick: the canvas, the safe and working areas, or the text and bar
@@ -49,7 +44,6 @@ static void M_CheckLayout(void)
 
 static void M_Tick(void)
 {
-    UI_Fade_Tick(M_FadeDone);
     M_CheckLayout();
 }
 
@@ -63,8 +57,14 @@ void LUA_UI_PaintRegions(const UI_LAYER layer)
 {
     LUA_EVENT_TYPE event;
     switch (layer) {
+    case UI_LAYER_BACKDROP:
+        event = LUA_EVENT_UI_PAINT_BACKDROP;
+        break;
     case UI_LAYER_UNDER:
         event = LUA_EVENT_UI_PAINT;
+        break;
+    case UI_LAYER_FADE:
+        event = LUA_EVENT_UI_PAINT_FADE;
         break;
     case UI_LAYER_CONSOLE:
         event = LUA_EVENT_UI_PAINT_CONSOLE;
@@ -72,12 +72,24 @@ void LUA_UI_PaintRegions(const UI_LAYER layer)
     default:
         return;
     }
-    if (m_IsFrameHidden && layer != UI_LAYER_CONSOLE) {
+    // A hidden frame still fades: only the interface leaves the picture.
+    if (m_IsFrameHidden
+        && (layer == UI_LAYER_UNDER || layer == UI_LAYER_OVER)) {
         return;
     }
     LUA_UI_SetPainting(true);
     LUA_FireEvent(event);
     LUA_UI_SetPainting(false);
+}
+
+void LUA_UI_SetHoldingScreen(const bool holding)
+{
+    m_HoldingScreen = holding;
+}
+
+bool LUA_UI_IsHoldingScreen(void)
+{
+    return m_HoldingScreen;
 }
 
 void LUA_UI_HideNextFrame(void)

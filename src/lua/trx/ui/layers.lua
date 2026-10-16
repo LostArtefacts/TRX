@@ -19,8 +19,8 @@ local base = require("trx.ui.widgets.base")
 local value_of = base.value_of
 local Tween = h.class_of("ui.Tween")
 
--- The event the engine fires as a fade layer's move ends.
-local fade_done_event = h.constants("LUA_EVENT_TYPE").UI_FADE_DONE
+-- The events that tick the fade layers and paint them.
+local events = h.constants("LUA_EVENT_TYPE")
 
 local MAX_LAYERS = 15
 
@@ -327,19 +327,49 @@ end
 -- Fade layers
 -------------------------------------------------------------------------------
 
--- The open fade layers, keyed by the id the engine knows each by.
----@type table<integer, trx.ui.FadeLayer>
+-- The open fade layers, in the order they were made.
+---@type trx.ui.FadeLayer[]
 local fades = {}
+
+-- The layers whose opacity is moving, which the tick watches.
+---@type table<trx.ui.FadeLayer, boolean>
+local moving = {}
+
+local function index_of_fade(layer)
+  for i, other in ipairs(fades) do
+    if other == layer then
+      return i
+    end
+  end
+  return nil
+end
+
+-- Tells the engine whether an open layer makes it wait to start its next
+-- screen.
+local function hold_screen()
+  local held = false
+  for _, layer in ipairs(fades) do
+    held = held or layer._holds
+  end
+  raw_fade.hold_screen(held)
+end
 
 -- Closes a fade layer. Returns the error that its on_close raised, or nil, so
 -- that the close completes before the error is raised.
 local function finish_fade(layer)
-  local id = layer._id
-  if fades[id] ~= layer then
+  local index = index_of_fade(layer)
+  if index == nil then
     return nil
   end
-  fades[id] = nil
-  raw_fade.close(id)
+  table.remove(fades, index)
+  moving[layer] = nil
+  if layer._slot ~= nil then
+    raw_fade.free_snapshot(layer._slot)
+    layer._slot = nil
+  end
+  if layer._holds then
+    hold_screen()
+  end
   if layer._unload ~= nil then
     layer._unload:detach()
     layer._unload = nil
@@ -347,10 +377,10 @@ local function finish_fade(layer)
   return h.failure(layer.on_close, layer)
 end
 
----A layer that the engine draws over its interface: one colour, or the frame as
----it was when the layer was made. Its opacity moves on a curve that the engine
----runs, so nothing is painted by the script. Fade layers stack in the order
----they were made, above every engine screen and below the console.
+---A layer drawn over the interface: one colour, or the frame as it was when
+---the layer was made. Its opacity moves on a curve, and the layer paints
+---itself, so the script that made it paints nothing. Fade layers stack in the
+---order they were made, above every screen and below the console.
 ---
 ---A backdrop layer is drawn under the interface instead, as the backdrop that
 ---the game draws behind its screens. Its opacity says how far the backdrop has
@@ -361,19 +391,25 @@ end
 ---@field is_open boolean Whether the layer is still drawn.
 ---@field opacity number How opaque the layer is now, from `0` to `1`.
 ---@field private on_close? fun(layer: trx.ui.FadeLayer)
----@field private _id integer
+---@field private _opacity trx.ui.Tween
+---@field private _fill? trx.math.Color
+---@field private _slot? integer
+---@field private _backdrop? string
+---@field private _path? string
+---@field private _holds boolean
+---@field private _close_at_rest? boolean
 ---@field private _on_done? fun(layer: trx.ui.FadeLayer)
 ---@field private _unload? trx.events.Listener
 local FadeLayer = h.class("ui.FadeLayer", {
   fields = {
     is_open = {
       get = function(self)
-        return fades[self._id] == self
+        return index_of_fade(self) ~= nil
       end,
     },
     opacity = {
       get = function(self)
-        return raw_fade.opacity(self._id)
+        return self._opacity:get()
       end,
     },
   },
@@ -382,7 +418,7 @@ local FadeLayer = h.class("ui.FadeLayer", {
 ---Stops drawing the layer. Does nothing if the layer is already closed.
 ---@return boolean # Whether the layer was open.
 function FadeLayer:close()
-  if fades[self._id] ~= self then
+  if index_of_fade(self) == nil then
     return false
   end
   local err = finish_fade(self)
@@ -409,8 +445,13 @@ function FadeLayer:to(target, ticks, options)
   if name == nil then
     error("the curve is not one of trx.ui.ease", 2)
   end
+  if index_of_fade(self) == nil then
+    return self
+  end
   self._on_done = options.on_done
-  raw_fade.to(self._id, target, ticks, name, options.close == true)
+  self._close_at_rest = options.close == true
+  self._opacity:to(target, ticks, { curve = options.curve })
+  moving[self] = true
   return self
 end
 
@@ -433,27 +474,36 @@ end
 ---@param settings trx.ui.layers.fade.settings The layer settings.
 ---@return trx.ui.FadeLayer # The layer.
 function layers.fade(settings)
-  local opacity = settings.opacity or 1
-  local id
+  local layer = setmetatable({
+    on_close = settings.on_close,
+    _opacity = ui.tween(settings.opacity or 1),
+    _holds = settings.holds_screen == true,
+  }, FadeLayer) --[[@as trx.ui.FadeLayer]]
   if settings.snapshot then
-    id = raw_fade.push_snapshot(opacity)
+    layer._slot = raw_fade.capture_snapshot()
+    if layer._slot == nil then
+      error("too many fade layers", 2)
+    end
   elseif settings.backdrop ~= nil then
-    id = raw_fade.push_backdrop(settings.backdrop, settings.path, opacity)
+    if not raw_fade.is_backdrop(settings.backdrop) then
+      error("unknown backdrop", 2)
+    end
+    -- A picture draws over the whole screen, so only the other styles show
+    -- the game behind them.
+    if settings.backdrop ~= "image" or settings.path == nil then
+      raw_fade.capture_game()
+    end
+    layer._backdrop = settings.backdrop
+    layer._path = settings.path
   elseif settings.fill ~= nil then
-    local fill = settings.fill
-    id = raw_fade.push_fill(fill.r, fill.g, fill.b, opacity)
+    layer._fill = settings.fill
   else
     error("a fade layer needs something to hold", 2)
   end
-  if id == 0 then
-    error("too many fade layers", 2)
+  fades[#fades + 1] = layer
+  if layer._holds then
+    hold_screen()
   end
-  if settings.holds_screen then
-    raw_fade.hold_screen(id)
-  end
-  local layer =
-    setmetatable({ on_close = settings.on_close, _id = id }, FadeLayer)
-  fades[id] = layer
   layer._unload = at_level_end(function()
     layer:close()
   end)
@@ -587,22 +637,54 @@ trx.events.on_level_unload(function()
   grab = nil
 end)
 
--- The engine reports each move that ends, once, after closing the layers told
--- to close with it.
-raw_events.attach(fade_done_event, function(id)
-  local layer = fades[id]
-  if layer == nil then
+-- Reports each move that has ended since the last tick, once, after closing
+-- the layers told to close with it. It is attached as the module loads, so it
+-- belongs to no level, and it does nothing while no layer moves.
+raw_events.attach(events.TICK, function()
+  if next(moving) == nil then
     return
   end
-  local on_done = layer._on_done
-  layer._on_done = nil
-  local failed = nil
-  if not raw_fade.is_open(id) then
-    failed = finish_fade(layer)
+  local ended = {}
+  for _, layer in ipairs(fades) do
+    if moving[layer] and not layer._opacity:is_moving() then
+      ended[#ended + 1] = layer
+    end
   end
-  local err = h.failure(on_done, layer)
-  failed = failed or err
+  local failed = nil
+  for _, layer in ipairs(ended) do
+    moving[layer] = nil
+    local on_done = layer._on_done
+    layer._on_done = nil
+    local closed = nil
+    if layer._close_at_rest then
+      closed = finish_fade(layer)
+    end
+    local done = h.failure(on_done, layer)
+    failed = failed or closed or done
+  end
   if failed ~= nil then
     error(failed, 0)
+  end
+end)
+
+-- Paints the backdrops under the interface, and the other layers over it, in
+-- the order they were made.
+raw_events.attach(events.UI_PAINT_BACKDROP, function()
+  for _, layer in ipairs(fades) do
+    if layer._backdrop ~= nil then
+      raw_fade.backdrop(layer._backdrop, layer._opacity:get(), layer._path)
+    end
+  end
+end)
+
+raw_events.attach(events.UI_PAINT_FADE, function()
+  for _, layer in ipairs(fades) do
+    local opacity = layer._opacity:get()
+    if layer._slot ~= nil then
+      raw_fade.snapshot(layer._slot, opacity)
+    elseif layer._fill ~= nil then
+      local fill = layer._fill
+      raw_fade.fill(fill.r, fill.g, fill.b, opacity)
+    end
   end
 end)
