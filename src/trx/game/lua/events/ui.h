@@ -14,9 +14,14 @@ void LUA_UI_ReserveRegions(void);
 // only the picture. The console still draws.
 void LUA_UI_HideNextFrame(void);
 
-// Lets scripts draw into the boxes reserved during scene layout. Runs once
-// per layer, so that a script can paint under or over the engine UI.
+// Lets scripts draw a layer of the scene: the backdrop, the interface into the
+// boxes reserved during scene layout, the fades and the console.
 void LUA_UI_PaintRegions(UI_LAYER layer);
+
+// Sets and returns whether a script layer makes the engine wait to start its
+// next screen.
+void LUA_UI_SetHoldingScreen(bool holding);
+bool LUA_UI_IsHoldingScreen(void);
 
 // Sets whether trx.ui may schedule draw calls for the current scene.
 void LUA_UI_SetPainting(bool painting);

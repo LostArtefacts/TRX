@@ -978,7 +978,6 @@ common_sources = [
   'trx/game/ui/draw.c',
   'trx/game/ui/events.c',
   'trx/game/ui/exit_fade.c',
-  'trx/game/ui/fade.c',
   'trx/game/ui/keys.c',
   'trx/game/ui/regions.c',
   'trx/game/ui/scaler.c',

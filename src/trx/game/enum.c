@@ -172,7 +172,8 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SHOW_PICKUP, "show_pickup");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCENE_PAINT, "scene_paint");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_CONSOLE, "ui_paint_console");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_FADE_DONE, "ui_fade_done");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_BACKDROP, "ui_paint_backdrop");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_FADE, "ui_paint_fade");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_RING_REST, "ring_rest");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_LAYOUT, "ui_layout");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCREEN_CHANGE, "screen_change");

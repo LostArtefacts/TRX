@@ -24,7 +24,6 @@
 #include <trx/game/shell/common.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/takeover.h>
-#include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
@@ -199,7 +198,7 @@ static int M_FakeChangeScreen(lua_State *const L)
 // fake.holds_screen() -> boolean
 static int M_FakeHoldsScreen(lua_State *const L)
 {
-    lua_pushboolean(L, UI_Fade_IsHoldingScreen());
+    lua_pushboolean(L, LUA_UI_IsHoldingScreen());
     return 1;
 }
 

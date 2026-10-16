@@ -25,7 +25,6 @@
 #include <trx/game/ui.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/exit_fade.h>
-#include <trx/game/ui/fade.h>
 #include <trx/game/ui/takeover.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/game/viewport.h>
@@ -134,7 +133,7 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
     // Starts the clock from the change, so that the time the last screen took
     // to end, such as to load a level, does not run as ticks of the fade.
     Clock_SyncTick();
-    while (UI_Fade_IsHoldingScreen()) {
+    while (LUA_UI_IsHoldingScreen()) {
         const int32_t nframes = Clock_WaitTick();
         for (int32_t frame = 0; frame < nframes; frame++) {
             m_CurrentFrame++;
@@ -160,7 +159,7 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
         }
         // Draws nothing once the fades let go of the screen, so that no frame
         // shows the interface between the fades and the next screen.
-        if (!UI_Fade_IsHoldingScreen()) {
+        if (!LUA_UI_IsHoldingScreen()) {
             break;
         }
 
