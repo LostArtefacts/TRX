@@ -1,8 +1,8 @@
 #pragma once
 
 #include <trx/game/game_flow/types.h>
-#include <trx/game/inventory_ring/enum.h>
 #include <trx/game/objects/ids.h>
+#include <trx/game/ui/menu.h>
 
 #include <stdint.h>
 
