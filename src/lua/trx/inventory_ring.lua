@@ -1,6 +1,7 @@
 local raw = trxc.inventory_ring
 local raw_events = trxc.events
 local h = require("trx.internal.helpers")
+local lasting_polled = require("trx.signal").lasting_polled
 
 ---@class (partial) trx
 ---@field inventory_ring trx.inventory_ring
@@ -60,7 +61,9 @@ M.selection_anim = raw.selection_anim
 ---What the inventory ring tells a script, for the screens that a script draws
 ---over it.
 ---@class (exact) trx.inventory_ring.signals
----@trx.readonly rest_frame
+---@trx.readonly count, hint, rest_frame
+---@field hint trx.signal.Signal Holds the key hints that the ring shows under the name of the selected entry, as a list of texts that stand apart from one another, empty while it shows none or no ring is open. `trx.inventory_ring.set_input_hints` sets them.
+---@field count trx.signal.Signal Holds the count that the ring shows for an entry Lara carries more than one of, or nil while it shows none or no ring is open.
 ---@field rest_frame trx.signal.Signal Says when the entry that the player picked comes to rest, with the frame of its animation that it rests on, and when it moves again, goes back into the ring or the ring closes, with `nil`. A screen of an entry opens once the entry rests, and the passport reads the page it rests on.
 M.signals = h.namespace("inventory_ring.signals")
 
@@ -87,8 +90,31 @@ local function rest_frame_signal()
   return rest_frame
 end
 
+---@type trx.signal.Signal?
+local hint = nil
+---@type trx.signal.Signal?
+local count = nil
+
 h.properties(M.signals, "inventory_ring.signals", {
   rest_frame = { get = rest_frame_signal },
+  hint = {
+    get = function()
+      if hint == nil then
+        hint = lasting_polled(raw.hint_revision):map(function()
+          return { raw.hint() }
+        end)
+      end
+      return hint
+    end,
+  },
+  count = {
+    get = function()
+      if count == nil then
+        count = lasting_polled(raw.count)
+      end
+      return count
+    end,
+  },
 })
 
 ---Runs the ring's selected entry to a frame of its animation.

@@ -187,6 +187,7 @@
 - Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
 - Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
 - Added `top_text`, `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
+- Added `hint` and `count` to `trx.inventory_ring.signals`, which say what key hints and count the inventory ring shows
 - Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
 - Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
 - Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look

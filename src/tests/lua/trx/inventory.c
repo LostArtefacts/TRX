@@ -38,8 +38,8 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "inventory",
-        .deps = { "query", "items", "catalog", "weapons", "inventory_ring",
-                  nullptr },
+        .deps = { "signal", "events", "query", "items", "catalog", "weapons",
+                  "inventory_ring", nullptr },
         .tests = "trx/inventory",
         .push_fake = M_PushFake,
     };

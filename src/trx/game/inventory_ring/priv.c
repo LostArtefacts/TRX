@@ -51,16 +51,16 @@ typedef enum {
 } PASS_MESH;
 
 static INV_ITEM_ACTIONS m_ItemActions = {};
-static void (*m_ButtonHintDrawFunc)(void *) = nullptr;
-static void *m_ButtonHintUserData = nullptr;
 static char *m_ButtonHintParts[M_MAX_HINT_PARTS] = {};
 static int32_t m_ButtonHintPartCount = 0;
+static int32_t m_ButtonHintRevision = 0;
+static bool m_ButtonHintIsItemActions = false;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
-// A script's hint, its parts set apart as the ring sets apart its own.
-static void M_DrawTextHint(void *const user_data)
+// The hint, its parts set apart as the ring sets apart its own.
+static void M_DrawHint(void)
 {
     if (m_ButtonHintPartCount == 1) {
         UI_Label(m_ButtonHintParts[0]);
@@ -72,27 +72,6 @@ static void M_DrawTextHint(void *const user_data)
             UI_Spacer(60.0f, 0.0f);
         }
         UI_Label(m_ButtonHintParts[i]);
-    }
-    UI_EndStack();
-}
-
-static void M_DrawItemActionHint(void *const user_data)
-{
-    bool is_first = true;
-    UI_BeginStack(UI_STACK_HORIZONTAL);
-    if (m_ItemActions.can_examine) {
-        UI_LabelFmt(
-            "\\{input menu_show_info} %s", GS("general/actions/examine_item"));
-        is_first = false;
-    }
-    if (m_ItemActions.can_use || m_ItemActions.can_combine) {
-        if (!is_first) {
-            UI_Spacer(60.0f, 0.0f);
-        }
-        UI_LabelFmt(
-            "\\{input menu_confirm} %s",
-            m_ItemActions.can_combine ? GS("general/actions/combine_item")
-                                      : GS("general/actions/use_item"));
     }
     UI_EndStack();
 }
@@ -383,8 +362,7 @@ void InvRing_InitRing(
     ring->prev_camera_y = ring->camera.pos.y;
 
     m_ItemActions = (INV_ITEM_ACTIONS) {};
-    m_ButtonHintDrawFunc = nullptr;
-    m_ButtonHintUserData = nullptr;
+    InvRing_ClearButtonHint();
 }
 
 void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
@@ -733,15 +711,9 @@ void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
     String_FormatInto(&m_CountText, &m_CountTextCap, full_fmt, qty);
 }
 
-void InvRing_SetButtonHintDrawer(void (*draw_func)(void *), void *user_data)
-{
-    m_ButtonHintDrawFunc = draw_func;
-    m_ButtonHintUserData = user_data;
-}
-
 void InvRing_ClearButtonHint(void)
 {
-    InvRing_SetButtonHintDrawer(nullptr, nullptr);
+    InvRing_SetButtonHintParts(nullptr, 0);
 }
 
 void InvRing_SetButtonHintParts(
@@ -751,16 +723,11 @@ void InvRing_SetButtonHintParts(
         Memory_FreePointer(&m_ButtonHintParts[i]);
     }
     m_ButtonHintPartCount = 0;
-    if (count <= 0) {
-        if (m_ButtonHintDrawFunc == M_DrawTextHint) {
-            InvRing_ClearButtonHint();
-        }
-        return;
-    }
     for (int32_t i = 0; i < count && i < M_MAX_HINT_PARTS; i++) {
         m_ButtonHintParts[m_ButtonHintPartCount++] = Memory_DupStr(parts[i]);
     }
-    InvRing_SetButtonHintDrawer(M_DrawTextHint, nullptr);
+    m_ButtonHintIsItemActions = false;
+    m_ButtonHintRevision++;
 }
 
 void InvRing_SetButtonHintText(const char *const text)
@@ -771,11 +738,50 @@ void InvRing_SetButtonHintText(const char *const text)
 void InvRing_ShowItemActions(const INV_ITEM_ACTIONS actions)
 {
     m_ItemActions = actions;
-    if (actions.can_examine || actions.can_combine) {
-        InvRing_SetButtonHintDrawer(M_DrawItemActionHint, nullptr);
-    } else if (m_ButtonHintDrawFunc == M_DrawItemActionHint) {
-        InvRing_ClearButtonHint();
+    if (!actions.can_examine && !actions.can_combine) {
+        if (m_ButtonHintIsItemActions) {
+            InvRing_ClearButtonHint();
+        }
+        return;
     }
+
+    char *parts[2] = {};
+    int32_t count = 0;
+    if (actions.can_examine) {
+        parts[count++] = String_Format(
+            "\\{input menu_show_info} %s", GS("general/actions/examine_item"));
+    }
+    if (actions.can_use || actions.can_combine) {
+        parts[count++] = String_Format(
+            "\\{input menu_confirm} %s",
+            actions.can_combine ? GS("general/actions/combine_item")
+                                : GS("general/actions/use_item"));
+    }
+    InvRing_SetButtonHintParts((const char *const *)parts, count);
+    m_ButtonHintIsItemActions = true;
+    for (int32_t i = 0; i < count; i++) {
+        Memory_FreePointer(&parts[i]);
+    }
+}
+
+int32_t InvRing_GetButtonHint(const char *const **const out_parts)
+{
+    *out_parts = (const char *const *)m_ButtonHintParts;
+    return InvRing_GetActiveRing() != nullptr ? m_ButtonHintPartCount : 0;
+}
+
+int32_t InvRing_GetButtonHintRevision(void)
+{
+    return InvRing_GetActiveRing() != nullptr ? m_ButtonHintRevision : -1;
+}
+
+const char *InvRing_GetItemQuantity(void)
+{
+    if (InvRing_GetActiveRing() == nullptr || m_CountText == nullptr
+        || m_CountText[0] == '\0') {
+        return nullptr;
+    }
+    return m_CountText;
 }
 
 void InvRing_DrawUI(INV_RING *const ring)
@@ -788,11 +794,11 @@ void InvRing_DrawUI(INV_RING *const ring)
         .spacing = { .v = 20.0f },
     });
 
-    const bool has_hint = m_ButtonHintDrawFunc != nullptr;
+    const bool has_hint = m_ButtonHintPartCount > 0;
     const bool has_count = m_CountText != nullptr && m_CountText[0] != '\0';
 
     if (has_hint) {
-        m_ButtonHintDrawFunc(m_ButtonHintUserData);
+        M_DrawHint();
     }
 
     if (has_count) {
