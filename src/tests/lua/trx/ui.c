@@ -187,25 +187,13 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "scene_layers");
 }
 
-// Stands in for what ui/common.c links against and the bindings never reach:
-// the settings a toggle would write, the console it would report to, and the
-// text renderer.
+// Stands in for the text renderer that ui/common.c links against and the
+// bindings never reach.
 void UI_InitText(void)
 {
 }
 
 void UI_ShutdownText(void)
-{
-}
-
-void Console_LogImpl(
-    const LOG_LEVEL level, const char *const file, const int line,
-    const char *const func, const char *const fmt, ...)
-{
-}
-void Console_ShowImpl(
-    const LOG_LEVEL level, const char *const file, const int line,
-    const char *const func, const char *const fmt, ...)
 {
 }
 

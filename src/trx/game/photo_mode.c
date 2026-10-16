@@ -271,7 +271,7 @@ PHASE_CONTROL PhotoMode_Control(void)
     if (g_InputDB.pause) {
         return M_AdvanceFrame(p);
     } else if (g_InputDB.toggle_ui) {
-        UI_ToggleState(&g_Config.ui.enable_photo_mode_ui);
+        Shell_ToggleUI(&g_Config.ui.enable_photo_mode_ui);
     } else if (g_InputDB.step_left) {
         if (p->current_mode == 0) {
             p->current_mode = PHOTO_MODE_LAST;

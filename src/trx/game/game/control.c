@@ -300,7 +300,7 @@ void Game_ProcessInput(void)
     }
 
     if (g_InputDB.toggle_ui) {
-        UI_ToggleState(&g_Config.ui.enable_game_ui);
+        Shell_ToggleUI(&g_Config.ui.enable_game_ui);
     }
 
     if (g_InputDB.use_binoculars && Game_IsPlaying()

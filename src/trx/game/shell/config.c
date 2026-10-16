@@ -1,7 +1,10 @@
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/log.h>
 #include <trx/core/result.h>
 #include <trx/game/clock.h>
+#include <trx/game/console/common.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
@@ -232,4 +235,17 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
         Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
     }
 #undef L_CHANGED
+}
+
+void Shell_ToggleUI(const bool *const config_setting)
+{
+    CONFIG_OPTION *const option = Config_FindOptionByMirror(config_setting);
+    const TRX_VALUE value = {
+        .type = TVT_BOOL,
+        .as_bool = !*config_setting,
+    };
+    Config_Option_Write(option, &value);
+    Config_Update();
+    Console_Info(
+        *config_setting ? GS("general/osd/ui_on") : GS("general/osd/ui_off"));
 }

@@ -7,3 +7,7 @@ void Shell_SyncFromWindow(bool update_viewport);
 
 void Shell_RefreshRendererViewport(void);
 void Shell_HandleConfigChange(const CONFIG_CHANGE *change);
+
+// Turns a setting that shows a part of the interface on or off, and says so on
+// screen.
+void Shell_ToggleUI(const bool *config_setting);
