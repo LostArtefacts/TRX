@@ -9,11 +9,11 @@
 #include <trx/game/lara/util.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/effects/twinkle.h>
-#include <trx/game/overlay.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks/spawners.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui/menu.h>
 #include <trx/game/viewport.h>
 
 // clang-format off
@@ -80,7 +80,7 @@ static void M_ScionPedestal(ITEM *const item, COLL_INFO *const coll)
     const ITEM_ACTION_SLOT action =
         ItemAction_IDToSlot(ITEM_ACTION_FINISH_LEVEL);
     if (!Anim_HasFXCommand(Item_GetAnim(item), action)) {
-        Overlay_AddDisplayPickup(scion->object_id);
+        UI_ShowPickup(scion->object_id);
     }
 
     Inv_AddItem(scion->object_id);
@@ -97,7 +97,7 @@ static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
     Twinkle_SparkleItem(item, (1 << LM_HAND_L) | (1 << LM_HAND_R));
 
     if (Item_TestFrameEqual(item, M_LF_PICKUP_GOLD_BAR)) {
-        Overlay_AddDisplayPickup(O_PUZZLE_ITEM_1);
+        UI_ShowPickup(O_PUZZLE_ITEM_1);
         Inv_RemoveItem(O_LEAD_BAR_ITEM);
         Inv_AddItem(O_PUZZLE_ITEM_1);
         LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -235,7 +235,7 @@ static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
         Inv_AddItem(O_PUZZLE_ITEM_2);
         Stats_AddPickup();
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_DISPLAY)) {
-        Overlay_AddDisplayPickup(O_PUZZLE_ITEM_2);
+        UI_ShowPickup(O_PUZZLE_ITEM_2);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_ANIM_END)) {
         item->rot.y += DEG_90;
     }

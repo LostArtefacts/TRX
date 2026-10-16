@@ -24,3 +24,8 @@ OBJECT_ID UI_TakeRequestedItem(void);
 // when it starts in a save crystal mode that asks for a save on entry.
 void UI_RequestSave(bool requested);
 bool UI_IsSaveRequested(void);
+
+// Announces an object in the corner of the screen, as the game does for a
+// pickup Lara collects. A script draws the announcement and plays the secret
+// music for a secret.
+void UI_ShowPickup(OBJECT_ID object_id);

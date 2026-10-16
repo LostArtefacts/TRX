@@ -6,6 +6,7 @@
 #include <trx/game/lua/utils/module.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
+#include <trx/game/ui/menu.h>
 
 #include <lauxlib.h>
 
@@ -46,7 +47,7 @@ static int M_L_OverlaySetLetterbox(lua_State *const L)
 // trxc.overlay.show_pickup(object: trx.catalog.objects)
 static int M_L_OverlayShowPickup(lua_State *const L)
 {
-    Overlay_AddDisplayPickup(LUA_CheckObjectID(L, 1));
+    UI_ShowPickup(LUA_CheckObjectID(L, 1));
     return 0;
 }
 

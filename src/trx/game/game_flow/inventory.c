@@ -10,9 +10,9 @@
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui/menu.h>
 
 #include <string.h>
 
@@ -114,7 +114,7 @@ static void M_ModifyResumeInfo_Item(
 
 static void M_CollectNewPickup(const OBJECT_ID object_id)
 {
-    Overlay_AddDisplayPickup(object_id);
+    UI_ShowPickup(object_id);
     Stats_AddPickup();
 }
 

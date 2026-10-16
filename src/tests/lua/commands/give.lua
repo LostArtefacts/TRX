@@ -219,7 +219,7 @@ test("what a name gives is shown on the HUD", function()
   assert(give("vase") == trx.console.Result.OK)
   local shown = fake.calls().show_pickup
   assert(shown.count == 1)
-  assert(shown.obj_id == fake.VASE)
+  assert(shown.object_id == fake.VASE)
 end)
 
 test("what keys gives is shown on the HUD", function()
