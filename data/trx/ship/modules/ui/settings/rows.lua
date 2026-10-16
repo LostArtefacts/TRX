@@ -156,7 +156,7 @@ end
 -- The next value that can be picked, one step to a side of the current one.
 local function next_choice(key, dir)
   local list = M.choices(key)
-  local current = trx.config.to_string(key)
+  local current = trx.config.get(key)
   local from = 0
   for i, entry in ipairs(list) do
     if entry.value == current then
@@ -248,7 +248,7 @@ function M.on_offer(key)
   if kind(key) ~= "dynamic_enum" then
     return true
   end
-  local current = trx.config.to_string(key)
+  local current = trx.config.get(key)
   for _, entry in ipairs(trx.config.labels(key)) do
     if entry.value == current then
       return entry.enabled
@@ -309,7 +309,7 @@ function M.value_texts(key)
   elseif shape.kind == "string" then
     return { tostring(trx.config.get(key)) }
   elseif is_enum(key) then
-    local current = trx.config.to_string(key)
+    local current = trx.config.get(key)
     local texts = {}
     for _, entry in ipairs(M.choices(key)) do
       if

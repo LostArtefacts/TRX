@@ -60,6 +60,20 @@ test("an enum steps in the order its handler gives", function()
   end)
 end)
 
+-- The console writes these values with dashes, and the menu has to find the
+-- value it is on all the same.
+test("an enum of several words steps both ways", function()
+  local key = "gameplay.target_mode"
+  with(key, "full_lock", function()
+    assert(rows.change(key, 1))
+    assert(trx.config.get(key) == "semi_lock", trx.config.get(key))
+    assert(rows.change(key, 1))
+    assert(trx.config.get(key) == "no_lock", trx.config.get(key))
+    assert(rows.change(key, -1))
+    assert(trx.config.get(key) == "semi_lock", trx.config.get(key))
+  end)
+end)
+
 test("an enum value that is not offered is stepped over", function()
   -- No level is loaded, so the patterned backgrounds are not on offer.
   local key = "ui.inventory_background_style"
