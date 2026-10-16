@@ -195,6 +195,21 @@ function M.write_file(path, value)
   as_path(path):write_text(M.encode(value))
 end
 
+---The keys of an object read as JSON, in the order they were written, which a
+---Lua table does not keep. A table a script built itself, and anything that is
+---not a table, answer `nil`.
+---
+---```lua
+---local looks = trx.json.decode('{ "pc": 1, "ps1": 2 }')
+---for _, key in ipairs(trx.json.keys(looks)) do
+---  print(key, looks[key])
+---end
+---```
+---@param value any A table `trx.json.decode` or `trx.json.read_file` gave back.
+---@return string[]? # The keys in written order, or `nil` for a table that was not read as an object.
+---@type fun(value: any): string[]?
+M.keys = raw.keys
+
 ---Says where a table read from a file was written: the file, the line and the
 ---column. Use it when a script must report the source line for bad file data.
 ---A table a script built itself, and anything that is not a table, answer

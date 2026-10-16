@@ -105,6 +105,24 @@ encoded the way the engine's own data is.
   trx.json.write_file(kept, { seen = { "vilcabamba" } })
   ```
 
+- <a id="json.keys" name="json.keys"></a>[lua]`trx.json.keys(value)`  
+  The keys of an object read as JSON, in the order they were written, which a
+  Lua table does not keep. A table a script built itself, and anything that is
+  not a table, answer `nil`.
+
+  Parameters:
+  - <a id="json.keys.value" name="json.keys.value"></a>**`value`** (any). A table [`trx.json.decode`](#json.decode) or [`trx.json.read_file`](#json.read_file) gave back.
+
+  Returns: a list of string or `nil`. The keys in written order, or `nil` for a table that was not read as an object.
+
+  Example:
+  ```lua
+  local looks = trx.json.decode('{ "pc": 1, "ps1": 2 }')
+  for _, key in ipairs(trx.json.keys(looks)) do
+    print(key, looks[key])
+  end
+  ```
+
 - <a id="json.where" name="json.where"></a>[lua]`trx.json.where(value)`  
   Says where a table read from a file was written: the file, the line and the
   column. Use it when a script must report the source line for bad file data.

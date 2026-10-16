@@ -341,6 +341,7 @@ trxc = {}
 ---@class (exact) trxc.json
 ---@field decode fun(text: string): any?
 ---@field decode_from fun(text: string, path: string): any?
+---@field keys fun(value: any): string[]?
 ---@field where fun(value: any): string?
 
 ---@class (exact) trxc.lara

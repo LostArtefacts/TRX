@@ -184,6 +184,7 @@
 - Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
 - Added `trx.ui.screen`, the whole screen in canvas units, which reaches the edges that `trx.ui.canvas` can stop short of
 - Added `trx.config.labels`, `trx.config.to_string`, `trx.config.is_default` and `trx.config.is_hidden`, which tell a script what the settings menu shows of a setting
+- Added `trx.json.keys`, which gives the keys of an object read as JSON in the order they were written
 - Added `trx.path.Path:list`, which lists the entries of a directory
 - Added `trx.locale.text_languages`, `trx.locale.voice_languages` and `trx.locale.language_name`, which list the languages and the dubs the game has
 - Added `trx.input.has_touchscreen`, which says whether the device has a touchscreen

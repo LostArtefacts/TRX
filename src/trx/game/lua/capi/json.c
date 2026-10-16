@@ -14,6 +14,7 @@
 // The source file location for a decoded value. A script can use it to report
 // bad file data with the line to inspect. A value built by Lua carries none.
 #define M_WHERE_KEY "__json_where"
+#define M_KEYS_KEY "__json_keys"
 
 #define M_MAX_DEPTH 100
 
@@ -70,12 +71,33 @@ static bool M_PushArray(
     return true;
 }
 
+// Keeps the keys of the object table on the stack in the order they were
+// written, which a Lua table does not.
+static void M_MarkKeys(lua_State *const L, const JSON_OBJECT *const obj)
+{
+    if (lua_getmetatable(L, -1) == 0) {
+        lua_createtable(L, 0, 1);
+        lua_pushvalue(L, -1);
+        lua_setmetatable(L, -3);
+    }
+    lua_createtable(L, obj->length, 0);
+    int32_t idx = 1;
+    for (const JSON_OBJECT_ELEMENT *elem = obj->start; elem != nullptr;
+         elem = elem->next) {
+        lua_pushstring(L, elem->name->string);
+        lua_rawseti(L, -2, idx++);
+    }
+    lua_setfield(L, -2, M_KEYS_KEY);
+    lua_pop(L, 1);
+}
+
 static bool M_PushObject(
     lua_State *const L, const JSON_VALUE *const value,
     const JSON_OBJECT *const obj, const char *const path, const int32_t depth)
 {
     lua_createtable(L, 0, obj->length);
     M_MarkWhere(L, value, path);
+    M_MarkKeys(L, obj);
     for (const JSON_OBJECT_ELEMENT *elem = obj->start; elem != nullptr;
          elem = elem->next) {
         if (!M_PushValue(L, elem->value, path, depth + 1)) {
@@ -157,6 +179,26 @@ static int M_L_DecodeFrom(lua_State *const L)
     return M_Decode(L, luaL_checkstring(L, 2));
 }
 
+// trxc.json.keys(value: any): string[]?
+static int M_L_Keys(lua_State *const L)
+{
+    if (!lua_istable(L, 1) || lua_getmetatable(L, 1) == 0) {
+        lua_pushnil(L);
+        return 1;
+    }
+    if (lua_getfield(L, -1, M_KEYS_KEY) != LUA_TTABLE) {
+        lua_pushnil(L);
+        return 1;
+    }
+    const lua_Integer count = luaL_len(L, -1);
+    lua_createtable(L, (int)count, 0);
+    for (lua_Integer i = 1; i <= count; i++) {
+        lua_rawgeti(L, -2, i);
+        lua_rawseti(L, -2, i);
+    }
+    return 1;
+}
+
 // trxc.json.where(value: any): string?
 static int M_L_Where(lua_State *const L)
 {
@@ -169,9 +211,8 @@ static int M_L_Where(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "decode", M_L_Decode },
-    { "decode_from", M_L_DecodeFrom },
-    { "where", M_L_Where },
+    { "decode", M_L_Decode }, { "decode_from", M_L_DecodeFrom },
+    { "keys", M_L_Keys },     { "where", M_L_Where },
     { nullptr, nullptr },
 };
 
