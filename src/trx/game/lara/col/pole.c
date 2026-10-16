@@ -136,6 +136,7 @@ static void M_PoleDown(ITEM *const item, COLL_INFO *const coll)
                 .y = item->pos.y - M_FLOOR_SNAP_PROBE,
                 .z = item->pos.z,
             });
+        item->pos.y = item->floor;
         item->goal_anim_state = LS(LS_POLE_IDLE);
         m_SlideVelocity = 0;
     }
