@@ -9,6 +9,7 @@
 
 local metrics = require("common.ui.metrics")
 local row_arrows = require("common.ui.widgets.row_arrows")
+require("common.ui.scroll")
 
 local M = {}
 

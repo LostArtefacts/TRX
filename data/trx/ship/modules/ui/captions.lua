@@ -10,6 +10,12 @@ local timer = require("common.timer")
 
 local M = {}
 
+trx.config.declare({
+  key = "ui.show_title_version",
+  kind = "boolean",
+  default = true,
+})
+
 local BLINK_PERIOD = 10
 local VERSION_SCALE = 0.5
 local ORDER = { order = 1 }

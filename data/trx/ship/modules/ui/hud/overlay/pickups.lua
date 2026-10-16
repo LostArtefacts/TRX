@@ -8,6 +8,12 @@
 
 local M = {}
 
+trx.config.declare({
+  key = "ui.show_pickups_overlay",
+  kind = "boolean",
+  default = true,
+})
+
 -- Starts showing pickups as Lara collects them. Called once, by the overlay.
 function M.setup()
   local primitive = trx.ui.primitive

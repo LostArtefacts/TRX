@@ -9,6 +9,12 @@
 
 local M = {}
 
+trx.config.declare({
+  key = "ui.enable_wraparound",
+  kind = "boolean",
+  default = true,
+})
+
 ---@class common.ui.Scroll
 ---@field first trx.signal.Signal The first item in the window.
 ---@field selected trx.signal.Signal The item the cursor is on, or nil for none.
