@@ -23,7 +23,7 @@ local themes = {}
 ---@field w? any The width, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
 ---@field h? any The height, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
 ---@field smooth? any Whether the fill shades one band into the next, or a signal that holds that value. The player's smooth bars setting by default.
----@field preview? any Whether the bar takes the size of the text around it rather than the player's bar size, as a bar shown beside its setting does, or a signal that holds that value. `false` by default.
+---@field preview? any Whether the bar takes the size of the text around it rather than the player's bar size and the size its style gives it, as a bar shown beside its setting does, or a signal that holds that value. `false` by default.
 
 ---One of the game's bars, drawn with the player's bar settings.
 ---
@@ -87,9 +87,12 @@ function widgets.Bar(settings)
 
   local self = new_widget(settings, function(w)
     local theme = theme_of(w)
-    local size = value_of(w.preview) and raw.drawn_text_scale()
-      or raw.bar_scale()
-    local scale = size * (theme ~= nil and theme.basic_scale or 1)
+    if value_of(w.preview) then
+      local scale = raw.drawn_text_scale()
+      return (value_of(w.w) or BAR_WIDTH) * scale,
+        (value_of(w.h) or BAR_HEIGHT) * scale
+    end
+    local scale = raw.bar_scale() * (theme ~= nil and theme.basic_scale or 1)
     return (value_of(w.w) or BAR_WIDTH) * scale,
       (value_of(w.h) or BAR_HEIGHT) * scale
   end, function(w, x, y, bw, bh)

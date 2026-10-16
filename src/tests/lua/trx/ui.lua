@@ -1111,6 +1111,23 @@ test("a preview bar takes the size of the text", function()
   assert(near(w, 60 * trx.ui.text_scale), w)
 end)
 
+test("a preview bar keeps the size of the text whatever its style", function()
+  local function width(preview)
+    return widgets
+      .Bar({
+        type = trx.ui.BarType.ENEMY_HP,
+        value = 1,
+        w = 60,
+        h = 12,
+        preview = preview,
+      })
+      :measure()
+  end
+  assert(near(width(true), 60 * trx.ui.text_scale), width(true))
+  local bar_scale = trx.config.get("ui.bar_scale")
+  assert(near(width(false), 60 * bar_scale * 0.5), width(false))
+end)
+
 test("a blank widget keeps its room and draws nothing", function()
   local painted = false
   local blank = widgets.Blank({
