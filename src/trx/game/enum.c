@@ -33,7 +33,6 @@
 #include <trx/game/shell/mod.h>
 #include <trx/game/sound/ids.h>
 #include <trx/game/sparks/enum.h>
-#include <trx/game/ui/align.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/ui/frame.h>
@@ -134,20 +133,6 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_HEADING_OUTLINE, "heading_outline");
 
     // LUA_EVENT_NUMBER_OF is a sentinel, not an event.
-    ENUM_MAP(UI_STACK_ORIENTATION, UI_STACK_VERTICAL, "vertical");
-    ENUM_MAP(UI_STACK_ORIENTATION, UI_STACK_HORIZONTAL, "horizontal");
-
-    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_LEFT, "left");
-    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_CENTER, "center");
-    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_RIGHT, "right");
-    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_SPAN, "span");
-    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_DISTRIBUTE, "distribute");
-
-    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_TOP, "top");
-    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_CENTER, "center");
-    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_BOTTOM, "bottom");
-    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_SPAN, "span");
-    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_DISTRIBUTE, "distribute");
 
     ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND, "dialog_background");
     ENUM_MAP(

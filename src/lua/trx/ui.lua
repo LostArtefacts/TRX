@@ -42,43 +42,43 @@ local M = h.module("ui")
 ---@enum trx.ui.Orientation
 local Orientation = {
   ---One below the next.
-  VERTICAL = h.IntegerConstant,
+  VERTICAL = 0,
   ---One beside the next.
-  HORIZONTAL = h.IntegerConstant,
+  HORIZONTAL = 1,
 }
-M.Orientation = h.enum("ui.Orientation", "UI_STACK_ORIENTATION", Orientation)
+M.Orientation = h.coined_enum("ui.Orientation", Orientation)
 
 ---Where a stack puts its children across its width.
 ---@enum trx.ui.HAlign
 local HAlign = {
   ---Against the left edge.
-  LEFT = h.IntegerConstant,
+  LEFT = 0,
   ---In the middle.
-  CENTER = h.IntegerConstant,
+  CENTER = 1,
   ---Against the right edge.
-  RIGHT = h.IntegerConstant,
+  RIGHT = 2,
   ---Stretched to the full width.
-  SPAN = h.IntegerConstant,
+  SPAN = 3,
   ---Spread out, with the gaps taking the spare width.
-  DISTRIBUTE = h.IntegerConstant,
+  DISTRIBUTE = 4,
 }
-M.HAlign = h.enum("ui.HAlign", "UI_STACK_H_ALIGN", HAlign)
+M.HAlign = h.coined_enum("ui.HAlign", HAlign)
 
 ---Where a stack puts its children down its height.
 ---@enum trx.ui.VAlign
 local VAlign = {
   ---Against the top edge.
-  TOP = h.IntegerConstant,
+  TOP = 0,
   ---In the middle.
-  CENTER = h.IntegerConstant,
+  CENTER = 1,
   ---Against the bottom edge.
-  BOTTOM = h.IntegerConstant,
+  BOTTOM = 2,
   ---Stretched to the full height.
-  SPAN = h.IntegerConstant,
+  SPAN = 3,
   ---Spread out, with the gaps taking the spare height.
-  DISTRIBUTE = h.IntegerConstant,
+  DISTRIBUTE = 4,
 }
-M.VAlign = h.enum("ui.VAlign", "UI_STACK_V_ALIGN", VAlign)
+M.VAlign = h.coined_enum("ui.VAlign", VAlign)
 
 ---One of the nine areas of the screen that the interface is laid out in.
 ---Everything that reserves room in a region is stacked together, so nothing in

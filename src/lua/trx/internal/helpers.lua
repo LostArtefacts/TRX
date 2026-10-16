@@ -169,6 +169,42 @@ function M.enum(path, backing, docs)
   end)
 end
 
+-- Returns a read-only enum whose values the module coins itself, for one that
+-- only scripts read and the engine never sees. `values` maps each constant's
+-- name to its value, and no two constants share a value.
+---@generic T
+---@param path string
+---@param values T
+---@return T
+function M.coined_enum(path, values)
+  local public = {}
+  local named = {}
+  for name, value in pairs(values) do
+    enum_needs(
+      math.type(value) == "integer",
+      "%s.%s is not an integer",
+      path,
+      name
+    )
+    enum_needs(
+      named[value] == nil,
+      "%s.%s has the value of %s.%s",
+      path,
+      name,
+      path,
+      named[value]
+    )
+    named[value] = name
+    public[name] = value
+  end
+
+  return enum_face(path, function(key)
+    return public[key] or public[key:upper()]
+  end, function()
+    return public
+  end)
+end
+
 -- Returns the identities a catalog holds as a read-only table, by name. A mod
 -- can add identities after this, so a name is asked of the catalog when it is
 -- not among the ones it held to begin with.
