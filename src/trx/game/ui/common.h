@@ -77,8 +77,6 @@ UI_LAYER UI_GetLayer(void);
 // while reservation boxes are known.
 void UI_SetPaintHook(void (*hook)(UI_LAYER layer));
 
-void UI_ToggleState(const bool *config_setting);
-
 void UI_HandleKeyDown(uint32_t key);
 void UI_HandleKeyUp(uint32_t key);
 void UI_HandleTextEdit(const char *text);

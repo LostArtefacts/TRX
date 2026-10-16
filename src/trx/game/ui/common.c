@@ -1,12 +1,9 @@
 #include <trx/game/ui/common.h>
 
 #include <trx/config.h>
-#include <trx/config/registry.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
-#include <trx/game/console/common.h>
-#include <trx/game/game_strings/entries.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/events.h>
@@ -82,19 +79,6 @@ void UI_EndScene(void)
     UI_Fade_Draw();
     M_Paint(UI_LAYER_CONSOLE);
     UI_DrawExitFade();
-}
-
-void UI_ToggleState(const bool *const config_setting)
-{
-    CONFIG_OPTION *const option = Config_FindOptionByMirror(config_setting);
-    const TRX_VALUE value = {
-        .type = TVT_BOOL,
-        .as_bool = !*config_setting,
-    };
-    Config_Option_Write(option, &value);
-    Config_Update();
-    Console_Info(
-        *config_setting ? GS("general/osd/ui_on") : GS("general/osd/ui_off"));
 }
 
 int32_t UI_GetCanvasWidth(void)
