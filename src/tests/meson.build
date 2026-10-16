@@ -248,6 +248,7 @@ b_screen_module = {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1281,6 +1282,7 @@ unit_tests += {
     'fakes/lara.c',
     'fakes/overlay.c',
     'fakes/sound.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'game/lua/capi/catalog.c',
@@ -1321,6 +1323,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1466,6 +1469,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1545,6 +1549,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1629,6 +1634,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1715,6 +1721,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1801,6 +1808,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1889,6 +1897,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -1977,6 +1986,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -2326,6 +2336,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',
@@ -2414,6 +2425,7 @@ unit_tests += {
     'fakes/paths.c',
     'fakes/text_wrap.c',
     'fakes/ui_draw.c',
+    'fakes/ui_menu.c',
   ],
   'engine': [
     'config/common.c',

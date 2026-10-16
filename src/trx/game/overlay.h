@@ -37,9 +37,6 @@ void Overlay_Reset(void);
 void Overlay_Control(void);
 
 void Overlay_DrawGameInfo(void);
-// Asks the interface to announce an object. The overlay script draws the
-// announcement; this plays the secret music and tells the script.
-void Overlay_AddDisplayPickup(OBJECT_ID obj_id);
 
 // Returns the line at the top of the screen and the caption at the bottom in
 // the player's language, or nullptr for none. A script draws both.

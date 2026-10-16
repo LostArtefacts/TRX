@@ -23,7 +23,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/overlay.h>
+#include <trx/game/ui/menu.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 
@@ -257,7 +257,7 @@ void Inv_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
     m_Ammo[gun_type] += rounds;
 }
 
-void Overlay_AddDisplayPickup(const OBJECT_ID object_id)
+void UI_ShowPickup(const OBJECT_ID object_id)
 {
 }
 

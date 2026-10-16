@@ -1,5 +1,7 @@
 #include <trx/game/ui/menu.h>
 
+#include <trx/game/lua/events.h>
+
 static OBJECT_ID m_RequestedItem = NO_OBJECT;
 static bool m_SaveRequested = false;
 
@@ -23,4 +25,9 @@ void UI_RequestSave(const bool requested)
 bool UI_IsSaveRequested(void)
 {
     return m_SaveRequested;
+}
+
+void UI_ShowPickup(const OBJECT_ID object_id)
+{
+    LUA_FireEventInt32(LUA_EVENT_SHOW_PICKUP, object_id);
 }
