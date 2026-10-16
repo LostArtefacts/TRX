@@ -53,7 +53,7 @@ say what to draw.
 - <a id="overlay.signals" name="overlay.signals"></a>[lua]`trx.overlay.signals`  
   What the overlay tells a script, for the parts of it a script draws.
 
-- <a id="overlay.set_caption" name="overlay.set_caption"></a>[lua]`trx.overlay.set_caption([text])`  
+- <a id="overlay.set_caption" name="overlay.set_caption"></a>[lua]`trx.overlay.set_caption([text], [opts])`  
   Sets the caption at the bottom of the screen.
 
   The inventory ring uses it for the selected entry. The caption reduces the
@@ -61,6 +61,19 @@ say what to draw.
 
   Parameters:
   - <a id="overlay.set_caption.text" name="overlay.set_caption.text"></a>**`text`** (string, optional). Text to show. Omit this parameter to remove the caption.
+  - <a id="overlay.set_caption.opts" name="overlay.set_caption.opts"></a>**`opts`** (table, optional). How it shows.
+
+    Keys:
+    - <a id="overlay.set_caption.opts.flashing" name="overlay.set_caption.opts.flashing"></a>**`flashing`** (boolean, optional). Whether the caption flashes, as it does while a demo plays. `false` by default.
+    - <a id="overlay.set_caption.opts.plain" name="overlay.set_caption.opts.plain"></a>**`plain`** (boolean, optional). Whether the text shows as given. By default it takes the style that the `general/inventory_ring/object_name_fmt` string gives the name of an entry.
+
+  Example:
+  ```lua
+  trx.overlay.set_caption(trx.locale.get("general/misc/demo_mode"), {
+    plain = true,
+    flashing = true,
+  })
+  ```
 
 - <a id="overlay.show_arrow" name="overlay.show_arrow"></a>[lua]`trx.overlay.show_arrow(arrow, shown)`  
   Shows or hides an interface arrow.

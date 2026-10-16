@@ -3,12 +3,10 @@
 #include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/game/game.h>
-#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
-#include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
@@ -27,21 +25,6 @@ static INVENTORY_MODE M_ResolveMode(const INVENTORY_MODE mode)
     return mode;
 }
 
-static bool M_IsLoading(const M_PRIV *const p)
-{
-    return p->mode == INV_LOAD_MODE;
-}
-
-static void M_SetTitle(const M_PRIV *const p)
-{
-    Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = OVERLAY_TEXT_GS_KEY,
-        .gs_key = M_IsLoading(p) ? GS_ID("general/passport/load_game")
-                                 : GS_ID("general/passport/save_game"),
-        .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
-    });
-}
-
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
@@ -57,7 +40,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     }
 
     Output_Overlay_CaptureGameSnapshot();
-    M_SetTitle(p);
     UI_Takeover_Offer(
         UI_TAKEOVER_SAVE_LOAD, (UI_TAKEOVER_ARGS) { .mode = p->mode });
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
@@ -65,7 +47,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 
 static void M_End(PHASE *const phase)
 {
-    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
     UI_Takeover_Release(UI_TAKEOVER_SAVE_LOAD);
 }
 

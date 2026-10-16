@@ -86,7 +86,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     case STATE_FADE_OUT:
         Game_SetIsPlaying(false);
-        Demo_StopFlashing();
         if (!Fader_IsActive(&p->fader)) {
             p->state = STATE_FINISH;
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };

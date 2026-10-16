@@ -1,5 +1,3 @@
-#include <trx/core/memory.h>
-#include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/args.h>
@@ -9,9 +7,6 @@
 #include <trx/game/ui/menu.h>
 
 #include <lauxlib.h>
-
-// Keep the caption until the next caption replaces it.
-static char *m_CaptionText = nullptr;
 
 // trxc.overlay.is_health_bar_forced(): boolean
 static int M_L_OverlayIsHealthBarForced(lua_State *const L)
@@ -51,29 +46,6 @@ static int M_L_OverlayShowPickup(lua_State *const L)
     return 0;
 }
 
-// trxc.overlay.set_caption(text?: string)
-//
-// Set the interface caption. Nil removes it.
-static int M_L_OverlaySetCaption(lua_State *const L)
-{
-    if (lua_isnoneornil(L, 1)) {
-        Overlay_SetBottomText((OVERLAY_TEXT) {});
-        Memory_FreePointer(&m_CaptionText);
-        return 0;
-    }
-
-    char *const text = Memory_DupStr(luaL_checkstring(L, 1));
-    Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = OVERLAY_TEXT_LITERAL,
-        .literal = text,
-        .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
-    });
-    // Replace the old text after the new text is validated.
-    Memory_FreePointer(&m_CaptionText);
-    m_CaptionText = text;
-    return 0;
-}
-
 // trxc.overlay.show_arrow(arrow: trx.overlay.Arrow, shown?: boolean)
 static int M_L_OverlayShowArrow(lua_State *const L)
 {
@@ -99,20 +71,6 @@ static int M_L_OverlayTopText(lua_State *const L)
     return 1;
 }
 
-// trxc.overlay.caption(): string?
-static int M_L_OverlayCaption(lua_State *const L)
-{
-    M_PushText(L, Overlay_GetBottomText());
-    return 1;
-}
-
-// trxc.overlay.is_caption_flashing(): boolean
-static int M_L_OverlayIsCaptionFlashing(lua_State *const L)
-{
-    lua_pushboolean(L, Overlay_IsBottomTextFlashing());
-    return 1;
-}
-
 // trxc.overlay.is_arrow_shown(arrow: trx.overlay.Arrow): boolean
 static int M_L_OverlayIsArrowShown(lua_State *const L)
 {
@@ -133,11 +91,8 @@ static const luaL_Reg m_Module[] = {
     { "get_letterbox", M_L_OverlayGetLetterbox },
     { "has_letterbox", M_L_OverlayHasLetterbox },
     { "set_letterbox", M_L_OverlaySetLetterbox },
-    { "set_caption", M_L_OverlaySetCaption },
     { "show_arrow", M_L_OverlayShowArrow },
     { "top_text", M_L_OverlayTopText },
-    { "caption", M_L_OverlayCaption },
-    { "is_caption_flashing", M_L_OverlayIsCaptionFlashing },
     { "is_arrow_shown", M_L_OverlayIsArrowShown },
     { "is_version_shown", M_L_OverlayIsVersionShown },
     { "is_health_bar_forced", M_L_OverlayIsHealthBarForced },

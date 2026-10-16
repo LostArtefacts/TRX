@@ -47,7 +47,19 @@ local function open_save_load(ctx)
   if index == nil or pages.FLAT[book_pages[index].role] then
     return nil
   end
-  return book.open_alone(ctx, book_pages, index, false)
+  local opened = book.open_alone(ctx, book_pages, index, false)
+  if opened == nil then
+    return nil
+  end
+  if ctx.mode == trx.ui.MenuMode.LOAD then
+    trx.overlay.set_caption(trx.locale.get("general/passport/load_game"))
+  else
+    trx.overlay.set_caption(trx.locale.get("general/passport/save_game"))
+  end
+  ctx:on_end(function()
+    trx.overlay.set_caption()
+  end)
+  return opened
 end
 
 local function name_crystal()
