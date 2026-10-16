@@ -30,11 +30,16 @@ local function open(object)
   fake.tick()
 end
 
-local function finish()
+-- Puts the entry away. The level ends with it unless `keep` is set, so that
+-- the next dialog opens from the top.
+local function finish(keep)
   fake.release(RING_ENTRY)
   fake.take_choice(RING_ENTRY)
   fake.close_ring()
   fake.release_all()
+  if not keep then
+    fake.end_level()
+  end
   assert(fake.errors() == 0, "the module raised")
 end
 
@@ -128,6 +133,29 @@ test("the heading and the tabs follow the player's language", function()
   fake.tick()
   assert(shows("Noises"), "the heading kept its old text")
   assert(shows("Loudness"), "the tab kept its old name")
+  finish()
+end)
+
+test("a dialog opens again where the player left it", function()
+  local PDA = trx.catalog.objects.PDA_OPTION
+  trx.config.set("gameplay.enable_legal", true)
+  trx.config.set("gameplay.enable_credits", true)
+  open(PDA)
+  press(Role.MENU_DOWN)
+  press(Role.MENU_DOWN)
+  finish(true)
+
+  open(PDA)
+  press(Role.MENU_RIGHT)
+  assert(trx.config.get("gameplay.enable_credits") == false, "not on credits")
+  assert(trx.config.get("gameplay.enable_legal") == true)
+  finish()
+
+  -- The level ended with the entry, which starts every dialog from the top.
+  open(PDA)
+  press(Role.MENU_DOWN)
+  press(Role.MENU_RIGHT)
+  assert(trx.config.get("gameplay.enable_legal") == false, "not on legal")
   finish()
 end)
 
