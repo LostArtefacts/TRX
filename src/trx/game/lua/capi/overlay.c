@@ -90,12 +90,63 @@ static int M_L_OverlayShowArrow(lua_State *const L)
     return 0;
 }
 
+static void M_PushText(lua_State *const L, const char *const text)
+{
+    if (text == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, text);
+    }
+}
+
+// trxc.overlay.top_text(): string?
+static int M_L_OverlayTopText(lua_State *const L)
+{
+    M_PushText(L, Overlay_GetTopText());
+    return 1;
+}
+
+// trxc.overlay.caption(): string?
+static int M_L_OverlayCaption(lua_State *const L)
+{
+    M_PushText(L, Overlay_GetBottomText());
+    return 1;
+}
+
+// trxc.overlay.is_caption_flashing(): boolean
+static int M_L_OverlayIsCaptionFlashing(lua_State *const L)
+{
+    lua_pushboolean(L, Overlay_IsBottomTextFlashing());
+    return 1;
+}
+
+// trxc.overlay.is_arrow_shown(arrow: trx.overlay.Arrow): boolean
+static int M_L_OverlayIsArrowShown(lua_State *const L)
+{
+    const OVERLAY_ARROW arrow = (OVERLAY_ARROW)LUA_CheckRange(
+        L, 1, OVERLAY_ARROW_NUMBER_OF, "unknown arrow");
+    lua_pushboolean(L, Overlay_IsArrowShown(arrow));
+    return 1;
+}
+
+// trxc.overlay.is_version_shown(): boolean
+static int M_L_OverlayIsVersionShown(lua_State *const L)
+{
+    lua_pushboolean(L, Overlay_IsVersionShown());
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_letterbox", M_L_OverlayGetLetterbox },
     { "has_letterbox", M_L_OverlayHasLetterbox },
     { "set_letterbox", M_L_OverlaySetLetterbox },
     { "set_caption", M_L_OverlaySetCaption },
     { "show_arrow", M_L_OverlayShowArrow },
+    { "top_text", M_L_OverlayTopText },
+    { "caption", M_L_OverlayCaption },
+    { "is_caption_flashing", M_L_OverlayIsCaptionFlashing },
+    { "is_arrow_shown", M_L_OverlayIsArrowShown },
+    { "is_version_shown", M_L_OverlayIsVersionShown },
     { "is_health_bar_forced", M_L_OverlayIsHealthBarForced },
     { "show_pickup", M_L_OverlayShowPickup },
     { nullptr, nullptr },

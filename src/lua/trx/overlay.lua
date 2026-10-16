@@ -5,12 +5,10 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---@class (partial) trx
 ---@field overlay trx.overlay
 
----What the engine draws over the game and no script owns: the pickups that
----slide in, the assault course digits, and the lines of text the rest of the
----engine asks for.
----
----Only what a script has to answer for is here. The lines of text are the
----engine's own, and a script neither reads nor writes them.
+---What the game shows over the play: the pickups that slide in, the cinematic
+---bars, and the lines of text and the arrows that the inventory ring, a demo
+---or a film asks for. The shipped scripts draw all of it; the signals here
+---say what to draw.
 ---@trx.module 41 Overlay
 ---@class (exact) trx.overlay
 ---@trx.readonly has_letterbox
@@ -20,13 +18,27 @@ local M = h.module("overlay")
 
 ---What the overlay tells a script, for the parts of it a script draws.
 ---@class (exact) trx.overlay.signals
----@trx.readonly health_bar_forced, letterbox
+---@trx.readonly arrows, caption, caption_flashing, health_bar_forced, letterbox, top_text, version_shown
+---@field top_text trx.signal.Signal Holds the line the game shows at the top of the screen, such as the name of the inventory ring, in the player's language, or nil for none.
+---@field caption trx.signal.Signal Holds the caption at the bottom of the screen, such as the name of the entry under the cursor of the inventory ring, in the player's language, or nil for none.
+---@field caption_flashing trx.signal.Signal Holds whether the caption flashes, as it does while a demo plays.
+---@field arrows trx.signal.Signal Holds the arrows on screen, as a table that maps each `trx.overlay.Arrow` that shows to `true`.
+---@field version_shown trx.signal.Signal Holds whether the game asks for its version on screen, as the title screen does. The `ui.show_title_version` setting decides whether it shows. <!--noref: ui.show_title_version-->
 ---@field letterbox trx.signal.Signal Says when the cinematic bars take the screen and when they give it back. True while they are moving, so a script can hold something back until they have gone.
 ---@field health_bar_forced trx.signal.Signal Says when something asks for Lara's health bar whatever else is on screen, which the inventory ring does while it shows a medipack.
 M.signals = h.namespace("overlay.signals")
 
-local held = nil
-local letterbox_held = nil
+local polled = {}
+
+-- One signal for each reader, made when a script first asks for it.
+local function lasting(name, read)
+  return function()
+    if polled[name] == nil then
+      polled[name] = read()
+    end
+    return polled[name]
+  end
+end
 
 ---An arrow the interface can show.
 ---@enum trx.overlay.Arrow
@@ -77,22 +89,61 @@ h.properties(M, "overlay", {
   },
 })
 
+-- The arrows on screen, as a number with one bit for each, so that the poll
+-- says only when one of them moves.
+local function arrow_bits()
+  local bits = 0
+  for _, arrow in pairs(M.Arrow) do
+    if raw.is_arrow_shown(arrow) then
+      bits = bits | (1 << arrow)
+    end
+  end
+  return bits
+end
+
 h.properties(M.signals, "overlay.signals", {
+  top_text = {
+    get = lasting("top_text", function()
+      return lasting_polled(raw.top_text)
+    end),
+  },
+  caption = {
+    get = lasting("caption", function()
+      return lasting_polled(raw.caption)
+    end),
+  },
+  caption_flashing = {
+    get = lasting("caption_flashing", function()
+      return lasting_polled(raw.is_caption_flashing)
+    end),
+  },
+  arrows = {
+    get = lasting("arrows", function()
+      return lasting_polled(arrow_bits):map(function(bits)
+        local shown = {}
+        for _, arrow in pairs(M.Arrow) do
+          if bits & (1 << arrow) ~= 0 then
+            shown[arrow] = true
+          end
+        end
+        return shown
+      end)
+    end),
+  },
+  version_shown = {
+    get = lasting("version_shown", function()
+      return lasting_polled(raw.is_version_shown)
+    end),
+  },
   letterbox = {
-    get = function()
-      if letterbox_held == nil then
-        letterbox_held = lasting_polled(raw.has_letterbox)
-      end
-      return letterbox_held
-    end,
+    get = lasting("letterbox", function()
+      return lasting_polled(raw.has_letterbox)
+    end),
   },
   health_bar_forced = {
-    get = function()
-      if held == nil then
-        held = lasting_polled(raw.is_health_bar_forced)
-      end
-      return held
-    end,
+    get = lasting("health_bar_forced", function()
+      return lasting_polled(raw.is_health_bar_forced)
+    end),
   },
 })
 

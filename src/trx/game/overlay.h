@@ -56,3 +56,14 @@ void Overlay_ShowVersion(bool show);
 
 void Overlay_SetTopText(OVERLAY_TEXT text);
 void Overlay_SetBottomText(OVERLAY_TEXT text);
+
+// Returns the line at the top of the screen and the caption at the bottom in
+// the player's language, or nullptr for none.
+const char *Overlay_GetTopText(void);
+const char *Overlay_GetBottomText(void);
+
+// Returns whether the caption flashes, as it does while a demo plays.
+bool Overlay_IsBottomTextFlashing(void);
+
+bool Overlay_IsArrowShown(OVERLAY_ARROW arrow);
+bool Overlay_IsVersionShown(void);
