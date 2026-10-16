@@ -12,6 +12,58 @@ trx.config.declare({
   kind = "boolean",
   default = true,
 })
+trx.config.declare({
+  key = "ui.healthbar_location",
+  kind = "dynamic_enum",
+  values = place.LOCATIONS,
+  default = "top_left",
+})
+place.normalize("ui.healthbar_location")
+trx.config.declare({
+  key = "ui.airbar_location",
+  kind = "dynamic_enum",
+  values = place.LOCATIONS,
+  default = "top_right",
+})
+place.normalize("ui.airbar_location")
+trx.config.declare({
+  key = "ui.sprintbar_location",
+  kind = "dynamic_enum",
+  values = place.LOCATIONS,
+  default = "top_right",
+})
+place.normalize("ui.sprintbar_location")
+trx.config.declare({
+  key = "ui.exposurebar_location",
+  kind = "dynamic_enum",
+  values = place.LOCATIONS,
+  default = "top_right",
+})
+place.normalize("ui.exposurebar_location")
+trx.config.declare({
+  key = "ui.enemy_healthbar_location",
+  kind = "dynamic_enum",
+  values = place.LOCATIONS,
+  default = "bottom_left",
+})
+place.normalize("ui.enemy_healthbar_location")
+
+trx.locale.declare({
+  ["enums/bar_show_mode/never"] = "Never",
+  ["enums/bar_show_mode/always"] = "Always",
+  ["enums/bar_show_mode/boss_only"] = "Boss only",
+})
+trx.config.declare({
+  key = "ui.enemy_healthbar_show_mode",
+  kind = "dynamic_enum",
+  values = {
+    { value = "never", label = "enums/bar_show_mode/never" },
+    { value = "always", label = "enums/bar_show_mode/always" },
+    { value = "boss_only", label = "enums/bar_show_mode/boss_only" },
+  },
+  default = "always",
+})
+place.normalize("ui.enemy_healthbar_show_mode")
 
 -- Builds the bars and places them. `shared` holds what the rest of the
 -- overlay reads too.
