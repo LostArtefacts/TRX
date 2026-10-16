@@ -104,19 +104,42 @@ void UI_ScheduleDrawModel(
     int32_t h, XYZ_16 rot, bool held, int16_t tilt,
     const UI_MODEL_LIGHT *light);
 
-// Where a model stands in a world of its own, and the camera that sees it. The
-// model is placed by turns and moves applied in order from the world's origin,
-// as the engine places one, and seen through the camera's field of view.
+// Where a model stands in a world of its own, the camera that sees it, and the
+// frame it is posed in. The model is placed by turns, moves and scales applied
+// in order from the world's origin, as the engine places one, and seen through
+// the camera's field of view.
 #define UI_MODEL_STEPS 16
+#define UI_MODEL_BONES 8
+typedef enum {
+    UI_MODEL_STEP_MOVE,
+    UI_MODEL_STEP_TURN,
+    // Scales the model by vec.x, in 1/1024ths.
+    UI_MODEL_STEP_SCALE,
+} UI_MODEL_STEP;
+
 typedef struct {
     XYZ_32 camera_pos;
     XYZ_32 camera_target;
     int16_t fov;
     int32_t step_count;
     struct {
-        bool turn;
+        UI_MODEL_STEP kind;
         XYZ_32 vec;
     } steps[UI_MODEL_STEPS];
+    // The frame of its first animation that the model is posed in, and the
+    // frame it blends towards by the blend, from 0 to 1.
+    int32_t frame;
+    int32_t next_frame;
+    float blend;
+    // Turns that bones take on top of the frame, about the axes each names.
+    int32_t bone_count;
+    struct {
+        int32_t bone;
+        XYZ_BOOL axes;
+        XYZ_16 rot;
+    } bones[UI_MODEL_BONES];
+    // Whether the model is drawn about its pivot, without its frame offset.
+    bool at_pivot;
 } UI_MODEL_WORLD;
 
 // Draws an object's model where it stands in a world of its own, as that

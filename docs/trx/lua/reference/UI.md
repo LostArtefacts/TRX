@@ -1102,6 +1102,11 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.primitive.world_model.opts.camera" name="ui.primitive.world_model.opts.camera"></a>**`camera`** (table). The camera that sees the model.
     - <a id="ui.primitive.world_model.opts.pose" name="ui.primitive.world_model.opts.pose"></a>**`pose`** (a list of table). The steps that place the model, applied in order from the world's origin, up to sixteen.
+    - <a id="ui.primitive.world_model.opts.frame" name="ui.primitive.world_model.opts.frame"></a>**`frame`** (integer, optional). The frame of the model's first animation to pose it in, counted from 0. The first by default.
+    - <a id="ui.primitive.world_model.opts.next_frame" name="ui.primitive.world_model.opts.next_frame"></a>**`next_frame`** (integer, optional). The frame to blend towards. The same frame by default.
+    - <a id="ui.primitive.world_model.opts.blend" name="ui.primitive.world_model.opts.blend"></a>**`blend`** (number, optional). How far to blend towards the next frame, from `0` to `1`. `0` by default.
+    - <a id="ui.primitive.world_model.opts.bones" name="ui.primitive.world_model.opts.bones"></a>**`bones`** (a list of table, optional). Turns that bones take on top of the frame, up to eight.
+    - <a id="ui.primitive.world_model.opts.at_pivot" name="ui.primitive.world_model.opts.at_pivot"></a>**`at_pivot`** (boolean, optional). Whether to draw the model about its pivot, without the offset its frame stands it at. `false` by default.
     - <a id="ui.primitive.world_model.opts.mesh_mask" name="ui.primitive.world_model.opts.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
     - <a id="ui.primitive.world_model.opts.light" name="ui.primitive.world_model.opts.light"></a>**`light`** (table, optional). The light to draw it in, with its directions in the model's world. A plain white light by default.
 

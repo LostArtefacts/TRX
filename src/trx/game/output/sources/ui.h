@@ -23,18 +23,41 @@ typedef struct {
 } OUTPUT_UI_MESH_LIGHT;
 
 // Where a model stands in a world of its own, and the camera that sees it: the
-// model is placed by turns and moves applied in order from the world's origin,
-// as the engine places a model, and the light's directions are in that world.
+// model is placed by turns, moves and scales applied in order from the world's
+// origin, as the engine places a model, and the light's directions are in that
+// world.
 #define OUTPUT_UI_MESH_STEPS 16
+#define OUTPUT_UI_MESH_BONES 8
+typedef enum {
+    OUTPUT_UI_MESH_STEP_MOVE,
+    OUTPUT_UI_MESH_STEP_TURN,
+    // Scales the model by vec.x, in 1/1024ths.
+    OUTPUT_UI_MESH_STEP_SCALE,
+} OUTPUT_UI_MESH_STEP;
+
 typedef struct {
     XYZ_32 camera_pos;
     XYZ_32 camera_target;
     int16_t fov;
     int32_t step_count;
     struct {
-        bool turn;
+        OUTPUT_UI_MESH_STEP kind;
         XYZ_32 vec;
     } steps[OUTPUT_UI_MESH_STEPS];
+    // The frame of its first animation that the model is posed in, and the
+    // frame it blends towards by the blend, from 0 to 1.
+    int32_t frame;
+    int32_t next_frame;
+    float blend;
+    // Turns that bones take on top of the frame, about the axes each names.
+    int32_t bone_count;
+    struct {
+        int32_t bone;
+        XYZ_BOOL axes;
+        XYZ_16 rot;
+    } bones[OUTPUT_UI_MESH_BONES];
+    // Whether the model is drawn about its pivot, without its frame offset.
+    bool at_pivot;
 } OUTPUT_UI_MESH_WORLD;
 
 // An object drawn as a model in a box on the canvas. The box says where it
