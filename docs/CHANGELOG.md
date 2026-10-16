@@ -140,6 +140,7 @@
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Added the ability to carry a lit flare into the next level, as in the original game (TRX1345)
 - Added a skybox to the title screen (TRX1394)
+- Added all TR4 gun meshes into the outfit system (TRX1756)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
@@ -168,6 +169,7 @@
 - Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
 - Fixed Lara embedding into walls when crouched and picking up flares (Gameplay → Fixes → Fix pickup embed glitch)
 - Fixed Lara descending to the floor immediately if she is crawl-turning and the floor below her gives way (OG bug) (Gameplay → Fixes → Fix descending glitch)
+- Fixed the uzis and revolver not showing in Lara's holsters (OG bug) (TRX485)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
