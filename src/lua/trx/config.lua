@@ -43,7 +43,7 @@ trx.locale.declare({
 ---@field kind string One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. A declaration writes `boolean`, `integer` or `dynamic_enum`; the rest name storage the engine owns. <!--noref: color, enum, dynamic_enum-->
 ---@field percent? boolean Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
 ---@field default any What the setting holds until the player changes it, and what `trx.config.reset` puts back.
----@field values? string[] What the setting accepts, for the enum kinds. A declared `dynamic_enum` needs them, and they have to list the default. <!--noref: dynamic_enum-->
+---@field values? (string|trx.config.Value)[] What the setting accepts, for the enum kinds. A declared `dynamic_enum` needs them, and they have to list the default. A value given as text takes the label `settings/<key>/values/<value>`. <!--noref: dynamic_enum-->
 ---@field min? integer Lowest value a number takes. Absent, it takes as low a number as it can hold.
 ---@field max? integer Highest value a number takes. Absent, it takes as high a number as it can hold.
 ---@field ui? trx.config.Row The row a declared setting takes in the settings menu. Without one the setting has no row, and is the script's to read and write.
@@ -266,6 +266,13 @@ M.is_hidden = raw.is_hidden
 ---@return trx.config.Label[] # The values, empty for a setting that is not an enum.
 ---@type fun(key: string): trx.config.Label[]
 M.labels = raw.labels
+
+---One value that a declared `dynamic_enum` setting takes, with the label of
+---its own that the settings menu shows for it. <!--noref: dynamic_enum-->
+---@trx.record
+---@class trx.config.Value
+---@field value string The value, as `trx.config.set` takes it.
+---@field label? string The game string of what the settings menu shows for it. The value itself by default.
 
 ---@class (exact) trx.config.to_string.options
 ---@field human? boolean Whether to write the text as the settings menu shows it, with labels in the player's language, rather than as the settings file stores it. `false` by default.

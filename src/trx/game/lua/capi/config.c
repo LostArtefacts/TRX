@@ -403,6 +403,10 @@ static bool M_ListsDefault(
     const int32_t count = (int32_t)lua_rawlen(L, idx);
     for (int32_t i = 1; i <= count && !found; i++) {
         lua_rawgeti(L, idx, i);
+        if (lua_istable(L, -1)) {
+            lua_getfield(L, -1, "value");
+            lua_replace(L, -2);
+        }
         if (lua_type(L, -1) != LUA_TSTRING) {
             luaL_error(L, "option values must be strings");
         }
@@ -491,15 +495,25 @@ static void M_AddValue(
     Memory_FreePointer(&label);
 }
 
-// Seeds a declared enum's values.
+// Seeds a declared enum's values. A value given as a table carries its own
+// label, or none, in place of the derived one.
 static void M_SeedValues(lua_State *const L, const CONFIG_OPTION *const option)
 {
-    DynamicEnum_ResetValues(Config_Option_GetEnumKey(option));
+    const void *const token = Config_Option_GetEnumKey(option);
+    DynamicEnum_ResetValues(token);
     lua_getfield(L, 1, "values");
     const int32_t count = (int32_t)lua_rawlen(L, -1);
     for (int32_t i = 1; i <= count; i++) {
         lua_rawgeti(L, -1, i);
-        M_AddValue(option, lua_tostring(L, -1));
+        if (lua_istable(L, -1)) {
+            lua_getfield(L, -1, "value");
+            lua_getfield(L, -2, "label");
+            DynamicEnum_AddValue(
+                token, lua_tostring(L, -2), lua_tostring(L, -1));
+            lua_pop(L, 2);
+        } else {
+            M_AddValue(option, lua_tostring(L, -1));
+        }
         lua_pop(L, 1);
     }
     lua_pop(L, 1);

@@ -374,6 +374,25 @@ test("a declaration that could hold nothing it allows raises", function()
   end)
 end)
 
+local function offered(key)
+  local values = {}
+  for _, entry in ipairs(trx.config.labels(key)) do
+    values[#values + 1] = entry.value .. (entry.enabled and "" or " (off)")
+  end
+  return table.concat(values, ",")
+end
+
+test("a declared value carries a label of its own", function()
+  trx.config.declare({
+    key = "mod.shade",
+    kind = "dynamic_enum",
+    values = { "red", { value = "gold", label = "x/gold" } },
+    default = "gold",
+  })
+  assert(offered("mod.shade") == "red,gold", offered("mod.shade"))
+  assert(trx.config.get("mod.shade") == "gold")
+end)
+
 test("a key already taken raises", function()
   raises(function()
     trx.config.declare({

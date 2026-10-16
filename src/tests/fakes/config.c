@@ -9,6 +9,7 @@
 #include <trx/config/common.h>
 #include <trx/config/priv.h>
 #include <trx/config/registry.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
@@ -150,6 +151,14 @@ static bool M_Parse(
         break;
     }
 
+    case TVT_DYNAMIC_ENUM:
+        if (!DynamicEnum_IsValidValue(
+                Config_Option_GetEnumKey(option), new_value)) {
+            return false;
+        }
+        value.as_str = new_value;
+        break;
+
     default:
         return false;
     }
@@ -176,6 +185,8 @@ const char *Config_Option_GetValueAsString(
         return Value_Format(TVT_RGB_888, nullptr, &option->value, false);
     case TVT_ENUM:
         return EnumMap_ToString(option->enum_map, option->value.as_int);
+    case TVT_DYNAMIC_ENUM:
+        return option->value.as_str != nullptr ? option->value.as_str : "";
     default:
         return "";
     }

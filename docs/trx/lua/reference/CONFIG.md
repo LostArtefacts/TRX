@@ -49,7 +49,7 @@ belongs to that game and goes when it does.
     - <a id="config.Shape.min" name="config.Shape.min"></a>**`min`**: integer, optional. Lowest value a number takes. Absent, it takes as low a number as it can hold.
     - <a id="config.Shape.percent" name="config.Shape.percent"></a>**`percent`**: boolean, optional. Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
     - <a id="config.Shape.ui" name="config.Shape.ui"></a>**`ui`**: [trx.config.Row](#config.Row), optional. The row a declared setting takes in the settings menu. Without one the setting has no row, and is the script's to read and write.
-    - <a id="config.Shape.values" name="config.Shape.values"></a>**`values`**: a list of string, optional. What the setting accepts, for the enum kinds. A declared `dynamic_enum` needs them, and they have to list the default.
+    - <a id="config.Shape.values" name="config.Shape.values"></a>**`values`**: a list of string or [trx.config.Value](#config.Value), optional. What the setting accepts, for the enum kinds. A declared `dynamic_enum` needs them, and they have to list the default. A value given as text takes the label `settings/<key>/values/<value>`.
 
 - <a id="config.Row" name="config.Row"></a>[lua]`trx.config.Row`
 
@@ -80,6 +80,15 @@ belongs to that game and goes when it does.
     - <a id="config.Label.enabled" name="config.Label.enabled"></a>**`enabled`**: boolean. Whether the value can be picked now. A dynamic enum can switch values off, such as a language whose files are missing.
     - <a id="config.Label.label" name="config.Label.label"></a>**`label`**: string. What the menu shows for it, in the player's language.
     - <a id="config.Label.value" name="config.Label.value"></a>**`value`**: string. The value, as [`trx.config.set`](#config.set) takes it.
+
+- <a id="config.Value" name="config.Value"></a>[lua]`trx.config.Value`
+
+    One value that a declared `dynamic_enum` setting takes, with the label of
+    its own that the settings menu shows for it.
+
+    Properties:
+    - <a id="config.Value.label" name="config.Value.label"></a>**`label`**: string, optional. The game string of what the settings menu shows for it. The value itself by default.
+    - <a id="config.Value.value" name="config.Value.value"></a>**`value`**: string. The value, as [`trx.config.set`](#config.set) takes it.
 
 - <a id="config.DeclaredRow" name="config.DeclaredRow"></a>[lua]`trx.config.DeclaredRow`
 
