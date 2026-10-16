@@ -274,6 +274,37 @@ M.combine_partners = raw.combine_partners
 ---@type fun(object_id: trx.catalog.objects, partner_id: trx.catalog.objects): trx.catalog.objects?
 M.combine = raw.combine
 
+---Uses something Lara carries, as choosing it in the inventory ring does:
+---she draws a weapon, takes a medipack, lights a flare, or uses a key on what
+---she stands at. Something that has no use does nothing.
+---
+---```lua
+---trx.inventory.use(trx.catalog.objects.SMALL_MEDIPACK_OPTION)
+---```
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@type fun(object_id: trx.catalog.objects)
+M.use = raw.use
+
+---What the inventory ring offers for an entry.
+---@trx.record
+---@class trx.inventory.Actions
+---@field use boolean Whether choosing it uses it.
+---@field examine boolean Whether it can be examined, which the player's settings and its description decide.
+---@field combine boolean Whether Lara carries something it combines with, so that choosing it combines rather than uses it.
+
+---What the inventory ring offers for an entry: using, examining or combining
+---it.
+---
+---```lua
+---if trx.inventory.actions(object).examine then
+---  trx.log.info("it can be examined")
+---end
+---```
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return trx.inventory.Actions # What it offers.
+---@type fun(object_id: trx.catalog.objects): trx.inventory.Actions
+M.actions = raw.actions
+
 ---Indexing the module reaches an entry of Lara's inventory, and
 ---`#trx.inventory` is how many kinds of thing she carries. Entries are keyed
 ---by the order they are drawn in, and are built one at a time as they are
