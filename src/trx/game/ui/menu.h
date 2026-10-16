@@ -19,3 +19,8 @@ void UI_RequestItem(OBJECT_ID object_id);
 
 // Returns the entry asked for and forgets it, or NO_OBJECT where none was.
 OBJECT_ID UI_TakeRequestedItem(void);
+
+// Asks the game to offer a save once Lara is free to move, as a level does
+// when it starts in a save crystal mode that asks for a save on entry.
+void UI_RequestSave(bool requested);
+bool UI_IsSaveRequested(void);
