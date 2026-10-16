@@ -4,7 +4,9 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/anims/types.h>
+#include <trx/game/camera.h>
 #include <trx/game/const.h>
+#include <trx/game/game.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/const.h>
@@ -910,5 +912,12 @@ void UI_Draw(void)
             const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(ops, i);
             op->draw(op);
         }
+    }
+}
+
+void UI_DrawBinocularMask(void)
+{
+    if (Game_IsPlaying() && Camera_Binoculars_IsActive()) {
+        OutputSource_UI_StageBinocularMask();
     }
 }
