@@ -1392,6 +1392,10 @@
             "title": "Fix breakable floor falls",
             "description": "Fixes sidestepping and walking backwards on breakable tiles causing Lara to immediately descend to the tile underneath. The original TR2+ do not have this glitch; TR1 does.",
         },
+        "gameplay.fix_enemy_route_delay": {
+            "title": "Fix enemy route delay",
+            "description": "Fixes enemies taking up to several seconds to find a new route after Lara moves.",
+        },
         "gameplay.fix_falling_glitch": {
             "title": "Fix falling",
             "description": "Fixes Lara being able to jump off trapdoors as soon as they open instead of falling, and fixes her not falling if the floor below her gives way while crawl-turning.",

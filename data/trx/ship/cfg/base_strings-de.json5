@@ -1392,6 +1392,10 @@
             "title": "Fix: Zerbrechliche Böden-Stürze",
             "description": "\\{review}Fixt, dass Seit-Schritte und Vorwärtslaufen auf zerbrechlichen Platten dazu führen, dass Lara sofort herab zur darunter liegenden Platte fällt. Die originalen TR2+ haben diesen Fehler nicht; TR1 schon.",
         },
+        "gameplay.fix_enemy_route_delay": {
+            "title": "\\{review}Gegner-Routenverzögerung beheben",
+            "description": "\\{review}Behebt, dass Gegner bis zu mehrere Sekunden brauchen, um einen neuen Weg zu finden, nachdem Lara sich bewegt hat.",
+        },
         "gameplay.fix_falling_glitch": {
             "title": "\\{review}Sturzfehler beheben",
             "description": "\\{review}Behebt Fehler, durch die Lara von Falltüren springen kann, sobald sie sich öffnen, anstatt hinunterzufallen, und durch die sie nicht hinunterfällt, wenn der Boden unter ihr beim Drehen im Kriechen nachgibt.",

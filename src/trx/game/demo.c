@@ -44,6 +44,7 @@
     X_PROCESS_CONFIG(gameplay.enable_walk_to_items, false);                    \
     X_PROCESS_CONFIG(gameplay.fix_bear_ai, false);                             \
     X_PROCESS_CONFIG(gameplay.fix_bird_start_pos, false);                      \
+    X_PROCESS_CONFIG(gameplay.fix_enemy_route_delay, false);                   \
     X_PROCESS_CONFIG(gameplay.harpoon_recoil, 4);                              \
     X_PROCESS_CONFIG(                                                          \
         gameplay.look_mode,                                                    \

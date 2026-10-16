@@ -1392,6 +1392,10 @@
             "title": "Napraw glitch z łamliwą podłogą",
             "description": "\\{review}Naprawia problem, w którym chodzenie w bok lub do tyłu na łamliwej podłodze powoduje natychmiastowy teleport Lary na podłogę poniżej. Oryginalne TR2+ nie mają tego błędu; TR1 ma.",
         },
+        "gameplay.fix_enemy_route_delay": {
+            "title": "\\{review}Napraw opóźnienie tras wrogów",
+            "description": "\\{review}Naprawia błąd, przez który wrogowie potrzebują nawet kilku sekund, aby znaleźć nową trasę po ruchu Lary.",
+        },
         "gameplay.fix_falling_glitch": {
             "title": "\\{review}Napraw spadanie",
             "description": "\\{review}Naprawia błędy pozwalające Larze wyskakiwać z zapadni zaraz po ich otwarciu zamiast spadać, a także uniemożliwiające jej spadanie, gdy podłoga pod nią ustępuje podczas obracania się w pozycji czołgania.",

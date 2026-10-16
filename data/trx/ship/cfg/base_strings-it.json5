@@ -1392,6 +1392,10 @@
             "title": "Correggi cadute da pavimenti",
             "description": "Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili fanno sì che Lara cada immediatamente sul pavimento sottostante. Questo problema è presente solo nella versione originale di TR1; TR2+ non ne è affetto.",
         },
+        "gameplay.fix_enemy_route_delay": {
+            "title": "\\{review}Correggi ritardo percorso nemici",
+            "description": "\\{review}Corregge i nemici che impiegano fino a diversi secondi per trovare un nuovo percorso dopo che Lara si è spostata.",
+        },
         "gameplay.fix_falling_glitch": {
             "title": "\\{review}Correggi le cadute",
             "description": "\\{review}Corregge i problemi che permettono a Lara di saltare dalle botole appena si aprono invece di cadere, e che le impediscono di cadere quando il pavimento sotto di lei cede mentre si gira da accovacciata.",

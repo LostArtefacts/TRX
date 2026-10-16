@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
@@ -261,12 +262,14 @@ bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
     // Drops the expansions queued for the previous target. They carry a
     // search number that is no longer current, and they would delay the new
     // search by one frame for every five of them.
-    while (lot->head != NO_BOX) {
-        BOX_NODE *const queued = &lot->node[lot->head];
-        lot->head = queued->next_expansion;
-        queued->next_expansion = NO_BOX;
+    if (g_Config.gameplay.fix_enemy_route_delay) {
+        while (lot->head != NO_BOX) {
+            BOX_NODE *const queued = &lot->node[lot->head];
+            lot->head = queued->next_expansion;
+            queued->next_expansion = NO_BOX;
+        }
+        lot->tail = NO_BOX;
     }
-    lot->tail = NO_BOX;
 
     BOX_NODE *const expand = &lot->node[lot->target_box];
     if (expand->next_expansion == NO_BOX && lot->tail != lot->target_box) {

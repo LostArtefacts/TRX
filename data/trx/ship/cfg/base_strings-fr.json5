@@ -1392,6 +1392,10 @@
             "title": "Corriger les chutes sur sols fragiles",
             "description": "\\{review}Corrige le fait que les pas de côté et la marche arrière sur des sols fragiles font que Lara se téléporte immédiatement au niveau inférieur. Les TR2+ d'origine n'ont pas ce défaut ; TR1 si.",
         },
+        "gameplay.fix_enemy_route_delay": {
+            "title": "\\{review}Corriger le délai d'itinéraire des ennemis",
+            "description": "\\{review}Corrige le fait que les ennemis mettent jusqu'à plusieurs secondes à trouver un nouvel itinéraire après un déplacement de Lara.",
+        },
         "gameplay.fix_falling_glitch": {
             "title": "\\{review}Corriger les chutes",
             "description": "\\{review}Corrige les problèmes permettant à Lara de sauter depuis les trappes dès leur ouverture au lieu de tomber, ainsi que ceux qui l'empêchent de tomber lorsque le sol cède sous elle pendant un pivot en rampant.",
