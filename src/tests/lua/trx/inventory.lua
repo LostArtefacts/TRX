@@ -181,7 +181,8 @@ end)
 -- The open ring
 -------------------------------------------------------------------------------
 
-local Mode = trx.inventory_ring.Mode
+-- The suite loads no interface, so the modes come from the engine directly.
+local Mode = require("trx.internal.helpers").constants("INVENTORY_MODE")
 local PASSPORT = trx.catalog.objects.PASSPORT_OPTION
 
 test("no ring reports no mode and no entry", function()

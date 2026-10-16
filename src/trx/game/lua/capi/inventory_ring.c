@@ -167,7 +167,7 @@ static INVENTORY_ITEM *M_GetSelectedItem(void)
     return ring->list[ring->current_object];
 }
 
-// trxc.inventory_ring.mode(): trx.inventory_ring.Mode?
+// trxc.inventory_ring.mode(): trx.ui.MenuMode?
 static int M_L_RingMode(lua_State *const L)
 {
     const INV_RING *const ring = InvRing_GetActiveRing();
