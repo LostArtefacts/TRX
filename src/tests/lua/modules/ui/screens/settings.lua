@@ -21,7 +21,7 @@ end
 
 local function open(object)
   trx.config.set("ui.text_scale", 1.0)
-  fake.open_ring(trx.inventory_ring.Mode.GAME, object, 0, 10)
+  fake.open_ring(trx.ui.MenuMode.GAME, object, 0, 10)
   assert(
     fake.offer(RING_ENTRY, { object = object }),
     "the entry was not taken"

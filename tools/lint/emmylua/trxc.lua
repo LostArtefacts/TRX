@@ -325,7 +325,7 @@ trxc = {}
 ---@field hint fun(): string...
 ---@field hint_revision fun(): integer
 ---@field item fun(object_id: trx.catalog.objects): table?
----@field mode fun(): trx.inventory_ring.Mode?
+---@field mode fun(): trx.ui.MenuMode?
 ---@field selection_anim fun(): trx.inventory_ring.EntryAnim?
 ---@field set_hint fun(...: string)
 ---@field turn_selection fun(yaw: integer, pitch: integer)

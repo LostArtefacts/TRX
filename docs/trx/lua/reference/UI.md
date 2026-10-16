@@ -176,6 +176,26 @@ arrow, and `\{button left}` draws the button the player has bound.
     - `trx.ui.Screen.PICTURE`  
         A picture that the game shows between levels, while a level loads, or for the legal notice and the credits, with a [`trx.ui.PictureContext`](#ui.PictureContext). The picture ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
 
+- <a id="ui.MenuMode" name="ui.MenuMode"></a>[lua]`trx.ui.MenuMode`
+
+    What the engine opens its menu for, which the menu screen is told as it
+    opens.
+
+    - `trx.ui.MenuMode.GAME`  
+        Opened during play.
+    - `trx.ui.MenuMode.TITLE`  
+        The title screen's menu.
+    - `trx.ui.MenuMode.KEYS`  
+        The keys ring, opened against a locked door or receptacle.
+    - `trx.ui.MenuMode.SAVE`  
+        Opened to save, with the save list already on show.
+    - `trx.ui.MenuMode.LOAD`  
+        Opened to load, with the save list already on show.
+    - `trx.ui.MenuMode.DEATH`  
+        Opened because Lara died.
+    - `trx.ui.MenuMode.SAVE_CRYSTAL`  
+        Opened by a save crystal.
+
 ### Structures
 
 - <a id="ui.Inputs" name="ui.Inputs"></a>[lua]`trx.ui.Inputs`
@@ -401,7 +421,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     [`trx.ui.Screen.SAVE_LOAD`](#ui.Screen).
 
     Properties:
-    - <a id="ui.SaveLoadContext.mode" name="ui.SaveLoadContext.mode"></a>**`mode`**: [trx.inventory_ring.Mode](INVENTORY_RING.md#inventory_ring.Mode). Whether the screen opened for saving or for loading. *(read-only)*
+    - <a id="ui.SaveLoadContext.mode" name="ui.SaveLoadContext.mode"></a>**`mode`**: [trx.ui.MenuMode](#ui.MenuMode). Whether the screen opened for saving or for loading. *(read-only)*
 
 - <a id="ui.StatsContext" name="ui.StatsContext"></a>[lua]`trx.ui.StatsContext`
 

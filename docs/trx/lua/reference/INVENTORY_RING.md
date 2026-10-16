@@ -27,27 +27,6 @@ A script draws what an entry opens by defining the
 - <a id="inventory_ring.signals.count" name="inventory_ring.signals.count"></a>**`trx.inventory_ring.signals.count`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Holds the count that the ring shows for an entry Lara carries more than one of, or nil while it shows none or no ring is open. *(read-only)*
 - <a id="inventory_ring.signals.rest_frame" name="inventory_ring.signals.rest_frame"></a>**`trx.inventory_ring.signals.rest_frame`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the entry that the player picked comes to rest, with the frame of its animation that it rests on, and when it moves again, goes back into the ring or the ring closes, with `nil`. A screen of an entry opens once the entry rests, and the passport reads the page it rests on. *(read-only)*
 
-### Enums
-
-- <a id="inventory_ring.Mode" name="inventory_ring.Mode"></a>[lua]`trx.inventory_ring.Mode`
-
-    What the inventory ring was opened for.
-
-    - `trx.inventory_ring.Mode.GAME`  
-        Opened during play.
-    - `trx.inventory_ring.Mode.TITLE`  
-        The title screen's menu.
-    - `trx.inventory_ring.Mode.KEYS`  
-        The keys ring, opened against a locked door or receptacle.
-    - `trx.inventory_ring.Mode.SAVE`  
-        Opened to save, with the save list already on show.
-    - `trx.inventory_ring.Mode.LOAD`  
-        Opened to load, with the save list already on show.
-    - `trx.inventory_ring.Mode.DEATH`  
-        Opened because Lara died.
-    - `trx.inventory_ring.Mode.SAVE_CRYSTAL`  
-        Opened by a save crystal.
-
 ### Structures
 
 - <a id="inventory_ring.EntryAnim" name="inventory_ring.EntryAnim"></a>[lua]`trx.inventory_ring.EntryAnim`
@@ -70,7 +49,7 @@ A script draws what an entry opens by defining the
 - <a id="inventory_ring.mode" name="inventory_ring.mode"></a>[lua]`trx.inventory_ring.mode()`  
   What the open ring was opened for, or `nil` when no ring is open.
 
-  Returns: [trx.inventory_ring.Mode](#inventory_ring.Mode) or `nil`. What the ring was opened for.
+  Returns: [trx.ui.MenuMode](UI.md#ui.MenuMode) or `nil`. What the ring was opened for.
 
 - <a id="inventory_ring.selection_anim" name="inventory_ring.selection_anim"></a>[lua]`trx.inventory_ring.selection_anim()`  
   Where the ring's selected entry is in its animation, or `nil` when no ring

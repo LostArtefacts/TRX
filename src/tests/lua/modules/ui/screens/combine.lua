@@ -47,7 +47,7 @@ end
 local function open(partners)
   trx.config.set("ui.text_scale", 100)
   fake.set_combine_partners(partners)
-  fake.open_ring(trx.inventory_ring.Mode.GAME, OBJECT, 0, 10)
+  fake.open_ring(trx.ui.MenuMode.GAME, OBJECT, 0, 10)
   assert(fake.offer(COMBINE, { object = OBJECT }), "the entry was not taken")
   -- The press that opened the entry, then the first tick it rests open.
   fake.tick()
