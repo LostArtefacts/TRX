@@ -60,6 +60,7 @@ end
 -- Forward declaration lets the operators of the Signal type build derived
 -- signals.
 local derive
+local mark_stale
 
 ---A value that notifies listeners when it changes.
 ---@class (exact) trx.signal.Signal
@@ -71,6 +72,8 @@ local derive
 ---@field private _dormant boolean?
 ---@field private _count integer?
 ---@field private _read_at integer?
+---@field private _stale boolean?
+---@field private _dependents table<integer, trx.signal.Signal>?
 ---@field private _pull fun(): any
 ---@field private _attach fun()
 ---@operator band(trx.signal.Signal): trx.signal.Signal
@@ -158,12 +161,19 @@ end
 -- Attaches a listener. One that `keeps` the signal holds a derived signal
 -- alive while it listens; the link from a derived signal to its sources does
 -- not, because the derived signal holds its sources itself. A dormant derived
--- signal follows its sources again once anything listens.
-local function attach(signal, fn, keeps)
+-- signal follows its sources again once anything listens. The link names the
+-- derived signal as `dependent`, so that a change can mark it stale.
+local function attach(signal, fn, keeps, dependent)
   local listeners = signal._listeners
   local id = signal._next_id
   signal._next_id = id + 1
   listeners[id] = fn
+  if dependent ~= nil then
+    if signal._dependents == nil then
+      signal._dependents = setmetatable({}, { __mode = "v" })
+    end
+    signal._dependents[id] = dependent
+  end
   signal._count = (signal._count or 0) + 1
   if signal._bound ~= nil then
     if signal._dormant then
@@ -203,12 +213,13 @@ derive = function(sources, fn)
   -- through the function that works its value out, so a source that outlives
   -- the signal keeps nothing that the function reads alive.
   local recompute = while_held(derived, listeners, function(held)
+    held._stale = nil
     held:set(held._pull())
   end)
   derived._pull = value_of
   derived._attach = function()
     for i, source in ipairs(sources) do
-      listeners[i] = attach(source, recompute, false)
+      listeners[i] = attach(source, recompute, false, derived)
     end
   end
   return bind(derived, listeners)
@@ -238,10 +249,31 @@ local function track(callback, fn, ...)
   return table.unpack(results, 2, results.n)
 end
 
+-- Marks every derived signal that follows this one, however indirectly, as
+-- out of date. A listener that runs before a derived signal has caught up then
+-- reads the new value rather than the old one.
+mark_stale = function(signal)
+  local dependents = signal._dependents
+  if dependents == nil then
+    return
+  end
+  for _, dependent in pairs(dependents) do
+    if not dependent._stale then
+      dependent._stale = true
+      mark_stale(dependent)
+    end
+  end
+end
+
 ---The value the signal holds now.
 ---@return any # What it holds.
 function Signal:get()
   report(self)
+  -- A source changed and its listeners are still running, so the cached value
+  -- is out of date until this signal's own turn comes.
+  if self._stale then
+    return self._pull()
+  end
   if self._dormant and self._read_at ~= epoch then
     self._value = self._pull()
     self._read_at = epoch
@@ -259,6 +291,7 @@ function Signal:set(value)
   end
   self._value = value
   epoch = epoch + 1
+  mark_stale(self)
   -- Copy listeners before running them, so detaching during a callback
   -- does not change the current dispatch pass.
   local listeners = self._listeners
@@ -310,7 +343,7 @@ function Signal:stop()
   if bound == nil then
     return false
   end
-  if self._dormant then
+  if self._dormant or self._stale then
     self._value = self:get()
   end
   for _, listener in ipairs(bound) do
@@ -318,6 +351,7 @@ function Signal:stop()
   end
   self._bound = nil
   self._dormant = nil
+  self._stale = nil
   return true
 end
 
@@ -340,6 +374,9 @@ function Listener:detach()
     return false
   end
   listeners[id] = nil
+  if signal._dependents ~= nil then
+    signal._dependents[id] = nil
+  end
   signal._count = (signal._count or 1) - 1
   local count = kept[signal]
   if self._keeps and count ~= nil then
@@ -353,6 +390,7 @@ function Listener:detach()
       bound:detach()
     end
     signal._dormant = true
+    signal._stale = nil
     signal._read_at = epoch
   end
   return true

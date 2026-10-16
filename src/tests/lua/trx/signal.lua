@@ -462,6 +462,47 @@ test("a derived signal read again after a change sees it", function()
   assert(doubled:get() == 6)
 end)
 
+-- The listener reads the derived signal before the derived signal has heard of
+-- the change, because it was attached to the source first.
+test("a listener of a source reads a derived signal's new value", function()
+  local source = signal.new(1)
+  local doubled = source:map(function(value)
+    return value * 2
+  end)
+  local read = nil
+  source:on(function()
+    read = doubled:get()
+  end)
+  local heard = nil
+  doubled:on(function(value)
+    heard = value
+  end)
+  source:set(3)
+  assert(read == 6, read)
+  assert(heard == 6, "the derived signal did not tell its listener")
+end)
+
+test("a listener reads the new value through a chain", function()
+  local source = signal.new(1)
+  local doubled = source:map(function(value)
+    return value * 2
+  end)
+  local plus_one = doubled:map(function(value)
+    return value + 1
+  end)
+  local read = nil
+  source:on(function()
+    read = plus_one:get()
+  end)
+  local heard = nil
+  plus_one:on(function(value)
+    heard = value
+  end)
+  source:set(3)
+  assert(read == 7, read)
+  assert(heard == 7, heard)
+end)
+
 test("a polled signal that nothing holds stops reading", function()
   local reads = 0
   do
