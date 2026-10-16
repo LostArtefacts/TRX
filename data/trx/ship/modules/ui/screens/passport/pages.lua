@@ -1,6 +1,8 @@
 -- The pages of the passport, and which of them the book offers in each mode
 -- of the inventory ring.
 
+local ring = require("common.ui.ring")
+
 local M = {}
 
 M.Page = {
@@ -44,7 +46,7 @@ end
 -- Returns false when Lara is dead, because the passport is then the only way
 -- on.
 function M.can_back_out()
-  return trx.inventory_ring.mode() ~= trx.ui.MenuMode.DEATH
+  return ring.mode() ~= trx.ui.MenuMode.DEATH
 end
 
 -- Returns whether a page opens only after the player confirms it. TR1 does

@@ -7,7 +7,6 @@
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
-#include <trx/game/inventory_ring.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/combos.h>
 #include <trx/game/objects/families.h>
@@ -212,13 +211,7 @@ int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 
 void Inv_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
 {
-    // A box entry counts nothing of its own, so the rings have to be redrawn
-    // whenever the rounds behind it come to a different number of boxes.
-    const int32_t old_box_count = M_GetAmmoBoxCount(&m_State, gun_type);
     Inv_State_SetAmmo(&m_State, gun_type, rounds);
-    if (M_GetAmmoBoxCount(&m_State, gun_type) != old_box_count) {
-        InvRing_Rebuild();
-    }
 }
 
 void Inv_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
@@ -298,7 +291,6 @@ void Inv_SetState(const INVENTORY_STATE *const state)
     // so they are put back regardless of what the state says.
     Inv_EnsureItem(O_STOPWATCH_OPTION);
     Inv_EnsureItem(O_COMPASS_OPTION);
-    InvRing_Rebuild();
 }
 
 OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
@@ -417,7 +409,6 @@ bool Inv_HasItem(const OBJECT_ID object_id)
 void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
 {
     Inv_State_SetCount(&m_State, object_id, qty);
-    InvRing_Rebuild();
 }
 
 bool Inv_AddItemNTimes(const OBJECT_ID object_id, const int32_t qty)
@@ -446,7 +437,6 @@ bool Inv_AddItemNTimes(const OBJECT_ID object_id, const int32_t qty)
     if (entry != nullptr) {
         M_SetCount(
             &m_State, entry_id, entry->qty + M_GetAddQty(object_id) * rest);
-        InvRing_Rebuild();
     }
     return true;
 }
@@ -465,7 +455,6 @@ void Inv_ClearItem(const OBJECT_ID object_id)
         return;
     }
     M_SetCount(&m_State, entry_id, 0);
-    InvRing_Rebuild();
 }
 
 bool Inv_RemoveItem(const OBJECT_ID object_id)
@@ -480,9 +469,6 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
         return false;
     }
 
-    // While the rings still hold it, so that the cursor can be moved off the
-    // position that is about to close up.
-    InvRing_NotifyRemoved(entry_id);
     if (gun_type != LGT_UNARMED) {
         // A box is worth its rounds and no more. What is left over once the
         // last whole one is gone draws nothing until she finds more, but it
@@ -492,15 +478,12 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
     } else {
         M_SetCount(&m_State, entry_id, entry->qty - 1);
     }
-    InvRing_Rebuild();
     return true;
 }
 
 void Inv_Clear(void)
 {
     Inv_SetState(&(INVENTORY_STATE) {});
-    InvRing_ClearSelection();
-    InvRing_ForgetLastEntries();
 }
 
 // What Inv_AddItem needs before it can take anything: the level has to carry
@@ -552,14 +535,12 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     const LARA_GUN_TYPE ammo_gun_type = M_GetAmmoGunType(entry_id);
     if (ammo_gun_type != LGT_UNARMED) {
         Inv_AddAmmo(ammo_gun_type, Gun_GetRoundsPerBox(ammo_gun_type) * qty);
-        InvRing_Rebuild();
         return true;
     }
 
     const INVENTORY_ENTRY *const entry = M_FindEntry(&m_State, entry_id);
     if (entry != nullptr) {
         M_SetCount(&m_State, entry_id, entry->qty + qty);
-        InvRing_Rebuild();
         return true;
     }
 
@@ -574,21 +555,18 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         if (lara->last_gun_type == LGT_UNARMED) {
             lara->last_gun_type = default_gun;
         }
-        InvRing_Rebuild();
         return true;
     }
 
     // Other guns
     if (ObjectFamily_Has(pickup_object_id, OBJ_FAMILY_GUN)) {
         M_AddGun(Gun_GetType(pickup_object_id));
-        InvRing_Rebuild();
         return true;
     }
 
     // Other cases
-    if (InvRing_GetByObjectID(entry_id) != nullptr) {
+    if (ObjectFamily_Has(entry_id, OBJ_FAMILY_INVENTORY)) {
         M_SetCount(&m_State, entry_id, qty);
-        InvRing_Rebuild();
         return true;
     }
     return false;

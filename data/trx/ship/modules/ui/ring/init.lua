@@ -7,7 +7,13 @@
 --   ctx:on_end(function() resting:stop() end)
 --   ctx:push({ root = ..., on_input = ring.while_resting(control) })
 
+local entries = require("common.ui.ring.entries")
+
 local M = {}
+
+-- Declares how the ring draws an entry, as `common.ui.ring.entries` does.
+M.declare_item = entries.declare
+M.item = entries.item
 
 -- What the open ring says over the caption, and where the entry the player
 -- picked rests, which the screens of its entries read.
@@ -27,6 +33,7 @@ M.signals = {
 }
 
 -- The ring that is open, or nil.
+---@type table?
 local active = nil
 
 -- The entry a script asked the ring to rest on next, or nil.
@@ -57,10 +64,61 @@ function M.take_request()
   return object
 end
 
+-- Returns what the open ring was opened for, a `trx.ui.MenuMode`, or nil
+-- while no ring is open.
+function M.mode()
+  return active ~= nil and active.mode or nil
+end
+
+-- Where the entry the player picked is in its animation, or nil while no
+-- ring is open: the frame on show, the frame it heads for, the frame it rests
+-- open on, how many frames it holds, and which way it runs.
+function M.selection_anim()
+  if active == nil then
+    return nil
+  end
+  local index = active.view.current
+  local anim = active.anims[index]
+  local spec = active.list[index].spec
+  return {
+    frame = anim.frame,
+    goal_frame = anim.goal,
+    open_frame = spec.open_frame,
+    frame_count = spec.frames_total,
+    direction = anim.direction,
+  }
+end
+
+-- Runs the picked entry's animation to a frame, forwards for a positive
+-- direction and backwards otherwise.
+function M.animate_selection(goal_frame, direction)
+  if active == nil then
+    return
+  end
+  local index = active.view.current
+  if goal_frame < 0 or goal_frame >= active.list[index].spec.frames_total then
+    error("the entry has no such frame", 2)
+  end
+  local anim = active.anims[index]
+  anim.goal = goal_frame
+  anim.direction = direction < 0 and -1 or 1
+  if anim.frame ~= anim.goal then
+    M.set_rest_frame(nil)
+  end
+end
+
+-- Turns the picked entry by hand, as the player examines it.
+function M.turn_selection(yaw, pitch)
+  if active ~= nil then
+    active.view:turn_by_hand(yaw, pitch)
+  end
+end
+
 -- Shows key hints where the ring shows its own, each as a role and what it
 -- does, up to four.
 ---@param hints { input: trx.input.Role, text: string }[]
 function M.set_hint(hints)
+  hints = hints or {}
   local parts = {}
   for i, hint in ipairs(hints) do
     parts[i] = trx.ui.input_hint_text(hint.input, hint.text)
@@ -93,6 +151,21 @@ function M.show_health_bar(shown)
   end
 end
 
+-- Shows how many there are of the entry the ring rests on, where there is
+-- more than one.
+function M.show_count(count)
+  if count > 1 then
+    M.set_count(
+      trx.locale
+        .get("general/inventory_ring/item_count_fmt")
+        :format("%d")
+        :format(count)
+    )
+  else
+    M.set_count(nil)
+  end
+end
+
 function M.set_rest_frame(frame)
   if M.signals.rest_frame:get() ~= frame then
     M.signals.rest_frame:set(frame)
@@ -100,12 +173,12 @@ function M.set_rest_frame(frame)
 end
 
 local function is_resting()
-  return trx.inventory_ring.signals.rest_frame:get() ~= nil
+  return M.signals.rest_frame:get() ~= nil
 end
 
 -- Returns a signal that holds whether the entry rests open.
 function M.resting()
-  return trx.inventory_ring.signals.rest_frame:map(function(frame)
+  return M.signals.rest_frame:map(function(frame)
     return frame ~= nil
   end)
 end

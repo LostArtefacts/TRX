@@ -8,6 +8,7 @@ local hold_button = require("common.ui.widgets.hold_button")
 local metrics = require("common.ui.metrics")
 local pages = require("common.ui.screens.passport.pages")
 local requester = require("common.ui.widgets.requester")
+local ring = require("common.ui.ring")
 local rows = require("common.ui.screens.passport.rows")
 
 local M = {}
@@ -63,7 +64,7 @@ end
 
 ---@param index integer
 local function turn_to(index)
-  local anim = trx.inventory_ring.selection_anim()
+  local anim = ring.selection_anim()
   if anim == nil then
     return
   end
@@ -71,17 +72,14 @@ local function turn_to(index)
   if anim.goal_frame == goal then
     return
   end
-  trx.inventory_ring.animate_selection(
-    goal,
-    goal > anim.goal_frame and 1 or -1
-  )
+  ring.animate_selection(goal, goal > anim.goal_frame and 1 or -1)
   trx.sound.play(trx.catalog.samples.MENU_PASSPORT)
 end
 
 -- Returns the page that the book rests on at `frame`, or nil while the book
 -- turns.
 local function page_at(frame)
-  local anim = trx.inventory_ring.selection_anim()
+  local anim = ring.selection_anim()
   if frame == nil or anim == nil then
     return nil
   end
@@ -106,17 +104,17 @@ end
 -- have no book to shut, and take only a cancel. The save crystal has no book
 -- either, and leaves the ring once it saves.
 function Passport:close(confirmed)
-  local anim = not self.standalone and trx.inventory_ring.selection_anim()
-    or nil
+  local anim = not self.standalone and ring.selection_anim() or nil
   if anim ~= nil then
     if self.index == #self.pages then
-      trx.inventory_ring.animate_selection(anim.frame_count - 1, 1)
+      ring.animate_selection(anim.frame_count - 1, 1)
     else
-      trx.inventory_ring.animate_selection(0, -1)
+      ring.animate_selection(0, -1)
     end
   end
   if self.crystal then
     trx.overlay.set_caption(nil)
+    ring.set_count(nil)
   end
   if confirmed and (not self.standalone or self.crystal) then
     self.ctx:confirm()
@@ -592,9 +590,7 @@ end
 -- the quick save and load screens put the passport away, except when Lara is
 -- dead.
 function Passport:back_out()
-  if
-    not self.standalone and pages.browses_first(trx.inventory_ring.mode())
-  then
+  if not self.standalone and pages.browses_first(ring.mode()) then
     self:set_browse(true)
     self:clear_page()
   elseif pages.can_back_out() then
@@ -669,11 +665,7 @@ function Passport:control_book(keys)
     end
     -- On the TR1 title screen, a new game page with one choice starts the
     -- game on the press that opened the page.
-    if
-      self.bare
-      and pages.browses_first(trx.inventory_ring.mode())
-      and pages.is_title()
-    then
+    if self.bare and pages.browses_first(ring.mode()) and pages.is_title() then
       trx.game.start_new_game()
       self:close(true)
       return
@@ -744,7 +736,7 @@ function M.open(ctx, book_pages, index, mode)
   -- open over the page.
   self.target = trx.signal.new(index)
   self.browsing = trx.signal.new(self.browse)
-  self.resting = trx.inventory_ring.signals.rest_frame:map(page_at)
+  self.resting = ring.signals.rest_frame:map(page_at)
   self.caption_shown = trx.signal.combine(
     self.resting,
     self.target,

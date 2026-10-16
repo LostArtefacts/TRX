@@ -31,12 +31,12 @@ order: 3
    - `item:shatter(5, 254)` becomes
      `item:shatter({ damage = 5, flame_variant = 254 })`
 
-4. **The inventory ring has its own module**
-   `trx.inventory` now holds only what Lara carries. Ring data moved to
-   `trx.inventory_ring`:
+4. **The inventory ring moved to the shipped interface**
+   `trx.inventory` now holds only what Lara carries. The ring is drawn by
+   the shipped `common.ui.ring` module, which holds its entries:
    - `trx.inventory.declare_ring_item` becomes
-     `trx.inventory_ring.declare_item`
-   - `trx.inventory.ring_item` becomes `trx.inventory_ring.item`
+     `require("common.ui.ring").declare_item`
+   - `trx.inventory.ring_item` becomes `require("common.ui.ring").item`
 
 5. **`trx.savegame.load` raises an error for an empty slot**
    A script that can name an empty slot must check it with

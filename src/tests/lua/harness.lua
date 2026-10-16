@@ -93,6 +93,61 @@ function M.load_themes()
   })
 end
 
+-- Opens a stand-in for the inventory ring, for a screen of its entries to
+-- steer: a ring opened for a mode, resting on one entry that the player has
+-- picked, which stands open on its open frame.
+function M.open_ring(mode, object, open_frame, frame_count)
+  local ring = require("common.ui.ring")
+  M.ring = {
+    mode = mode,
+    view = {
+      current = 1,
+      turned = { yaw = 0, pitch = 0 },
+      turn_by_hand = function(self, yaw, pitch)
+        self.turned.yaw = self.turned.yaw + yaw
+        self.turned.pitch = self.turned.pitch + pitch
+      end,
+    },
+    list = {
+      {
+        object = object,
+        spec = { open_frame = open_frame, frames_total = frame_count },
+      },
+    },
+    anims = { { frame = open_frame, goal = open_frame, direction = 1 } },
+  }
+  ring.attach(M.ring)
+  ring.set_rest_frame(open_frame)
+end
+
+function M.close_ring()
+  local ring = require("common.ui.ring")
+  if M.ring ~= nil then
+    ring.detach(M.ring)
+    M.ring = nil
+  end
+  ring.set_rest_frame(nil)
+  ring.set_hint({})
+end
+
+-- Runs the picked entry to the frame a script asked for, as the ring
+-- animates it over the next few ticks, and returns that frame.
+function M.settle_ring()
+  if M.ring == nil then
+    return nil
+  end
+  local anim = M.ring.anims[1]
+  anim.frame = anim.goal
+  require("common.ui.ring").set_rest_frame(anim.frame)
+  return anim.frame
+end
+
+-- Returns the hint the ring shows, its parts set apart with " | ", or an empty
+-- string for none.
+function M.ring_hint()
+  return table.concat(require("common.ui.ring").signals.hint:get(), " | ")
+end
+
 function M.report()
   -- A suite that registered nothing reports "0 failed" and the runner takes the
   -- zero for a pass, which reads exactly like a suite that ran.

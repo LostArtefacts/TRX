@@ -27,7 +27,7 @@ local SPIN_PER_TICK = 4 * trx.math.DEG_1
 -- The model of an entry as the ring poses it, turning while it is in the
 -- middle.
 local function model(object, index, selected)
-  local entry = trx.inventory_ring.item(object)
+  local entry = ring.item(object)
   return trx.ui.widgets.Model({
     object = object,
     w = MODEL_WIDTH,
@@ -95,7 +95,7 @@ local function begin(ctx, state)
   -- the caption gave up its room.
   trx.overlay.set_caption()
   trx.sound.play(trx.catalog.samples.MENU_SPININ)
-  trx.inventory_ring.set_input_hints({
+  ring.set_hint({
     {
       input = trx.input.Role.MENU_CONFIRM,
       text = trx.locale.get("general/actions/combine_item"),
@@ -127,7 +127,10 @@ local function control(ctx, state, keys)
   elseif many and keys:held(trx.input.Role.MENU_LEFT) then
     turn(state, -1)
   elseif keys:pressed(trx.input.Role.MENU_CONFIRM) then
-    trx.inventory.combine(ctx.object, state.partners[state.selected:get()])
+    -- The ring rests on what the two made once it settles again.
+    ring.request(
+      trx.inventory.combine(ctx.object, state.partners[state.selected:get()])
+    )
     ctx:confirm()
   elseif keys:pressed(trx.input.Role.MENU_BACK) then
     -- The ring sounds the entry going away as it puts it away.

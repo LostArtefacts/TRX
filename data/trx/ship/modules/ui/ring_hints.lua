@@ -1,7 +1,10 @@
 -- The key hints and the count that the inventory ring shows over the caption
--- at the foot of the screen. The ring decides what they say, through
--- `trx.inventory_ring.signals`. They stack before the other widgets of their
--- region, with a gap between them and the caption.
+-- at the foot of the screen, and the name of the ring at the top. The ring
+-- decides what they say, through the signals of `common.ui.ring`. The hints
+-- and the count stack before the other widgets of their region, with a gap
+-- between them and the caption.
+
+local ring = require("common.ui.ring")
 
 local M = {}
 
@@ -14,9 +17,10 @@ local CAPTION_GAP = 8
 -- interface scripts load.
 function M.setup()
   local ui = trx.ui
-  local signals = trx.inventory_ring.signals
+  local signals = ring.signals
   local hint = signals.hint
   local count = signals.count
+  local heading = signals.heading
 
   local has_hint = hint:map(function(parts)
     return #parts > 0
@@ -40,18 +44,17 @@ function M.setup()
   end
 
   -- The count stands to the right of the middle, where the ring draws it, and
-  -- keeps the room of its text where it would stand centered.
-  local count_text = count:map(function(text)
-    return text or ""
-  end)
+  -- keeps the room of its text where it would stand centered. It reads the
+  -- count itself rather than a signal made from it, so that it measures the
+  -- new text on the tick that shows it.
   local shifted_count = ui.widgets.Custom({
     visible = has_count,
     measure = function()
-      return ui.primitive.measure_text(count_text:get(), 1.0)
+      return ui.primitive.measure_text(count:get() or "", 1.0)
     end,
     paint = function(x, y)
       ui.primitive.text(
-        count_text:get(),
+        count:get() or "",
         x + COUNT_SHIFT * ui.text_scale,
         y,
         1.0,
@@ -80,6 +83,19 @@ function M.setup()
       },
     }),
     { order = -1 }
+  )
+
+  ui.regions.place(
+    ui.Region.TOP_CENTER,
+    ui.widgets.Label({
+      text = heading:map(function(text)
+        return text or ""
+      end),
+      visible = heading:map(function(text)
+        return text ~= nil
+      end),
+    }),
+    { order = 1 }
   )
 end
 

@@ -327,8 +327,7 @@ end
 
 - <a id="inventory.combine" name="inventory.combine"></a>[lua]`trx.inventory.combine(object_id, partner_id)`  
   Combines two things Lara carries into what they make, taking one of each,
-  as combining them in the inventory ring does. The ring rests on what they
-  made when it next settles.
+  as combining them in the inventory ring does.
 
   Parameters:
   - <a id="inventory.combine.object_id" name="inventory.combine.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to combine.
