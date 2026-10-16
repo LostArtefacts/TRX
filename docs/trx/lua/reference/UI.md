@@ -175,6 +175,8 @@ arrow, and `\{button left}` draws the button the player has bound.
         A view of the level from one of its cameras, which the game shows while the level starts, as TR4 does. It has a [`trx.ui.TimedContext`](#ui.TimedContext). The view ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
     - `trx.ui.Screen.PICTURE`  
         A picture that the game shows between levels, while a level loads, or for the legal notice and the credits, with a [`trx.ui.PictureContext`](#ui.PictureContext). The picture ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
+    - `trx.ui.Screen.MENU`  
+        The menu the game opens over the play and on the title screen, such as the inventory ring, with a [`trx.ui.MenuContext`](#ui.MenuContext). The menu ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) once it has done what the player chose.
 
 - <a id="ui.MenuMode" name="ui.MenuMode"></a>[lua]`trx.ui.MenuMode`
 
@@ -458,6 +460,16 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.PictureContext.background" name="ui.PictureContext.background"></a>**`background`**: string. The picture, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
     - <a id="ui.PictureContext.can_cross_fade_in" name="ui.PictureContext.can_cross_fade_in"></a>**`can_cross_fade_in`**: boolean. Whether the picture may fade in from the frame shown before it, rather than from black. *(read-only)*
     - <a id="ui.PictureContext.is_loading" name="ui.PictureContext.is_loading"></a>**`is_loading`**: boolean. Whether the picture shows while a level loads. *(read-only)*
+
+- <a id="ui.MenuContext" name="ui.MenuContext"></a>[lua]`trx.ui.MenuContext`
+
+    The context of the game's menu, for [`trx.ui.Screen.MENU`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.MenuContext.background" name="ui.MenuContext.background"></a>**`background`**: string. The picture the title's menu stands on, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
+    - <a id="ui.MenuContext.is_live" name="ui.MenuContext.is_live"></a>**`is_live`**: boolean. Whether the title level runs behind the menu, in place of a picture. *(read-only)*
+    - <a id="ui.MenuContext.mode" name="ui.MenuContext.mode"></a>**`mode`**: [trx.ui.MenuMode](#ui.MenuMode). What the menu opened for. *(read-only)*
+    - <a id="ui.MenuContext.object" name="ui.MenuContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The entry the menu opens on, such as the crowbar a door asks for, or `nil` for none. *(read-only)*
 
 - <a id="ui.Tween" name="ui.Tween"></a>[lua]`trx.ui.Tween`
 

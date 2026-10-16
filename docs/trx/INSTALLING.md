@@ -1399,7 +1399,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── ring
 │   │   │   ├── entries.lua
 │   │   │   ├── init.lua
-│   │   │   └── motion.lua
+│   │   │   ├── motion.lua
+│   │   │   └── screen.lua
 │   │   ├── screens
 │   │   │   ├── passport
 │   │   │   │   ├── book.lua
@@ -2885,7 +2886,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── ring
     │   │   │   │   ├── entries.lua
     │   │   │   │   ├── init.lua
-    │   │   │   │   └── motion.lua
+    │   │   │   │   ├── motion.lua
+    │   │   │   │   └── screen.lua
     │   │   │   ├── screens
     │   │   │   │   ├── passport
     │   │   │   │   │   ├── book.lua
