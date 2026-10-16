@@ -4,9 +4,23 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 
-#define M_GRAB_RADIUS 100
+// clang-format off
+#define M_GRAB_RADIUS       100
 #define M_REACH_GRAB_OFFSET 10
-#define M_JUMP_GRAB_OFFSET 66
+#define M_JUMP_GRAB_OFFSET  66
+// clang-format on
+
+static const LARA_STATE_ID m_PoleStates[] = {
+    // clang-format off
+    LS_POLE_IDLE,
+    LS_POLE_UP,
+    LS_POLE_DOWN,
+    LS_POLE_LEFT,
+    LS_POLE_RIGHT,
+    LS_JUMP_BACK,
+    NO_CATALOG_ID,
+    // clang-format on
+};
 
 static const XYZ_32 m_PolePosition = { .x = 0, .y = 0, .z = -208 };
 
@@ -91,8 +105,7 @@ static void M_Collision(
     if ((g_Input.action && lara->gun_status == LGS_ARMLESS
          && lara_item->current_anim_state == LS(LS_STOP)
          && Item_TestAnimEqual(lara_item, LA(LA_STAND_IDLE)))
-        || (lara->interact_target.is_moving
-            && lara->interact_target.item_num == item_num)) {
+        || Lara_Interact_HasActiveTarget(item_num)) {
         M_CollisionStanding(item_num, lara_item, coll);
     } else if (
         g_Input.action && lara->gun_status == LGS_ARMLESS && lara_item->gravity
@@ -100,12 +113,8 @@ static void M_Collision(
         && (lara_item->current_anim_state == LS(LS_REACH)
             || lara_item->current_anim_state == LS(LS_JUMP_UP))) {
         M_CollisionAirborne(item_num, lara_item, coll);
-    } else {
-        const LARA_STATE_ID state = LS_U(lara_item->current_anim_state);
-        if ((state < LS_POLE_IDLE || state > LS_POLE_RIGHT)
-            && state != LS_JUMP_BACK) {
-            Object_Collision(item_num, lara_item, coll);
-        }
+    } else if (!Lara_HasState(m_PoleStates)) {
+        Object_Collision(item_num, lara_item, coll);
     }
 }
 
