@@ -1260,6 +1260,30 @@ arrow, and `\{button left}` draws the button the player has bound.
   end, { object = trx.catalog.objects.COMPASS_OPTION })
   ```
 
+- <a id="ui.screens.open" name="ui.screens.open"></a>[lua]`trx.ui.screens.open(screen, fields, [on_end])`  
+  Opens a screen from a script, as the engine opens one, with its definition
+  drawing it. This is how a menu that a script draws opens what an entry
+  leads to, such as [`trx.ui.Screen.EXAMINE`](#ui.Screen).
+
+  The fields are what the screen reports to its definition, such as the
+  object of a ring entry's screens. The function given runs once the screen
+  ends, after its layers have closed, and is told whether it ended with
+  [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
+
+  Parameters:
+  - <a id="ui.screens.open.screen" name="ui.screens.open.screen"></a>**`screen`** ([trx.ui.Screen](#ui.Screen)). The screen.
+  - <a id="ui.screens.open.fields" name="ui.screens.open.fields"></a>**`fields`** (table). What the screen reports to its definition.
+  - <a id="ui.screens.open.on_end" name="ui.screens.open.on_end"></a>**`on_end`** (function, optional). Runs once the screen ends, with whether it ended confirmed.
+
+  Returns: [trx.ui.ScreenContext](#ui.ScreenContext) or `nil`. The screen's context, or `nil` where no definition draws the screen, in which case the function given never runs.
+
+  Example:
+  ```lua
+  trx.ui.screens.open(trx.ui.Screen.EXAMINE, { object = object }, function(confirmed)
+    trx.log.info(confirmed and "confirmed" or "put away")
+  end)
+  ```
+
 - <a id="ui.ease.linear" name="ui.ease.linear"></a>[lua]`trx.ui.ease.linear(ratio)`  
   The same pace throughout.
 

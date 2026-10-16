@@ -469,4 +469,52 @@ test("only a ring entry definition names an object", function()
   finish_case()
 end)
 
+test("a script opens a screen and hears how it ended", function()
+  local held
+  define(
+    trx.ui.Screen.EXAMINE,
+    simple(function(ctx)
+      held = ctx
+    end)
+  )
+  local ended = {}
+  local ctx = trx.ui.screens.open(
+    trx.ui.Screen.EXAMINE,
+    { object = PASSPORT },
+    function(confirmed)
+      ended[#ended + 1] = confirmed
+    end
+  )
+  assert(ctx == held, "the definition did not draw it")
+  assert(ctx.object == PASSPORT, "the fields did not reach it")
+  assert(trx.ui.layers.count() == 1)
+  assert(not fake.is_held(trx.ui.Screen.EXAMINE), "the engine holds it")
+  ctx:confirm()
+  assert(#ended == 1 and ended[1] == true, "the end was not heard")
+  assert(trx.ui.layers.count() == 0, "its layer stayed")
+  assert(fake.take_choice(trx.ui.Screen.EXAMINE) == CHOICE_NONE)
+  finish_case()
+end)
+
+test("a script hears a cancelled screen as not confirmed", function()
+  define(trx.ui.Screen.EXAMINE, simple())
+  local heard = nil
+  local ctx = trx.ui.screens.open(
+    trx.ui.Screen.EXAMINE,
+    { object = PASSPORT },
+    function(confirmed)
+      heard = confirmed
+    end
+  )
+  assert(ctx ~= nil)
+  ctx:cancel()
+  assert(heard == false)
+  finish_case()
+end)
+
+test("a script opens nothing where no definition draws it", function()
+  assert(trx.ui.screens.open(trx.ui.Screen.EXAMINE, {}) == nil)
+  finish_case()
+end)
+
 return h.report()
