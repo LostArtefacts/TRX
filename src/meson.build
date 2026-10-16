@@ -866,7 +866,6 @@ common_sources = [
   'trx/game/objects/vehicles/skidoo_common.c',
   'trx/game/objects/vehicles/skidoo_fast.c',
   'trx/game/objects/vehicles/upv.c',
-  'trx/game/option/save_crystal.c',
   'trx/game/output/bind.c',
   'trx/game/output/binocular_mask.c',
   'trx/game/output/common.c',
