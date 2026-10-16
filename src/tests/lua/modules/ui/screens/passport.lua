@@ -5,7 +5,7 @@
 local h = require("harness")
 local test = h.test
 
-local Mode = trx.inventory_ring.Mode
+local Mode = trx.ui.MenuMode
 local Pool = trx.savegame.Pool
 local Role = trx.input.Role
 local RING_ENTRY = trx.ui.Screen.RING_ENTRY

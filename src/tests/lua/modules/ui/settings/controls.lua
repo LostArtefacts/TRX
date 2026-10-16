@@ -39,7 +39,7 @@ local function open(mode, again)
   if not again then
     trx.config.set("input.keyboard_layout", trx.input.Layout.DEFAULT)
   end
-  fake.open_ring(mode or trx.inventory_ring.Mode.GAME, CONTROLS, 0, 10)
+  fake.open_ring(mode or trx.ui.MenuMode.GAME, CONTROLS, 0, 10)
   assert(
     fake.offer(RING_ENTRY, { object = CONTROLS }),
     "the entry was not taken"
@@ -85,7 +85,7 @@ test("confirming on the bars leaves the ring", function()
 end)
 
 test("confirming on the title screen puts the entry away", function()
-  open(trx.inventory_ring.Mode.TITLE)
+  open(trx.ui.MenuMode.TITLE)
   press(Role.MENU_CONFIRM)
   assert(fake.take_choice(RING_ENTRY) == CHOICE_CANCEL)
   finish()
@@ -188,7 +188,7 @@ end)
 test("the reset hint shows as the editor opens", function()
   trx.config.set("ui.text_scale", 1.0)
   trx.config.set("input.keyboard_layout", trx.input.Layout.CUSTOM_1)
-  fake.open_ring(trx.inventory_ring.Mode.GAME, CONTROLS, 0, 10)
+  fake.open_ring(trx.ui.MenuMode.GAME, CONTROLS, 0, 10)
   assert(fake.offer(RING_ENTRY, { object = CONTROLS }))
   fake.tick()
   local shown = false

@@ -63,7 +63,7 @@ end
 local function open_crystal(ctx)
   if
     trx.config.get("gameplay.save_crystal_mode") ~= "save_pickup"
-    or trx.inventory_ring.mode() ~= trx.inventory_ring.Mode.GAME
+    or trx.inventory_ring.mode() ~= trx.ui.MenuMode.GAME
   then
     return nil
   end

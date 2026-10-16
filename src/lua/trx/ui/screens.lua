@@ -30,6 +30,7 @@ local held = {}
 ---@class (partial) trx.ui
 ---@field screens trx.ui.screens
 ---@field Screen table<string, trx.ui.Screen>
+---@field MenuMode table<string, trx.ui.MenuMode>
 
 ---Lets a script draw an engine screen in place of the engine.
 ---
@@ -101,6 +102,27 @@ local Screen = {
   PICTURE = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
+
+---What the engine opens its menu for, which the menu screen is told as it
+---opens.
+---@enum trx.ui.MenuMode
+local MenuMode = {
+  ---Opened during play.
+  GAME = h.IntegerConstant,
+  ---The title screen's menu.
+  TITLE = h.IntegerConstant,
+  ---The keys ring, opened against a locked door or receptacle.
+  KEYS = h.IntegerConstant,
+  ---Opened to save, with the save list already on show.
+  SAVE = h.IntegerConstant,
+  ---Opened to load, with the save list already on show.
+  LOAD = h.IntegerConstant,
+  ---Opened because Lara died.
+  DEATH = h.IntegerConstant,
+  ---Opened by a save crystal.
+  SAVE_CRYSTAL = h.IntegerConstant,
+}
+ui.MenuMode = h.enum("ui.MenuMode", "INVENTORY_MODE", MenuMode)
 
 local function key_of(screen, object)
   if object ~= nil then
@@ -296,7 +318,7 @@ end
 ---`trx.ui.Screen.SAVE_LOAD`.
 ---@class (exact) trx.ui.SaveLoadContext: trx.ui.ScreenContext
 ---@trx.readonly mode
----@field mode trx.inventory_ring.Mode Whether the screen opened for saving or for loading.
+---@field mode trx.ui.MenuMode Whether the screen opened for saving or for loading.
 local SaveLoadContext = h.class("ui.SaveLoadContext", {
   extends = "ui.ScreenContext",
   fields = { mode = reported("mode") },

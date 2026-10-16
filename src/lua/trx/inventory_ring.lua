@@ -18,29 +18,9 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---@class (exact) trx.inventory_ring
 local M = h.module("inventory_ring")
 
----What the inventory ring was opened for.
----@enum trx.inventory_ring.Mode
-local Mode = {
-  ---Opened during play.
-  GAME = h.IntegerConstant,
-  ---The title screen's menu.
-  TITLE = h.IntegerConstant,
-  ---The keys ring, opened against a locked door or receptacle.
-  KEYS = h.IntegerConstant,
-  ---Opened to save, with the save list already on show.
-  SAVE = h.IntegerConstant,
-  ---Opened to load, with the save list already on show.
-  LOAD = h.IntegerConstant,
-  ---Opened because Lara died.
-  DEATH = h.IntegerConstant,
-  ---Opened by a save crystal.
-  SAVE_CRYSTAL = h.IntegerConstant,
-}
-M.Mode = h.enum("inventory_ring.Mode", "INVENTORY_MODE", Mode)
-
 ---What the open ring was opened for, or `nil` when no ring is open.
----@return trx.inventory_ring.Mode? # What the ring was opened for.
----@type fun(): trx.inventory_ring.Mode?
+---@return trx.ui.MenuMode? # What the ring was opened for.
+---@type fun(): trx.ui.MenuMode?
 M.mode = raw.mode
 
 ---The animation state of the selected entry.

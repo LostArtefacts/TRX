@@ -198,7 +198,7 @@ local function open_controls(ctx)
       return ctx:push(settings)
     end,
     finish = function(confirmed)
-      local title = trx.inventory_ring.mode() == trx.inventory_ring.Mode.TITLE
+      local title = trx.inventory_ring.mode() == trx.ui.MenuMode.TITLE
       if confirmed and not title then
         ctx:confirm()
       else
