@@ -15,18 +15,6 @@
 
 #include <lauxlib.h>
 
-// trxc.inventory_ring.icon_of(object: trx.catalog.objects): trx.catalog.objects?
-static int M_L_RingIconOf(lua_State *const L)
-{
-    const OBJECT_ID icon_id = Inv_GetItemOption(LUA_CheckObjectID(L, 1));
-    if (icon_id == NO_OBJECT) {
-        lua_pushnil(L);
-    } else {
-        lua_pushinteger(L, icon_id);
-    }
-    return 1;
-}
-
 static int32_t M_ReadInt(
     lua_State *const L, const int idx, const char *const key,
     const int32_t fallback)
@@ -303,7 +291,6 @@ static const luaL_Reg m_Module[] = {
     { "hint", M_L_RingHint },
     { "hint_revision", M_L_RingHintRevision },
     { "declare_item", M_L_RingDeclareItem },
-    { "icon_of", M_L_RingIconOf },
     { "item", M_L_RingItem },
     { "mode", M_L_RingMode },
     { "selection_anim", M_L_RingSelectionAnim },

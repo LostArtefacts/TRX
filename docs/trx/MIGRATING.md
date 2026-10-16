@@ -37,7 +37,6 @@ order: 3
    - `trx.inventory.declare_ring_item` becomes
      `trx.inventory_ring.declare_item`
    - `trx.inventory.ring_item` becomes `trx.inventory_ring.item`
-   - `trx.inventory.icon_of` becomes `trx.inventory_ring.icon_of`
 
 5. **`trx.savegame.load` raises an error for an empty slot**
    A script that can name an empty slot must check it with
