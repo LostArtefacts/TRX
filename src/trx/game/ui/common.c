@@ -7,7 +7,6 @@
 #include <trx/game/output/overlay.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/events.h>
-#include <trx/game/ui/exit_fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
@@ -78,7 +77,7 @@ void UI_EndScene(void)
     M_Paint(UI_LAYER_OVER);
     M_Paint(UI_LAYER_FADE);
     M_Paint(UI_LAYER_CONSOLE);
-    UI_DrawExitFade();
+    M_Paint(UI_LAYER_EXIT);
 }
 
 int32_t UI_GetCanvasWidth(void)

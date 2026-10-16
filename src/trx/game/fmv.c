@@ -371,12 +371,13 @@ static RESULT M_Play(const char *const file_name)
         }
     }
 
-    // The executor draws the exit fade for a phase, and an FMV draws its own
+    // The executor waits on the exit fade for a phase, and an FMV draws its own
     // frames, so it runs the fade here rather than leaving the game to close on
     // the last frame of the video.
     while (exiting && PhaseExecutor_BeginExit()) {
         Clock_WaitTick();
         Shell_ProcessEvents();
+        LUA_Tick();
         M_RedrawFrame(&render_ctx);
     }
 

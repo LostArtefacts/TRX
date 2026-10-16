@@ -175,6 +175,21 @@ M.on_screen_change = hook(types.SCREEN_CHANGE)
 ---@type fun(callback: function): trx.events.Listener
 M.on_level_unload = hook(types.LEVEL_UNLOAD)
 
+---Happens once as the game starts to exit to the desktop. The game goes on
+---running until no fade layer holds the screen, so a handler can put up a fade
+---that holds it, as the shipped interface fades to black. The handler takes no
+---arguments.
+---
+---```lua
+---trx.events.on_exit(function()
+---  trx.log.info("leaving")
+---end)
+---```
+---@param callback function What to run when it happens.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: function): trx.events.Listener
+M.on_exit = hook(types.EXIT)
+
 ---Happens once for every tick the game runs, whatever is on screen: while a
 ---level is played, while a menu is open, over a cutscene and through a fade.
 ---

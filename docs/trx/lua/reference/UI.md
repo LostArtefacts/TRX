@@ -276,6 +276,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     behind it.
 
     Properties:
+    - <a id="ui.FadeLayer.holds_screen" name="ui.FadeLayer.holds_screen"></a>**`holds_screen`**: boolean. Whether the engine waits to start its next screen, or to exit, while the layer is open. Setting it to `false` lets the engine go on while the layer stays drawn.
     - <a id="ui.FadeLayer.is_open" name="ui.FadeLayer.is_open"></a>**`is_open`**: boolean. Whether the layer is still drawn. *(read-only)*
     - <a id="ui.FadeLayer.opacity" name="ui.FadeLayer.opacity"></a>**`opacity`**: number. How opaque the layer is now, from `0` to `1`. *(read-only)*
 
@@ -817,7 +818,8 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.layers.fade.settings.path" name="ui.layers.fade.settings.path"></a>**`path`** (string, optional). The picture of an `image` backdrop, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it.
     - <a id="ui.layers.fade.settings.opacity" name="ui.layers.fade.settings.opacity"></a>**`opacity`** (number, optional). How opaque the layer starts, from `0` to `1`. `1` by default.
     - <a id="ui.layers.fade.settings.on_close" name="ui.layers.fade.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
-    - <a id="ui.layers.fade.settings.holds_screen" name="ui.layers.fade.settings.holds_screen"></a>**`holds_screen`** (boolean, optional). Whether the engine waits to start its next screen while the layer is open. `false` by default.
+    - <a id="ui.layers.fade.settings.holds_screen" name="ui.layers.fade.settings.holds_screen"></a>**`holds_screen`** (boolean, optional). Whether the engine waits to start its next screen, or to exit, while the layer is open. `false` by default.
+    - <a id="ui.layers.fade.settings.over_console" name="ui.layers.fade.settings.over_console"></a>**`over_console`** (boolean, optional). Whether the layer is drawn over the console too, as the fade to black as the game exits is. `false` by default.
 
   Returns: [trx.ui.FadeLayer](#ui.FadeLayer). The layer.
 

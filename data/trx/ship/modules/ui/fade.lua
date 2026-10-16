@@ -379,6 +379,30 @@ local function fade_to_black(ticks, hold)
   })
 end
 
+-- The game fades to black over the console as it exits, over a third of a
+-- second, and holds the black for a tenth before it closes.
+local EXIT_TICKS = math.floor(trx.game.LOGIC_FPS / 3 + 0.5)
+local EXIT_HOLD = math.floor(trx.game.LOGIC_FPS / 10 + 0.5)
+
+local function on_exit()
+  if not M.enabled("visuals.enable_exit_fade_effects") then
+    return
+  end
+  local black = trx.ui.layers.fade({
+    fill = BLACK,
+    opacity = 0,
+    over_console = true,
+    holds_screen = true,
+  })
+  black:to(1, EXIT_TICKS, {
+    on_done = function()
+      timer.after(EXIT_HOLD, function()
+        black.holds_screen = false
+      end, { clock = timer.Clock.UI })
+    end,
+  })
+end
+
 local function on_screen_change(cross_fades, fade_ticks, fade_hold)
   local request = handed
   handed = nil
@@ -394,10 +418,12 @@ end
 -- Setup
 -------------------------------------------------------------------------------
 
--- Listens for the screens changing, and for the events that drop the fades
--- that outlive their screens. Called once, from a global script.
+-- Listens for the screens changing and the game exiting, and for the events
+-- that drop the fades that outlive their screens. Called once, from a global
+-- script.
 function M.setup()
   trx.events.on_screen_change(on_screen_change)
+  trx.events.on_exit(on_exit)
   trx.events.on_game_start(function()
     local level = trx.game.current_level
     if level ~= nil and level.type == trx.game.LevelType.CUTSCENE then

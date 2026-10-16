@@ -302,4 +302,34 @@ test("a hand over is spent by the change that follows", function()
   finish()
 end)
 
+-- The exit fade never closes, as the game is gone by then, so these two come
+-- last.
+test("no fade runs as the game exits with the setting off", function()
+  trx.config.set("visuals.enable_exit_fade_effects", false)
+  fake.exit()
+  assert(not fake.holds_screen(), "the exit waits on a fade")
+  trx.config.set("visuals.enable_exit_fade_effects", true)
+end)
+
+test("the game fades to black over the console as it exits", function()
+  local function over_console()
+    local ops, layers = fake.scene(), fake.scene_layers()
+    for i, op in ipairs(ops) do
+      local alpha = op:match("color=000000(%x%x)$")
+      if layers[i] == "exit" and alpha ~= nil then
+        return tonumber(alpha, 16)
+      end
+    end
+    return nil
+  end
+  fake.exit()
+  assert(fake.holds_screen(), "the exit does not wait on the fade")
+  assert(over_console() == nil, "the fade starts black")
+  ticks(10)
+  assert(over_console() ~= nil, "the fade is not over the console")
+  ticks(4)
+  assert(not fake.holds_screen(), "the exit still waits after the hold")
+  assert(over_console() == 0xFF, "the fade let go before it was black")
+end)
+
 return h.report()

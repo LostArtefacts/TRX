@@ -195,6 +195,13 @@ static int M_FakeChangeScreen(lua_State *const L)
     return 0;
 }
 
+// fake.exit() - the game starts to exit to the desktop.
+static int M_FakeExit(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_EXIT);
+    return 0;
+}
+
 // fake.holds_screen() -> boolean
 static int M_FakeHoldsScreen(lua_State *const L)
 {
@@ -272,6 +279,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "change_screen");
     lua_pushcfunction(L, M_FakeHoldsScreen);
     lua_setfield(L, -2, "holds_screen");
+    lua_pushcfunction(L, M_FakeExit);
+    lua_setfield(L, -2, "exit");
     lua_pushcfunction(L, M_FakeAsLevelScript);
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_FakeEndLevel);
