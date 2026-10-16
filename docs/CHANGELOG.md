@@ -305,9 +305,9 @@
 - Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
 - Added `trx.inventory_ring.signals.rest_frame`, which says when the entry the player picked in the inventory ring comes to rest
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
-- Added fade layers, which the engine draws over its interface and below the console, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
+- Added fade layers, which the game draws over its interface, below the console or over it, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
-- Added `trx.events.on_screen_change` and the `holds_screen` setting of `trx.ui.layers.fade`, which let a script run the change from one screen to the next
+- Added `trx.events.on_screen_change`, `trx.events.on_exit` and the `holds_screen` setting of `trx.ui.layers.fade`, which let a script run the change from one screen to the next and the fade as the game exits
 - Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.TimedContext`, which reports how long the view shows and fades
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting

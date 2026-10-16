@@ -24,7 +24,6 @@
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/draw.h>
-#include <trx/game/ui/exit_fade.h>
 #include <trx/game/ui/takeover.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/game/viewport.h>
@@ -151,7 +150,7 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
             if (Shell_IsExiting()) {
                 PhaseExecutor_BeginExit();
             }
-            if (m_Exiting && !UI_IsExitFading()) {
+            if (m_Exiting && !LUA_UI_IsHoldingScreen()) {
                 return (GF_COMMAND) { .action = GF_EXIT_GAME };
             }
 
@@ -200,12 +199,15 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         PhaseExecutor_BeginExit();
     }
     if (m_Exiting) {
-        if (!UI_IsExitFading()) {
+        if (!LUA_UI_IsHoldingScreen()) {
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = GF_EXIT_GAME },
             };
         }
+        // The exit fade moves on the scripts' ticks, so they go on while the
+        // phase stands still.
+        LUA_Tick();
         return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
     }
 
@@ -410,7 +412,7 @@ bool PhaseExecutor_BeginExit(void)
 {
     if (!m_Exiting) {
         m_Exiting = true;
-        UI_BeginExitFade();
+        LUA_FireEvent(LUA_EVENT_EXIT);
     }
-    return UI_IsExitFading();
+    return LUA_UI_IsHoldingScreen();
 }

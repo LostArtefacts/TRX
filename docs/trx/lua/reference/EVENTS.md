@@ -148,6 +148,24 @@ return.
   end)
   ```
 
+- <a id="events.on_exit" name="events.on_exit"></a>[lua]`trx.events.on_exit(callback)`  
+  Happens once as the game starts to exit to the desktop. The game goes on
+  running until no fade layer holds the screen, so a handler can put up a fade
+  that holds it, as the shipped interface fades to black. The handler takes no
+  arguments.
+
+  Parameters:
+  - <a id="events.on_exit.callback" name="events.on_exit.callback"></a>**`callback`** (function). What to run when it happens.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_exit(function()
+    trx.log.info("leaving")
+  end)
+  ```
+
 - <a id="events.on_tick" name="events.on_tick"></a>[lua]`trx.events.on_tick(callback)`  
   Happens once for every tick the game runs, whatever is on screen: while a
   level is played, while a menu is open, over a cutscene and through a fade.

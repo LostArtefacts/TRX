@@ -377,6 +377,22 @@ local function finish_fade(layer)
   return h.failure(layer.on_close, layer)
 end
 
+-- Paints the layers that hold a colour or a snapshot, over the interface or
+-- over the console too, in the order they were made.
+local function paint_fades(over_console)
+  for _, layer in ipairs(fades) do
+    if layer._over_console == over_console then
+      local opacity = layer._opacity:get()
+      if layer._slot ~= nil then
+        raw_fade.snapshot(layer._slot, opacity)
+      elseif layer._fill ~= nil then
+        local fill = layer._fill
+        raw_fade.fill(fill.r, fill.g, fill.b, opacity)
+      end
+    end
+  end
+end
+
 ---A layer drawn over the interface: one colour, or the frame as it was when
 ---the layer was made. Its opacity moves on a curve, and the layer paints
 ---itself, so the script that made it paints nothing. Fade layers stack in the
@@ -390,6 +406,7 @@ end
 ---@trx.readonly is_open, opacity
 ---@field is_open boolean Whether the layer is still drawn.
 ---@field opacity number How opaque the layer is now, from `0` to `1`.
+---@field holds_screen boolean Whether the engine waits to start its next screen, or to exit, while the layer is open. Setting it to `false` lets the engine go on while the layer stays drawn.
 ---@field private on_close? fun(layer: trx.ui.FadeLayer)
 ---@field private _opacity trx.ui.Tween
 ---@field private _fill? trx.math.Color
@@ -397,6 +414,7 @@ end
 ---@field private _backdrop? string
 ---@field private _path? string
 ---@field private _holds boolean
+---@field private _over_console boolean
 ---@field private _close_at_rest? boolean
 ---@field private _on_done? fun(layer: trx.ui.FadeLayer)
 ---@field private _unload? trx.events.Listener
@@ -410,6 +428,15 @@ local FadeLayer = h.class("ui.FadeLayer", {
     opacity = {
       get = function(self)
         return self._opacity:get()
+      end,
+    },
+    holds_screen = {
+      get = function(self)
+        return self._holds
+      end,
+      set = function(self, value)
+        self._holds = value == true
+        hold_screen()
       end,
     },
   },
@@ -462,7 +489,8 @@ end
 ---@field path? string The picture of an `image` backdrop, as `trx.ui.primitive.background` takes it. <!--noref: image-->
 ---@field opacity? number How opaque the layer starts, from `0` to `1`. `1` by default.
 ---@field on_close? function Runs once when the layer closes, for any reason. It receives the layer.
----@field holds_screen? boolean Whether the engine waits to start its next screen while the layer is open. `false` by default.
+---@field holds_screen? boolean Whether the engine waits to start its next screen, or to exit, while the layer is open. `false` by default.
+---@field over_console? boolean Whether the layer is drawn over the console too, as the fade to black as the game exits is. `false` by default.
 
 ---Puts up a fade layer, on top of the others drawn where it is. A level
 ---script's layer closes when the level ends.
@@ -478,6 +506,7 @@ function layers.fade(settings)
     on_close = settings.on_close,
     _opacity = ui.tween(settings.opacity or 1),
     _holds = settings.holds_screen == true,
+    _over_console = settings.over_console == true,
   }, FadeLayer) --[[@as trx.ui.FadeLayer]]
   if settings.snapshot then
     layer._slot = raw_fade.capture_snapshot()
@@ -667,8 +696,7 @@ raw_events.attach(events.TICK, function()
   end
 end)
 
--- Paints the backdrops under the interface, and the other layers over it, in
--- the order they were made.
+-- Paints the backdrops under the interface, in the order they were made.
 raw_events.attach(events.UI_PAINT_BACKDROP, function()
   for _, layer in ipairs(fades) do
     if layer._backdrop ~= nil then
@@ -678,13 +706,9 @@ raw_events.attach(events.UI_PAINT_BACKDROP, function()
 end)
 
 raw_events.attach(events.UI_PAINT_FADE, function()
-  for _, layer in ipairs(fades) do
-    local opacity = layer._opacity:get()
-    if layer._slot ~= nil then
-      raw_fade.snapshot(layer._slot, opacity)
-    elseif layer._fill ~= nil then
-      local fill = layer._fill
-      raw_fade.fill(fill.r, fill.g, fill.b, opacity)
-    end
-  end
+  paint_fades(false)
+end)
+
+raw_events.attach(events.UI_PAINT_EXIT, function()
+  paint_fades(true)
 end)
