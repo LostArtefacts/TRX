@@ -23,7 +23,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/ui/common.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 #include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>

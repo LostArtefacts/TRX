@@ -10,7 +10,7 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 #include <trx/game/viewport.h>
 
 // The view is timed, faded and skipped by a script, which ends it with a

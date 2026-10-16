@@ -1,7 +1,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/args.h>
 #include <trx/game/lua/utils/module.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 #include <lauxlib.h>
 #include <lua.h>

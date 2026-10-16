@@ -6,7 +6,7 @@
 #include <trx/game/input.h>
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 // The picture is timed, faded and skipped by a script, which ends it with a
 // choice. Without one the picture is skipped.

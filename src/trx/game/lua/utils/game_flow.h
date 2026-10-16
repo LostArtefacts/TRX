@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trx/game/game_flow/common.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 // Marks the console running a command written in Lua, for the length of it.
 void LUA_Console_BeginCommand(void);

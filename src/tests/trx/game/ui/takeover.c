@@ -1,6 +1,6 @@
 #include <harness/harness.h>
 
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 static bool m_Accept = false;
 static int32_t m_Offers = 0;

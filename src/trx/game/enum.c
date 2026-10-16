@@ -34,9 +34,9 @@
 #include <trx/game/sound/ids.h>
 #include <trx/game/sparks/enum.h>
 #include <trx/game/ui/common.h>
-#include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
+#include <trx/game/ui/takeover.h>
 #include <trx/game/ui/tween.h>
 
 static __attribute__((constructor)) void M_Init(void)
