@@ -4,6 +4,14 @@
 local h = require("harness")
 local test, raises = h.test, h.raises
 
+test("an object keeps the order its keys were written in", function()
+  local looks = trx.json.decode('{ "zeta": 1, "alpha": { "b": 2, "a": 3 } }')
+  assert(table.concat(trx.json.keys(looks), ",") == "zeta,alpha")
+  assert(table.concat(trx.json.keys(looks.alpha), ",") == "b,a")
+  assert(trx.json.keys({ a = 1 }) == nil, "a table a script built has keys")
+  assert(trx.json.keys(trx.json.decode("[1, 2]")) == nil, "a list has keys")
+end)
+
 test("a scalar writes as itself", function()
   local encode = trx.json.encode
 
