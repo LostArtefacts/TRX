@@ -176,7 +176,6 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_EXIT, "ui_paint_exit");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_EXIT, "exit");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_STARTUP, "startup");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_RING_REST, "ring_rest");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_LAYOUT, "ui_layout");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCREEN_CHANGE, "screen_change");
 

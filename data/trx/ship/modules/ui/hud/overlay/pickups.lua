@@ -6,6 +6,8 @@
 -- Models slide and turn smoothly between ticks. Sprites are drawn in their
 -- cells and do not slide, matching the original behaviour.
 
+local ring = require("common.ui.ring")
+
 local M = {}
 
 trx.config.declare({
@@ -111,7 +113,7 @@ function M.setup()
   -- Return the ring pose: its starting angle, its fixed rotations, and which of
   -- its meshes the ring draws.
   local function ring_pose(icon)
-    local entry = trx.inventory_ring.item(icon)
+    local entry = ring.item(icon)
     if entry == nil then
       return 0, 0, 0, nil
     end

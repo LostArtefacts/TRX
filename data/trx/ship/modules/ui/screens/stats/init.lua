@@ -250,9 +250,9 @@ local function in_gym()
 end
 
 local function close(ctx, object, confirmed)
-  local anim = trx.inventory_ring.selection_anim()
+  local anim = ring.selection_anim()
   if anim ~= nil then
-    trx.inventory_ring.animate_selection(anim.frame_count - 1, 1)
+    ring.animate_selection(anim.frame_count - 1, 1)
   end
   if object == trx.catalog.objects.STOPWATCH_OPTION then
     trx.sound.stop(trx.catalog.samples.MENU_STOPWATCH)

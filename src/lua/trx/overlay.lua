@@ -40,6 +40,22 @@ local function lasting(name, read)
   end
 end
 
+-- The arrows on screen, as a number with one bit for each, so that the poll
+-- says only when one of them moves.
+local function arrow_bits()
+  local bits = 0
+  for _, arrow in pairs(M.Arrow) do
+    if raw.is_arrow_shown(arrow) then
+      bits = bits | (1 << arrow)
+    end
+  end
+  return bits
+end
+
+local polled_arrow_bits = lasting("arrow_bits", function()
+  return lasting_polled(arrow_bits)
+end)
+
 ---An arrow the interface can show.
 ---@enum trx.overlay.Arrow
 local Arrow = {
@@ -62,13 +78,13 @@ M.Arrow = h.enum("overlay.Arrow", "OVERLAY_ARROW", Arrow)
 ---
 ---The inventory ring uses it for the selected entry. The caption reduces the
 ---safe area. Passing no value removes it.
----
----The count stands above the caption, where the ring puts the count of an
----entry Lara carries more than one of, and shows while the ring is open.
 ---@param text? string Text to show. Omit this parameter to remove the caption.
----@param count? integer The count to show with it. Omit it to show none.
----@type fun(text?: string, count?: integer)
-M.set_caption = raw.set_caption
+function M.set_caption(text)
+  raw.set_caption(text)
+  -- The signal takes the caption at once rather than on the next tick, so
+  -- that it shows on the same frame as whatever asked for it.
+  M.signals.caption:set(raw.caption())
+end
 
 ---Shows or hides an interface arrow.
 ---
@@ -76,8 +92,11 @@ M.set_caption = raw.set_caption
 ---sets.
 ---@param arrow trx.overlay.Arrow Which arrow to show.
 ---@param shown boolean Whether it is on screen.
----@type fun(arrow: trx.overlay.Arrow, shown: boolean)
-M.show_arrow = raw.show_arrow
+function M.show_arrow(arrow, shown)
+  raw.show_arrow(arrow, shown)
+  -- The signal takes the arrows at once, as `trx.overlay.set_caption` does.
+  polled_arrow_bits():set(arrow_bits())
+end
 
 h.properties(M, "overlay", {
   has_letterbox = {
@@ -88,18 +107,6 @@ h.properties(M, "overlay", {
     set = raw.set_letterbox,
   },
 })
-
--- The arrows on screen, as a number with one bit for each, so that the poll
--- says only when one of them moves.
-local function arrow_bits()
-  local bits = 0
-  for _, arrow in pairs(M.Arrow) do
-    if raw.is_arrow_shown(arrow) then
-      bits = bits | (1 << arrow)
-    end
-  end
-  return bits
-end
 
 h.properties(M.signals, "overlay.signals", {
   top_text = {
@@ -119,7 +126,7 @@ h.properties(M.signals, "overlay.signals", {
   },
   arrows = {
     get = lasting("arrows", function()
-      return lasting_polled(arrow_bits):map(function(bits)
+      return polled_arrow_bits():map(function(bits)
         local shown = {}
         for _, arrow in pairs(M.Arrow) do
           if bits & (1 << arrow) ~= 0 then

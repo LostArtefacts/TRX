@@ -12,13 +12,14 @@
 #include <trx/game/game_flow/vars.h>
 #include <trx/game/game_strings/table.h>
 #include <trx/game/inventory.h>
-#include <trx/game/inventory_ring/control.h>
 #include <trx/game/level.h>
 #include <trx/game/locale/common.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/phase.h>
+#include <trx/game/phase/phase_inventory.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell/common.h>
+#include <trx/game/ui/menu.h>
 
 static void M_PlayIntroFMVs(void)
 {
@@ -84,21 +85,18 @@ GF_COMMAND GF_ShowInventory(const INVENTORY_MODE mode)
 
 bool GF_ShowInventoryKeys(const OBJECT_ID receptacle_type_id)
 {
-    if (!InvRing_IsRingAvailable(RT_KEYS)) {
-        return false;
-    }
     if (g_Config.gameplay.enable_auto_item_selection) {
-        const OBJECT_ID obj_id = ObjectLink_GetInverse(
-            receptacle_type_id, OBJ_LINK_KEY_TO_RECEPTACLE);
-        InvRing_SetRequestedObjectID(obj_id);
-    } else {
-        InvRing_ClearSelection();
+        UI_RequestItem(ObjectLink_GetInverse(
+            receptacle_type_id, OBJ_LINK_KEY_TO_RECEPTACLE));
     }
-    const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
+    PHASE *const phase = Phase_Inventory_Create(INV_KEYS_MODE);
+    const GF_COMMAND gf_cmd = PhaseExecutor_Run(phase);
+    const bool is_shown = Phase_Inventory_IsShown(phase);
+    Phase_Inventory_Destroy(phase);
     if (gf_cmd.action != GF_NOOP) {
         GF_OverrideCommand(gf_cmd, true);
     }
-    return true;
+    return is_shown;
 }
 
 GF_COMMAND GF_RunDemo(const int32_t demo_num)

@@ -20,7 +20,6 @@
 ---@field inject trxc.inject
 ---@field input trxc.input
 ---@field inventory trxc.inventory
----@field inventory_ring trxc.inventory_ring
 ---@field items trxc.items
 ---@field json trxc.json
 ---@field lara trxc.lara
@@ -319,18 +318,6 @@ trxc = {}
 ---@field icon_of fun(object: trx.catalog.objects): trx.catalog.objects?
 ---@field use fun(object: trx.catalog.objects)
 
----@class (exact) trxc.inventory_ring
----@field animate_selection fun(goal_frame: integer, direction: integer)
----@field count fun(): string?
----@field declare_item fun(spec: table)
----@field hint fun(): string...
----@field hint_revision fun(): integer
----@field item fun(object_id: trx.catalog.objects): table?
----@field mode fun(): trx.ui.MenuMode?
----@field selection_anim fun(): trx.inventory_ring.EntryAnim?
----@field set_hint fun(...: string)
----@field turn_selection fun(yaw: integer, pitch: integer)
-
 ---@class (exact) trxc.items
 ---@field count fun(): integer
 ---@field get fun(key: trx.items.Num|string): trx.items.Item?
@@ -438,7 +425,7 @@ trxc = {}
 ---@field is_caption_flashing fun(): boolean
 ---@field is_health_bar_forced fun(): boolean
 ---@field is_version_shown fun(): boolean
----@field set_caption fun(text?: string, count?: integer)
+---@field set_caption fun(text?: string)
 ---@field set_letterbox fun(depth: number)
 ---@field show_arrow fun(arrow: trx.overlay.Arrow, shown?: boolean)
 ---@field show_pickup fun(object: trx.catalog.objects)

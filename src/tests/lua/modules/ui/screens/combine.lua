@@ -47,7 +47,7 @@ end
 local function open(partners)
   trx.config.set("ui.text_scale", 100)
   fake.set_combine_partners(partners)
-  fake.open_ring(trx.ui.MenuMode.GAME, OBJECT, 0, 10)
+  h.open_ring(trx.ui.MenuMode.GAME, OBJECT, 0, 10)
   assert(fake.offer(COMBINE, { object = OBJECT }), "the entry was not taken")
   -- The press that opened the entry, then the first tick it rests open.
   fake.tick()
@@ -68,7 +68,7 @@ end
 local function finish()
   fake.release(COMBINE)
   fake.take_choice(COMBINE)
-  fake.close_ring()
+  h.close_ring()
   fake.release_all()
   assert(trx.ui.layers.count() == 0, "a layer outlived the screen")
   assert(fake.errors() == 0, "the module raised")
@@ -78,12 +78,12 @@ test("the frame names the entry in the middle", function()
   open(PARTNERS)
   assert(shows_name(PARTNERS[1]))
   assert(
-    fake.ring_hint()
+    h.ring_hint()
       == "\\{input menu_confirm} "
         .. trx.locale.get("general/actions/combine_item")
         .. " | \\{input menu_back} "
         .. trx.locale.get("general/actions/cancel"),
-    fake.ring_hint()
+    h.ring_hint()
   )
   finish()
 end)

@@ -41,7 +41,7 @@ end
 -- Offers to turn the entry where the ring shows its hints, while the
 -- description is out of the way.
 local function offer_turning(offer)
-  trx.inventory_ring.set_input_hints(offer and {
+  ring.set_hint(offer and {
     {
       input = {
         trx.input.Role.FORWARD,
@@ -81,7 +81,7 @@ local function control(ctx, state, keys)
     local function axis(minus, plus)
       return (keys:held(minus) and 1 or 0) - (keys:held(plus) and 1 or 0)
     end
-    trx.inventory_ring.turn_selection(
+    ring.turn_selection(
       axis(trx.input.Role.MENU_LEFT, trx.input.Role.MENU_RIGHT) * turn_speed(),
       axis(trx.input.Role.MENU_DOWN, trx.input.Role.MENU_UP) * turn_speed()
     )

@@ -262,8 +262,7 @@ end
 M.combine_partners = raw.combine_partners
 
 ---Combines two things Lara carries into what they make, taking one of each,
----as combining them in the inventory ring does. The ring rests on what they
----made when it next settles.
+---as combining them in the inventory ring does.
 ---
 ---```lua
 ---local made = trx.inventory.combine(item, partner)

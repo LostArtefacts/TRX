@@ -56,7 +56,7 @@ local function finish()
     fake.release(screen)
     fake.take_choice(screen)
   end
-  fake.close_ring()
+  h.close_ring()
   fake.release_all()
   for _, key in ipairs({
     "ui.stats.show_kills",
@@ -251,7 +251,7 @@ end)
 
 local function open_entry(object)
   fake.set_current_level(CAVES)
-  fake.open_ring(trx.ui.MenuMode.GAME, object, 0, 10)
+  h.open_ring(trx.ui.MenuMode.GAME, object, 0, 10)
   assert(
     fake.offer(RING_ENTRY, { object = object }),
     "the entry was not taken"
@@ -298,7 +298,7 @@ end)
 local function open_gym()
   fake.set_tr_version(2)
   fake.set_current_level(1)
-  fake.open_ring(trx.ui.MenuMode.GAME, STOPWATCH, 0, 10)
+  h.open_ring(trx.ui.MenuMode.GAME, STOPWATCH, 0, 10)
   fake.offer(RING_ENTRY, { object = STOPWATCH })
   fake.tick()
 end

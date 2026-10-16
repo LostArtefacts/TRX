@@ -6,6 +6,8 @@
 -- The models come from bfg.bin. The script refers to them by name, so it
 -- does not depend on object slots. The same file works for every game.
 
+local inventory_ring = require("common.ui.ring")
+
 local OBJECTS = trx.catalog.Context.OBJECTS
 
 local WEAPON_KEY = "dash:bfg9000"
@@ -550,7 +552,7 @@ trx.objects[ball]:add_family("projectile")
 trx.objects[gun_item]:link("gun_to_ammo", ammo_item)
 
 for i, key in ipairs({ GUN_KEY, AMMO_KEY }) do
-  trx.inventory_ring.declare_item({
+  inventory_ring.declare_item({
     object_id = key,
     frames_total = 1,
     anim_direction = 1,

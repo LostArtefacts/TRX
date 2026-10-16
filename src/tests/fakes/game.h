@@ -34,7 +34,6 @@ void FakeGame_SetRunTime(int32_t frames);
 
 // The frame that the fake ring's picked entry rests on, or -1 while it moves
 // or no ring is open.
-int32_t FakeGame_GetRingRestFrame(void);
 
 // The game flow as a test script sees it: fake.set_current_level(),
 // fake.set_current_title(), fake.set_current_cutscene(),
