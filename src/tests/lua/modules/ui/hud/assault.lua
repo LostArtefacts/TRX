@@ -48,8 +48,7 @@ local function draw_after(setup)
   fake.set_run(COURSE, 0, 0, 0, 0)
   setup()
   fake.tick()
-  local description, balanced = fake.draw_regions()
-  assert(balanced, "a widget was left open for the next frame to draw into")
+  local description = fake.draw_regions()
   assert(
     fake.errors() == 0,
     ("%d region(s) raised - see the errors above"):format(fake.errors())

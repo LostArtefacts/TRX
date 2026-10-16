@@ -33,10 +33,10 @@
 #include <trx/game/shell/mod.h>
 #include <trx/game/sound/ids.h>
 #include <trx/game/sparks/enum.h>
+#include <trx/game/ui/align.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
-#include <trx/game/ui/elements/frame.h>
-#include <trx/game/ui/elements/stack.h>
+#include <trx/game/ui/frame.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/tween.h>
