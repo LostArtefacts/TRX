@@ -7,7 +7,7 @@
 // The tick a frame is drawn at, part way between the last two ticks.
 static double M_Now(void)
 {
-    return LUA_GetTick() - 1 + Interpolation_GetRate();
+    return LUA_GetTick() - 1 + Interpolation_GetUIRate();
 }
 
 float UI_Ease_Apply(const UI_EASE ease, const float ratio)

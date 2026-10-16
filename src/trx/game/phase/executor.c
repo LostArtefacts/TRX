@@ -83,6 +83,22 @@ static GF_COMMAND M_HandleOverride(const PHASE *const phase)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
+// Reports whether a frame is drawn between two ticks. Unlike
+// Interpolation_IsActive, this stays true while the game exits, so that a
+// tick of the exit fade lasts as long as a tick of play.
+static bool M_HasHalfFrames(void)
+{
+    return Interpolation_IsEnabled() && Clock_GetCurrentFPS() == 60;
+}
+
+// Keeps the world on its last tick while the game exits, because no tick
+// moves it on and a half frame would show it between two positions.
+static void M_SetHalfFrameRate(void)
+{
+    Interpolation_SetRate(m_Exiting ? 1.0 : 0.5);
+    Interpolation_SetUIRate(0.5);
+}
+
 static void M_DrawHeldScreen(void)
 {
     Output_BeginScene();
@@ -164,8 +180,8 @@ static GF_COMMAND M_ChangeScreen(const PHASE *const phase)
 
         // Draws the frame between two ticks as the main loop does, so that a
         // tick lasts as long here as in a phase.
-        if (Interpolation_IsActive()) {
-            Interpolation_SetRate(0.5f);
+        if (M_HasHalfFrames()) {
+            M_SetHalfFrameRate();
             Output_SetTime(m_CurrentFrame - 0.5f);
             M_DrawHeldScreen();
             Clock_WaitTick();
@@ -364,9 +380,8 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
             }
         }
 
-        if (!Shell_ShouldPauseForFocusLoss() && !m_Exiting
-            && Interpolation_IsActive()) {
-            Interpolation_SetRate(0.5);
+        if (!Shell_ShouldPauseForFocusLoss() && M_HasHalfFrames()) {
+            M_SetHalfFrameRate();
             Output_SetTime(m_CurrentFrame - 0.5f);
             M_Draw(phase);
             Clock_WaitTick();

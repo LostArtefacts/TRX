@@ -469,7 +469,7 @@ static int M_L_UIDrawBackground(lua_State *const L)
 // trxc.ui.interpolation_rate(): number
 static int M_L_UIInterpolationRate(lua_State *const L)
 {
-    lua_pushnumber(L, Interpolation_GetRate());
+    lua_pushnumber(L, Interpolation_GetUIRate());
     return 1;
 }
 
