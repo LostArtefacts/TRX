@@ -215,7 +215,7 @@
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
 - Added `trx.ui.primitive.model` and `trx.ui.widgets.Model`, which draw a model on the canvas as the interface is painted, turned any way and in the game or over the inventory ring, held as a pickup or standing free, and lit as the script says, each game in its own terms, by the light the game holds a pickup up in unless told otherwise
 - Added `trx.ui.primitive.background`, which draws a picture behind the whole interface, in colour or greyed and dimmed
-- Added `trx.ui.primitive.world_model`, which draws a model in a world of its own as a camera there sees it, placed step by step as the engine places one, so a script can show a model as the game shows it
+- Added `trx.ui.primitive.world_model`, which draws a model in a world of its own as a camera there sees it, placed step by step as the engine places one and posed in any frame of its animation, so a script can show a model as the game shows it
 - Added `trx.ui.primitive.darken`, which darkens the screen behind the interface, as the game does behind a menu and to fade to black
 - Added `trx.ui.primitive.mesh_bounds`, the box a model occupies
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)

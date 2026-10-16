@@ -553,6 +553,19 @@ static OUTPUT_UI_MESH_LIGHT M_CopyLight(const UI_MODEL_LIGHT *const light)
     return mesh_light;
 }
 
+static OUTPUT_UI_MESH_STEP M_ToMeshStep(const UI_MODEL_STEP kind)
+{
+    switch (kind) {
+    case UI_MODEL_STEP_TURN:
+        return OUTPUT_UI_MESH_STEP_TURN;
+    case UI_MODEL_STEP_SCALE:
+        return OUTPUT_UI_MESH_STEP_SCALE;
+    case UI_MODEL_STEP_MOVE:
+        break;
+    }
+    return OUTPUT_UI_MESH_STEP_MOVE;
+}
+
 void UI_ScheduleDrawTextBackground(
     const UI_STYLE ui_style, const UI_MENU_COLORS *const colors,
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
@@ -766,10 +779,20 @@ void UI_ScheduleDrawModelInWorld(
         .camera_target = world->camera_target,
         .fov = world->fov,
         .step_count = world->step_count,
+        .frame = world->frame,
+        .next_frame = world->next_frame,
+        .blend = world->blend,
+        .bone_count = world->bone_count,
+        .at_pivot = world->at_pivot,
     };
     for (int32_t i = 0; i < world->step_count; i++) {
-        mesh_world.steps[i].turn = world->steps[i].turn;
+        mesh_world.steps[i].kind = M_ToMeshStep(world->steps[i].kind);
         mesh_world.steps[i].vec = world->steps[i].vec;
+    }
+    for (int32_t i = 0; i < world->bone_count; i++) {
+        mesh_world.bones[i].bone = world->bones[i].bone;
+        mesh_world.bones[i].axes = world->bones[i].axes;
+        mesh_world.bones[i].rot = world->bones[i].rot;
     }
     M_SCHEDULE_OP(
         M_DrawOp_Model,

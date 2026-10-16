@@ -108,7 +108,43 @@ test("a model in a world of its own draws with its camera and pose", function()
     end
   end
   assert(
-    found == "world_model obj=5 mask=3 lit=1 lights=1 steps=2 fov=14560",
+    found
+      == "world_model obj=5 mask=3 lit=1 lights=1 steps=2 fov=14560 kinds=TM "
+        .. "frame=0 next=0 blend=0.00 bones= pivot=0",
+    tostring(found)
+  )
+end)
+
+test("a model in a world of its own takes a frame and bone turns", function()
+  local lines = fake.paint(function()
+    primitive.world_model(5, {
+      camera = {
+        pos = { x = 0, y = 0, z = 0 },
+        target = { x = 0, y = 0, z = 1 },
+        fov = 0,
+      },
+      pose = {
+        { move = { x = 0, y = 0, z = 100 } },
+        { scale = 1.5 },
+      },
+      frame = 3,
+      next_frame = 4,
+      blend = 0.25,
+      bones = { { bone = 0, y = 100 }, { bone = 3, z = -5 } },
+      at_pivot = true,
+    })
+  end)
+  local found = nil
+  for _, op in ipairs(lines) do
+    if op:match("^world_model ") then
+      found = op
+    end
+  end
+  assert(
+    found ~= nil
+      and found:match(
+        " kinds=MS frame=3 next=4 blend=0.25 bones=0:0,100,0;3:0,0,%-5 pivot=1$"
+      ),
     tostring(found)
   )
 end)

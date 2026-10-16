@@ -409,17 +409,65 @@ static int M_L_UIDrawWorldModel(lua_State *const L)
         luaL_checktype(L, -1, LUA_TTABLE);
         const int step = lua_absindex(L, -1);
         lua_getfield(L, step, "turn");
-        if (!lua_isnil(L, -1)) {
-            world.steps[i].turn = true;
-            world.steps[i].vec = LUA_CheckXYZ(L, lua_absindex(L, -1));
+        lua_getfield(L, step, "scale");
+        if (!lua_isnil(L, -2)) {
+            world.steps[i].kind = UI_MODEL_STEP_TURN;
+            world.steps[i].vec = LUA_CheckXYZ(L, lua_absindex(L, -2));
+        } else if (!lua_isnil(L, -1)) {
+            world.steps[i].kind = UI_MODEL_STEP_SCALE;
+            world.steps[i].vec.x =
+                (int32_t)lround(luaL_checknumber(L, -1) * 1024.0);
         } else {
-            lua_pop(L, 1);
             lua_getfield(L, step, "move");
+            world.steps[i].kind = UI_MODEL_STEP_MOVE;
             world.steps[i].vec = LUA_CheckXYZ(L, lua_absindex(L, -1));
+            lua_pop(L, 1);
         }
-        lua_pop(L, 2);
+        lua_pop(L, 3);
     }
     world.step_count = count;
+    lua_pop(L, 1);
+
+    lua_getfield(L, 2, "frame");
+    world.frame = (int32_t)luaL_optinteger(L, -1, 0);
+    lua_getfield(L, 2, "next_frame");
+    world.next_frame = (int32_t)luaL_optinteger(L, -1, world.frame);
+    lua_getfield(L, 2, "blend");
+    world.blend = (float)luaL_optnumber(L, -1, 0.0);
+    lua_getfield(L, 2, "at_pivot");
+    world.at_pivot = lua_toboolean(L, -1);
+    lua_pop(L, 4);
+
+    lua_getfield(L, 2, "bones");
+    if (!lua_isnil(L, -1)) {
+        luaL_checktype(L, -1, LUA_TTABLE);
+        const int bones = lua_absindex(L, -1);
+        const int32_t bone_count = (int32_t)lua_rawlen(L, bones);
+        luaL_argcheck(
+            L, bone_count <= UI_MODEL_BONES, 2,
+            "a model takes up to eight bone turns");
+        for (int32_t i = 0; i < bone_count; i++) {
+            lua_rawgeti(L, bones, i + 1);
+            luaL_checktype(L, -1, LUA_TTABLE);
+            const int turn = lua_absindex(L, -1);
+            lua_getfield(L, turn, "bone");
+            world.bones[i].bone = (int32_t)luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+#define M_READ_AXIS(axis)                                                      \
+    lua_getfield(L, turn, #axis);                                              \
+    if (!lua_isnil(L, -1)) {                                                   \
+        world.bones[i].axes.axis = true;                                       \
+        world.bones[i].rot.axis = (int16_t)luaL_checkinteger(L, -1);           \
+    }                                                                          \
+    lua_pop(L, 1);
+            M_READ_AXIS(x);
+            M_READ_AXIS(y);
+            M_READ_AXIS(z);
+#undef M_READ_AXIS
+            lua_pop(L, 1);
+        }
+        world.bone_count = bone_count;
+    }
     lua_pop(L, 1);
 
     lua_getfield(L, 2, "mesh_mask");

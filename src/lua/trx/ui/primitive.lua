@@ -352,14 +352,29 @@ end
 ---@field target trx.math.Vec3 The point it looks at.
 ---@field fov trx.math.Angle Its field of view, measured as the game measures the inventory's.
 
----One step of placing a model in its world.
+---One step of placing a model in its world. A step takes one of the fields.
 ---@class (exact) trx.ui.PoseStep
 ---@field move? trx.math.Vec3 How far to move, along the axes as the steps before have turned them.
 ---@field turn? trx.math.Rot How far to turn, by its yaw, then its pitch, then its roll.
+---@field scale? number How much to scale the model, with `1` for its own size.
+
+---A turn that one bone of a model takes on top of the frame the model is posed
+---in, as the compass needle and the hands of the stopwatch turn. A field left
+---out turns the bone not at all about that axis.
+---@class (exact) trx.ui.BoneTurn
+---@field bone integer The bone, counted from 0, which moves the mesh after it.
+---@field x? trx.math.Angle How far to pitch it.
+---@field y? trx.math.Angle How far to yaw it.
+---@field z? trx.math.Angle How far to roll it.
 
 ---@class (exact) trx.ui.primitive.world_model.opts
 ---@field camera trx.ui.WorldCamera The camera that sees the model.
 ---@field pose trx.ui.PoseStep[] The steps that place the model, applied in order from the world's origin, up to sixteen.
+---@field frame? integer The frame of the model's first animation to pose it in, counted from 0. The first by default.
+---@field next_frame? integer The frame to blend towards. The same frame by default.
+---@field blend? number How far to blend towards the next frame, from `0` to `1`. `0` by default.
+---@field bones? trx.ui.BoneTurn[] Turns that bones take on top of the frame, up to eight.
+---@field at_pivot? boolean Whether to draw the model about its pivot, without the offset its frame stands it at. `false` by default.
 ---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
 ---@field light? trx.ui.ModelLight The light to draw it in, with its directions in the model's world. A plain white light by default.
 
