@@ -152,14 +152,23 @@ local function build_dialog(which, push)
   })
 end
 
+-- Where the player left each dialog, which it opens on again until the level
+-- ends, as the original games do.
+---@type table<string, common.ui.settings.Dialog.Place>
+local places = {}
+
 local function opener(which)
   ---@param ctx trx.ui.EntryContext
   return function(ctx)
     local settings_dialog = build_dialog(which, function(settings)
       return ctx:push(settings)
     end)
+    if places[which] ~= nil then
+      settings_dialog:restore(places[which])
+    end
     local resting = ring.resting()
     ctx:on_end(function()
+      places[which] = settings_dialog:remember()
       settings_dialog:close()
       resting:stop()
     end)
@@ -179,6 +188,9 @@ local function opener(which)
 end
 
 function M.setup()
+  trx.events.on_level_unload(function()
+    places = {}
+  end)
   for object, which in pairs({
     [trx.catalog.objects.GRAPHICS_OPTION] = "graphics",
     [trx.catalog.objects.SOUND_OPTION] = "sound",

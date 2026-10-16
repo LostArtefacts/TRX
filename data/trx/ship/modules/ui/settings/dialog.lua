@@ -177,6 +177,43 @@ function Dialog:control(keys)
   return keys:pressed(Role.MENU_BACK)
 end
 
+-- Where the player was in the dialog: the active tab, whether the cursor is
+-- on the rows, and the row under it and the first row in view on each tab.
+---@class common.ui.settings.Dialog.Place
+---@field active integer
+---@field editing boolean
+---@field tabs { first: integer, selected: integer? }[]
+
+---@return common.ui.settings.Dialog.Place
+function Dialog:remember()
+  local tabs = {}
+  for i, tab in ipairs(self.tabs) do
+    tabs[i] = {
+      first = tab.scroll.first:get(),
+      selected = tab.scroll.selected:get(),
+    }
+  end
+  return {
+    active = self.active:get(),
+    editing = self.editing:get(),
+    tabs = tabs,
+  }
+end
+
+-- Puts the player back where `Dialog:remember` found them.
+---@param place common.ui.settings.Dialog.Place
+function Dialog:restore(place)
+  for i, tab in ipairs(self.tabs) do
+    local at = place.tabs[i]
+    if at ~= nil then
+      tab.scroll.first:set(at.first)
+      tab.scroll:select(at.selected)
+    end
+  end
+  self.active:set(math.min(place.active, #self.tabs))
+  self.editing:set(place.editing)
+end
+
 -- Stops following the settings, once the dialog has closed.
 function Dialog:close()
   for _, listener in ipairs(self.listeners) do
