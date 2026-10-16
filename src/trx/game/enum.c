@@ -23,7 +23,6 @@
 #include <trx/game/objects/ids.h>
 #include <trx/game/objects/traps/scaled_spikes.h>
 #include <trx/game/output/types.h>
-#include <trx/game/overlay.h>
 #include <trx/game/paths.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/rooms/enum.h>
@@ -178,13 +177,6 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_STARTUP, "startup");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_LAYOUT, "ui_layout");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCREEN_CHANGE, "screen_change");
-
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TL, "top_left");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TR, "top_right");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BL, "bottom_left");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BR, "bottom_right");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BCL, "caption_left");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BCR, "caption_right");
 
     ENUM_MAP(INVENTORY_MODE, INV_GAME_MODE, "game");
     ENUM_MAP(INVENTORY_MODE, INV_TITLE_MODE, "title");
