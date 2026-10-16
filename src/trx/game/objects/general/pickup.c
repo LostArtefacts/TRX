@@ -15,7 +15,6 @@
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/output.h>
-#include <trx/game/overlay.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
@@ -425,7 +424,7 @@ static void M_DoPickup(const int16_t item_num)
         return;
     }
 
-    Overlay_AddDisplayPickup(item->object_id);
+    UI_ShowPickup(item->object_id);
     if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SECRET)) {
         Stats_MarkSecretCollected(item);
         if (Stats_CheckAllLevelSecretsCollected()) {

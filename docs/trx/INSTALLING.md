@@ -1448,6 +1448,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── inv_ring.lua
 │   ├── ngplus.lua
 │   ├── save_crystal.lua
+│   ├── secret_music.lua
 │   ├── timer.lua
 │   ├── water_color.lua
 │   └── weapons.lua
@@ -1456,6 +1457,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── bfg.bin
 │   │   └── init.lua
 │   ├── inv_ring.lua
+│   ├── secret_music.lua
 │   ├── ui.lua
 │   └── weapons.lua
 └── TRX.exe</code></pre>
@@ -2935,6 +2937,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── inv_ring.lua
     │   │   ├── ngplus.lua
     │   │   ├── save_crystal.lua
+    │   │   ├── secret_music.lua
     │   │   ├── timer.lua
     │   │   ├── water_color.lua
     │   │   └── weapons.lua
@@ -2943,6 +2946,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── bfg.bin
     │   │   │   └── init.lua
     │   │   ├── inv_ring.lua
+    │   │   ├── secret_music.lua
     │   │   ├── ui.lua
     │   │   └── weapons.lua
     │   └── icon.icns

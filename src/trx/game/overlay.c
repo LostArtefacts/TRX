@@ -1,15 +1,10 @@
 #include <trx/game/overlay.h>
 
-#include <trx/config.h>
 #include <trx/core/strings.h>
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/game/lua/common.h>
-#include <trx/game/lua/events.h>
-#include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/families.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output/sources/ui.h>
 
@@ -124,14 +119,4 @@ void Overlay_SetTopText(const OVERLAY_TEXT text)
 void Overlay_SetBottomText(const OVERLAY_TEXT text)
 {
     m_State.bottom_text = text;
-}
-
-void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
-{
-    if (ObjectFamily_Has(obj_id, OBJ_FAMILY_SECRET)) {
-        const MUSIC_PLAY_MODE mode =
-            g_Config.audio.fix_secrets_killing_music ? MPM_OVERLAY : MPM_ONCE;
-        Music_Play(MX_SECRET, mode);
-    }
-    LUA_FireEventInt32(LUA_EVENT_SHOW_PICKUP, obj_id);
 }

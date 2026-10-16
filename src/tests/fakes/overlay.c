@@ -1,8 +1,7 @@
 // The overlay flags a script reads: whether something asks for Lara's health
 // bar, and how deep the cinematic bars are. A script asking for bars sets
-// where they are going; the test says where they are. Record pickups shown in
-// the corner as show_pickup calls. The caption and the arrows a script sets
-// read back as the overlay holds them.
+// where they are going; the test says where they are. The caption and the
+// arrows a script sets read back as the overlay holds them.
 
 #include <fakes/overlay.h>
 
@@ -102,11 +101,6 @@ float Output_Overlay_GetLetterboxTarget(void)
 bool Output_Overlay_HasLetterbox(void)
 {
     return m_Letterbox > 0.0f;
-}
-
-void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
-{
-    FAKE_RECORD("show_pickup", FV(obj_id));
 }
 
 FAKE_ON_RESET(M_Reset)
