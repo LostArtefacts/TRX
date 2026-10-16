@@ -1,4 +1,4 @@
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 typedef struct {
     bool held;

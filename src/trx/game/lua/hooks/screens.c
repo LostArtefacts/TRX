@@ -1,7 +1,7 @@
 #include <trx/core/subsystem.h>
 #include <trx/game/lua/hooks/common.h>
 #include <trx/game/lua/utils/level.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 typedef struct {
     UI_TAKEOVER screen;

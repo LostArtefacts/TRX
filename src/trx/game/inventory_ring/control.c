@@ -34,7 +34,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 #include <trx/version.h>
 
 #define M_INV_RING_FADE_TIME_FAST                                              \

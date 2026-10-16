@@ -12,7 +12,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 typedef struct {
     INVENTORY_MODE mode;

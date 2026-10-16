@@ -6,7 +6,7 @@
 #include <trx/game/music.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 // A script draws the pause screen, its backdrop and its fades, and ends it
 // with a choice. Without one the game resumes at once.

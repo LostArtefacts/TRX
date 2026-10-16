@@ -5,7 +5,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 
 // A script draws the globe, its backdrop and its fades, and picks an adventure
 // by starting its level. Without one the phase has nothing to offer and leaves

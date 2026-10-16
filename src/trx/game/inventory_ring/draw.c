@@ -17,8 +17,8 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui/common.h>
-#include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/ui/draw.h>
+#include <trx/game/ui/takeover.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 

@@ -15,7 +15,7 @@
 #include <trx/game/lua/events/ui.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/regions.h>
-#include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/takeover.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
