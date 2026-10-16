@@ -25,7 +25,6 @@
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/takeover.h>
 #include <trx/game/ui/regions.h>
-#include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
 
@@ -430,18 +429,4 @@ void UI_Text_Measure(
     if (out_h != nullptr) {
         *out_h = 15.0f * settings.scale;
     }
-}
-
-bool UI_Settings_IsBarLookPS1(const UI_BAR_TYPE type)
-{
-    return false;
-}
-
-const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
-{
-    static const UI_BAR_THEME theme = {
-        .kind = UI_BAR_THEME_PC_KIND,
-        .basic_scale = 1.0f,
-    };
-    return &theme;
 }

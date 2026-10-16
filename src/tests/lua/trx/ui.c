@@ -16,7 +16,6 @@
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
 
@@ -236,24 +235,4 @@ void UI_Text_Measure(
     if (out_h != nullptr) {
         *out_h = 16.0f * scale;
     }
-}
-
-bool UI_Settings_IsBarLookPS1(const UI_BAR_TYPE type)
-{
-    return type == UI_BAR_PROGRESS;
-}
-
-// A minimal theme is enough for geometry tests. The enemy's bar draws at half
-// size, as the bars of some styles do.
-const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
-{
-    static UI_BAR_THEME theme = {
-        .kind = UI_BAR_THEME_PC_KIND,
-        .basic_scale = 1.0f,
-    };
-    static UI_BAR_THEME small_theme = {
-        .kind = UI_BAR_THEME_PC_KIND,
-        .basic_scale = 0.5f,
-    };
-    return type == UI_BAR_ENEMY_HP ? &small_theme : &theme;
 }

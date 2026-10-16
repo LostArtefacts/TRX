@@ -146,35 +146,16 @@ typedef struct {
         bool instant_save_load_screen;
 
         bool enable_smooth_bars;
-        char *bar_look;
         bool show_bars;
         bool show_loading_bar;
         bool enable_bar_flashing;
         struct {
             UI_ELEMENT_LOCATION location;
-            char *color;
-            char *color_ps1;
-            char *poison_color;
-            char *poison_color_ps1;
-        } lara_health_bar;
-        struct {
-            UI_ELEMENT_LOCATION location;
-            char *color;
-            char *color_ps1;
-        } lara_air_bar, lara_sprint_bar, lara_exposure_bar;
+        } lara_health_bar, lara_air_bar, lara_sprint_bar, lara_exposure_bar;
         struct {
             BAR_SHOW_MODE show_mode;
             UI_ELEMENT_LOCATION location;
-            char *color;
-            char *color_ps1;
-            char *color_allies;
-            char *color_allies_ps1;
         } enemy_health_bar;
-        struct {
-            char *look;
-            char *color;
-            char *color_ps1;
-        } progress_bar;
         struct {
             UI_ELEMENT_LOCATION location;
         } ammo_counter;

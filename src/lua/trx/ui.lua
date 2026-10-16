@@ -1,6 +1,7 @@
 local raw = trxc.ui
 local raw_events = trxc.events
 local h = require("trx.internal.helpers")
+local themes = require("trx.internal.themes")
 
 ---@class (partial) trx
 ---@field ui trx.ui
@@ -186,23 +187,23 @@ M.FrameStyle = h.coined_enum("ui.FrameStyle", FrameStyle)
 ---@enum trx.ui.BarType
 local BarType = {
   ---Lara's health.
-  LARA_HP = h.IntegerConstant,
+  LARA_HP = 0,
   ---Lara's health while she is poisoned.
-  LARA_HP_POISON = h.IntegerConstant,
+  LARA_HP_POISON = 1,
   ---Lara's air.
-  LARA_AIR = h.IntegerConstant,
+  LARA_AIR = 2,
   ---Lara's stamina.
-  LARA_STAMINA = h.IntegerConstant,
+  LARA_STAMINA = 3,
   ---Lara's exposure to the cold.
-  LARA_EXPOSURE = h.IntegerConstant,
+  LARA_EXPOSURE = 4,
   ---An enemy's health.
-  ENEMY_HP = h.IntegerConstant,
+  ENEMY_HP = 5,
   ---An ally's health.
-  ALLY_HP = h.IntegerConstant,
+  ALLY_HP = 6,
   ---A general progress bar.
-  PROGRESS = h.IntegerConstant,
+  PROGRESS = 7,
 }
-M.BarType = h.enum("ui.BarType", "UI_BAR_TYPE", BarType)
+M.BarType = h.coined_enum("ui.BarType", BarType)
 
 ---A rectangle on the canvas, in canvas units, counted from the top left.
 ---@trx.record
@@ -320,8 +321,9 @@ end
 ---in the settings and which decides which of its colors applies.
 ---@param type trx.ui.BarType The bar.
 ---@return boolean # True for the PS1 look.
----@type fun(type: trx.ui.BarType): boolean
-M.is_ps1_bar = raw.is_ps1_bar
+function M.is_ps1_bar(type)
+  return themes.is_ps1(type)
+end
 
 ---Returns the interpolation factor of the frame being drawn between the last
 ---two ticks: `0` at the earlier tick and `1` at the later one.

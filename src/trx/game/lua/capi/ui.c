@@ -18,7 +18,6 @@
 #include <trx/game/ui/keys.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
 
@@ -567,19 +566,98 @@ static int M_L_UIDrawText(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.horizontal_line(x0: number, x1: number, y: number, z?: integer)
+// Reads one color of a menu style table into `out`. A missing table leaves
+// the color clear.
+static void M_ReadMenuColor(
+    lua_State *const L, const int idx, const char *const key,
+    RGBA_8888 *const out)
+{
+    lua_getfield(L, idx, key);
+    if (lua_istable(L, -1)) {
+        *out = M_CheckColor(L, lua_gettop(L));
+    }
+    lua_pop(L, 1);
+}
+
+static void M_ReadMenuColorPair(
+    lua_State *const L, const int idx, const char *const key, RGBA_8888 out[2])
+{
+    lua_getfield(L, idx, key);
+    if (lua_istable(L, -1)) {
+        for (int32_t i = 0; i < 2; i++) {
+            lua_rawgeti(L, -1, i + 1);
+            if (lua_istable(L, -1)) {
+                out[i] = M_CheckColor(L, lua_gettop(L));
+            }
+            lua_pop(L, 1);
+        }
+    }
+    lua_pop(L, 1);
+}
+
+// Reads the menu colors of the style the player chose from a table that holds
+// a `pc` and a `ps1` table. Without one, every color is clear.
+static UI_MENU_COLORS M_ReadMenuColors(
+    lua_State *const L, const int arg, const UI_STYLE ui_style)
+{
+    UI_MENU_COLORS colors = {};
+    if (!lua_istable(L, arg)) {
+        return colors;
+    }
+    lua_getfield(L, arg, ui_style == UI_STYLE_PC ? "pc" : "ps1");
+    const int idx = lua_gettop(L);
+    if (!lua_istable(L, idx)) {
+        lua_pop(L, 1);
+        return colors;
+    }
+    if (ui_style == UI_STYLE_PC) {
+        UI_MENU_COLORS_PC *const c = &colors.pc;
+        M_ReadMenuColorPair(L, idx, "background", c->background);
+        M_ReadMenuColorPair(L, idx, "background_heavy", c->background_heavy);
+        M_ReadMenuColor(L, idx, "outline_light", &c->outline_light);
+        M_ReadMenuColor(L, idx, "outline_dark", &c->outline_dark);
+    } else {
+        UI_MENU_COLORS_PS1 *const c = &colors.ps1;
+        M_ReadMenuColor(L, idx, "background_edge", &c->background_edge);
+        M_ReadMenuColor(L, idx, "background_center", &c->background_center);
+        M_ReadMenuColor(
+            L, idx, "background_heavy_edge", &c->background_heavy_edge);
+        M_ReadMenuColor(
+            L, idx, "background_heavy_center", &c->background_heavy_center);
+        M_ReadMenuColor(L, idx, "heading_edge", &c->heading_edge);
+        M_ReadMenuColor(L, idx, "heading_center", &c->heading_center);
+        M_ReadMenuColor(L, idx, "requested_edge", &c->requested_edge);
+        M_ReadMenuColor(L, idx, "requested_center", &c->requested_center);
+        M_ReadMenuColor(
+            L, idx, "requested_outline_ch", &c->requested_outline_ch);
+        M_ReadMenuColor(
+            L, idx, "requested_outline_cv", &c->requested_outline_cv);
+        M_ReadMenuColor(
+            L, idx, "requested_outline_edge", &c->requested_outline_edge);
+        M_ReadMenuColor(L, idx, "outline_tl", &c->outline_tl);
+        M_ReadMenuColor(L, idx, "outline_tr", &c->outline_tr);
+        M_ReadMenuColor(L, idx, "outline_bl", &c->outline_bl);
+        M_ReadMenuColor(L, idx, "outline_br", &c->outline_br);
+        M_ReadMenuColor(L, idx, "heading_outline", &c->heading_outline);
+    }
+    lua_pop(L, 1);
+    return colors;
+}
+
+// trxc.ui.horizontal_line(x0: number, x1: number, y: number, z?: integer, colors?: table)
 static int M_L_UIHorizontalLine(lua_State *const L)
 {
     M_CheckPainting(L);
+    const UI_STYLE ui_style = g_Config.ui.menu_style;
+    const UI_MENU_COLORS colors = M_ReadMenuColors(L, 5, ui_style);
     UI_ScheduleDrawHorizontalLine(
-        g_Config.ui.menu_style,
-        lroundf(UI_ScaleX((float)luaL_checknumber(L, 1))),
+        ui_style, &colors, lroundf(UI_ScaleX((float)luaL_checknumber(L, 1))),
         lroundf(UI_ScaleX((float)luaL_checknumber(L, 2))),
         lroundf(UI_ScaleY((float)luaL_checknumber(L, 3))), M_OptZ(L, 4));
     return 0;
 }
 
-// trxc.ui.panel(x: number, y: number, z?: integer, w: number, h: number, look: integer, fill: boolean)
+// trxc.ui.panel(x: number, y: number, z?: integer, w: number, h: number, look: integer, fill: boolean, colors?: table)
 static int M_L_UIPanel(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -600,11 +678,13 @@ static int M_L_UIPanel(lua_State *const L)
     const int32_t h = UI_ScaleY((float)luaL_checknumber(L, 5));
 
     const UI_STYLE ui_style = g_Config.ui.menu_style;
+    const UI_MENU_COLORS colors = M_ReadMenuColors(L, 8, ui_style);
     const TEXT_STYLE text_style = (TEXT_STYLE)look;
     if (lua_toboolean(L, 7)) {
-        UI_ScheduleDrawTextBackground(ui_style, x0, y0, z, w, h, text_style);
+        UI_ScheduleDrawTextBackground(
+            ui_style, &colors, x0, y0, z, w, h, text_style);
     }
-    UI_ScheduleDrawTextOutline(ui_style, x0, y0, z, w, h, text_style);
+    UI_ScheduleDrawTextOutline(ui_style, &colors, x0, y0, z, w, h, text_style);
     return 0;
 }
 
@@ -697,96 +777,6 @@ static int M_L_UIToCanvas(lua_State *const L)
     return 1;
 }
 
-// Pushes a trx.math.Color table.
-static void M_PushColor(lua_State *const L, const RGBA_8888 color)
-{
-    lua_createtable(L, 0, 4);
-    lua_pushinteger(L, color.r);
-    lua_setfield(L, -2, "r");
-    lua_pushinteger(L, color.g);
-    lua_setfield(L, -2, "g");
-    lua_pushinteger(L, color.b);
-    lua_setfield(L, -2, "b");
-    lua_pushinteger(L, color.a);
-    lua_setfield(L, -2, "a");
-}
-
-static void M_PushRamp(
-    lua_State *const L, const RGBA_8888 *const ramp, const char *const name)
-{
-    lua_createtable(L, UI_BAR_COLOR_STEPS, 0);
-    for (int32_t i = 0; i < UI_BAR_COLOR_STEPS; i++) {
-        M_PushColor(L, ramp[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
-    lua_setfield(L, -2, name);
-}
-
-// trxc.ui.bar_theme(type: trx.ui.BarType): { kind: "ps1"|"pc", basic_scale: number, border_light: { r: integer, g: integer, b: integer, a: integer }, border_dark: { r: integer, g: integer, b: integer, a: integer }, border_tl: { r: integer, g: integer, b: integer, a: integer }, border_tr: { r: integer, g: integer, b: integer, a: integer }, border_bl: { r: integer, g: integer, b: integer, a: integer }, border_br: { r: integer, g: integer, b: integer, a: integer }, ramp: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_left: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_right: table<integer, { r: integer, g: integer, b: integer, a: integer }> }?
-static int M_L_UIBarTheme(lua_State *const L)
-{
-    const lua_Integer type = luaL_checkinteger(L, 1);
-    if (type < 0 || type >= UI_BAR_NUMBER_OF) {
-        return luaL_error(L, "unknown bar type");
-    }
-    const UI_BAR_THEME *const theme =
-        UI_Settings_GetBarTheme((UI_BAR_TYPE)type);
-    if (theme == nullptr) {
-        lua_pushnil(L);
-        return 1;
-    }
-
-    lua_createtable(L, 0, 9);
-    lua_pushstring(L, theme->kind == UI_BAR_THEME_PS1_KIND ? "ps1" : "pc");
-    lua_setfield(L, -2, "kind");
-    lua_pushnumber(L, theme->basic_scale);
-    lua_setfield(L, -2, "basic_scale");
-    M_PushColor(L, theme->border_light);
-    lua_setfield(L, -2, "border_light");
-    M_PushColor(L, theme->border_dark);
-    lua_setfield(L, -2, "border_dark");
-    M_PushColor(L, theme->border_tl);
-    lua_setfield(L, -2, "border_tl");
-    M_PushColor(L, theme->border_tr);
-    lua_setfield(L, -2, "border_tr");
-    M_PushColor(L, theme->border_bl);
-    lua_setfield(L, -2, "border_bl");
-    M_PushColor(L, theme->border_br);
-    lua_setfield(L, -2, "border_br");
-    M_PushRamp(L, theme->ramp, "ramp");
-    M_PushRamp(L, theme->ramp_left, "ramp_left");
-    M_PushRamp(L, theme->ramp_right, "ramp_right");
-    return 1;
-}
-
-// trxc.ui.bar_theme_key(type: trx.ui.BarType): lightuserdata?
-static int M_L_UIBarThemeKey(lua_State *const L)
-{
-    const lua_Integer type = luaL_checkinteger(L, 1);
-    if (type < 0 || type >= UI_BAR_NUMBER_OF) {
-        return luaL_error(L, "unknown bar type");
-    }
-    const UI_BAR_THEME *const theme =
-        UI_Settings_GetBarTheme((UI_BAR_TYPE)type);
-    if (theme == nullptr) {
-        lua_pushnil(L);
-    } else {
-        lua_pushlightuserdata(L, (void *)theme);
-    }
-    return 1;
-}
-
-// trxc.ui.is_ps1_bar(type: trx.ui.BarType): boolean
-static int M_L_UIIsPS1Bar(lua_State *const L)
-{
-    const lua_Integer type = luaL_checkinteger(L, 1);
-    if (type < 0 || type >= UI_BAR_NUMBER_OF) {
-        return luaL_error(L, "unknown bar type");
-    }
-    lua_pushboolean(L, UI_Settings_IsBarLookPS1((UI_BAR_TYPE)type));
-    return 1;
-}
-
 // trxc.ui.bar_scale(): number
 static int M_L_UIBarScale(lua_State *const L)
 {
@@ -834,9 +824,6 @@ static const luaL_Reg m_Module[] = {
     { "get_working_bottom", M_L_UIWorkingBottom },
     { "get_working_top", M_L_UIWorkingTop },
     { "get_safe_width", M_L_UISafeWidth },
-    { "bar_theme", M_L_UIBarTheme },
-    { "bar_theme_key", M_L_UIBarThemeKey },
-    { "is_ps1_bar", M_L_UIIsPS1Bar },
     { "bar_scale", M_L_UIBarScale },
     { "drawn_text_scale", M_L_UIDrawnTextScale },
     { "reserve", M_L_UIReserve },

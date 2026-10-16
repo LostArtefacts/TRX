@@ -3,6 +3,8 @@
 local h = require("harness")
 local test = h.test
 
+h.load_themes()
+
 local Role = trx.input.Role
 local editor = require("common.ui.settings.editor")
 

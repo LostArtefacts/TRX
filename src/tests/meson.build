@@ -2729,7 +2729,6 @@ unit_tests += {
     'game/ui/events.c',
     'game/ui/scaler.c',
     'game/ui/scaler.c',
-    'game/ui/settings.c',
     'game/ui/text.c',
     'version.c',
     'gl/enum.c',

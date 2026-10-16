@@ -1,5 +1,6 @@
 local raw = trxc.ui
 require("trx.internal.helpers")
+local themes = require("trx.internal.themes")
 local base = require("trx.ui.widgets.base")
 
 local primitive = trx.ui.primitive
@@ -12,10 +13,6 @@ local new_widget = base.new_widget
 -- scale.
 local BAR_WIDTH = 208
 local BAR_HEIGHT = 18
-
--- The themes the engine has handed over, by the theme each stands for, so
--- that a bar painted every frame builds its colours once.
-local themes = {}
 
 ---@class (exact) trx.ui.widgets.Bar.settings: trx.ui.widgets.settings
 ---@field type any The `trx.ui.BarType` theme to use, or a signal that holds it.
@@ -72,17 +69,7 @@ function widgets.Bar(settings)
   end
 
   local function theme_of(w)
-    local type = value_of(w.type) or trx.ui.BarType.LARA_HP
-    local key = raw.bar_theme_key(type)
-    if key == nil then
-      return nil
-    end
-    local theme = themes[key]
-    if theme == nil then
-      theme = raw.bar_theme(type)
-      themes[key] = theme
-    end
-    return theme
+    return themes.bar(value_of(w.type) or trx.ui.BarType.LARA_HP)
   end
 
   local self = new_widget(settings, function(w)

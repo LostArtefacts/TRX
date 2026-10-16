@@ -1,5 +1,4 @@
 // Enum values
-GS_DEFINE(dynamic/enums/bar_look/same,                       "Automatic")
 GS_DEFINE(dynamic/enums/bar_look/tr1_pc,                     "TR1")
 GS_DEFINE(dynamic/enums/bar_look/tr2_pc,                     "TR2 PC")
 GS_DEFINE(dynamic/enums/bar_look/tr2_ps1,                    "TR2 PS1")

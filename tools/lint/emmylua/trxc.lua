@@ -550,8 +550,6 @@ trxc = {}
 
 ---@class (exact) trxc.ui
 ---@field bar_scale fun(): number
----@field bar_theme fun(type: trx.ui.BarType): { kind: "ps1"|"pc", basic_scale: number, border_light: { r: integer, g: integer, b: integer, a: integer }, border_dark: { r: integer, g: integer, b: integer, a: integer }, border_tl: { r: integer, g: integer, b: integer, a: integer }, border_tr: { r: integer, g: integer, b: integer, a: integer }, border_bl: { r: integer, g: integer, b: integer, a: integer }, border_br: { r: integer, g: integer, b: integer, a: integer }, ramp: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_left: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_right: table<integer, { r: integer, g: integer, b: integer, a: integer }> }?
----@field bar_theme_key fun(type: trx.ui.BarType): lightuserdata?
 ---@field darken fun(opacity: number)
 ---@field draw_background fun(path?: string, mono?: boolean, dim?: number): boolean
 ---@field draw_model fun(object: trx.catalog.objects, x: number, y: number, w: number, h: number, opts?: trx.ui.primitive.model.opts)
@@ -571,13 +569,12 @@ trxc = {}
 ---@field get_working_top fun(): number
 ---@field gradient_quad fun(x: number, y: number, z?: integer, w: number, h: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 ---@field gradient_sprite fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
----@field horizontal_line fun(x0: number, x1: number, y: number, z?: integer)
+---@field horizontal_line fun(x0: number, x1: number, y: number, z?: integer, colors?: table)
 ---@field image fun(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
 ---@field interpolation_rate fun(): number
----@field is_ps1_bar fun(type: trx.ui.BarType): boolean
 ---@field measure_text fun(text: string, scale?: number): number, number
 ---@field mesh_bounds fun(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
----@field panel fun(x: number, y: number, z?: integer, w: number, h: number, look: integer, fill: boolean)
+---@field panel fun(x: number, y: number, z?: integer, w: number, h: number, look: integer, fill: boolean, colors?: table)
 ---@field pop_text_scale fun()
 ---@field push_text_scale fun(factor: number)
 ---@field reserve fun(region: trx.ui.Region, w: number, h: number): integer
