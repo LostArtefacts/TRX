@@ -62,8 +62,8 @@ local Screen = {
   ---opened to save or load leaves when the screen ends, and any ring leaves
   ---when the screen ends with `trx.ui.ScreenContext:confirm`.
   RING_ENTRY = h.IntegerConstant,
-  ---The pause screen, from the moment the game pauses until it resumes or
-  ---leaves for the title screen. It has a `trx.ui.PauseContext`.
+  ---The pause screen, from the moment the game or an FMV pauses until it
+  ---resumes or leaves for the title screen. It has a `trx.ui.PauseContext`.
   PAUSE = h.IntegerConstant,
   ---The quick save or load screen, with a `trx.ui.SaveLoadContext`. The save
   ---and load keys open it when the instant screen setting is on.

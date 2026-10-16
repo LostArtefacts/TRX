@@ -10,6 +10,7 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/fader.h>
+#include <trx/game/fmv.h>
 #include <trx/game/game.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/objects.h>
@@ -968,6 +969,13 @@ void Output_Overlay_CaptureSnapshot(void)
 
 void Output_Overlay_CaptureGameSnapshot(void)
 {
+    // An FMV has no scene to draw again, so the snapshot keeps its frame as
+    // it is on screen.
+    if (FMV_IsPlaying()) {
+        Output_Overlay_CaptureSnapshot();
+        return;
+    }
+
     M_PRIV *const p = &m_Priv;
     p->snapshot.state.has_content = false;
 
