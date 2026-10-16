@@ -241,7 +241,9 @@ primitive.sprite_bounds = raw.sprite_bounds
 primitive.mesh_bounds = raw.mesh_bounds
 
 ---The colour of a light, from `0` to `255` in each channel, where a channel
----may fall between two whole values as the game's own lights do.
+---may fall between two whole values as the game's own lights do. A channel
+---above `255`, up to `510`, lights a model brighter than its own colour, as
+---the TR4 inventory lights the entry the ring rests on.
 ---@class trx.ui.LightColor
 ---@field r number The red channel.
 ---@field g number The green channel.
