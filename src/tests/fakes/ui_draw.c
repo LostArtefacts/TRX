@@ -180,7 +180,7 @@ void FakeUIDraw_SetInterpolationRate(const double rate)
     m_InterpolationRate = rate;
 }
 
-double Interpolation_GetRate(void)
+double Interpolation_GetUIRate(void)
 {
     return m_InterpolationRate;
 }

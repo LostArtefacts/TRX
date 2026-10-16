@@ -15,6 +15,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/events/ui.h>
 #include <trx/game/music.h>
@@ -378,6 +379,12 @@ static RESULT M_Play(const char *const file_name)
         Clock_WaitTick();
         Shell_ProcessEvents();
         LUA_Tick();
+        if (Clock_GetCurrentFPS() == 60) {
+            Interpolation_SetUIRate(0.5);
+            M_RedrawFrame(&render_ctx);
+            Clock_WaitTick();
+        }
+        Interpolation_SetUIRate(1.0);
         M_RedrawFrame(&render_ctx);
     }
 

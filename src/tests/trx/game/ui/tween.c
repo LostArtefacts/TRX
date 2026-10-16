@@ -28,7 +28,7 @@ int32_t LUA_GetTick(void)
     return m_Tick;
 }
 
-double Interpolation_GetRate(void)
+double Interpolation_GetUIRate(void)
 {
     return m_Rate;
 }

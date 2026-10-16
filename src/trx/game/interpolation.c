@@ -51,6 +51,7 @@
 static bool m_IsEnabled = true;
 static CAMERA_TYPE m_PrevCameraType = CAM_CHASE;
 static double m_Rate = 0.0;
+static double m_UIRate = 0.0;
 static double m_WorldRate = 0.0;
 static double m_CameraRate = 0.0;
 
@@ -470,6 +471,17 @@ double Interpolation_GetRate(void)
 void Interpolation_SetRate(double rate)
 {
     m_Rate = rate;
+    m_UIRate = rate;
+}
+
+double Interpolation_GetUIRate(void)
+{
+    return m_UIRate;
+}
+
+void Interpolation_SetUIRate(const double rate)
+{
+    m_UIRate = rate;
 }
 
 void Interpolation_Remember(void)
