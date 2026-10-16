@@ -61,7 +61,6 @@ void InvRing_ShowItemActions(INV_ITEM_ACTIONS actions);
 bool InvRing_CanExamine(void);
 void InvRing_ShowVersionText(void);
 void InvRing_RemoveVersionText(void);
-void InvRing_DrawUI(INV_RING *ring);
 
 void InvRing_UpdateInventoryItem(
     const INV_RING *ring, INVENTORY_ITEM *inv_item);

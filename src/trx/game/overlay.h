@@ -1,6 +1,6 @@
 #pragma once
 
-// Owns overlay state that is not part of a widget tree.
+// Owns the overlay state that the engine sets and the overlay scripts draw.
 
 #include <trx/game/objects/types.h>
 
@@ -41,8 +41,16 @@ void Overlay_DrawGameInfo(void);
 // announcement; this plays the secret music and tells the script.
 void Overlay_AddDisplayPickup(OBJECT_ID obj_id);
 
-// Adds overlay text, arrows, and version text to UI regions.
-void Overlay_DrawUI(void);
+// Returns the line at the top of the screen and the caption at the bottom in
+// the player's language, or nullptr for none. A script draws both.
+const char *Overlay_GetTopText(void);
+const char *Overlay_GetBottomText(void);
+
+// Returns whether the caption flashes, as it does while a demo plays.
+bool Overlay_IsBottomTextFlashing(void);
+
+bool Overlay_IsArrowShown(OVERLAY_ARROW arrow);
+bool Overlay_IsVersionShown(void);
 
 // Shows the health bar for the current frame.
 void Overlay_ForceHealthBar(bool show);
@@ -56,14 +64,3 @@ void Overlay_ShowVersion(bool show);
 
 void Overlay_SetTopText(OVERLAY_TEXT text);
 void Overlay_SetBottomText(OVERLAY_TEXT text);
-
-// Returns the line at the top of the screen and the caption at the bottom in
-// the player's language, or nullptr for none.
-const char *Overlay_GetTopText(void);
-const char *Overlay_GetBottomText(void);
-
-// Returns whether the caption flashes, as it does while a demo plays.
-bool Overlay_IsBottomTextFlashing(void);
-
-bool Overlay_IsArrowShown(OVERLAY_ARROW arrow);
-bool Overlay_IsVersionShown(void);

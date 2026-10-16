@@ -34,7 +34,6 @@
 #define M_RING_SWITCH_FRAMES (96 / 2)
 #define M_CAMERA_Y_OFFSET (-96)
 #define M_MANUAL_ROT_RESET_RATE 0.15
-#define M_UI_COUNT_NAME_GAP 8.0f
 #define M_MAX_HINT_PARTS 4
 
 typedef enum {
@@ -58,23 +57,6 @@ static bool m_ButtonHintIsItemActions = false;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
-
-// The hint, its parts set apart as the ring sets apart its own.
-static void M_DrawHint(void)
-{
-    if (m_ButtonHintPartCount == 1) {
-        UI_Label(m_ButtonHintParts[0]);
-        return;
-    }
-    UI_BeginStack(UI_STACK_HORIZONTAL);
-    for (int32_t i = 0; i < m_ButtonHintPartCount; i++) {
-        if (i > 0) {
-            UI_Spacer(60.0f, 0.0f);
-        }
-        UI_Label(m_ButtonHintParts[i]);
-    }
-    UI_EndStack();
-}
 
 static void M_AdjustRot(int16_t *const rot, const int16_t dest_rot)
 {
@@ -782,39 +764,6 @@ const char *InvRing_GetItemQuantity(void)
         return nullptr;
     }
     return m_CountText;
-}
-
-void InvRing_DrawUI(INV_RING *const ring)
-{
-    // Share the bottom-center region with overlay text.
-    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = UI_STACK_H_ALIGN_CENTER },
-        .spacing = { .v = 20.0f },
-    });
-
-    const bool has_hint = m_ButtonHintPartCount > 0;
-    const bool has_count = m_CountText != nullptr && m_CountText[0] != '\0';
-
-    if (has_hint) {
-        M_DrawHint();
-    }
-
-    if (has_count) {
-        UI_BeginOffset(64.0f, 0.0f);
-        UI_Label(m_CountText);
-        UI_EndOffset();
-    }
-
-    // The gap separates the hint and the count from the item name below them.
-    // Without either, it only takes room away from the region.
-    if (has_hint || has_count) {
-        UI_Spacer(0.0f, M_UI_COUNT_NAME_GAP);
-    }
-
-    UI_EndStack();
-    UI_EndRegion();
 }
 
 void InvRing_ClearItemQuantity(void)

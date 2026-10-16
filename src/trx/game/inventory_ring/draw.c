@@ -294,7 +294,6 @@ void InvRing_DrawItems(INV_RING *const ring)
 
 void InvRing_Draw(INV_RING *const ring)
 {
-    InvRing_DrawUI(ring);
     if (ring->mode == INV_TITLE_MODE) {
         if (ring->live_scene) {
             // The inventory lighting mode is meant for the ring items; the
