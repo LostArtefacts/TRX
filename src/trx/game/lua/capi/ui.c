@@ -163,7 +163,8 @@ static RGBA_F M_CheckColorF(lua_State *const L, const int arg)
 }
 
 // Reads the colour of a light, keeping a channel's fraction: a light may be a
-// shade no whole byte gives.
+// shade no whole byte gives. A channel may reach twice the full value, which
+// brightens a model past its own colour.
 static RGB_F M_CheckLightColor(lua_State *const L, const int arg)
 {
     luaL_checktype(L, arg, LUA_TTABLE);
@@ -174,7 +175,7 @@ static RGB_F M_CheckLightColor(lua_State *const L, const int arg)
         lua_getfield(L, arg, keys[i]);
         double value = luaL_optnumber(L, -1, 0.0);
         lua_pop(L, 1);
-        CLAMP(value, 0.0, 255.0);
+        CLAMP(value, 0.0, 510.0);
         *channels[i] = (float)(value / 255.0);
     }
     return color;
