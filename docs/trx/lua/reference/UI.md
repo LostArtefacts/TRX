@@ -1139,6 +1139,22 @@ arrow, and `\{button left}` draws the button the player has bound.
   Parameters:
   - <a id="ui.primitive.darken.opacity" name="ui.primitive.darken.opacity"></a>**`opacity`** (number). How dark, from `0` for not at all to `1` for black.
 
+- <a id="ui.primitive.backdrop" name="ui.primitive.backdrop"></a>[lua]`trx.ui.primitive.backdrop(style, opacity, [path])`  
+  Draws a backdrop behind the whole interface, as the game draws the ones
+  behind its menus, part way in by the opacity. It goes under any model in a
+  world of its own drawn after it, as the inventory ring's models stand on
+  their backdrop.
+
+  Parameters:
+  - <a id="ui.primitive.backdrop.style" name="ui.primitive.backdrop.style"></a>**`style`** (string). The backdrop style, by the names that the `ui.inventory_background_style` setting takes.
+  - <a id="ui.primitive.backdrop.opacity" name="ui.primitive.backdrop.opacity"></a>**`opacity`** (number). How far it has come in, from `0` for not at all to `1`.
+  - <a id="ui.primitive.backdrop.path" name="ui.primitive.backdrop.path"></a>**`path`** (string, optional). The picture of an `image` backdrop, as [`background`](#ui.primitive.background) takes it.
+
+  Example:
+  ```lua
+  trx.ui.primitive.backdrop("transparent", 0.5)
+  ```
+
 - <a id="ui.primitive.background" name="ui.primitive.background"></a>[lua]`trx.ui.primitive.background([path], [mono], [dim])`  
   Draws an image behind the whole interface, as the game draws the pictures
   behind its screens, fitted to the screen's shape and darkened by the dim.

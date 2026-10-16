@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/enum_map.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/types.h>
@@ -499,6 +500,24 @@ static int M_L_UIDarken(lua_State *const L)
     return 0;
 }
 
+// trxc.ui.draw_backdrop(style: string, opacity: number, path?: string)
+//
+// A picture comes in from black, so the overlay takes how dark it is; every
+// other style takes how far it has come in.
+static int M_L_UIDrawBackdrop(lua_State *const L)
+{
+    M_CheckPainting(L);
+    const int32_t style =
+        ENUM_MAP_GET(BACKGROUND_TYPE, luaL_checkstring(L, 1), -1);
+    luaL_argcheck(L, style != -1, 1, "unknown backdrop");
+    float opacity = (float)luaL_checknumber(L, 2);
+    CLAMP(opacity, 0.0f, 1.0f);
+    UI_ScheduleDrawBackdrop(
+        (BACKGROUND_TYPE)style, style == BK_IMAGE ? 1.0f - opacity : opacity,
+        luaL_optstring(L, 3, nullptr));
+    return 0;
+}
+
 // trxc.ui.draw_background(path?: string, mono?: boolean, dim?: number): boolean
 static int M_L_UIDrawBackground(lua_State *const L)
 {
@@ -892,6 +911,7 @@ static const luaL_Reg m_Module[] = {
     { "sprite_count", M_L_UISpriteCount },
     { "interpolation_rate", M_L_UIInterpolationRate },
     { "draw_background", M_L_UIDrawBackground },
+    { "draw_backdrop", M_L_UIDrawBackdrop },
     { "draw_model", M_L_UIDrawModel },
     { "draw_world_model", M_L_UIDrawWorldModel },
     { "darken", M_L_UIDarken },

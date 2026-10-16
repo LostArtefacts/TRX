@@ -1199,4 +1199,26 @@ test("the old names of the visibility settings raise", function()
   end, "trx.ui.widgets.Blank")
 end)
 
+test(
+  "a backdrop goes behind the interface by how far it has come in",
+  function()
+    local found = nil
+    for _, op in
+      ipairs(fake.paint(function()
+        trx.ui.primitive.backdrop("transparent", 0.25)
+      end))
+    do
+      if op:match("^backdrop ") then
+        found = op
+      end
+    end
+    assert(found ~= nil and found:match(" progress=0.25 "), tostring(found))
+    h.raises(function()
+      fake.paint(function()
+        trx.ui.primitive.backdrop("no_such_style", 1)
+      end)
+    end, "unknown backdrop")
+  end
+)
+
 return h.report()
