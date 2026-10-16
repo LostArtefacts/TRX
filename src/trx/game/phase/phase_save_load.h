@@ -1,7 +1,7 @@
 #pragma once
 
-#include <trx/game/inventory_ring/enum.h>
 #include <trx/game/phase/types.h>
+#include <trx/game/ui/menu.h>
 
 // Reports whether the save slots for this inventory mode can be shown on
 // their own, with no ring around them. Only the save and load modes qualify,

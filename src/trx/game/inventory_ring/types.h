@@ -9,8 +9,6 @@
 
 #include <stdint.h>
 
-#define MAX_QTY 999999
-
 typedef struct {
     int16_t shape;
     XYZ_16 pos;

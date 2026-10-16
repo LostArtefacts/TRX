@@ -2,8 +2,8 @@
 
 #include <trx/core/result.h>
 #include <trx/game/game_flow/types.h>
-#include <trx/game/inventory_ring/types.h>
 #include <trx/game/savegame/types.h>
+#include <trx/game/ui/menu.h>
 
 GF_COMMAND GF_EnterPhotoMode(void);
 GF_COMMAND GF_PauseGame(void);
