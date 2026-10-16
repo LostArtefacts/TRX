@@ -21,6 +21,7 @@ local function make(list)
   local tab = preset_tab.new({
     title = "Presets",
     editing = trx.signal.new(true),
+    changed = trx.signal.new(0),
     push = function(settings)
       local layer = trx.ui.layers.push(settings)
       pushed[#pushed + 1] = layer
@@ -50,6 +51,7 @@ test("an empty list says so and leaves for the tab bar", function()
   local tab = preset_tab.new({
     title = "Presets",
     editing = trx.signal.new(true),
+    changed = trx.signal.new(0),
     push = trx.ui.layers.push,
   })
   assert(#tab.presets == 0)

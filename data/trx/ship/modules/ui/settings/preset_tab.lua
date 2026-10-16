@@ -103,8 +103,10 @@ end
 -- each with the value it holds and the value it would take, and a choice to
 -- apply the preset or go back.
 local function confirm(push, preset, changes)
-  local title =
-    trx.locale.format("general/config_presets/title_fmt", preset.title)
+  local title = trx.locale.format(
+    "general/config_presets/title_fmt",
+    presets.title(preset)
+  )
   local description =
     trx.locale.get("general/config_presets/confirm_description")
   local note = trx.locale.get("general/config_presets/confirm_restart_note")
@@ -241,7 +243,7 @@ local function confirm(push, preset, changes)
 end
 
 ---@class common.ui.settings.PresetTab: common.ui.settings.Tab
----@field title string The name on the tab bar.
+---@field title string|trx.signal.Signal The name on the tab bar, or a signal that holds it.
 ---@field presets common.ui.settings.Preset[] The presets, in the order shown.
 ---@field scroll common.ui.Scroll The presets and the one under the cursor.
 ---@field widget trx.ui.Widget The list.
@@ -298,7 +300,10 @@ function PresetTab:control(keys)
     else
       show_message(
         self.push,
-        trx.locale.format("general/config_presets/title_fmt", preset.title),
+        trx.locale.format(
+          "general/config_presets/title_fmt",
+          presets.title(preset)
+        ),
         trx.locale.get("general/config_presets/no_changes")
       )
     end
@@ -310,8 +315,9 @@ end
 function PresetTab:close() end
 
 ---@class common.ui.settings.PresetTab.settings
----@field title string The name on the tab bar.
+---@field title string|trx.signal.Signal The name on the tab bar, or a signal that holds it.
 ---@field editing trx.signal.Signal Whether the cursor is on the list rather than on the tab bar.
+---@field changed trx.signal.Signal Says when any setting changes, for as long as the dialog is open. The names follow the player's language through it.
 ---@field push fun(settings: trx.ui.layers.push.settings): trx.ui.StackLayer Opens a layer over the dialog.
 
 -- Creates the presets tab.
@@ -345,14 +351,17 @@ function M.new(settings)
         child = trx.ui.widgets.Pad({
           x = ROW_PAD,
           y = tr1_pad,
-          child = centered(label(preset.title)),
+          child = centered(label(settings.changed:map(function()
+            return presets.title(preset)
+          end))),
         }),
       }),
     })
   end
   if #self.presets == 0 then
-    children[1] =
-      centered(label(trx.locale.get("general/config_presets/empty")))
+    children[1] = centered(label(settings.changed:map(function()
+      return trx.locale.get("general/config_presets/empty")
+    end)))
   end
   self.widget = trx.ui.widgets.Stack({
     align = trx.ui.HAlign.SPAN,

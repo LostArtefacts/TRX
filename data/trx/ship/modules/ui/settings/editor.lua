@@ -445,10 +445,11 @@ local function footer_widget(self, settings)
   )
   -- The hints shrink to the width of the dialog, and the first one keeps the
   -- room of the wider of its two texts, so that the footer keeps one width
-  -- whichever it shows.
+  -- whichever it shows. The texts follow the player's language.
   local fit = trx.signal.combine(
     settings.dialog_width,
     settings.layout,
+    changed,
     function(dialog_w)
       local first, texts = hint_widths()
       local scale = texts > 0
@@ -488,7 +489,7 @@ local function footer_widget(self, settings)
         end),
         child = trx.ui.widgets.Label({
           scale = scale,
-          text = restore_hint(),
+          text = changed:map(restore_hint),
         }),
       }),
     },
@@ -560,7 +561,7 @@ function M.rows(settings)
 end
 
 ---@class common.ui.settings.Editor.settings
----@field title string The name on the tab bar.
+---@field title string|trx.signal.Signal The name on the tab bar, or a signal that holds it.
 ---@field keys string[] The settings the tab lists, in order.
 ---@field editing trx.signal.Signal Whether the cursor is on the rows rather than on the tab bar.
 ---@field width trx.signal.Signal How wide a row is, in canvas units at the default text size.

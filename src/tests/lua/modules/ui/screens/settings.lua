@@ -107,4 +107,28 @@ test("a closed dialog leaves nothing following the game", function()
   assert(listeners_of(trx.ui.signals.layout) == layout)
 end)
 
+-- The strings load nothing here, so declaring the text as the dialog shows
+-- stands in for the player picking another language.
+test("the heading and the tabs follow the player's language", function()
+  open(SOUND)
+  local function shows(wanted)
+    for _, op in ipairs(fake.scene()) do
+      if op:find(wanted, 1, true) then
+        return true
+      end
+    end
+    return false
+  end
+  assert(not shows("Noises") and not shows("Loudness"))
+  trx.locale.declare({
+    ["general/settings/sound/title"] = "Noises",
+    ["general/settings/sound/tabs/volume"] = "Loudness",
+  })
+  trx.config.set("audio.master_volume", 40)
+  fake.tick()
+  assert(shows("Noises"), "the heading kept its old text")
+  assert(shows("Loudness"), "the tab kept its old name")
+  finish()
+end)
+
 return h.report()

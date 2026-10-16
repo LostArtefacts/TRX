@@ -12,8 +12,8 @@ local tabs = require("common.ui.settings.tabs")
 local M = {}
 
 -- What each dialog holds: its title, and its tabs, each the settings tab it
--- shows or the presets. The text is read as the dialog opens, so that it
--- follows the player's language.
+-- shows or the presets. The text is read again whenever a setting changes,
+-- so that it follows the player's language.
 local DIALOGS = {
   graphics = function()
     return trx.locale.get("general/settings/graphic_settings/title"),
@@ -107,23 +107,33 @@ end
 -- Builds one of the dialogs, opening anything it opens over itself through
 -- `push`.
 local function build_dialog(which, push)
-  local title, specs = DIALOGS[which]()
+  local _, specs = DIALOGS[which]()
   local declared = declared_by_tab()
   return dialog.new({
-    title = title,
+    title = function()
+      return (DIALOGS[which]())
+    end,
     tabs = function(self)
+      local names = self.changed:map(function()
+        local _, now = DIALOGS[which]()
+        return now
+      end)
       local result = {}
       for i, spec in ipairs(specs) do
         local name = spec[2]
+        local title = names:map(function(now)
+          return now[i][1]
+        end)
         if name == nil then
           result[i] = preset_tab.new({
-            title = spec[1],
+            title = title,
             editing = self.editing,
+            changed = self.changed,
             push = push,
           })
         else
           result[i] = editor.new({
-            title = spec[1],
+            title = title,
             keys = tabs.arrange(name, declared[name] or {}),
             editing = self.editing,
             width = self.width,
