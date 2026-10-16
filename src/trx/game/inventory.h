@@ -9,6 +9,8 @@
 // How many kinds of thing Lara can carry at once. The rings can draw fewer
 // than this, so a level runs out of somewhere to show them first.
 #define INV_MAX_ENTRIES 100
+// The most of one thing that an inventory counts.
+#define MAX_QTY 999999
 
 typedef struct {
     // The inventory option, which is what the rings draw. Several pickups can

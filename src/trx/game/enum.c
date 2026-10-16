@@ -8,7 +8,6 @@
 #include <trx/game/gun/types.h>
 #include <trx/game/gym.h>
 #include <trx/game/input/enum.h>
-#include <trx/game/inventory_ring/enum.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/items/enum.h>
 #include <trx/game/lara/enum.h>
@@ -34,6 +33,7 @@
 #include <trx/game/sound/ids.h>
 #include <trx/game/sparks/enum.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/menu.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/takeover.h>
 #include <trx/game/ui/tween.h>
