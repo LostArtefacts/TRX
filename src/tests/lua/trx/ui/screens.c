@@ -57,15 +57,13 @@ static int M_FakeTick(lua_State *const L)
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
-    UI_SetPaintHook(LUA_UI_PaintRegions);
     UI_BeginScene();
     LUA_UI_SetReserving(true);
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
     }
     LUA_UI_SetReserving(false);
-    UI_EndScene();
-    UI_SetPaintHook(nullptr);
+    LUA_UI_EndScene();
 
     const int32_t count = FakeUIDraw_GetCount();
     lua_createtable(L, count, 0);

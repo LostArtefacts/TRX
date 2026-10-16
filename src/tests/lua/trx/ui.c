@@ -42,18 +42,18 @@ static int M_FakePaint(lua_State *const L)
     LUA_UI_SetPainting(false);
     UI_EndLayer(UI_LAYER_UNDER);
     if (status != LUA_OK) {
-        UI_EndScene();
+        LUA_UI_EndScene();
         return lua_error(L);
     }
 
-    // Read before UI_EndScene clears the scene state.
+    // Read before LUA_UI_EndScene paints the rest of the scene.
     const int32_t count = FakeUIDraw_GetCount();
     lua_createtable(L, count, 0);
     for (int32_t i = 0; i < count; i++) {
         lua_pushstring(L, FakeUIDraw_GetLine(i));
         lua_rawseti(L, -2, i + 1);
     }
-    UI_EndScene();
+    LUA_UI_EndScene();
     return 1;
 }
 
@@ -79,15 +79,13 @@ static int M_FakeSceneLayers(lua_State *const L)
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
-    UI_SetPaintHook(LUA_UI_PaintRegions);
     UI_BeginScene();
     LUA_UI_SetReserving(true);
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
     }
     LUA_UI_SetReserving(false);
-    UI_EndScene();
-    UI_SetPaintHook(nullptr);
+    LUA_UI_EndScene();
 
     const int32_t count = FakeUIDraw_GetCount();
     lua_createtable(L, count, 0);

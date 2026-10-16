@@ -12,7 +12,6 @@
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
 
-static void (*m_PaintHook)(UI_LAYER);
 static int32_t m_Layer = -1;
 
 extern void UI_ClearDraw(void);
@@ -29,15 +28,6 @@ static void M_Shutdown(void)
     UI_ShutdownDraw();
     UI_ShutdownText();
     UI_ShutdownEvents();
-}
-
-static void M_Paint(const UI_LAYER layer)
-{
-    if (m_PaintHook != nullptr) {
-        UI_BeginLayer(layer);
-        m_PaintHook(layer);
-        UI_EndLayer(layer);
-    }
 }
 
 void UI_BeginScene(void)
@@ -62,22 +52,6 @@ UI_LAYER UI_GetLayer(void)
 {
     ASSERT(m_Layer != -1);
     return (UI_LAYER)m_Layer;
-}
-
-void UI_SetPaintHook(void (*const hook)(UI_LAYER))
-{
-    m_PaintHook = hook;
-}
-
-void UI_EndScene(void)
-{
-    UI_Region_Layout();
-    M_Paint(UI_LAYER_BACKDROP);
-    M_Paint(UI_LAYER_UNDER);
-    M_Paint(UI_LAYER_OVER);
-    M_Paint(UI_LAYER_FADE);
-    M_Paint(UI_LAYER_CONSOLE);
-    M_Paint(UI_LAYER_EXIT);
 }
 
 int32_t UI_GetCanvasWidth(void)

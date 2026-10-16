@@ -87,7 +87,7 @@ static int M_FakeDrawRegions(lua_State *const L)
     LUA_UI_SetReserving(true);
     LUA_UI_ReserveRegions();
     LUA_UI_SetReserving(false);
-    UI_EndScene();
+    LUA_UI_EndScene();
 
     char *description = FakeUIDraw_Describe();
     lua_pushstring(L, description);

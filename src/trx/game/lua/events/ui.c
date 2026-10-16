@@ -49,11 +49,11 @@ static void M_Tick(void)
 
 static void M_Init(void)
 {
-    UI_SetPaintHook(LUA_UI_PaintRegions);
     LUA_SetTickHook(M_Tick);
 }
 
-void LUA_UI_PaintRegions(const UI_LAYER layer)
+// Lets scripts draw one layer of the scene.
+static void M_Paint(const UI_LAYER layer)
 {
     LUA_EVENT_TYPE event;
     switch (layer) {
@@ -76,13 +76,24 @@ void LUA_UI_PaintRegions(const UI_LAYER layer)
         return;
     }
     // A hidden frame still fades: only the interface leaves the picture.
-    if (m_IsFrameHidden
-        && (layer == UI_LAYER_UNDER || layer == UI_LAYER_OVER)) {
+    if (m_IsFrameHidden && layer == UI_LAYER_UNDER) {
         return;
     }
+    UI_BeginLayer(layer);
     LUA_UI_SetPainting(true);
     LUA_FireEvent(event);
     LUA_UI_SetPainting(false);
+    UI_EndLayer(layer);
+}
+
+void LUA_UI_EndScene(void)
+{
+    UI_Region_Layout();
+    M_Paint(UI_LAYER_BACKDROP);
+    M_Paint(UI_LAYER_UNDER);
+    M_Paint(UI_LAYER_FADE);
+    M_Paint(UI_LAYER_CONSOLE);
+    M_Paint(UI_LAYER_EXIT);
 }
 
 void LUA_UI_SetHoldingScreen(const bool holding)

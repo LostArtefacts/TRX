@@ -37,10 +37,9 @@ float UI_GetSafeCanvasHeightFor(float width);
 float UI_ScaleX(float x);
 float UI_ScaleY(float y);
 
-// Begins a scene, and ends it by laying out the regions and drawing the
-// layers that scripts paint.
+// Begins a scene: forgets the draws and the region slots of the last one.
+// Scripts end it with LUA_UI_EndScene.
 void UI_BeginScene(void);
-void UI_EndScene(void);
 
 // The layers of the interface, bottom to top. A draw belongs to the layer
 // whose scope it is scheduled in. UI_Draw draws the layers in this order, so
@@ -53,8 +52,6 @@ typedef enum {
     UI_LAYER_UNDER,
     // The touch controls.
     UI_LAYER_INTERFACE,
-    // Script widgets over the touch controls.
-    UI_LAYER_OVER,
     // Fades over the whole interface.
     UI_LAYER_FADE,
     // The console, over every other layer but the game-exit fade.
@@ -72,10 +69,6 @@ void UI_EndLayer(UI_LAYER layer);
 // Returns the layer whose scope is open. Scheduling a draw outside any scope
 // is fatal.
 UI_LAYER UI_GetLayer(void);
-
-// Runs once for each layer that scripts paint (under, over and console),
-// while reservation boxes are known.
-void UI_SetPaintHook(void (*hook)(UI_LAYER layer));
 
 void UI_HandleKeyDown(uint32_t key);
 void UI_HandleKeyUp(uint32_t key);

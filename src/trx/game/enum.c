@@ -200,9 +200,6 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_EASE, UI_EASE_QUAD_OUT, "quad_out");
     ENUM_MAP(UI_EASE, UI_EASE_QUAD_IN_OUT, "quad_in_out");
 
-    ENUM_MAP(UI_LAYER, UI_LAYER_UNDER, "under");
-    ENUM_MAP(UI_LAYER, UI_LAYER_OVER, "over");
-
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_RING_ENTRY, "ring_entry");
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_PAUSE, "pause");
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_SAVE_LOAD, "save_load");
