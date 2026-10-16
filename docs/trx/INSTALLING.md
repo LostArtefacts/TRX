@@ -1396,6 +1396,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   └── readouts.lua
 │   │   │   ├── assault.lua
 │   │   │   └── legend.lua
+│   │   ├── ring
+│   │   │   ├── init.lua
+│   │   │   └── motion.lua
 │   │   ├── screens
 │   │   │   ├── passport
 │   │   │   │   ├── book.lua
@@ -1437,7 +1440,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── fade.lua
 │   │   ├── level_start.lua
 │   │   ├── metrics.lua
-│   │   ├── ring.lua
 │   │   ├── ring_hints.lua
 │   │   ├── scroll.lua
 │   │   └── value.lua
@@ -2879,6 +2881,9 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   └── readouts.lua
     │   │   │   │   ├── assault.lua
     │   │   │   │   └── legend.lua
+    │   │   │   ├── ring
+    │   │   │   │   ├── init.lua
+    │   │   │   │   └── motion.lua
     │   │   │   ├── screens
     │   │   │   │   ├── passport
     │   │   │   │   │   ├── book.lua
@@ -2920,7 +2925,6 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── fade.lua
     │   │   │   ├── level_start.lua
     │   │   │   ├── metrics.lua
-    │   │   │   ├── ring.lua
     │   │   │   ├── ring_hints.lua
     │   │   │   ├── scroll.lua
     │   │   │   └── value.lua
