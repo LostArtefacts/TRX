@@ -61,7 +61,11 @@ local function lay_out(tabs, titles)
   local available = (
     trx.ui.safe_area.width / trx.ui.text_scale - window.chrome_width()
   ) / MEASURE_SLACK
-  local full, single = tab_switch.widths(titles)
+  local names = {}
+  for i, title in ipairs(titles) do
+    names[i] = value.read(title)
+  end
+  local full, single = tab_switch.widths(names)
   local collapsed = full > math.max(min_w, available)
   local bar = collapsed and single or full
   max_w = math.max(max_w, bar)
@@ -103,7 +107,7 @@ local function active_scroll(active, tabs)
 end
 
 ---@class common.ui.settings.Tab
----@field title string The name on the tab bar.
+---@field title string|trx.signal.Signal The name on the tab bar, or a signal that holds it.
 ---@field scroll common.ui.Scroll The tab's rows.
 ---@field widget? trx.ui.Widget What the tab shows. An editor tab has none of its own and shows the rows the dialog shares.
 ---@field footer trx.ui.Widget The hints under the dialog.
@@ -184,7 +188,7 @@ function Dialog:close()
 end
 
 ---@class common.ui.settings.Dialog.settings
----@field title string The heading.
+---@field title string|trx.signal.Signal|fun(): string The heading, a signal that holds it, or a function that reads it again whenever a setting changes, so that it follows the player's language.
 ---@field tabs fun(dialog: common.ui.settings.Dialog): common.ui.settings.Tab[] Makes the tabs, which read the dialog's signals.
 
 -- Creates a dialog.
@@ -298,7 +302,9 @@ function M.new(settings)
       align = trx.ui.HAlign.SPAN,
       children = {
         window.new({
-          title = settings.title,
+          title = type(settings.title) == "function" and self.changed:map(
+            settings.title
+          ) or settings.title,
           scroll = active_scroll(self.active, self.tabs),
           reserve_scroll = true,
           header = trx.ui.widgets.Stack({

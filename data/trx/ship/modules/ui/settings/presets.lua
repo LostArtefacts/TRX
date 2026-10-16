@@ -13,7 +13,8 @@ local rows = require("common.ui.settings.rows")
 local M = {}
 
 ---@class common.ui.settings.Preset
----@field title string The name, in the player's language.
+---@field title string The name, in the language the player had as the presets loaded.
+---@field name_gs? string The game string of the name.
 ---@field settings { key: string, value: any }[] The settings it sets.
 
 ---@class common.ui.settings.PresetChange
@@ -42,7 +43,21 @@ local function read(path)
   table.sort(settings, function(a, b)
     return a.key < b.key
   end)
-  return { title = trx.locale.get(data.name_gs), settings = settings }
+  return {
+    title = trx.locale.get(data.name_gs),
+    name_gs = data.name_gs,
+    settings = settings,
+  }
+end
+
+-- The name of a preset in the player's language now.
+---@param preset common.ui.settings.Preset
+---@return string
+function M.title(preset)
+  if preset.name_gs == nil then
+    return preset.title
+  end
+  return trx.locale.get(preset.name_gs)
 end
 
 -- Every preset the game offers, sorted by title. The presets come from the
