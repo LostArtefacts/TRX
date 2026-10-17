@@ -118,6 +118,24 @@ static XYZ_32 M_Normalize(const XYZ_32 dir)
     };
 }
 
+// Turns a direction by the rotation of the view matrix. Unlike a point, a
+// direction takes none of the matrix's translation.
+static XYZ_32 M_RotateToView(const XYZ_32 dir)
+{
+    const MATRIX *const m = &g_ViewMatrix;
+    return (XYZ_32) {
+        .x = (int32_t)(((int64_t)m->_00 * dir.x + (int64_t)m->_01 * dir.y
+                        + (int64_t)m->_02 * dir.z)
+                       >> W2V_SHIFT),
+        .y = (int32_t)(((int64_t)m->_10 * dir.x + (int64_t)m->_11 * dir.y
+                        + (int64_t)m->_12 * dir.z)
+                       >> W2V_SHIFT),
+        .z = (int32_t)(((int64_t)m->_20 * dir.x + (int64_t)m->_21 * dir.y
+                        + (int64_t)m->_22 * dir.z)
+                       >> W2V_SHIFT),
+    };
+}
+
 // Lights what is drawn next by the light the script gave, each game in its own
 // terms. In TR3 a mesh's own colour stands in for every light's.
 static void M_ApplyLight(
@@ -392,8 +410,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
         if (mesh->world != nullptr) {
             M_PoseInWorld(mesh->world);
             for (int32_t j = 0; j < light.light_count; j++) {
-                light.lights[j].dir =
-                    Matrix_MulVec32_M(&g_ViewMatrix, light.lights[j].dir);
+                light.lights[j].dir = M_RotateToView(light.lights[j].dir);
             }
         } else {
             M_PoseOnCanvas(mesh, frame);
