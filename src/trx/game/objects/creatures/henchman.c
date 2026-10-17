@@ -28,6 +28,7 @@
 #define M_RUN_STOP_DIST         SQUARE((WALL_L / 2) + M_RADIUS) // = 376996
 #define M_SOMERSAULT_DIST       SQUARE(WALL_L * 3) // = 9437184
 #define M_SOMERSAULT_ANGLE      (DEG_45 / 2) // = 4096
+#define M_SOMERSAULT_JUMP_FRAME 18
 #define M_JUMP_ROLL_ANGLE       (DEG_45 * 5 / 4) // = 10240
 #define M_JUMP_ROLL_TURN        (DEG_45 * 7 / 4) // = 14336
 #define M_WALK_TURN             (DEG_1 * 7) // = 1274
@@ -837,7 +838,7 @@ static void M_Control(const int16_t item_num)
     case M_STATE_SOMERSAULT:
         if (Item_TestAnimEqual(item, M_ANIM_SOMERSAULT_END)) {
             Creature_TurnTo(item, info.angle, M_WALK_TURN);
-        } else if (Item_TestAnimEqual(item, M_ANIM_STAND_IDLE)) {
+        } else if (Item_TestFrameEqual(item, M_SOMERSAULT_JUMP_FRAME)) {
             creature->lot.is_jumping = true;
         }
         break;
