@@ -24,6 +24,7 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
+#include <trx/gl/fbo.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/texture.h>
 #include <trx/gl/utils.h>
@@ -130,6 +131,14 @@ typedef struct {
         M_SNAPSHOT_STATE state;
         M_SNAPSHOT_STATE slots[OUTPUT_OVERLAY_SNAPSHOT_SLOTS];
         bool slot_in_use[OUTPUT_OVERLAY_SNAPSHOT_SLOTS];
+        // Counts the captures of the snapshot, so that its blur is redrawn
+        // only once the snapshot changes.
+        uint32_t generation;
+        // The snapshot blurred as far as the player's setting takes it, and
+        // the capture and the setting it was blurred for.
+        TRX_GL_FBO blurred;
+        uint32_t blurred_generation;
+        float blurred_amount;
     } snapshot;
     struct {
         OUTPUT_QUAD *renderer;
@@ -606,12 +615,90 @@ static void M_DrawImageImpl(
     }
 }
 
+static void M_SetUpSnapshot(
+    const M_PRIV *const p, const GLuint texture_id, const int32_t width,
+    const int32_t height)
+{
+    Output_Quad_SetExternalTexture(
+        p->snapshot.renderer, texture_id, width, height, true);
+    Output_Quad_SetEffect(p->snapshot.renderer, OUTPUT_QUAD_EFFECT_NONE);
+    Output_Quad_SetRepeat(p->snapshot.renderer, 1, 1);
+    Output_Quad_SetTextureSize(p->snapshot.renderer, nullptr);
+    Output_Quad_SetFilter(
+        p->snapshot.renderer, g_Config.rendering.upscaling_filter);
+    Output_Quad_ClearFit(p->snapshot.renderer);
+}
+
+// Blurs the snapshot as far as the player's setting takes it, once for each
+// capture and setting, and returns whether the blur is ready to draw. A blur
+// drawn anew for every frame costs dozens of reads for each pixel.
+static bool M_EnsureBlurredSnapshot(M_PRIV *const p)
+{
+    const M_SNAPSHOT_STATE *const s = &p->snapshot.state;
+    const float amount = g_Config.ui.background_blur;
+    if (amount <= 0.0f || !s->has_content || !s->texture.initialized) {
+        return false;
+    }
+    TRX_GL_FBO *const blurred = &p->snapshot.blurred;
+    if (blurred->fbo != 0 && blurred->width == s->width
+        && blurred->height == s->height
+        && p->snapshot.blurred_generation == p->snapshot.generation
+        && p->snapshot.blurred_amount == amount) {
+        return true;
+    }
+
+    // Read before the framebuffer is made, which binds it.
+    GLint prev_fbo = 0;
+    GLint viewport[4];
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prev_fbo);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    if (blurred->fbo == 0) {
+        TRX_GL_FBO_Init(
+            blurred, s->width, s->height, 1, GL_RGBA8, GL_RGBA, false);
+    } else {
+        TRX_GL_FBO_ResizeIfNeeded(blurred, s->width, s->height, 1);
+    }
+
+    TRX_GL_FBO_Bind(blurred);
+    glViewport(0, 0, s->width, s->height);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    M_SetUpSnapshot(p, s->texture.id, s->width, s->height);
+    Output_Quad_SetOpacity(p->snapshot.renderer, 1.0f);
+    Output_Quad_SetDesaturation(p->snapshot.renderer, 0.0f);
+    Output_Quad_SetGlobalTint(p->snapshot.renderer, COLOR_RGB_F_WHITE);
+    Output_Quad_SetBlur(p->snapshot.renderer, amount);
+    Output_Quad_Render(p->snapshot.renderer);
+    Output_Quad_SetBlur(p->snapshot.renderer, 0.0f);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)prev_fbo);
+    glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+    TRX_GL_CheckError();
+    p->snapshot.blurred_generation = p->snapshot.generation;
+    p->snapshot.blurred_amount = amount;
+    return true;
+}
+
+static void M_DrawSnapshotTexture(
+    const M_PRIV *const p, const M_DRAW_OP_SNAPSHOT *const op,
+    const GLuint texture_id, const float opacity)
+{
+    M_SetUpSnapshot(p, texture_id, op->width, op->height);
+    Output_Quad_SetOpacity(p->snapshot.renderer, opacity);
+    Output_Quad_SetDesaturation(p->snapshot.renderer, op->desaturation);
+    Output_Quad_SetGlobalTint(p->snapshot.renderer, op->tint);
+    Output_Quad_SetBlur(p->snapshot.renderer, 0.0f);
+    Output_Quad_RenderWithBlend(p->snapshot.renderer);
+}
+
 // A snapshot holds the pixels as they were presented, brightness included, so
-// it is drawn without a scale of its own.
+// it is drawn without a scale of its own. The blur fades in over the sharp
+// snapshot by how far it has come.
 static void M_DrawOp_Snapshot(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_SNAPSHOT *const op = (const M_DRAW_OP_SNAPSHOT *)base;
-    const M_PRIV *const p = &m_Priv;
+    M_PRIV *const p = &m_Priv;
     if (op->opacity <= 0.0f) {
         return;
     }
@@ -619,19 +706,19 @@ static void M_DrawOp_Snapshot(const M_DRAW_OP *const base)
         return;
     }
 
-    Output_Quad_SetExternalTexture(
-        p->snapshot.renderer, op->texture_id, op->width, op->height, true);
-    Output_Quad_SetEffect(p->snapshot.renderer, OUTPUT_QUAD_EFFECT_NONE);
-    Output_Quad_SetRepeat(p->snapshot.renderer, 1, 1);
-    Output_Quad_SetTextureSize(p->snapshot.renderer, nullptr);
-    Output_Quad_SetFilter(
-        p->snapshot.renderer, g_Config.rendering.upscaling_filter);
-    Output_Quad_ClearFit(p->snapshot.renderer);
-    Output_Quad_SetOpacity(p->snapshot.renderer, op->opacity);
-    Output_Quad_SetDesaturation(p->snapshot.renderer, op->desaturation);
-    Output_Quad_SetGlobalTint(p->snapshot.renderer, op->tint);
-    Output_Quad_SetBlur(p->snapshot.renderer, op->blur);
-    Output_Quad_RenderWithBlend(p->snapshot.renderer);
+    const bool blurs = op->blur > 0.0f
+        && op->texture_id == p->snapshot.state.texture.id
+        && M_EnsureBlurredSnapshot(p);
+    const float share =
+        blurs ? MIN(op->blur / p->snapshot.blurred_amount, 1.0f) : 0.0f;
+    if (share < 1.0f) {
+        M_DrawSnapshotTexture(p, op, op->texture_id, op->opacity);
+    }
+    if (share > 0.0f) {
+        M_DrawSnapshotTexture(
+            p, op, p->snapshot.blurred.texture.id,
+            share < 1.0f ? op->opacity * share : op->opacity);
+    }
 }
 
 static bool M_EnsurePatternUploaded(M_PRIV *const p)
@@ -876,6 +963,7 @@ void Output_Overlay_CaptureSnapshot(void)
         &p->snapshot.state.texture, p->snapshot.state.width,
         p->snapshot.state.height);
     p->snapshot.state.has_content = true;
+    p->snapshot.generation++;
 }
 
 void Output_Overlay_CaptureGameSnapshot(void)
@@ -907,6 +995,7 @@ void Output_Overlay_CaptureGameSnapshot(void)
         &p->snapshot.state.texture, p->snapshot.state.width,
         p->snapshot.state.height);
     p->snapshot.state.has_content = true;
+    p->snapshot.generation++;
 }
 
 int32_t Output_Overlay_CaptureSnapshotSlot(void)
@@ -1192,6 +1281,7 @@ void OutputSource_Overlay_Init(void)
 void OutputSource_Overlay_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
+    TRX_GL_FBO_Close(&p->snapshot.blurred);
     if (p->renderer != nullptr) {
         Output_Quad_Destroy(p->renderer);
         p->renderer = nullptr;
