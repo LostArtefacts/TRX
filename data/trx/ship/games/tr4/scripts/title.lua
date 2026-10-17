@@ -1,10 +1,9 @@
 local fade = require("common.ui.fade")
 local logo = require("tr4.logo")
 
--- The logo sits across the top of the menu at the size the original engine
--- gives it.
+-- The logo sits across the top of the menu at the width the original engine
+-- gives it, and as tall as the picture's shape makes it.
 local LOGO_WIDTH = 512
-local LOGO_HEIGHT = 256
 
 local LOGO_HOLD_TICKS = 16
 local LOGO_FADE_TICKS = 24
@@ -22,7 +21,6 @@ local function show_logo()
     trx.ui.widgets.Image({
       path = logo.path,
       w = LOGO_WIDTH,
-      h = LOGO_HEIGHT,
       opacity = logo_opacity,
     })
   )
