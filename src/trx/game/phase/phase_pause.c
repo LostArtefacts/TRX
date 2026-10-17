@@ -29,7 +29,8 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Music_Pause();
     Sound_PauseAll();
-    p->is_held = UI_Takeover_Offer(UI_TAKEOVER_PAUSE, (UI_TAKEOVER_ARGS) {});
+    p->is_held = UI_Takeover_Offer(
+        UI_TAKEOVER_PAUSE, (UI_TAKEOVER_ARGS) { .can_exit_to_title = true });
     if (!p->is_held) {
         LOG_WARNING("no script draws the pause screen, resuming");
         return M_Resume();

@@ -58,6 +58,9 @@ typedef struct {
     // in from the frame shown before it, for UI_TAKEOVER_PICTURE.
     bool is_loading;
     bool can_cross_fade_in;
+    // Whether the screen may leave for the title screen, for
+    // UI_TAKEOVER_PAUSE.
+    bool can_exit_to_title;
 } UI_TAKEOVER_ARGS;
 
 typedef enum {

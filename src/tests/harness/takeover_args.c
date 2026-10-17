@@ -53,5 +53,6 @@ UI_TAKEOVER_ARGS TakeoverArgs_Read(lua_State *const L, const int idx)
     args.fade_out_ticks = M_IntField(L, idx, "fade_out_ticks", 0);
     args.is_loading = M_BoolField(L, idx, "is_loading");
     args.can_cross_fade_in = M_BoolField(L, idx, "can_cross_fade_in");
+    args.can_exit_to_title = M_BoolField(L, idx, "can_exit_to_title");
     return args;
 }

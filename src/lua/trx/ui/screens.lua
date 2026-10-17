@@ -311,7 +311,12 @@ local EntryContext = h.class("ui.EntryContext", {
 
 ---The context of the pause screen, for `trx.ui.Screen.PAUSE`.
 ---@class (exact) trx.ui.PauseContext: trx.ui.ScreenContext
-local Pause = h.class("ui.PauseContext", { extends = "ui.ScreenContext" })
+---@trx.readonly can_exit_to_title
+---@field can_exit_to_title boolean Whether the screen can leave for the title screen. It cannot while an FMV plays.
+local Pause = h.class("ui.PauseContext", {
+  extends = "ui.ScreenContext",
+  fields = { can_exit_to_title = reported("can_exit_to_title") },
+})
 
 ---Ends the pause screen, and returns to the game.
 ---@return boolean # Whether the screen was still held.
