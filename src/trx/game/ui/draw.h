@@ -152,6 +152,10 @@ typedef struct {
     // from 0 to 1.
     uint32_t faded_mask;
     float mesh_opacity[32];
+    // Where the middle of the camera's sight lands, as a fraction of the
+    // screen's width and height. The middle of the screen is 0.5 each way.
+    float center_x;
+    float center_y;
 } UI_MODEL_WORLD;
 
 // Draws an object's model where it stands in a world of its own, as that

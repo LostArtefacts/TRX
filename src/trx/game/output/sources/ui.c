@@ -15,6 +15,7 @@
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/uniforms.h>
+#include <trx/game/output/vars.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
@@ -249,6 +250,13 @@ static void M_PoseInWorld(const OUTPUT_UI_MESH_WORLD *const world)
         world->camera_target.z - world->camera_pos.z, angles);
     const XYZ_16 view_rot = { .x = angles[1], .y = angles[0], .z = 0 };
     Matrix_GenerateW2V(&world->camera_pos, &view_rot);
+    if (world->center_x != 0.5f || world->center_y != 0.5f) {
+        const float persp = (float)g_PhdPersp;
+        Matrix_ShearW2V(
+            (world->center_x - 0.5f) * Viewport_GetWidth(VIEWPORT_GAME) / persp,
+            (world->center_y - 0.5f) * Viewport_GetHeight(VIEWPORT_GAME)
+                / persp);
+    }
     Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
 
     Matrix_Push();

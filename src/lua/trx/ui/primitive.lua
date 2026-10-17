@@ -359,11 +359,17 @@ function primitive.model(object, x, y, w, h, opts)
   raw.draw_model(object, x, y, w, h, opts)
 end
 
+---A point of the canvas.
+---@class (exact) trx.ui.CanvasPoint
+---@field x number How far across, in canvas units.
+---@field y number How far down, in canvas units.
+
 ---A camera looking into a world of a model's own.
 ---@class (exact) trx.ui.WorldCamera
 ---@field pos trx.math.Vec3 Where the camera stands.
 ---@field target trx.math.Vec3 The point it looks at.
 ---@field fov trx.math.Angle Its field of view, measured as the game measures the inventory's.
+---@field center? trx.ui.CanvasPoint The point of the canvas that the middle of its sight lands on. A model stays seen from the front wherever it lands, as the inventory of TR4 draws its items. The middle of the screen by default.
 
 ---One step of placing a model in its world. A step takes one of the fields.
 ---@class (exact) trx.ui.PoseStep

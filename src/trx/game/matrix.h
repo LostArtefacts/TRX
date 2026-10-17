@@ -46,6 +46,11 @@ void Matrix_LookAt(
     int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
     int32_t ztar, int16_t roll);
 void Matrix_ScaleW2V(XYZ_32 scale);
+// Shears the view so that the middle of the camera's sight lands away from
+// the middle of the screen: every point moves across by kx and down by ky
+// times its depth. A model seen this way stands at another point of the
+// screen and is not seen from the side.
+void Matrix_ShearW2V(float kx, float ky);
 // Squashes the view vertically to three quarters, as the PS1 release does to
 // fit its screen.
 void Matrix_SquashW2V(void);
