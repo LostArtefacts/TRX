@@ -8,6 +8,7 @@ local ring = require("common.ui.ring")
 local saves = require("common.ui.flat_menu.saves")
 local sound = require("common.ui.flat_menu.sound").play
 local strip = require("common.ui.flat_menu.strip")
+local title = require("common.ui.flat_menu.title")
 local timer = require("common.timer")
 
 local M = {}
@@ -796,10 +797,14 @@ function M.open_save_load(ctx)
 end
 
 -- Opens the menu in the game, or to use an entry at a lock.
+-- On the title screen, it opens the title menu.
 ---@param ctx trx.ui.MenuContext
 ---@return trx.ui.StackLayer?
 function M.open(ctx)
   local MenuMode = trx.ui.MenuMode
+  if ctx.mode == MenuMode.TITLE then
+    return title.open(ctx)
+  end
   local saving = ctx.mode == MenuMode.SAVE or ctx.mode == MenuMode.SAVE_CRYSTAL
   local loading = ctx.mode == MenuMode.LOAD
   if
