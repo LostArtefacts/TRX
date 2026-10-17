@@ -878,6 +878,8 @@ void UI_ScheduleDrawModelInWorld(
         .bone_count = world->bone_count,
         .at_pivot = world->at_pivot,
         .faded_mask = world->faded_mask,
+        .center_x = world->center_x,
+        .center_y = world->center_y,
     };
     memcpy(
         mesh_world.mesh_opacity, world->mesh_opacity,

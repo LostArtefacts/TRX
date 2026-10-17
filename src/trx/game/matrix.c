@@ -543,6 +543,19 @@ void Matrix_ScaleW2V(const XYZ_32 scale)
     m_MatrixStack[0] = g_ViewMatrix;
 }
 
+void Matrix_ShearW2V(const float kx, const float ky)
+{
+    g_ViewMatrix._00 += (int32_t)(kx * g_ViewMatrix._20);
+    g_ViewMatrix._01 += (int32_t)(kx * g_ViewMatrix._21);
+    g_ViewMatrix._02 += (int32_t)(kx * g_ViewMatrix._22);
+    g_ViewMatrix._03 += (int32_t)(kx * g_ViewMatrix._23);
+    g_ViewMatrix._10 += (int32_t)(ky * g_ViewMatrix._20);
+    g_ViewMatrix._11 += (int32_t)(ky * g_ViewMatrix._21);
+    g_ViewMatrix._12 += (int32_t)(ky * g_ViewMatrix._22);
+    g_ViewMatrix._13 += (int32_t)(ky * g_ViewMatrix._23);
+    m_MatrixStack[0] = g_ViewMatrix;
+}
+
 void Matrix_SquashW2V(void)
 {
     g_ViewMatrix._10 -= g_ViewMatrix._10 >> 2;

@@ -415,6 +415,19 @@ static int M_L_UIDrawWorldModel(lua_State *const L)
     lua_pop(L, 1);
     lua_getfield(L, camera, "fov");
     world.fov = (int16_t)luaL_checkinteger(L, -1);
+    lua_pop(L, 1);
+    world.center_x = 0.5f;
+    world.center_y = 0.5f;
+    lua_getfield(L, camera, "center");
+    if (!lua_isnil(L, -1)) {
+        luaL_checktype(L, -1, LUA_TTABLE);
+        lua_getfield(L, -1, "x");
+        world.center_x = (float)(luaL_checknumber(L, -1) / UI_GetCanvasWidth());
+        lua_getfield(L, -2, "y");
+        world.center_y =
+            (float)(luaL_checknumber(L, -1) / UI_GetCanvasHeight());
+        lua_pop(L, 2);
+    }
     lua_pop(L, 2);
 
     lua_getfield(L, 2, "pose");
