@@ -23,6 +23,17 @@
             "no_changes": "Brak zmian do zastosowania.",
             "title_fmt": "Zastosować ustawienia %s?",
         },
+        "flat_menu": {
+            "combine": "\\{review}POŁĄCZ",
+            "combine_with": "\\{review}POŁĄCZ Z",
+            "count_fmt": "\\{review}%d x %s",
+            "empty_slot": "\\{review}Puste miejsce",
+            "equip": "\\{review}WYPOSAŻ",
+            "examine": "\\{review}OBEJRZYJ",
+            "load_game": "\\{review}WCZYTAJ GRĘ",
+            "save_game": "\\{review}ZAPISZ GRĘ",
+            "use": "\\{review}UŻYJ",
+        },
         "globe_select": {
             "area_1": "Obszar 1",
             "area_2": "Obszar 2",
@@ -1811,6 +1822,14 @@
         "ui.menu_style": {
             "title": "Styl menu",
             "description": "Zmienia sposób rysowania menu.\n\n- PC: styl interfejsu odpowiada wersji na PC.\n- PS1: styl interfejsu odpowiada wersji na PlayStation 1.",
+        },
+        "ui.menu_system": {
+            "description": "\\{review}Jak gra pokazuje swoje menu. Pierścień pokazuje to, co Lara niesie, na obracającym się pierścieniu, jak w TR1–TR3. Płaskie pokazuje to w rzędzie w poprzek ekranu z listą tego, co można z tym zrobić, jak w oryginalnym TR4.",
+            "title": "\\{review}System menu",
+            "values": {
+                "flat": "\\{review}Płaskie",
+                "ring": "\\{review}Pierścień",
+            }
         },
         "ui.pause_background_style": {
             "title": "Tło pauzy",

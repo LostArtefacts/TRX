@@ -62,6 +62,9 @@ local function open_save_load(ctx)
   return opened
 end
 
+-- Opens the quick save and load screens as the passport's page.
+M.open_save_load = open_save_load
+
 local function name_crystal()
   local crystal = trx.catalog.objects.SAVE_CRYSTAL_ITEM
   local name = trx.locale.get("objects/save_crystal_item/name"):match("^[^|]*")
@@ -99,7 +102,6 @@ function M.setup()
     open,
     { object = trx.catalog.objects.PASSPORT_OPTION }
   )
-  trx.ui.screens.define(trx.ui.Screen.SAVE_LOAD, open_save_load)
   trx.ui.screens.define(
     trx.ui.Screen.RING_ENTRY,
     open_crystal,

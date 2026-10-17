@@ -129,4 +129,18 @@ test("every setting is listed, even one whose value has no name", function()
   assert(settings["rendering.fmv_filter"] == nil)
 end)
 
+test("the compass statistics leave the flat menu system", function()
+  trx.config.declare({
+    key = "ui.menu_system",
+    kind = "dynamic_enum",
+    values = { "ring", "flat" },
+    default = "ring",
+  })
+  local key = "gameplay.enable_compass_stats"
+  assert(not rows.hidden(key), "hidden with the ring")
+  with("ui.menu_system", "flat", function()
+    assert(rows.hidden(key), "shown with the flat menu")
+  end)
+end)
+
 return h.report()

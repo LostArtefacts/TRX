@@ -23,6 +23,17 @@
             "no_changes": "\\{review}Нет изменений для применения.",
             "title_fmt": "\\{review}Применить предустановку %s?",
         },
+        "flat_menu": {
+            "combine": "\\{review}ОБЪЕДИНИТЬ",
+            "combine_with": "\\{review}ОБЪЕДИНИТЬ С",
+            "count_fmt": "\\{review}%d x %s",
+            "empty_slot": "\\{review}Пустой слот",
+            "equip": "\\{review}ЭКИПИРОВАТЬ",
+            "examine": "\\{review}ОСМОТРЕТЬ",
+            "load_game": "\\{review}ЗАГРУЗИТЬ ИГРУ",
+            "save_game": "\\{review}СОХРАНИТЬ ИГРУ",
+            "use": "\\{review}ИСПОЛЬЗОВАТЬ",
+        },
         "globe_select": {
             "area_1": "\\{review}Зона 1",
             "area_2": "\\{review}Зона 2",
@@ -1811,6 +1822,14 @@
         "ui.menu_style": {
             "title": "Стиль меню",
             "description": "Изменияет стиль меню.\n\n- PC: стиль меню соответствует версии для ПК.\n- PS1: стиль меню соответствует версии для PlayStation.",
+        },
+        "ui.menu_system": {
+            "description": "\\{review}Как игра показывает свои меню. Кольцо показывает то, что несёт Лара, на вращающемся кольце, как в TR1–TR3. Плоское показывает это рядом поперёк экрана со списком действий, как в оригинальной TR4.",
+            "title": "\\{review}Система меню",
+            "values": {
+                "flat": "\\{review}Плоское",
+                "ring": "\\{review}Кольцо",
+            }
         },
         "ui.pause_background_style": {
             "title": "\\{review}Пауза фона",

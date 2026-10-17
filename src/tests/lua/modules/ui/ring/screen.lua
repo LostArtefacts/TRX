@@ -6,7 +6,7 @@ local test = h.test
 
 local entries = require("common.ui.ring.entries")
 local ring = require("common.ui.ring")
-require("common.ui.ring.screen").setup()
+require("common.ui.menu").setup()
 local objects = trx.catalog.objects
 local Role = trx.input.Role
 local MENU = trx.ui.Screen.MENU

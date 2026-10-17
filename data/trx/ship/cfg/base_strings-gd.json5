@@ -23,6 +23,17 @@
             "no_changes": "Chan eil atharrachaidhean ri chur an gnìomh.",
             "title_fmt": "Cuir an ro-shealladh %s an sàs?",
         },
+        "flat_menu": {
+            "combine": "\\{review}CUIR CÒMHLA",
+            "combine_with": "\\{review}CUIR CÒMHLA RI",
+            "count_fmt": "\\{review}%d x %s",
+            "empty_slot": "\\{review}Slot falamh",
+            "equip": "\\{review}UIDHEAMAICH",
+            "examine": "\\{review}SGRÙDAICH",
+            "load_game": "\\{review}LUCHDAICH GEAMA",
+            "save_game": "\\{review}SÀBHAIL GEAMA",
+            "use": "\\{review}CLEACHD",
+        },
         "globe_select": {
             "area_1": "Raon 1",
             "area_2": "Raon 2",
@@ -1811,6 +1822,14 @@
         "ui.menu_style": {
             "title": "Stoidhle clàir",
             "description": "Cuiridh seo stoidhle a' chlàir an comas:\n\n- PC: stoidhle eadar-aghaidh PC.\n- PS1: stoidhle eadar-aghaidh a' PhS1.",
+        },
+        "ui.menu_system": {
+            "description": "\\{review}Mar a sheallas an geama na clàran-taice aige. Seallaidh Fàinne na tha aig Lara air fàinne a thionndaidheas, mar ann an TR1 gu TR3. Seallaidh Rèidh e ann an sreath tarsainn na sgrìn le liosta de na ghabhas dèanamh leis, mar anns an TR4 thùsail.",
+            "title": "\\{review}Siostam nan clàr-taice",
+            "values": {
+                "flat": "\\{review}Rèidh",
+                "ring": "\\{review}Fàinne",
+            }
         },
         "ui.pause_background_style": {
             "title": "Dealbh-cùil sgrion-stad",

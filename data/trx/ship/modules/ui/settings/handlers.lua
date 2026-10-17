@@ -273,6 +273,12 @@ local HANDLERS = {
     available = touch_on,
     can_change = touch_on,
   },
+  -- The flat menu draws the compass without the statistics.
+  ["gameplay.enable_compass_stats"] = {
+    visible = function()
+      return get("ui.menu_system") ~= "flat"
+    end,
+  },
   ["gameplay.fix_flare_throw_priority"] = { available = flare },
   ["gameplay.fix_m16_accuracy"] = { available = machine_gun },
   ["gameplay.m16_aim_mode"] = { available = machine_gun },

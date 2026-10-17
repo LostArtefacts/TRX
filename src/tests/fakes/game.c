@@ -53,6 +53,8 @@ static int32_t m_PartnerCount;
 static OBJECT_ID m_Combined[2];
 // Whether every entry can be examined.
 static bool m_Examinable;
+// Whether every entry leads nowhere, as an entry with no lock to use it on.
+static bool m_Unusable;
 
 // The areas of the globe a test gives the game flow.
 static GF_GLOBE_ENTRY m_Globe[8];
@@ -215,6 +217,13 @@ static int M_L_SetTRVersion(lua_State *const L)
 static int M_L_SetExaminable(lua_State *const L)
 {
     m_Examinable = lua_toboolean(L, 1);
+    return 0;
+}
+
+// fake.set_unusable(bool) - whether every entry leads nowhere.
+static int M_L_SetUnusable(lua_State *const L)
+{
+    m_Unusable = lua_toboolean(L, 1);
     return 0;
 }
 
@@ -705,7 +714,7 @@ void Lara_UseItem(const OBJECT_ID object_id)
 INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
 {
     return (INV_ITEM_ACTIONS) {
-        .can_use = m_PartnerCount == 0,
+        .can_use = !m_Unusable && m_PartnerCount == 0,
         .can_examine = m_Examinable,
         .can_combine = m_PartnerCount > 0,
     };
@@ -735,6 +744,8 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "set_combine_partners");
     lua_pushcfunction(L, M_L_SetExaminable);
     lua_setfield(L, -2, "set_examinable");
+    lua_pushcfunction(L, M_L_SetUnusable);
+    lua_setfield(L, -2, "set_unusable");
     lua_pushcfunction(L, M_L_SetTRVersion);
     lua_setfield(L, -2, "set_tr_version");
     lua_pushcfunction(L, M_L_SetScreenHeld);

@@ -672,6 +672,11 @@ const char *Object_GetName(const OBJECT_ID obj_id)
     return Object_GetDefaultName(obj_id);
 }
 
+void FakeItems_SetLoaded(const OBJECT_ID obj_id, const bool loaded)
+{
+    m_Objects[obj_id].loaded = loaded;
+}
+
 void FakeItems_SetDescription(const OBJECT_ID obj_id, const char *const text)
 {
     for (int32_t i = 0; i < m_DescriptionCount; i++) {

@@ -1,6 +1,7 @@
--- Sets how the inventory ring draws a level's puzzle, key, pickup, and examine
--- items. TR4 sets these items per level.
+-- Sets how the inventory ring and the flat menu draw a level's puzzle, key,
+-- pickup, and examine items. TR4 sets these items per level.
 
+local flat_items = require("common.ui.flat_menu.items")
 local ring = require("common.ui.ring")
 
 local M = {}
@@ -41,6 +42,19 @@ function M.apply(items)
         draws_at_pivot = item.draws_at_pivot or false,
         meshes_sel = item.meshes or -1,
         meshes_drawn = item.meshes or -1,
+      })
+      -- The flat menu draws an item as the original does, from the same
+      -- numbers.
+      flat_items.declare(icon, {
+        y_offset = item.offset_y or 0,
+        distance = item.scale,
+        rot = {
+          x = trx.math.degrees(item.rot_x or 0),
+          y = trx.math.degrees(item.rot_y or 0),
+          z = trx.math.degrees(item.rot_z or 0),
+        },
+        at_pivot = item.draws_at_pivot or false,
+        meshes = item.meshes,
       })
     end
   end

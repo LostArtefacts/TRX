@@ -8,7 +8,7 @@ require("common.ui.captions").setup()
 require("common.ui.ring_hints").setup()
 
 -- The screens the interface draws in place of the engine's.
-require("common.ui.ring.screen").setup()
+require("common.ui.menu").setup()
 require("common.ui.screens.combine").setup()
 require("common.ui.screens.examine").setup()
 require("common.ui.screens.globe").setup()

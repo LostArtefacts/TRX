@@ -112,6 +112,14 @@ static int M_FakeSetDescription(lua_State *const L)
     return 0;
 }
 
+// fake.set_loaded(object, loaded) - whether the object's model is in the level.
+static int M_FakeSetLoaded(lua_State *const L)
+{
+    FakeItems_SetLoaded(
+        (OBJECT_ID)luaL_checkinteger(L, 1), lua_toboolean(L, 2));
+    return 0;
+}
+
 // fake.offer(screen, args?) -> bool - a screen the script takes holds the
 // level still, as the engine's own screens do.
 static int M_FakeOffer(lua_State *const L)
@@ -245,6 +253,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "offer");
     lua_pushcfunction(L, M_FakeSetDescription);
     lua_setfield(L, -2, "set_description");
+    lua_pushcfunction(L, M_FakeSetLoaded);
+    lua_setfield(L, -2, "set_loaded");
     lua_pushcfunction(L, M_FakeIsHeld);
     lua_setfield(L, -2, "is_held");
     lua_pushcfunction(L, M_FakeTakeChoice);

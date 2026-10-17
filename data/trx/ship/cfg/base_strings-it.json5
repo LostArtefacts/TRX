@@ -23,6 +23,17 @@
             "no_changes": "Nessuna modifica da applicare.",
             "title_fmt": "Applicare il profilo %s?",
         },
+        "flat_menu": {
+            "combine": "\\{review}COMBINA",
+            "combine_with": "\\{review}COMBINA CON",
+            "count_fmt": "\\{review}%d x %s",
+            "empty_slot": "\\{review}Slot vuoto",
+            "equip": "\\{review}EQUIPAGGIA",
+            "examine": "\\{review}ESAMINA",
+            "load_game": "\\{review}CARICA PARTITA",
+            "save_game": "\\{review}SALVA PARTITA",
+            "use": "\\{review}USA",
+        },
         "globe_select": {
             "area_1": "Area 1",
             "area_2": "Area 2",
@@ -1811,6 +1822,14 @@
         "ui.menu_style": {
             "title": "Stile menu",
             "description": "Modifica la modalità di visualizzazione dei menu.\n\n- PC: lo stile dell'interfaccia utente corrisponde alla versione PC.\n- PS1: lo stile dell'interfaccia utente corrisponde alla versione PS1.",
+        },
+        "ui.menu_system": {
+            "description": "\\{review}Come il gioco mostra i suoi menu. Anello mostra ciò che Lara porta con sé su un anello che ruota, come in TR1-TR3. Piatto lo mostra in una fila lungo lo schermo con l'elenco di ciò che si può fare, come nel TR4 originale.",
+            "title": "\\{review}Sistema dei menu",
+            "values": {
+                "flat": "\\{review}Piatto",
+                "ring": "\\{review}Anello",
+            }
         },
         "ui.pause_background_style": {
             "title": "Sfondo di pausa",

@@ -1425,6 +1425,13 @@ If you install everything correctly, your game directory should look more or les
 │       └── strings.json5
 ├── modules
 │   ├── ui
+│   │   ├── flat_menu
+│   │   │   ├── init.lua
+│   │   │   ├── items.lua
+│   │   │   ├── saves.lua
+│   │   │   ├── sound.lua
+│   │   │   ├── strip.lua
+│   │   │   └── text.lua
 │   │   ├── hud
 │   │   │   ├── overlay
 │   │   │   │   ├── ammo.lua
@@ -1482,6 +1489,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── captions.lua
 │   │   ├── fade.lua
 │   │   ├── level_start.lua
+│   │   ├── menu.lua
 │   │   ├── metrics.lua
 │   │   ├── ring_hints.lua
 │   │   ├── scroll.lua
@@ -2955,6 +2963,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │       └── strings.json5
     │   ├── modules
     │   │   ├── ui
+    │   │   │   ├── flat_menu
+    │   │   │   │   ├── init.lua
+    │   │   │   │   ├── items.lua
+    │   │   │   │   ├── saves.lua
+    │   │   │   │   ├── sound.lua
+    │   │   │   │   ├── strip.lua
+    │   │   │   │   └── text.lua
     │   │   │   ├── hud
     │   │   │   │   ├── overlay
     │   │   │   │   │   ├── ammo.lua
@@ -3012,6 +3027,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── captions.lua
     │   │   │   ├── fade.lua
     │   │   │   ├── level_start.lua
+    │   │   │   ├── menu.lua
     │   │   │   ├── metrics.lua
     │   │   │   ├── ring_hints.lua
     │   │   │   ├── scroll.lua
