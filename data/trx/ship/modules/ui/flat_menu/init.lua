@@ -2,6 +2,7 @@
 -- carries stands in a row across the screen, and the entry in the middle
 -- names what can be done with it in a list.
 
+local death = require("common.ui.flat_menu.death")
 local fade = require("common.ui.fade")
 local items = require("common.ui.flat_menu.items")
 local ring = require("common.ui.ring")
@@ -798,12 +799,16 @@ end
 
 -- Opens the menu in the game, or to use an entry at a lock.
 -- On the title screen, it opens the title menu.
+-- Once Lara has died, it opens the menu that follows.
 ---@param ctx trx.ui.MenuContext
 ---@return trx.ui.StackLayer?
 function M.open(ctx)
   local MenuMode = trx.ui.MenuMode
   if ctx.mode == MenuMode.TITLE then
     return title.open(ctx)
+  end
+  if ctx.mode == MenuMode.DEATH then
+    return death.open(ctx)
   end
   local saving = ctx.mode == MenuMode.SAVE or ctx.mode == MenuMode.SAVE_CRYSTAL
   local loading = ctx.mode == MenuMode.LOAD

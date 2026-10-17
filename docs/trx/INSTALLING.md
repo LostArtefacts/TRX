@@ -1426,6 +1426,7 @@ If you install everything correctly, your game directory should look more or les
 ├── modules
 │   ├── ui
 │   │   ├── flat_menu
+│   │   │   ├── death.lua
 │   │   │   ├── init.lua
 │   │   │   ├── items.lua
 │   │   │   ├── list.lua
@@ -2969,6 +2970,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   ├── modules
     │   │   ├── ui
     │   │   │   ├── flat_menu
+    │   │   │   │   ├── death.lua
     │   │   │   │   ├── init.lua
     │   │   │   │   ├── items.lua
     │   │   │   │   ├── list.lua
