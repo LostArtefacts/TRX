@@ -76,6 +76,7 @@ static void M_ClearSlot(SAVEGAME_INFO *const savegame_info)
     savegame_info->counter = -1;
     savegame_info->level_num = -1;
     savegame_info->is_quick = false;
+    savegame_info->saved_at = 0;
     Memory_FreePointer(&savegame_info->full_path);
     Memory_FreePointer(&savegame_info->level_title);
 }

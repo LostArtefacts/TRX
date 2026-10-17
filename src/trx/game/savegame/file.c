@@ -13,6 +13,7 @@
 #include <trx/version.h>
 
 #include <string.h>
+#include <time.h>
 #include <zconf.h>
 #include <zlib.h>
 
@@ -102,7 +103,8 @@ static RESULT M_SaveRaw(
         .uncompressed_size = uncompressed_size,
     };
     const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
-        .flags = Game_GetBonusFlag() | (is_quick ? SAVEGAME_EXT_FLAG_QUICK : 0),
+        .flags = Game_GetBonusFlag() | (is_quick ? SAVEGAME_EXT_FLAG_QUICK : 0)
+            | SAVEGAME_EXT_FLAG_SAVED_AT,
         .counter = JSON_ObjectGetInt(
             root_obj, "save_counter", SG_Manager_GetCounter()),
         .level_num = level->num,
@@ -114,6 +116,8 @@ static RESULT M_SaveRaw(
     File_WriteData(fp, &extra_header, sizeof(extra_header));
     File_WriteData(
         fp, level->title, level->title != nullptr ? strlen(level->title) : 0);
+    const int64_t saved_at = (int64_t)time(nullptr);
+    File_WriteData(fp, &saved_at, sizeof(saved_at));
 
     Memory_FreePointer(&uncompressed);
     Memory_FreePointer(&compressed);
@@ -224,6 +228,12 @@ RESULT SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
         info->is_quick = (extra_header.flags & SAVEGAME_EXT_FLAG_QUICK) != 0;
         info->level_title = Memory_Alloc(extra_header.title_size + 1);
         File_ReadData(fp, info->level_title, extra_header.title_size);
+        info->saved_at = 0;
+        int64_t saved_at;
+        if ((extra_header.flags & SAVEGAME_EXT_FLAG_SAVED_AT) != 0
+            && File_TryReadData(fp, &saved_at, sizeof(saved_at))) {
+            info->saved_at = saved_at;
+        }
         return OK;
     }
 

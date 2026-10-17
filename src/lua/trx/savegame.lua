@@ -81,7 +81,17 @@ end
 ---@field can_restart boolean Whether the level can be restarted from the save.
 ---@field can_select_level boolean Whether the save reaches an earlier level in the game.
 ---@field has_story boolean Whether story content runs before the saved level.
+---@field saved_at? trx.savegame.SavedAt When the save was made, in the player's local time, or `nil` for a save that does not record it.
 local SlotInfo = h.class("savegame.SlotInfo")
+
+---When a save was made.
+---@class (exact) trx.savegame.SavedAt
+---@field year integer The year.
+---@field month integer The month, from 1.
+---@field day integer The day of the month, from 1.
+---@field hour integer The hour, from 0 to 23.
+---@field minute integer The minute.
+---@field second integer The second.
 
 ---Returns the slot contents, or `nil` if the slot is empty.
 ---

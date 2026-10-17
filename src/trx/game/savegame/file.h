@@ -66,3 +66,6 @@ typedef struct {
 #pragma pack(pop)
 
 #define SAVEGAME_EXT_FLAG_QUICK (1U << 31)
+// The time the save was made follows the level title, in seconds since the
+// epoch as a 64-bit number.
+#define SAVEGAME_EXT_FLAG_SAVED_AT (1U << 30)
