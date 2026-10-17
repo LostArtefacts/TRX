@@ -81,7 +81,8 @@ static bool M_IsOverlapTypeAhead(
     }
 }
 
-static bool M_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
+static bool M_UpdateLOT(
+    LOT_INFO *const lot, const int32_t expansion, const bool is_ai_target)
 {
     if (Box_GetBox(lot->required_box) == nullptr
         || lot->required_box == lot->target_box) {
@@ -93,7 +94,7 @@ static bool M_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
     // Drops the expansions queued for the previous target. They carry a
     // search number that is no longer current, and they would delay the new
     // search by one frame for every five of them.
-    if (g_Config.gameplay.fix_enemy_route_delay) {
+    if (!is_ai_target && g_Config.gameplay.fix_enemy_route_delay) {
         while (lot->head != NO_BOX) {
             BOX_NODE *const queued = &lot->node[lot->head];
             lot->head = queued->next_expansion;
@@ -411,7 +412,7 @@ bool Box_ValidBox(
 TARGET_TYPE Box_CalculateTarget(
     XYZ_32 *const target, const ITEM *const item, LOT_INFO *const lot)
 {
-    M_UpdateLOT(lot, BOX_MAX_EXPANSION);
+    M_UpdateLOT(lot, BOX_MAX_EXPANSION, item->ai_bits != 0);
 
     *target = item->pos;
 
