@@ -468,7 +468,10 @@ static int M_L_UIDrawWorldModel(lua_State *const L)
     world.blend = (float)luaL_optnumber(L, -1, 0.0);
     lua_getfield(L, 2, "at_pivot");
     world.at_pivot = lua_toboolean(L, -1);
-    lua_pop(L, 4);
+    lua_getfield(L, 2, "opacity");
+    world.opacity = (float)luaL_optnumber(L, -1, 1.0);
+    CLAMP(world.opacity, 0.0f, 1.0f);
+    lua_pop(L, 5);
 
     lua_getfield(L, 2, "bones");
     if (!lua_isnil(L, -1)) {
