@@ -49,6 +49,10 @@ trx.locale.declare({
   ["general/stats/distance_travelled"] = "Distance Traveled",
   ["general/stats/secrets"] = "Secrets Found",
   ["general/stats/none"] = "None",
+  ["settings/ui.stats_fade_effects/title"] = "Stats fade effects",
+  ["settings/ui.stats_fade_effects/description"] = "Fine-tunes the fade effects to be enabled or disabled in the end of "
+    .. "the level statistics screen. Needs the Fade Effects option to be "
+    .. "enabled to work.",
 })
 
 -- The settings that decide which rows the screen lists.

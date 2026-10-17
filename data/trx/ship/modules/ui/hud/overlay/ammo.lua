@@ -5,6 +5,8 @@ local place = require("common.ui.hud.overlay.place")
 trx.locale.declare({
   ["general/overlay/item_count_fmt_pc"] = "\\{small}%s",
   ["general/overlay/item_count_fmt_ps1"] = "\\{small}%s",
+  ["settings/ui.ammo_counter_location/title"] = "Ammo counter location",
+  ["settings/ui.ammo_counter_location/description"] = "Location where the ammo counter is displayed.",
 })
 
 local M = {}

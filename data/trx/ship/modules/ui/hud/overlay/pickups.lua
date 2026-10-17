@@ -10,6 +10,11 @@ local ring = require("common.ui.ring")
 
 local M = {}
 
+trx.locale.declare({
+  ["settings/ui.show_pickups_overlay/title"] = "Pickups overlay",
+  ["settings/ui.show_pickups_overlay/description"] = "Shows items in the bottom-right corner when Lara picks something up.",
+})
+
 trx.config.declare({
   key = "ui.show_pickups_overlay",
   kind = "boolean",
