@@ -107,8 +107,11 @@ typedef struct {
     int32_t num_lights;
     int32_t _pad[3];
     struct {
-        float vec[4]; // view space, attenuation-scaled
-        float color[4]; // rgb 0..1; w = radial attenuation
+        float pos[4]; // object space; w = type
+        float color[4]; // rgb 0..1; w = range
+        float dir[4]; // object space, where a spot points or a sun shines;
+                      // w = att1
+        float cone[4]; // x = cosine of a spot's cone edge
     } lights[OUTPUT_TR4_MAX_STAGED_LIGHTS];
 } OUTPUT_UNIFORM_LS_TR4;
 

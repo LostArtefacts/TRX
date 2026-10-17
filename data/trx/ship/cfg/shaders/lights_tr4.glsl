@@ -1,14 +1,20 @@
-// TR4 lighting family: colored per-item light lists resolved on the CPU
-// (sun/point/spot with baked attenuation, shadow lights folded into the
-// ambient), evaluated per vertex. Values are in the OG "128 = neutral"
-// scale; meshes.glsl doubles the result and splits the excess into an
-// additive overbright term (the OG diffuse/specular split).
+// TR4 lighting family: colored per-item light lists resolved on the CPU,
+// evaluated per vertex the way the retail game had Direct3D light them.
+// Values are in the OG "128 = neutral" scale; meshes.glsl doubles the result
+// and splits the excess into an additive overbright term (the OG
+// diffuse/specular split).
 
 #define MAX_TR4_LIGHTS 48
 
+#define TR4_LIGHT_POINT 0
+#define TR4_LIGHT_SPOT 1
+#define TR4_LIGHT_SUN 2
+
 struct TR4Light {
-    vec4 vec;   // view space, attenuation-scaled (the OG SetupLight)
-    vec4 color; // rgb 0..1; w = radial attenuation
+    vec4 pos;   // object space; w = type
+    vec4 color; // rgb 0..1; w = range
+    vec4 dir;   // object space, where a spot points or a sun shines; w = att1
+    vec4 cone;  // x = cosine of a spot's cone edge
 };
 
 layout(std140) uniform LightSource {
@@ -17,20 +23,40 @@ layout(std140) uniform LightSource {
     TR4Light uTR4Lights[MAX_TR4_LIGHTS];
 };
 
-// Port of the OG ProcessObjectMeshVertices (output.cpp:42). Unclamped;
-// the overbright split downstream handles values above 128/255.
-vec3 lightObjectsTR4(vec3 rawNormal, vec3 ambient)
+// Lights a vertex as the retail game's Direct3D lights did: in object space,
+// from the vertex itself, with the legacy attenuation att1 * (1 - d / range).
+// Direct3D wrote the lit color in 8 bits, so the sum stops at 255.
+vec3 lightObjectsTR4(vec3 rawNormal, vec3 pos, vec3 ambient)
 {
-    vec3 N = safeNormalize(mat3(uMatView * uMatModel) * (rawNormal.xyz / float(1 << 14)));
+    vec3 N = safeNormalize(rawNormal);
 
     vec3 acc = ambient;
     for (int i = 0; i < uTR4NumLights; i++) {
-        float val = dot(uTR4Lights[i].vec.xyz, N);
+        TR4Light light = uTR4Lights[i];
+        int type = int(light.pos.w);
+        vec3 L;
+        float atten = 1.0;
+        if (type == TR4_LIGHT_SUN) {
+            L = -safeNormalize(light.dir.xyz);
+        } else {
+            vec3 d = light.pos.xyz - pos;
+            float dist = length(d);
+            if (dist <= 0.0 || dist > light.color.w) {
+                continue;
+            }
+            L = d / dist;
+            atten = light.dir.w * (1.0 - dist / light.color.w);
+            if (type == TR4_LIGHT_SPOT
+                && dot(-L, safeNormalize(light.dir.xyz)) <= light.cone.x) {
+                continue;
+            }
+        }
+        float val = dot(N, L);
         if (val > 0.0) {
-            acc += (val * uTR4Lights[i].color.w) * uTR4Lights[i].color.rgb;
+            acc += (val * atten) * light.color.rgb;
         }
     }
-    return acc;
+    return min(acc, vec3(1.0));
 }
 
 // Port of the OG ProcessStaticMeshVertices' prelight modulation
