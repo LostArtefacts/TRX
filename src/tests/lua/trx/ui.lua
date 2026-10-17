@@ -244,6 +244,21 @@ test("nothing draws outside a painted scene", function()
   end, "painted")
 end)
 
+test("an image given one side keeps the picture's shape", function()
+  -- The fake reports every image as four times as wide as it is tall.
+  local wide = trx.ui.widgets.Image({ path = "logo.webp", w = 200 })
+  local w, h = wide:measure()
+  assert(w == 200 and h == 50, ("measured %sx%s"):format(w, h))
+  local tall = trx.ui.widgets.Image({ path = "logo.webp", h = 50 })
+  w, h = tall:measure()
+  assert(w == 200 and h == 50, ("measured %sx%s"):format(w, h))
+end)
+
+test("an image needs a width or a height", function()
+  local ok = pcall(trx.ui.widgets.Image, { path = "logo.webp" })
+  assert(not ok, "an image without a size was made")
+end)
+
 test("a label measures the text it holds", function()
   local label = widgets.Label({ text = "iris" })
   local w, h_ = label:measure()

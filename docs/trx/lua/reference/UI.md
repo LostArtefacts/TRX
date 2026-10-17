@@ -1052,6 +1052,25 @@ arrow, and `\{button left}` draws the button the player has bound.
   trx.ui.primitive.image("uklogo.pak", 64, 0, 512, 256)
   ```
 
+- <a id="ui.primitive.image_size" name="ui.primitive.image_size"></a>[lua]`trx.ui.primitive.image_size(path)`  
+  Reports the size of an image file, in pixels.
+
+  Where the game keeps versions of the image for other screen shapes, the size
+  is that of the version the screen draws. Use it to give a box the shape of
+  the image it holds.
+
+  Parameters:
+  - <a id="ui.primitive.image_size.path" name="ui.primitive.image_size.path"></a>**`path`** (string). The image file, named from the images directory.
+
+  Returns:
+  - integer or `nil`. The width, or `nil` where the game has no such image.
+  - integer or `nil`. The height, or `nil` where the game has no such image.
+
+  Example:
+  ```lua
+  local w, h = trx.ui.primitive.image_size("uklogo.pak")
+  ```
+
 - <a id="ui.primitive.sprite_count" name="ui.primitive.sprite_count"></a>[lua]`trx.ui.primitive.sprite_count(object)`  
   Reports how many sprites an object has.
 
@@ -1509,20 +1528,27 @@ arrow, and `\{button left}` draws the button the player has bound.
 - <a id="ui.widgets.Image" name="ui.widgets.Image"></a>[lua]`trx.ui.widgets.Image(settings)`  
   A picture from an image file, at a size the script gives.
 
-  The widget keeps its room even where the game ships no such image, so a
-  screen built around it does not move when the image is missing.
+  Give the width, the height, or both. Where one of them is left out, it
+  follows the other in the image's own shape. The widget keeps its room even
+  where the game ships no such image, so a screen built around it does not
+  move when the image is missing; a size left out is then 0.
 
   Parameters:
   - <a id="ui.widgets.Image.settings" name="ui.widgets.Image.settings"></a>**`settings`** (table). The image settings.
 
     Keys:
     - <a id="ui.widgets.Image.settings.path" name="ui.widgets.Image.settings.path"></a>**`path`** (any). The image file, named from the images directory, or a signal carrying it.
-    - <a id="ui.widgets.Image.settings.w" name="ui.widgets.Image.settings.w"></a>**`w`** (any). The width, in canvas units, or a signal that holds it.
-    - <a id="ui.widgets.Image.settings.h" name="ui.widgets.Image.settings.h"></a>**`h`** (any). The height, in canvas units, or a signal that holds it.
+    - <a id="ui.widgets.Image.settings.w" name="ui.widgets.Image.settings.w"></a>**`w`** (any, optional). The width, in canvas units, or a signal that holds it. Without it, the width follows the height in the image's own shape.
+    - <a id="ui.widgets.Image.settings.h" name="ui.widgets.Image.settings.h"></a>**`h`** (any, optional). The height, in canvas units, or a signal that holds it. Without it, the height follows the width in the image's own shape.
     - <a id="ui.widgets.Image.settings.opacity" name="ui.widgets.Image.settings.opacity"></a>**`opacity`** (any, optional). How solid the image is, from 0 to 1, or a signal that holds that value. `1` by default.
     - <a id="ui.widgets.Image.settings.visible" name="ui.widgets.Image.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
   Returns: [trx.ui.Widget](#ui.Widget). The image.
+
+  Example:
+  ```lua
+  local logo = trx.ui.widgets.Image({ path = "logo.webp", w = 512 })
+  ```
 
 - <a id="ui.widgets.InputHint" name="ui.widgets.InputHint"></a>[lua]`trx.ui.widgets.InputHint(settings)`  
   The keys bound to an input role, as the game shows them, and what they do.

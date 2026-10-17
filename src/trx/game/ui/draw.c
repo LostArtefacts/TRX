@@ -669,6 +669,13 @@ void UI_ScheduleDrawScreenSprite(
         }));
 }
 
+RESULT UI_GetImageSize(
+    const char *const path, int32_t *const out_width, int32_t *const out_height)
+{
+    MUST(Output_Overlay_GetImageSize(path, out_width, out_height));
+    return OK;
+}
+
 void UI_ScheduleDrawImage(
     const char *const path, const int32_t x0, const int32_t y0,
     const int32_t x1, const int32_t y1, const float opacity)

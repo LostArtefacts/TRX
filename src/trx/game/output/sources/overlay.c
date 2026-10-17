@@ -897,6 +897,20 @@ bool Output_Overlay_LoadImage(const char *const file_name)
     return M_ImageCache_Load(e);
 }
 
+RESULT Output_Overlay_GetImageSize(
+    const char *const file_name, int32_t *const out_width,
+    int32_t *const out_height)
+{
+    if (!Output_Overlay_LoadImage(file_name)) {
+        return FAIL("%s: cannot load the image", file_name);
+    }
+    const M_IMAGE_CACHE_ENTRY *const e =
+        M_ImageCache_GetEntry(&m_Priv, file_name);
+    *out_width = e->texture_width;
+    *out_height = e->texture_height;
+    return OK;
+}
+
 void Output_Overlay_DrawImage(const char *const file_name)
 {
     M_DrawImageImpl(
