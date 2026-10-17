@@ -59,6 +59,7 @@ typedef struct {
             XYZ_16 rot;
             int32_t shift;
             int16_t fov;
+            int16_t roll;
         } result, prev;
         int16_t room_num;
     } interp;

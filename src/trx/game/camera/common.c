@@ -86,6 +86,8 @@ void Camera_Initialise(void)
     g_Camera.fov = Viewport_GetEffectiveFOV();
     g_Camera.interp.prev.fov = g_Camera.fov;
     g_Camera.interp.result.fov = g_Camera.fov;
+    g_Camera.interp.prev.roll = 0;
+    g_Camera.interp.result.roll = 0;
     Matrix_ResetStack();
     g_Camera.last = NO_CAMERA;
     g_Camera.underwater = false;
@@ -321,7 +323,7 @@ void Camera_Apply(void)
         Matrix_LookAt(
             view_pos.x, view_pos.y, view_pos.z, g_Camera.interp.result.target.x,
             g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
-            g_Camera.roll);
+            g_Camera.interp.result.roll);
     }
 
     XYZ_32 poison_scale;

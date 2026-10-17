@@ -56,6 +56,7 @@
 
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
+- Fixed flyby and cutscene cameras rolling in steps at 60 FPS
 
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)

@@ -168,6 +168,7 @@ static void M_RememberCamera(void)
         g_Camera.interp.prev.rot = Camera_PhotoMode_GetRot();
     }
     REMEMBER(&g_Camera, fov);
+    REMEMBER(&g_Camera, roll);
     REMEMBER(&g_Camera, shift);
     REMEMBER(&g_Camera, pos.x);
     REMEMBER(&g_Camera, pos.y);
@@ -180,6 +181,7 @@ static void M_RememberCamera(void)
 static void M_CommitCamera(void)
 {
     COMMIT(&g_Camera, fov);
+    COMMIT(&g_Camera, roll);
     COMMIT(&g_Camera, shift);
     COMMIT(&g_Camera, pos.x);
     COMMIT(&g_Camera, pos.y);
@@ -198,6 +200,7 @@ static void M_InterpolateCamera(const double ratio)
     INTERPOLATE_F(&g_Camera, target.x, ratio);
     INTERPOLATE_F(&g_Camera, target.y, ratio);
     INTERPOLATE_F(&g_Camera, target.z, ratio);
+    INTERPOLATE_ROT(&g_Camera, roll, ratio, DEG_45);
 }
 
 static void M_RememberLara(LARA_INFO *const lara)
