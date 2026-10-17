@@ -271,7 +271,7 @@ void main(void) {
     } else {
         if ((gOut.flags & VERT_USE_OBJECT_LIGHT) != 0u) {
             lightIn = lightObjectsTR4(
-                inNormal.xyz,
+                inNormal.xyz, inPosition.xyz,
                 uAmbientSpanEnabled
                     ? mix(uAmbientSpanFrom.rgb, uTR4Ambient.rgb,
                           clamp(inTintFactor, 0.0, 1.0))
@@ -302,7 +302,8 @@ void main(void) {
         && (gOut.flags & VERT_USE_OBJECT_LIGHT) != 0u) {
         gOut.colorSub = shadeTR4(
             lightObjectsTR4(
-                inNormal.xyz, uTR4Ambient.rgb + uSubmergedAmbientDelta.rgb), modulate,
+                inNormal.xyz, inPosition.xyz,
+                uTR4Ambient.rgb + uSubmergedAmbientDelta.rgb), modulate,
             lr.add, tintReg, gamma_exp, gOut.flags, add);
         gOut.addSub = add;
     }

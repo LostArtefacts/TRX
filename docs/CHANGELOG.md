@@ -167,7 +167,7 @@
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 - Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
-- Fixed objects such as blocks, doors and the title screen pulpit looking too dark (TRX954)
+- Fixed objects and Lara being lit differently from the original, such as blocks and the title screen pulpit looking too dark, the doors in Tomb of Seth looking black, and flares lighting Lara from the wrong side (TRX954, TRX1578, TRX786)
 - Fixed Lara being unable to pull some pushable objects against walls (OG bug)
 - Fixed Lara being unable to pull pushable object 80 in Catacombs if pushable object 84 is directly below (OG bug) (TRX1615)
 - Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)

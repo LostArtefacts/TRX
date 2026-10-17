@@ -89,14 +89,25 @@ typedef struct {
     bool used;
 } M_ITEM_LIGHT;
 
+// Matches TR4_LIGHT_* in lights_tr4.glsl.
+typedef enum {
+    M_STAGED_POINT = 0,
+    M_STAGED_SPOT = 1,
+    M_STAGED_SUN = 2,
+} M_STAGED_TYPE;
+
 // Fully resolved per-mesh-instance light list handed to the GPU.
 typedef struct {
     float ambient[3]; // 0..255 scale (128 = OG neutral)
     int32_t count;
     struct {
-        XYZ_F vec; // view space, attenuation-scaled (the OG convention)
-        float rad;
+        M_STAGED_TYPE type;
+        XYZ_F pos; // object space
+        XYZ_F dir; // object space, where a spot points or a sun shines
         float r, g, b; // 0..1
+        float range;
+        float att1;
+        float cone; // cosine of a spot's cone edge
     } lights[OUTPUT_TR4_MAX_STAGED_LIGHTS];
 } M_STAGED_LIST;
 
@@ -123,14 +134,16 @@ static struct {
     OUTPUT_LS_MODE mode;
 } m_UploadCache = { .handle = -2 };
 
-static XYZ_F M_ViewRotate(const XYZ_F v)
+// Carries a world space offset into the object space of a mesh through the
+// transpose of its matrix, as the retail game did. The transpose keeps the
+// matrix scale, so a mesh squashed along an axis squashes its lights too.
+static XYZ_F M_ToObject(const MATRIX *const m, const XYZ_F v)
 {
-    const MATRIX *const m = &g_ViewMatrix;
     const float s = 1.0f / (float)(1 << W2V_SHIFT);
     return (XYZ_F) {
-        .x = (m->_00 * v.x + m->_01 * v.y + m->_02 * v.z) * s,
-        .y = (m->_10 * v.x + m->_11 * v.y + m->_12 * v.z) * s,
-        .z = (m->_20 * v.x + m->_21 * v.y + m->_22 * v.z) * s,
+        .x = (m->_00 * v.x + m->_10 * v.y + m->_20 * v.z) * s,
+        .y = (m->_01 * v.x + m->_11 * v.y + m->_21 * v.z) * s,
+        .z = (m->_02 * v.x + m->_12 * v.y + m->_22 * v.z) * s,
     };
 }
 
@@ -423,36 +436,35 @@ static void M_CreateLightList(M_ITEM_LIGHT *const il, const int16_t room_num)
     M_FadeLightList(il->lights[1 - il->cur], il->n_lights[1 - il->cur]);
 }
 
-// Port of the OG SetupLight (lighting.cpp:85). Emits into `list`; the shadow
-// lights only darken the ambient.
-static void M_StageLight(
-    const M_ITEM_ROOM_LIGHT *const light, const XYZ_F mesh_pos,
-    M_STAGED_LIST *const list)
+static bool M_HasRoom(const M_STAGED_LIST *const list)
 {
-    if (list->count >= OUTPUT_TR4_MAX_STAGED_LIGHTS
-        && light->type != LIGHT_TYPE_SHADOW) {
-        return;
-    }
+    return list->count < OUTPUT_TR4_MAX_STAGED_LIGHTS;
+}
+
+// Port of the retail SetupLight. Every light sits where it is relative to
+// the item, carried into the object space of the mesh being drawn; the
+// shadow lights only darken the ambient.
+static void M_StageLight(
+    const M_ITEM_ROOM_LIGHT *const light, const XYZ_32 item_pos,
+    const MATRIX *const m, M_STAGED_LIST *const list)
+{
+    const XYZ_F rlp = {
+        (float)(light->ipos.x - item_pos.x),
+        (float)(light->ipos.y - item_pos.y),
+        (float)(light->ipos.z - item_pos.z),
+    };
+    const XYZ_F dir =
+        M_ToObject(m, (XYZ_F) { light->nx, light->ny, light->nz });
 
     switch (light->type) {
     case LIGHT_TYPE_SUN: {
-        const float len =
-            sqrtf(SQUARE(light->nx) + SQUARE(light->ny) + SQUARE(light->nz));
-        if (len <= 0.0f) {
+        if (!M_HasRoom(list)) {
             break;
         }
-        const float num = -1.0f / len;
-        const float mul = m_InventoryMode ? 2.0f : 0.75f;
-        const XYZ_F vec = M_ViewRotate((XYZ_F) {
-            light->nx * num,
-            light->ny * num,
-            light->nz * num,
-        });
+        const float mul = m_InventoryMode ? 2.0f : 1.0f;
         list->lights[list->count++] = (typeof(list->lights[0])) {
-            .vec = vec,
-            .rad = 1.0f,
-            // Premultiplied so the shader needs no sun-specific branch:
-            // the OG scales the sun dot by 0.75 in-game and 2.0 in inventory.
+            .type = M_STAGED_SUN,
+            .dir = dir,
             .r = light->r * mul,
             .g = light->g * mul,
             .b = light->b * mul,
@@ -460,69 +472,62 @@ static void M_StageLight(
         break;
     }
 
-    case LIGHT_TYPE_POINT:
-    case LIGHT_TYPE_SPOT: {
-        float x = light->pos.x - mesh_pos.x;
-        float y = light->pos.y - mesh_pos.y;
-        float z = light->pos.z - mesh_pos.z;
-        if (x == 0.0f || y == 0.0f || z == 0.0f) {
-            // Avoid degenerate vectors when the light shares an axis plane
-            // with the mesh origin (the OG does the same).
-            x += 1.0f;
-            y += 1.0f;
-            z += 1.0f;
-        }
-
-        const float dist = sqrtf(SQUARE(x) + SQUARE(y) + SQUARE(z));
-        float rad;
-        float scale;
-        if (light->type == LIGHT_TYPE_POINT) {
-            scale = 2.0f / dist;
-            rad = (light->outer - dist) / light->outer;
-        } else {
-            scale = (m_CurrentIsProp ? 2.0f : 1.0f) / dist;
-            // The cone test already happened in the light list; from here
-            // spots shade exactly like point lights.
-            rad = 1.0f - dist / light->cutoff;
-        }
-        CLAMPL(rad, 0.0f);
-
-        if (light->type == LIGHT_TYPE_POINT && m_CurrentIsProp && rad < 1.0f) {
-            // Props fold nearby point lights into the ambient so they glow;
-            // halve the radius to avoid double-counting the color.
-            for (int32_t i = 0; i < 3; i++) {
-                const float c =
-                    i == 0 ? light->r : (i == 1 ? light->g : light->b);
-                list->ambient[i] += rad * c * 255.0f;
-                CLAMPG(list->ambient[i], 255.0f);
+    case LIGHT_TYPE_POINT: {
+        if (m_CurrentIsProp) {
+            // A prop takes a point light it is inside into its ambient as
+            // well, by how far into the light it stands.
+            const float rad =
+                (light->outer - sqrtf((float)light->range)) / light->outer;
+            if (rad < 1.0f) {
+                const float c[3] = { light->r, light->g, light->b };
+                for (int32_t i = 0; i < 3; i++) {
+                    list->ambient[i] += rad * c[i] * 255.0f;
+                    CLAMP(list->ambient[i], 0.0f, 255.0f);
+                }
             }
-            rad /= 2.0f;
         }
-
-        const XYZ_F vec =
-            M_ViewRotate((XYZ_F) { x * scale, y * scale, z * scale });
+        if (!M_HasRoom(list)) {
+            break;
+        }
         list->lights[list->count++] = (typeof(list->lights[0])) {
-            .vec = vec,
-            .rad = rad,
+            .type = M_STAGED_POINT,
+            .pos = M_ToObject(m, rlp),
             .r = light->r,
             .g = light->g,
             .b = light->b,
+            .range = light->outer,
+            .att1 = 2.0f,
         };
         break;
     }
 
+    case LIGHT_TYPE_SPOT:
+        if (!M_HasRoom(list)) {
+            break;
+        }
+        list->lights[list->count++] = (typeof(list->lights[0])) {
+            .type = M_STAGED_SPOT,
+            .pos = M_ToObject(m, rlp),
+            .dir = dir,
+            .r = light->r,
+            .g = light->g,
+            .b = light->b,
+            .range = light->cutoff,
+            .att1 = m_CurrentIsProp ? 2.0f : 1.0f,
+            .cone = light->outer,
+        };
+        break;
+
     case LIGHT_TYPE_SHADOW: {
-        const float val = sqrtf((float)light->range);
+        const float val = (float)(int32_t)sqrtf((float)light->range);
         int32_t val2 = light->shadow >> 3;
         if (val >= light->inner) {
             val2 = (int32_t)((val - light->outer)
                              / ((light->outer - light->inner) / (float)-val2));
         }
-        CLAMPL(val2, 0);
-        val2 >>= 1;
         for (int32_t i = 0; i < 3; i++) {
             list->ambient[i] -= (float)val2;
-            CLAMPL(list->ambient[i], 0.0f);
+            CLAMP(list->ambient[i], 0.0f, 255.0f);
         }
         break;
     }
@@ -532,37 +537,36 @@ static void M_StageLight(
     }
 }
 
-// Port of the OG SetupDynamicLight (lighting.cpp:58).
+// Port of the retail dynamic lights in InitItemDynamicLighting.
 static void M_StageDynamicLights(
-    const XYZ_F mesh_pos, M_STAGED_LIST *const list)
+    const XYZ_32 item_pos, const MATRIX *const m, M_STAGED_LIST *const list)
 {
     VECTOR *const dynamic_lights = Output_GetDynamicLights();
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
-        if (list->count >= OUTPUT_TR4_MAX_STAGED_LIGHTS) {
+        if (!M_HasRoom(list)) {
             break;
         }
         const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
         const LIGHT *const light = &entry->light;
         const int32_t raw_falloff = light->u.legacy.falloff.value_1;
-        const float falloff = (raw_falloff >> 1) + (raw_falloff >> 3);
-
-        const float x = light->pos.x - mesh_pos.x;
-        const float y = light->pos.y - mesh_pos.y;
-        const float z = light->pos.z - mesh_pos.z;
-        const float dist = sqrtf(SQUARE(x) + SQUARE(y) + SQUARE(z));
-        if (dist > falloff || falloff <= 0.0f) {
+        const float range = (raw_falloff >> 1) + (raw_falloff >> 3);
+        if (range <= 0.0f) {
             continue;
         }
 
-        const float scale = 1.0f / dist;
-        const XYZ_F vec =
-            M_ViewRotate((XYZ_F) { x * scale, y * scale, z * scale });
+        const XYZ_F rlp = {
+            (float)(light->pos.x - item_pos.x),
+            (float)(light->pos.y - item_pos.y),
+            (float)(light->pos.z - item_pos.z),
+        };
         list->lights[list->count++] = (typeof(list->lights[0])) {
-            .vec = vec,
-            .rad = (falloff - dist) / falloff,
+            .type = M_STAGED_POINT,
+            .pos = M_ToObject(m, rlp),
             .r = light->color.r / 255.0f,
             .g = light->color.g / 255.0f,
             .b = light->color.b / 255.0f,
+            .range = range,
+            .att1 = 1.0f,
         };
     }
 }
@@ -666,12 +670,6 @@ static void M_FillInstanceLight(
     }
 
     const M_ITEM_LIGHT *const il = m_CurrentItemLight;
-    const float inv_scale = 1.0f / (float)(1 << W2V_SHIFT);
-    const XYZ_F mesh_pos = {
-        wmatrix->_03 * inv_scale,
-        wmatrix->_13 * inv_scale,
-        wmatrix->_23 * inv_scale,
-    };
 
     // Selects a Lara mesh's ambient light from the room it sits in. The
     // original lights all of Lara from one room.
@@ -687,11 +685,11 @@ static void M_FillInstanceLight(
         const M_ITEM_ROOM_LIGHT *const lights = il->lights[l];
         for (int32_t i = 0; i < il->n_lights[l]; i++) {
             if (lights[i].active) {
-                M_StageLight(&lights[i], mesh_pos, &list);
+                M_StageLight(&lights[i], il->item_pos, wmatrix, &list);
             }
         }
     }
-    M_StageDynamicLights(mesh_pos, &list);
+    M_StageDynamicLights(il->item_pos, wmatrix, &list);
 
     info->tr4.handle = m_StagedPool->count;
     Vector_Add(m_StagedPool, &list);
@@ -706,14 +704,20 @@ static void M_UploadList(
     }
     ls.num_lights = list->count;
     for (int32_t i = 0; i < list->count; i++) {
-        ls.lights[i].vec[0] = list->lights[i].vec.x;
-        ls.lights[i].vec[1] = list->lights[i].vec.y;
-        ls.lights[i].vec[2] = list->lights[i].vec.z;
-        ls.lights[i].vec[3] = 0.0f;
-        ls.lights[i].color[0] = list->lights[i].r;
-        ls.lights[i].color[1] = list->lights[i].g;
-        ls.lights[i].color[2] = list->lights[i].b;
-        ls.lights[i].color[3] = list->lights[i].rad;
+        const typeof(list->lights[0]) *const light = &list->lights[i];
+        ls.lights[i].pos[0] = light->pos.x;
+        ls.lights[i].pos[1] = light->pos.y;
+        ls.lights[i].pos[2] = light->pos.z;
+        ls.lights[i].pos[3] = (float)light->type;
+        ls.lights[i].color[0] = light->r;
+        ls.lights[i].color[1] = light->g;
+        ls.lights[i].color[2] = light->b;
+        ls.lights[i].color[3] = light->range;
+        ls.lights[i].dir[0] = light->dir.x;
+        ls.lights[i].dir[1] = light->dir.y;
+        ls.lights[i].dir[2] = light->dir.z;
+        ls.lights[i].dir[3] = light->att1;
+        ls.lights[i].cone[0] = light->cone;
     }
 
     const size_t size = offsetof(OUTPUT_UNIFORM_LS_TR4, lights)
