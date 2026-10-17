@@ -2,6 +2,7 @@
 
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/gl/buffer.h>
 #include <trx/gl/context.h>
@@ -26,7 +27,10 @@ typedef struct {
     const TRX_GL_CONFIG *config;
 
     TRX_GL_FBO geometry_fbo;
+    // The whole interface, its models included, smoothed with as many samples
+    // as the scene takes and resolved into ui_resolve_fbo once a frame.
     TRX_GL_FBO ui_fbo;
+    TRX_GL_FBO ui_resolve_fbo;
     // Holds the geometry framebuffer brought down to the scene resolution.
     // Only allocated while there is something to resolve.
     TRX_GL_FBO resolve_fbo;
@@ -37,21 +41,6 @@ typedef struct {
     int32_t scene_height;
     // Whether resolve_fbo already holds this frame's scene.
     bool scene_resolved;
-
-    // A model drawn over the interface is rasterized here first, at the
-    // scene's supersampling factor or sample count, with its box at the
-    // corner, and only then brought down onto the UI framebuffer. Grows to the
-    // largest box a frame asks for, and gives back what the next frame does not
-    // use.
-    TRX_GL_FBO model_fbo;
-    TRX_GL_FBO model_resolve_fbo;
-    // The box of the UI framebuffer the model being drawn covers, with rows
-    // counted from the bottom as GL counts them.
-    VIEWPORT_RECT model_box;
-    int32_t model_factor;
-    // The largest box this frame drew a model in, in model_fbo pixels.
-    int32_t model_need_w;
-    int32_t model_need_h;
 
     // Full-screen quad resources for blitting FBOs to default framebuffer.
     TRX_GL_VERTEX_ARRAY vertex_array;
@@ -94,6 +83,18 @@ static int32_t M_GetGeometrySamples(const M_CONTEXT *const p)
     const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
     const VIEWPORT_RECT scene = Viewport_GetRect(VIEWPORT_SCENE);
     return game.width > scene.width ? 1 : p->config->multisampling_factor;
+}
+
+// The interface is not drawn at a larger size, so a supersampled scene is
+// matched by as many samples per pixel as it rasterizes, as far as the driver
+// allows.
+static int32_t M_GetUiSamples(const M_CONTEXT *const p)
+{
+    const int32_t factor = Viewport_GetSupersamplingFactor();
+    int32_t samples = factor > 1 ? factor * factor : M_GetGeometrySamples(p);
+    GLint max_samples = 1;
+    glGetIntegerv(GL_MAX_SAMPLES, &max_samples);
+    return MAX(MIN(samples, max_samples), 1);
 }
 
 static void M_SizeGeometryFbo(M_CONTEXT *const p)
@@ -157,43 +158,41 @@ static const TRX_GL_FBO *M_ResolveScene(M_CONTEXT *const p)
     return &p->resolve_fbo;
 }
 
-// Gives back the room the frame just drawn did not use: all of it where no
-// model was drawn, as once the screen holding a large one has gone.
-static void M_TrimModelFbo(M_CONTEXT *const p)
-{
-    const int32_t need_w = p->model_need_w;
-    const int32_t need_h = p->model_need_h;
-    p->model_need_w = 0;
-    p->model_need_h = 0;
-    if (p->model_fbo.fbo == 0) {
-        return;
-    }
-    if (need_w == 0 || need_h == 0) {
-        TRX_GL_FBO_Close(&p->model_fbo);
-        TRX_GL_FBO_Close(&p->model_resolve_fbo);
-        return;
-    }
-    // Shrunk only once it is well past what is needed, so a model that grows
-    // and shrinks a little does not rebuild it every frame.
-    const int64_t have = (int64_t)p->model_fbo.width * p->model_fbo.height;
-    if (have <= (int64_t)need_w * need_h * 4) {
-        return;
-    }
-    TRX_GL_FBO_ResizeIfNeeded(
-        &p->model_fbo, need_w, need_h, p->model_fbo.samples);
-    if (p->model_resolve_fbo.fbo != 0) {
-        TRX_GL_FBO_ResizeIfNeeded(&p->model_resolve_fbo, need_w, need_h, 1);
-    }
-}
-
 static void M_UpdateFBOSizes(TRX_GL_RENDERER *renderer)
 {
     M_CONTEXT *const p = renderer->priv;
 
     M_SizeGeometryFbo(p);
     const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_UI);
-    TRX_GL_FBO_ResizeIfNeeded(&p->ui_fbo, rect.width, rect.height, 1);
-    M_TrimModelFbo(p);
+    TRX_GL_FBO_ResizeIfNeeded(
+        &p->ui_fbo, rect.width, rect.height, M_GetUiSamples(p));
+}
+
+// Returns the interface ready to be drawn over the scene: its samples
+// averaged where it is multisampled, or the UI framebuffer itself.
+static const TRX_GL_FBO *M_ResolveUi(M_CONTEXT *const p)
+{
+    if (p->ui_fbo.samples <= 1) {
+        if (p->ui_resolve_fbo.fbo != 0) {
+            TRX_GL_FBO_Close(&p->ui_resolve_fbo);
+        }
+        return &p->ui_fbo;
+    }
+    const int32_t width = p->ui_fbo.width;
+    const int32_t height = p->ui_fbo.height;
+    if (p->ui_resolve_fbo.fbo == 0) {
+        TRX_GL_FBO_Init(
+            &p->ui_resolve_fbo, width, height, 1, GL_RGBA8, GL_RGBA, false);
+    } else {
+        TRX_GL_FBO_ResizeIfNeeded(&p->ui_resolve_fbo, width, height, 1);
+    }
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, p->ui_fbo.fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p->ui_resolve_fbo.fbo);
+    glBlitFramebuffer(
+        0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT,
+        GL_NEAREST);
+    TRX_GL_CheckError();
+    return &p->ui_resolve_fbo;
 }
 
 // Draws the scene and the UI over it into the given framebuffer. Resolving the
@@ -207,6 +206,7 @@ static void M_Composite(
         : GL_NEAREST;
 
     const TRX_GL_FBO *const scene_fbo = M_ResolveScene(p);
+    const TRX_GL_FBO *const ui_fbo = M_ResolveUi(p);
 
     M_BindQuadState(p);
     glBindFramebuffer(GL_FRAMEBUFFER, dst_fbo);
@@ -233,7 +233,7 @@ static void M_Composite(
     // Composite UI FBO (with premultiplied alpha blending)
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    M_Blit(p, &p->ui_fbo);
+    M_Blit(p, ui_fbo);
     glDisable(GL_BLEND);
 }
 
@@ -340,7 +340,8 @@ static RESULT M_Init(
 
     rect = Viewport_GetRect(VIEWPORT_UI);
     TRX_GL_FBO_Init(
-        &p->ui_fbo, rect.width, rect.height, 1, GL_RGBA8, GL_RGBA, true);
+        &p->ui_fbo, rect.width, rect.height, M_GetUiSamples(p), GL_RGBA8,
+        GL_RGBA, true);
     return OK;
 }
 
@@ -355,8 +356,7 @@ static void M_Shutdown(TRX_GL_RENDERER *renderer)
     TRX_GL_FBO_Close(&p->geometry_fbo);
     TRX_GL_FBO_Close(&p->ui_fbo);
     TRX_GL_FBO_Close(&p->resolve_fbo);
-    TRX_GL_FBO_Close(&p->model_fbo);
-    TRX_GL_FBO_Close(&p->model_resolve_fbo);
+    TRX_GL_FBO_Close(&p->ui_resolve_fbo);
     if (p->composite_fbo != 0) {
         glDeleteFramebuffers(1, &p->composite_fbo);
         p->composite_fbo = 0;
@@ -486,119 +486,4 @@ void TRX_GL_Renderer_SetPaletteLut(const void *const rgba, const int32_t size)
     if (p->palette_lut_size > 0) {
         TRX_GL_Texture_Load3D(&p->palette_lut, rgba, size, GL_RGBA8, GL_RGBA);
     }
-}
-
-bool TRX_GL_Renderer_BeginUiModel(
-    const int32_t x, const int32_t y, const int32_t w, const int32_t h)
-{
-    M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
-    const int32_t factor = Viewport_GetSupersamplingFactor();
-    const int32_t samples = M_GetGeometrySamples(p);
-    if (factor <= 1 && samples <= 1) {
-        return false;
-    }
-    GLint bound;
-    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bound);
-    if ((GLuint)bound != p->ui_fbo.fbo) {
-        return false;
-    }
-
-    const int32_t ui_w = p->ui_fbo.width;
-    const int32_t ui_h = p->ui_fbo.height;
-    const int32_t left = x < 0 ? 0 : x;
-    const int32_t top = y < 0 ? 0 : y;
-    const int32_t right = x + w > ui_w ? ui_w : x + w;
-    const int32_t bottom = y + h > ui_h ? ui_h : y + h;
-    if (right <= left || bottom <= top) {
-        return false;
-    }
-    const VIEWPORT_RECT box = {
-        .x = left,
-        .y = ui_h - bottom,
-        .width = right - left,
-        .height = bottom - top,
-    };
-    p->model_box = box;
-    p->model_factor = factor;
-
-    const int32_t need_w = box.width * factor;
-    const int32_t need_h = box.height * factor;
-    if (need_w > p->model_need_w) {
-        p->model_need_w = need_w;
-    }
-    if (need_h > p->model_need_h) {
-        p->model_need_h = need_h;
-    }
-    if (p->model_fbo.fbo == 0) {
-        TRX_GL_FBO_Init(
-            &p->model_fbo, need_w, need_h, samples, GL_RGBA8, GL_RGBA, true);
-    } else {
-        TRX_GL_FBO_ResizeIfNeeded(
-            &p->model_fbo,
-            need_w > p->model_fbo.width ? need_w : p->model_fbo.width,
-            need_h > p->model_fbo.height ? need_h : p->model_fbo.height,
-            samples);
-    }
-
-    // The whole interface, laid out so that the box lands in the corner.
-    TRX_GL_FBO_Bind(&p->model_fbo);
-    glViewport(-box.x * factor, -box.y * factor, ui_w * factor, ui_h * factor);
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(0, 0, need_w, need_h);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    TRX_GL_CheckError();
-    return true;
-}
-
-void TRX_GL_Renderer_EndUiModel(void)
-{
-    M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
-    const VIEWPORT_RECT box = p->model_box;
-    const int32_t factor = p->model_factor;
-    const int32_t used_w = box.width * factor;
-    const int32_t used_h = box.height * factor;
-    glDisable(GL_SCISSOR_TEST);
-
-    const TRX_GL_FBO *source = &p->model_fbo;
-    if (p->model_fbo.samples > 1) {
-        const int32_t w = p->model_fbo.width;
-        const int32_t h = p->model_fbo.height;
-        if (p->model_resolve_fbo.fbo == 0) {
-            TRX_GL_FBO_Init(
-                &p->model_resolve_fbo, w, h, 1, GL_RGBA8, GL_RGBA, false);
-        } else {
-            TRX_GL_FBO_ResizeIfNeeded(&p->model_resolve_fbo, w, h, 1);
-        }
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, p->model_fbo.fbo);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p->model_resolve_fbo.fbo);
-        glBlitFramebuffer(
-            0, 0, used_w, used_h, 0, 0, used_w, used_h, GL_COLOR_BUFFER_BIT,
-            GL_NEAREST);
-        TRX_GL_CheckError();
-        source = &p->model_resolve_fbo;
-    }
-
-    M_BindQuadState(p);
-    TRX_GL_FBO_Bind(&p->ui_fbo);
-    glViewport(box.x, box.y, box.width, box.height);
-    glDisable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, factor);
-    TRX_GL_Program_Uniform1i(
-        &p->program, p->loc_dither_mode, DITHER_MODE_DISABLED);
-    TRX_GL_Program_Uniform1i(&p->program, p->loc_palette_lut_size, 0);
-    TRX_GL_Program_Uniform4f(
-        &p->program, p->loc_tex_rect, 0.0f, 0.0f, used_w / (float)source->width,
-        used_h / (float)source->height);
-    M_Blit(p, source);
-    TRX_GL_Program_Uniform4f(
-        &p->program, p->loc_tex_rect, 0.0f, 0.0f, 1.0f, 1.0f);
-    TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, 1);
-
-    glViewport(0, 0, p->ui_fbo.width, p->ui_fbo.height);
-    TRX_GL_CheckError();
 }

@@ -17,8 +17,6 @@
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
-#include <trx/gl/context.h>
-#include <trx/gl/renderer.h>
 #include <trx/version.h>
 
 #include <math.h>
@@ -444,23 +442,6 @@ static void M_DrawOp_Line(const M_DRAW_OP *const base)
     });
 }
 
-// Moves drawing into the scene, behind the whole interface, as the engine
-// draws its own backgrounds and the models of its own screens.
-static void M_BeginScene(void)
-{
-    SceneCompositor_Flush();
-    TRX_GL_Renderer_BindGeometryFbo();
-    TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
-}
-
-// Draws what went into the scene, and moves drawing back to the interface.
-static void M_EndScene(void)
-{
-    SceneCompositor_Flush();
-    TRX_GL_Renderer_BindUiFbo();
-    TRX_GL_Context_SwitchToViewport(VIEWPORT_UI);
-}
-
 static void M_DrawOp_Model(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_MODEL *const op = (const M_DRAW_OP_MODEL *)base;
@@ -474,13 +455,8 @@ static void M_DrawOp_Model(const M_DRAW_OP *const base)
         return;
     }
     // The model goes between what was painted before it and what is painted
-    // after it, so the interface stacks in the order it was painted. One in a
-    // world of its own stands in the scene, behind the whole interface.
-    if (op->has_world) {
-        M_BeginScene();
-    } else {
-        SceneCompositor_Flush();
-    }
+    // after it, so the interface stacks in the order it was painted.
+    SceneCompositor_Flush();
     OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
         .object = object,
         .rect = { .x = op->x, .y = op->y, .w = op->w, .h = op->h },
@@ -491,11 +467,7 @@ static void M_DrawOp_Model(const M_DRAW_OP *const base)
         .light = op->has_light ? &op->light : nullptr,
         .world = op->has_world ? &op->world : nullptr,
     });
-    if (op->has_world) {
-        M_EndScene();
-    } else {
-        SceneCompositor_Flush();
-    }
+    SceneCompositor_Flush();
 }
 
 // The overlay draws at the next flush, so a flush before and after puts it
@@ -522,15 +494,15 @@ static void M_DrawOp_Overlay(const M_DRAW_OP *const base)
 static void M_DrawOp_Darken(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_DARKEN *const op = (const M_DRAW_OP_DARKEN *)base;
-    M_BeginScene();
+    SceneCompositor_Flush();
     Output_Overlay_DrawBlackRectangle(op->opacity);
-    M_EndScene();
+    SceneCompositor_Flush();
 }
 
 static void M_DrawOp_Background(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_BACKGROUND *const op = (const M_DRAW_OP_BACKGROUND *)base;
-    M_BeginScene();
+    SceneCompositor_Flush();
     if (op->path == nullptr) {
         Output_Overlay_DrawBlackRectangle(1.0f);
     } else {
@@ -541,15 +513,15 @@ static void M_DrawOp_Background(const M_DRAW_OP *const base)
         }
         Output_Overlay_DrawBlackRectangle(op->dim);
     }
-    M_EndScene();
+    SceneCompositor_Flush();
 }
 
 static void M_DrawOp_Backdrop(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_BACKDROP *const op = (const M_DRAW_OP_BACKDROP *)base;
-    M_BeginScene();
+    SceneCompositor_Flush();
     Output_Overlay_DrawBackground(op->style, op->progress, op->path);
-    M_EndScene();
+    SceneCompositor_Flush();
 }
 
 // Allocate a new deferred draw operation in the arena.
@@ -584,6 +556,18 @@ static inline void M_ScheduleOp(M_DRAW_OP *const op)
 {
     M_PRIV *const p = &m_Priv;
     Vector_Add(p->ops[UI_GetLayer()], &op);
+}
+
+// Schedules a draw under the whole interface, whichever layer is painting.
+static void M_ScheduleBackdropOp(
+    const M_DRAW_OP_FUNC draw_func, const size_t size,
+    const M_DRAW_OP *const op_src)
+{
+    M_PRIV *const p = &m_Priv;
+    M_DRAW_OP *const op = M_ArenaAlloc(size);
+    memcpy(op, op_src, size);
+    op->draw = draw_func;
+    Vector_Add(p->ops[UI_LAYER_BACKDROP], &op);
 }
 
 static void M_ScheduleOpHelper(
@@ -915,13 +899,12 @@ void UI_ScheduleDrawBackground(
         owned_path = M_ArenaAlloc(size);
         memcpy(owned_path, path, size);
     }
-    M_SCHEDULE_OP(
-        M_DrawOp_Background,
-        ((M_DRAW_OP_BACKGROUND) {
-            .path = owned_path,
-            .mono = mono,
-            .dim = dim,
-        }));
+    const M_DRAW_OP_BACKGROUND op = {
+        .path = owned_path,
+        .mono = mono,
+        .dim = dim,
+    };
+    M_ScheduleBackdropOp(M_DrawOp_Background, sizeof(op), &op.base);
 }
 
 void UI_ScheduleDrawBackdrop(
@@ -933,13 +916,12 @@ void UI_ScheduleDrawBackdrop(
         owned_path = M_ArenaAlloc(size);
         memcpy(owned_path, path, size);
     }
-    M_SCHEDULE_OP(
-        M_DrawOp_Backdrop,
-        ((M_DRAW_OP_BACKDROP) {
-            .style = style,
-            .progress = progress,
-            .path = owned_path,
-        }));
+    const M_DRAW_OP_BACKDROP op = {
+        .style = style,
+        .progress = progress,
+        .path = owned_path,
+    };
+    M_ScheduleBackdropOp(M_DrawOp_Backdrop, sizeof(op), &op.base);
 }
 
 void UI_ScheduleDrawDarken(const float opacity)

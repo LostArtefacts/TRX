@@ -32,22 +32,6 @@ void TRX_GL_Renderer_BindUiFbo(void);
 // source.
 GLuint TRX_GL_Renderer_GetGeometryFboId(void);
 
-// Starts drawing a model over the interface in a framebuffer of its own, at
-// the scene's supersampling factor or sample count, so that it is smoothed as
-// the scene around it is. The box is the part of the UI framebuffer the model
-// may cover, in its pixels with rows counted from the top; the model is cut to
-// it. Returns false, having changed nothing, where the scene is drawn at one
-// sample per pixel or the UI framebuffer is not the one bound: the model is
-// then drawn where it is.
-bool TRX_GL_Renderer_BeginUiModel(int32_t x, int32_t y, int32_t w, int32_t h);
-
-// Brings the model started by TRX_GL_Renderer_BeginUiModel down onto the UI
-// framebuffer, over what is there. Leaves the UI framebuffer bound with its
-// viewport and premultiplied blending on; the program, vertex array, sampler
-// and texture of unit 0 are the renderer's own, and depth testing and culling
-// are off.
-void TRX_GL_Renderer_EndUiModel(void);
-
 // Resize the framebuffers to the current viewport sizes. The renderer does
 // this itself once the frame has been presented; call it when the viewports
 // change between frames, so the next frame is not drawn into framebuffers of

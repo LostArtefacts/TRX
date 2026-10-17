@@ -17,7 +17,6 @@
 #include <trx/game/output/uniforms.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/viewport.h>
-#include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
@@ -414,20 +413,6 @@ static void M_DrawMeshes(const M_PRIV *const p)
             continue;
         }
 
-        // A model turned or fitted loosely reaches past its box, so the box it
-        // is smoothed in has room around it. One in a world of its own may
-        // stand anywhere on the screen.
-        const VIEWPORT_RECT rect = mesh->world != nullptr
-            ? Viewport_GetRect(VIEWPORT_UI)
-            : (VIEWPORT_RECT) {
-                  .x = mesh->rect.x - mesh->rect.w / 2,
-                  .y = mesh->rect.y - mesh->rect.h / 2,
-                  .w = mesh->rect.w * 2,
-                  .h = mesh->rect.h * 2,
-              };
-        const bool own_target = TRX_GL_Renderer_BeginUiModel(
-            mesh->world != nullptr ? 0 : rect.x,
-            mesh->world != nullptr ? 0 : rect.y, rect.w, rect.h);
         if (p->objects_source->render_begin != nullptr) {
             p->objects_source->render_begin(p->objects_source);
         }
@@ -496,13 +481,6 @@ static void M_DrawMeshes(const M_PRIV *const p)
             Viewport_AlterFOV(old_fov, old_fov_mode);
             Output_ApplyFOV();
             Output_Uniforms_UploadOrthoMatrix(Output_GetUniforms());
-        }
-        if (own_target) {
-            TRX_GL_Renderer_EndUiModel();
-            SceneCompositor_BindTextures();
-            Output_MeshShader_Bind(Output_GetMeshShader());
-            glEnable(GL_DEPTH_TEST);
-            glEnable(GL_CULL_FACE);
         }
     }
 
