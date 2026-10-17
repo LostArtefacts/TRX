@@ -159,11 +159,41 @@ local function resting_place(ring_type, list, fallback)
 end
 
 local function keep_place(state)
+  if state.stale ~= nil then
+    places[state.ring_type] = state.stale.place
+    return
+  end
   local view = state.view
   local content = state.list[view.current]
   places[state.ring_type] = {
     index = view.current,
     object = content ~= nil and content.object or nil,
+  }
+end
+
+-- Returns the place the keys ring rests on when the main ring moves up to
+-- it, where the duplication glitch is left unfixed and an entry used up at
+-- the end of the list left the place past the end. The ring rests on the
+-- entry the place wraps round to, as the original game does, and picking
+-- that entry uses the used up one, until the ring turns. Returns nil
+-- otherwise.
+local function stale_place(ring_type, place, mode)
+  if
+    ring_type ~= Ring.KEYS
+    or fixes_duplication()
+    or place == nil
+    or place.object == nil
+  then
+    return nil
+  end
+  local count = #entries.contents(ring_type, mode)
+  if count == 0 or place.index <= count then
+    return nil
+  end
+  return {
+    index = (place.index - 1) % count + 1,
+    object = place.object,
+    place = place,
   }
 end
 
@@ -842,11 +872,13 @@ local function control_open(state, keys)
   local count = #state.list
   state.turning_held = keys:held(Role.MENU_LEFT) or keys:held(Role.MENU_RIGHT)
   if keys:held(Role.MENU_RIGHT) and count > 1 then
+    state.stale = nil
     view:turn_to(-1)
     trx.sound.play(samples.MENU_ROTATE)
     return
   end
   if keys:held(Role.MENU_LEFT) and count > 1 then
+    state.stale = nil
     view:turn_to(1)
     trx.sound.play(samples.MENU_ROTATE)
     return
@@ -954,7 +986,7 @@ local function control_entry(state, keys, busy)
   if back then
     close_item(state, leaves_after_save(state.mode))
   elseif confirm then
-    state.chosen = content.object
+    state.chosen = state.stale ~= nil and state.stale.object or content.object
     keep_place(state)
     local stays = state.mode == trx.ui.MenuMode.TITLE
       and (
@@ -1142,7 +1174,13 @@ local function run(state)
       elseif ended == Status.LEAVING then
         keep_place(state)
         local place = places[state.next_ring]
-        fill(state, state.next_ring, place ~= nil and place.index or 1)
+        local stale = stale_place(state.next_ring, place, state.mode)
+        fill(
+          state,
+          state.next_ring,
+          stale ~= nil and stale.index or place ~= nil and place.index or 1
+        )
+        state.stale = stale
         set_status(state, Status.OPENING, Motion.ARRIVE)
       elseif ended == Status.CLOSING then
         if state.after_close == Status.FADING_OUT then

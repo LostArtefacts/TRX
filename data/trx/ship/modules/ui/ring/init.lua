@@ -70,6 +70,16 @@ function M.mode()
   return active ~= nil and active.mode or nil
 end
 
+-- Returns the object of the entry the open ring rests on, or nil while no
+-- ring is open.
+function M.selection()
+  if active == nil then
+    return nil
+  end
+  local content = active.list[active.view.current]
+  return content ~= nil and content.object or nil
+end
+
 -- Where the entry the player picked is in its animation, or nil while no
 -- ring is open: the frame on show, the frame it heads for, the frame it rests
 -- open on, how many frames it holds, and which way it runs.

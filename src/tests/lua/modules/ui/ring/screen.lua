@@ -5,6 +5,7 @@ local h = require("harness")
 local test = h.test
 
 local entries = require("common.ui.ring.entries")
+local ring = require("common.ui.ring")
 require("common.ui.ring.screen").setup()
 local objects = trx.catalog.objects
 local Role = trx.input.Role
@@ -37,6 +38,7 @@ declare(objects.LARGE_MEDIPACK_OPTION, 15)
 declare(objects.LEAD_BAR_OPTION, 16)
 declare(objects.KEY_OPTION_1, 110)
 declare(objects.KEY_OPTION_2, 111)
+declare(objects.KEY_OPTION_3, 112)
 
 local function ticks(count)
   for _ = 1, count do
@@ -201,6 +203,190 @@ test("the keys ring opens on the entry asked for", function()
   ticks(SETTLE_TICKS)
   assert(fake.calls().use_item.object_id == objects.KEY_OPTION_2)
   finish()
+end)
+
+-- The objects the ring draws, each once.
+local function drawn()
+  local result = {}
+  for _, op in ipairs(fake.scene()) do
+    local object = op:match("^world_model obj=(%d+) ")
+    if object ~= nil then
+      result[tonumber(object)] = true
+    end
+  end
+  return result
+end
+
+local function same_set(set, list)
+  local count = 0
+  for _ in pairs(set) do
+    count = count + 1
+  end
+  if count ~= #list then
+    return false
+  end
+  for _, object in ipairs(list) do
+    if not set[object] then
+      return false
+    end
+  end
+  return true
+end
+
+-- Uses up a key at a keyhole: picks it on a keys ring opened on it and takes
+-- it away, as the keyhole does.
+local function use_up(object)
+  open(MenuMode.KEYS, object)
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  finish()
+  trx.inventory.set_count(object, 0)
+end
+
+-- Opens the ring and moves up to the keys ring.
+local function open_keys_from_main()
+  carry()
+  open(MenuMode.GAME)
+  press(Role.MENU_UP)
+  ticks(SETTLE_TICKS)
+end
+
+-- Picks the entry the ring rests on and returns what that uses.
+local function pick_and_close()
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  local used = fake.calls().use_item.object_id
+  finish()
+  return used
+end
+
+local function with_glitch(fixed, run)
+  trx.config.set("gameplay.fix_item_duplication_glitch", fixed)
+  run()
+  trx.config.set("gameplay.fix_item_duplication_glitch", true)
+  trx.inventory.set_count(objects.KEY_OPTION_1, 0)
+  trx.inventory.set_count(objects.KEY_OPTION_2, 0)
+end
+
+test("a key used up stays usable through the keys ring", function()
+  with_glitch(false, function()
+    trx.inventory.give(objects.KEY_OPTION_1)
+    trx.inventory.give(objects.KEY_OPTION_2)
+    use_up(objects.KEY_OPTION_2)
+    for _ = 1, 2 do
+      open_keys_from_main()
+      assert(
+        same_set(drawn(), { objects.KEY_OPTION_1 }),
+        "the keys ring drew a key Lara no longer carries"
+      )
+      assert(ring.selection() == objects.KEY_OPTION_1, "the wrong key rests")
+      assert(
+        pick_and_close() == objects.KEY_OPTION_2,
+        "the used up key was not used again"
+      )
+    end
+  end)
+end)
+
+test("a key used up stays used up with the glitch fixed", function()
+  with_glitch(true, function()
+    trx.inventory.give(objects.KEY_OPTION_1)
+    trx.inventory.give(objects.KEY_OPTION_2)
+    use_up(objects.KEY_OPTION_2)
+    for _ = 1, 2 do
+      open_keys_from_main()
+      assert(
+        same_set(drawn(), { objects.KEY_OPTION_1 }),
+        "the keys ring drew a key Lara no longer carries"
+      )
+      assert(ring.selection() == objects.KEY_OPTION_1, "the wrong key rests")
+      assert(
+        pick_and_close() == objects.KEY_OPTION_1,
+        "the used up key was used"
+      )
+    end
+  end)
+end)
+
+test("a key used up between two others is not used again", function()
+  with_glitch(false, function()
+    trx.inventory.give(objects.KEY_OPTION_1)
+    trx.inventory.give(objects.KEY_OPTION_2)
+    trx.inventory.give(objects.KEY_OPTION_3)
+    use_up(objects.KEY_OPTION_2)
+    open_keys_from_main()
+    assert(
+      same_set(drawn(), { objects.KEY_OPTION_1, objects.KEY_OPTION_3 }),
+      "the keys ring drew the wrong keys"
+    )
+    assert(ring.selection() == objects.KEY_OPTION_3, "the wrong key rests")
+    assert(
+      pick_and_close() == objects.KEY_OPTION_3,
+      "the used up key was used"
+    )
+  end)
+end)
+
+test("the last key used up leaves no keys ring to move to", function()
+  with_glitch(false, function()
+    trx.inventory.give(objects.KEY_OPTION_1)
+    use_up(objects.KEY_OPTION_1)
+    local before = fake.calls().use_item.count
+    open_keys_from_main()
+    local shown = drawn()
+    assert(not shown[objects.KEY_OPTION_1], "the used up key was drawn")
+    assert(
+      ring.selection() ~= objects.KEY_OPTION_1,
+      "the ring rests on the used up key"
+    )
+    press(Role.MENU_BACK)
+    ticks(SETTLE_TICKS)
+    assert(fake.calls().use_item.count == before, "something was used")
+    finish()
+  end)
+end)
+
+test("turning the keys ring loses the used up key", function()
+  with_glitch(false, function()
+    trx.inventory.give(objects.KEY_OPTION_1)
+    trx.inventory.give(objects.KEY_OPTION_2)
+    trx.inventory.give(objects.KEY_OPTION_3)
+    use_up(objects.KEY_OPTION_3)
+    open_keys_from_main()
+    assert(
+      same_set(drawn(), { objects.KEY_OPTION_1, objects.KEY_OPTION_2 }),
+      "the keys ring drew the wrong keys"
+    )
+    assert(ring.selection() == objects.KEY_OPTION_1, "the wrong key rests")
+    press(Role.MENU_RIGHT)
+    ticks(SETTLE_TICKS)
+    press(Role.MENU_LEFT)
+    ticks(SETTLE_TICKS)
+    assert(ring.selection() == objects.KEY_OPTION_1, "the ring did not return")
+    assert(
+      pick_and_close() == objects.KEY_OPTION_1,
+      "the used up key was used"
+    )
+  end)
+end)
+
+test("a keys ring opened at a keyhole loses the used up key", function()
+  with_glitch(false, function()
+    trx.inventory.give(objects.KEY_OPTION_1)
+    trx.inventory.give(objects.KEY_OPTION_2)
+    use_up(objects.KEY_OPTION_2)
+    open(MenuMode.KEYS)
+    assert(ring.selection() == objects.KEY_OPTION_1, "the wrong key rests")
+    assert(
+      pick_and_close() == objects.KEY_OPTION_1,
+      "the used up key was used"
+    )
+    open_keys_from_main()
+    assert(
+      pick_and_close() == objects.KEY_OPTION_1,
+      "the used up key came back"
+    )
+  end)
 end)
 
 test("a keys ring with nothing on it does not open", function()
