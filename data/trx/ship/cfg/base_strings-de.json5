@@ -3029,6 +3029,9 @@
         "lizard": {
             "name": "\\{review}Echse",
         },
+        "load_option": {
+            "name": "\\{review}Laden",
+        },
         "m16_ammo_item": {
             "name": "M16-Munition",
         },
@@ -3562,6 +3565,9 @@
         },
         "save_crystal_option": {
             "name": "\\{review}Kristall|Speicherkristall",
+        },
+        "save_option": {
+            "name": "\\{review}Speichern",
         },
         "scaled_spikes": {
             "name": "\\{review}Skalierte Stacheln",
