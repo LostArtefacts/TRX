@@ -394,6 +394,7 @@ end
 ---@field blend? number How far to blend towards the next frame, from `0` to `1`. `0` by default.
 ---@field bones? trx.ui.BoneTurn[] Turns that bones take on top of the frame, up to eight.
 ---@field at_pivot? boolean Whether to draw the model about its pivot, without the offset its frame stands it at. `false` by default.
+---@field opacity? number How solid the model is, from `0` for unseen to `1`. `1` by default.
 ---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
 ---@field mesh_opacity? table<integer, number> How solid to draw some of its meshes, from `0` to `1`, keyed by the mesh counted from 0. A mesh not named is solid.
 ---@field light? trx.ui.ModelLight The light to draw it in, with its directions in the model's world. A plain white light by default.

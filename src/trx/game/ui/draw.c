@@ -880,6 +880,7 @@ void UI_ScheduleDrawModelInWorld(
         .faded_mask = world->faded_mask,
         .center_x = world->center_x,
         .center_y = world->center_y,
+        .opacity = world->opacity,
     };
     memcpy(
         mesh_world.mesh_opacity, world->mesh_opacity,

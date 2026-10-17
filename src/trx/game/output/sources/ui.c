@@ -440,6 +440,12 @@ static void M_DrawMeshes(const M_PRIV *const p)
             mesh->light != nullptr ? *mesh->light : m_PlainLight;
         if (mesh->world != nullptr) {
             M_PoseInWorld(mesh->world);
+            Output_PushTintOverride((RGBA_F) {
+                .r = 1.0f,
+                .g = 1.0f,
+                .b = 1.0f,
+                .a = mesh->world->opacity,
+            });
             for (int32_t j = 0; j < light.light_count; j++) {
                 light.lights[j].dir = M_RotateToView(light.lights[j].dir);
             }
@@ -463,6 +469,9 @@ static void M_DrawMeshes(const M_PRIV *const p)
         } else {
             M_ApplyLight(&light, nullptr);
             Object_DrawStaticObject(mesh->object, frame, mesh->mesh_mask);
+        }
+        if (mesh->world != nullptr) {
+            Output_PopTintOverride();
         }
         Matrix_Pop();
 

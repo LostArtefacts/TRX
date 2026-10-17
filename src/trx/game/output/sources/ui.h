@@ -66,6 +66,8 @@ typedef struct {
     // screen's width and height. The middle of the screen is 0.5 each way.
     float center_x;
     float center_y;
+    // How solid the model is, from 0 to 1.
+    float opacity;
 } OUTPUT_UI_MESH_WORLD;
 
 // An object drawn as a model in a box on the canvas. The box says where it

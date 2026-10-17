@@ -156,6 +156,8 @@ typedef struct {
     // screen's width and height. The middle of the screen is 0.5 each way.
     float center_x;
     float center_y;
+    // How solid the model is, from 0 to 1.
+    float opacity;
 } UI_MODEL_WORLD;
 
 // Draws an object's model where it stands in a world of its own, as that
