@@ -81,6 +81,43 @@ static bool M_IsOverlapTypeAhead(
     }
 }
 
+static bool M_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
+{
+    if (Box_GetBox(lot->required_box) == nullptr
+        || lot->required_box == lot->target_box) {
+        goto end;
+    }
+
+    lot->target_box = lot->required_box;
+
+    // Drops the expansions queued for the previous target. They carry a
+    // search number that is no longer current, and they would delay the new
+    // search by one frame for every five of them.
+    if (g_Config.gameplay.fix_enemy_route_delay) {
+        while (lot->head != NO_BOX) {
+            BOX_NODE *const queued = &lot->node[lot->head];
+            lot->head = queued->next_expansion;
+            queued->next_expansion = NO_BOX;
+        }
+        lot->tail = NO_BOX;
+    }
+
+    BOX_NODE *const expand = &lot->node[lot->target_box];
+    if (expand->next_expansion == NO_BOX && lot->tail != lot->target_box) {
+        expand->next_expansion = lot->head;
+        if (lot->head == NO_BOX) {
+            lot->tail = lot->target_box;
+        }
+        lot->head = lot->target_box;
+    }
+    lot->search_num++;
+    expand->search_num = lot->search_num;
+    expand->exit_box = NO_BOX;
+
+end:
+    return Box_SearchLOT(lot, expansion);
+}
+
 void Box_InitialiseBoxes(const int32_t num_boxes)
 {
     m_BoxCount = num_boxes;
@@ -250,43 +287,6 @@ bool Box_IsJumpAhead(const LOT_INFO *const lot, const int16_t box_num)
     return M_IsOverlapTypeAhead(lot, box_num, BOX_OVERLAP_JUMP);
 }
 
-bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
-{
-    if (Box_GetBox(lot->required_box) == nullptr
-        || lot->required_box == lot->target_box) {
-        goto end;
-    }
-
-    lot->target_box = lot->required_box;
-
-    // Drops the expansions queued for the previous target. They carry a
-    // search number that is no longer current, and they would delay the new
-    // search by one frame for every five of them.
-    if (g_Config.gameplay.fix_enemy_route_delay) {
-        while (lot->head != NO_BOX) {
-            BOX_NODE *const queued = &lot->node[lot->head];
-            lot->head = queued->next_expansion;
-            queued->next_expansion = NO_BOX;
-        }
-        lot->tail = NO_BOX;
-    }
-
-    BOX_NODE *const expand = &lot->node[lot->target_box];
-    if (expand->next_expansion == NO_BOX && lot->tail != lot->target_box) {
-        expand->next_expansion = lot->head;
-        if (lot->head == NO_BOX) {
-            lot->tail = lot->target_box;
-        }
-        lot->head = lot->target_box;
-    }
-    lot->search_num++;
-    expand->search_num = lot->search_num;
-    expand->exit_box = NO_BOX;
-
-end:
-    return Box_SearchLOT(lot, expansion);
-}
-
 void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
 {
     box_num &= BOX_NUMBER_BITS;
@@ -411,7 +411,7 @@ bool Box_ValidBox(
 TARGET_TYPE Box_CalculateTarget(
     XYZ_32 *const target, const ITEM *const item, LOT_INFO *const lot)
 {
-    Box_UpdateLOT(lot, BOX_MAX_EXPANSION);
+    M_UpdateLOT(lot, BOX_MAX_EXPANSION);
 
     *target = item->pos;
 
