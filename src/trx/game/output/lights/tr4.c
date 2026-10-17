@@ -11,11 +11,11 @@
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/camera/vars.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/items/manager.h>
 #include <trx/game/level/settings.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/families.h>
 #include <trx/game/output.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/lights/fog_bulbs.h>
@@ -34,6 +34,9 @@
 // in the item pool.
 #define M_MAX_LOOSE_LIGHTS 16
 #define M_FADE_FRAMES 8
+// The TR4 object slot of GAME_PIECE1. Lara, the vehicles and the creatures
+// come before it; the OG lights every object from it on as a prop.
+#define M_FIRST_PROP_SLOT 108
 
 // Room light baked at level load (the OG PCLIGHT_INFO, drawroom.cpp
 // ProcessRoomData).
@@ -105,7 +108,7 @@ static M_ITEM_LIGHT m_ScratchLight = {}; // the OG StaticMeshLightItem
 static const ITEM *m_LooseLightKeys[M_MAX_LOOSE_LIGHTS] = {};
 static M_ITEM_LIGHT m_LooseLights[M_MAX_LOOSE_LIGHTS] = {};
 static M_ITEM_LIGHT *m_CurrentItemLight = nullptr;
-static bool m_CurrentIsPickup = false; // the OG SetupLight_thing
+static bool m_CurrentIsProp = false; // the OG SetupLight_thing
 static bool m_CurrentHasList = false;
 static bool m_InventoryMode = false;
 
@@ -477,17 +480,16 @@ static void M_StageLight(
             scale = 2.0f / dist;
             rad = (light->outer - dist) / light->outer;
         } else {
-            scale = (m_CurrentIsPickup ? 2.0f : 1.0f) / dist;
+            scale = (m_CurrentIsProp ? 2.0f : 1.0f) / dist;
             // The cone test already happened in the light list; from here
             // spots shade exactly like point lights.
             rad = 1.0f - dist / light->cutoff;
         }
         CLAMPL(rad, 0.0f);
 
-        if (light->type == LIGHT_TYPE_POINT && m_CurrentIsPickup
-            && rad < 1.0f) {
-            // Pickups fold nearby point lights into the ambient so they
-            // glow; halve the radius to avoid double-counting the color.
+        if (light->type == LIGHT_TYPE_POINT && m_CurrentIsProp && rad < 1.0f) {
+            // Props fold nearby point lights into the ambient so they glow;
+            // halve the radius to avoid double-counting the color.
             for (int32_t i = 0; i < 3; i++) {
                 const float c =
                     i == 0 ? light->r : (i == 1 ? light->g : light->b);
@@ -627,8 +629,9 @@ static void M_CalculateObjectLightingAt(
     M_CreateLightList(il, item != nullptr ? item->room_num : room_num);
 
     m_CurrentItemLight = il;
-    m_CurrentIsPickup =
-        item != nullptr && ObjectFamily_Has(item->object_id, OBJ_FAMILY_PICKUP);
+    m_CurrentIsProp = item != nullptr
+        && Catalog_IDToSlot(CATALOG_OBJECTS, item->object_id, -1)
+            >= M_FIRST_PROP_SLOT;
     m_CurrentHasList = true;
 
     M_SetScalarFallback(il->ambient);
@@ -648,7 +651,7 @@ static void M_CalculateLight(const XYZ_32 pos, const int16_t room_num)
     il->light_room_num = NO_ROOM;
 
     m_CurrentItemLight = il;
-    m_CurrentIsPickup = false;
+    m_CurrentIsProp = false;
     m_CurrentHasList = true;
 
     M_SetScalarFallback(il->ambient);
