@@ -591,7 +591,17 @@ end
 local function box_of(layer)
   local w, h = layer.root:measure()
   local spot = layer._spot
-  if spot == nil or spot.moving or spot.w ~= w or spot.h ~= h then
+  -- The regions decide the safe area as the frame is laid out, before the
+  -- layout signal can say so, so the room is checked here as well.
+  local top, bottom = raw.get_safe_top(w), raw.get_safe_bottom(w)
+  if
+    spot == nil
+    or spot.moving
+    or spot.w ~= w
+    or spot.h ~= h
+    or spot.top ~= top
+    or spot.bottom ~= bottom
+  then
     follow(layer, ui.signals.layout)
     local moving = false
     local x, y = track(function(read)
@@ -601,7 +611,15 @@ local function box_of(layer)
         follow(layer, read)
       end
     end, spot_of, layer.place, w, h)
-    spot = { x = x, y = y, w = w, h = h, moving = moving }
+    spot = {
+      x = x,
+      y = y,
+      w = w,
+      h = h,
+      top = top,
+      bottom = bottom,
+      moving = moving,
+    }
     layer._spot = spot
   end
   return spot.x, spot.y, w, h
