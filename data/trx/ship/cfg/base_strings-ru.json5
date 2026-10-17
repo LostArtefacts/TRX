@@ -30,8 +30,11 @@
             "empty_slot": "\\{review}Пустой слот",
             "equip": "\\{review}ЭКИПИРОВАТЬ",
             "examine": "\\{review}ОСМОТРЕТЬ",
+            "exit_to_title": "\\{review}Выйти в меню",
             "load_game": "\\{review}ЗАГРУЗИТЬ ИГРУ",
+            "options": "\\{review}Настройки",
             "save_game": "\\{review}СОХРАНИТЬ ИГРУ",
+            "statistics": "\\{review}Статистика",
             "use": "\\{review}ИСПОЛЬЗОВАТЬ",
         },
         "globe_select": {
@@ -189,7 +192,8 @@
                     "items": "Предметы",
                     "misc": "Разное",
                     "system": "Система",
-                }
+                },
+                "title": "\\{review}Управление",
             },
             "gameplay": {
                 "tabs": {

@@ -30,8 +30,11 @@
             "empty_slot": "Empty Slot",
             "equip": "EQUIP",
             "examine": "EXAMINE",
+            "exit_to_title": "Exit to Title",
             "load_game": "LOAD GAME",
+            "options": "Options",
             "save_game": "SAVE GAME",
+            "statistics": "Statistics",
             "use": "USE",
         },
         "globe_select": {
@@ -189,7 +192,8 @@
                     "items": "Items",
                     "misc": "Misc",
                     "system": "System",
-                }
+                },
+                "title": "Controls",
             },
             "gameplay": {
                 "tabs": {

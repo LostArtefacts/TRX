@@ -30,8 +30,11 @@
             "empty_slot": "\\{review}Puste miejsce",
             "equip": "\\{review}WYPOSAŻ",
             "examine": "\\{review}OBEJRZYJ",
+            "exit_to_title": "\\{review}Wyjdź do menu",
             "load_game": "\\{review}WCZYTAJ GRĘ",
+            "options": "\\{review}Opcje",
             "save_game": "\\{review}ZAPISZ GRĘ",
+            "statistics": "\\{review}Statystyki",
             "use": "\\{review}UŻYJ",
         },
         "globe_select": {
@@ -189,7 +192,8 @@
                     "items": "Przedmioty",
                     "misc": "Różne",
                     "system": "System",
-                }
+                },
+                "title": "\\{review}Sterowanie",
             },
             "gameplay": {
                 "tabs": {

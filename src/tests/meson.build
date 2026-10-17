@@ -2198,6 +2198,22 @@ unit_tests += {
     b_matrix,
     b_screen_module,
   ],
+  'src': ['fakes/path.c'],
+  'engine': ['game/lua/capi/json.c', 'gl/enum.c'],
+  'stubs': false,
+}
+
+unit_tests += {
+  'name': 'modules/ui/flat_menu/pause',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'src': ['fakes/path.c'],
+  'engine': ['game/lua/capi/json.c', 'gl/enum.c'],
   'stubs': false,
 }
 

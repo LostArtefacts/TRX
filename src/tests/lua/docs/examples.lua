@@ -13,7 +13,10 @@ local CHOICE_EXIT_TO_TITLE = 4
 local ROOT = package.path:match("([^;]*)/src/tests/lua/%?%.lua")
 
 -- The shipped pause screen, which the screen example takes over.
-require("common.ui.screens.pause").setup()
+trx.ui.screens.define(
+  trx.ui.Screen.PAUSE,
+  require("common.ui.screens.pause").open
+)
 
 -- The engine's own signals last the session once a script reads one, so they
 -- are made here, before a case counts what follows the tick.

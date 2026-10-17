@@ -16,7 +16,7 @@ local CHOICE_NONE = 0
 -- The game is in a level, which the question needs.
 local CAVES = 2
 
-require("common.ui.screens.pause").setup()
+trx.ui.screens.define(PAUSE, require("common.ui.screens.pause").open)
 
 local function press(role)
   fake.release_all()

@@ -118,8 +118,9 @@ local function ask(ctx, on_back, resume, exit)
   })
 end
 
+-- Opens the pause screen.
 ---@param ctx trx.ui.PauseContext
-local function open(ctx)
+function M.open(ctx)
   local style = trx.config.get("ui.pause_background_style")
   local fades = fade.screen(ctx, {
     enabled = function()
@@ -200,10 +201,6 @@ local function open(ctx)
       end
     end,
   })
-end
-
-function M.setup()
-  trx.ui.screens.define(trx.ui.Screen.PAUSE, open)
 end
 
 return M

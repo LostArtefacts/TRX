@@ -802,6 +802,7 @@ end
 ---@field push fun(settings: trx.ui.layers.push.settings): trx.ui.StackLayer Opens a layer.
 ---@field finish fun(confirmed: boolean) Closes the dialog: `true` where the player confirmed out of the editor, `false` where they backed out.
 ---@field visible? trx.signal.Signal Whether the dialog shows. Always by default.
+---@field centred? boolean Whether the dialog stands in the middle of the screen, rather than where it leaves room for the inventory ring.
 ---@field wrap? fun(control: fun(layer: trx.ui.StackLayer, keys: trx.ui.LayerKeys)): fun(layer: trx.ui.StackLayer, keys: trx.ui.LayerKeys) Wraps each input handler.
 
 -- Opens the dialog: the list of input sources, and the editor of the source
@@ -814,6 +815,9 @@ end
 ---@return fun()
 function M.open(settings)
   local visible = settings.visible or trx.signal.new(true)
+  local centred = { y = 0.5 }
+  local chooser_place = settings.centred and centred or CHOOSER_PLACE
+  local editor_place = settings.centred and centred or EDITOR_PLACE
   local wrap = settings.wrap or function(control)
     return control
   end
@@ -821,7 +825,7 @@ function M.open(settings)
   local available = available_backends()
   local req = requester.new({
     title = trx.locale.get("general/settings/controls/customize"),
-    place = CHOOSER_PLACE,
+    place = chooser_place,
   })
 
   ---@type common.ui.controls.Editor?
@@ -856,7 +860,7 @@ function M.open(settings)
         visible = visible,
         children = { editor.widget },
       }),
-      place = EDITOR_PLACE,
+      place = editor_place,
       on_input = wrap(function(layer, keys)
         local result = editor:control(keys)
         if result == "exit" then

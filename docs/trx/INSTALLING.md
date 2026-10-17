@@ -1428,8 +1428,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── flat_menu
 │   │   │   ├── init.lua
 │   │   │   ├── items.lua
+│   │   │   ├── list.lua
+│   │   │   ├── options.lua
+│   │   │   ├── pause.lua
 │   │   │   ├── saves.lua
 │   │   │   ├── sound.lua
+│   │   │   ├── stats.lua
 │   │   │   ├── strip.lua
 │   │   │   └── text.lua
 │   │   ├── hud
@@ -2966,8 +2970,12 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── flat_menu
     │   │   │   │   ├── init.lua
     │   │   │   │   ├── items.lua
+    │   │   │   │   ├── list.lua
+    │   │   │   │   ├── options.lua
+    │   │   │   │   ├── pause.lua
     │   │   │   │   ├── saves.lua
     │   │   │   │   ├── sound.lua
+    │   │   │   │   ├── stats.lua
     │   │   │   │   ├── strip.lua
     │   │   │   │   └── text.lua
     │   │   │   ├── hud

@@ -30,8 +30,11 @@
             "empty_slot": "\\{review}Emplacement vide",
             "equip": "\\{review}ÉQUIPER",
             "examine": "\\{review}EXAMINER",
+            "exit_to_title": "\\{review}Retour au titre",
             "load_game": "\\{review}CHARGER PARTIE",
+            "options": "\\{review}Options",
             "save_game": "\\{review}SAUVER PARTIE",
+            "statistics": "\\{review}Statistiques",
             "use": "\\{review}UTILISER",
         },
         "globe_select": {
@@ -189,7 +192,8 @@
                     "items": "Objets",
                     "misc": "Divers",
                     "system": "Système",
-                }
+                },
+                "title": "\\{review}Commandes",
             },
             "gameplay": {
                 "tabs": {

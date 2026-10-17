@@ -3,6 +3,8 @@
 -- ring what it does not draw. The quick save and load screens follow
 -- the same pick: the passport's page, or the flat menu's list of slots.
 -- The flat menu system draws no frames anywhere, as the original draws none.
+-- The pause screen follows the pick too, as the flat one leads to the
+-- statistics and the settings, which the ring holds otherwise.
 -- A change of the pick waits until no menu is open, so that a menu keeps the
 -- system it opened with, as a change of the inventory background does.
 --
@@ -10,7 +12,9 @@
 --   require("common.ui.menu").setup()
 
 local flat_menu = require("common.ui.flat_menu")
+local flat_pause = require("common.ui.flat_menu.pause")
 local passport = require("common.ui.screens.passport")
+local pause = require("common.ui.screens.pause")
 local ring_screen = require("common.ui.ring.screen")
 
 local M = {}
@@ -65,6 +69,13 @@ local function open(ctx)
   return ring_screen.open(ctx)
 end
 
+local function open_pause(ctx)
+  if begin(ctx) then
+    return flat_pause.open(ctx)
+  end
+  return pause.open(ctx)
+end
+
 local function open_save_load(ctx)
   if begin(ctx) then
     return flat_menu.open_save_load(ctx)
@@ -88,6 +99,7 @@ function M.setup()
   flat_menu.setup()
   trx.ui.screens.define(trx.ui.Screen.MENU, open)
   trx.ui.screens.define(trx.ui.Screen.SAVE_LOAD, open_save_load)
+  trx.ui.screens.define(trx.ui.Screen.PAUSE, open_pause)
 end
 
 return M

@@ -30,8 +30,11 @@
             "empty_slot": "\\{review}Slot vuoto",
             "equip": "\\{review}EQUIPAGGIA",
             "examine": "\\{review}ESAMINA",
+            "exit_to_title": "\\{review}Torna al titolo",
             "load_game": "\\{review}CARICA PARTITA",
+            "options": "\\{review}Opzioni",
             "save_game": "\\{review}SALVA PARTITA",
+            "statistics": "\\{review}Statistiche",
             "use": "\\{review}USA",
         },
         "globe_select": {
@@ -189,7 +192,8 @@
                     "items": "Oggetti",
                     "misc": "Vari",
                     "system": "Sistema",
-                }
+                },
+                "title": "\\{review}Comandi",
             },
             "gameplay": {
                 "tabs": {

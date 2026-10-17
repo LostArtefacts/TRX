@@ -30,8 +30,11 @@
             "empty_slot": "\\{review}Slot falamh",
             "equip": "\\{review}UIDHEAMAICH",
             "examine": "\\{review}SGRÙDAICH",
+            "exit_to_title": "\\{review}Till dhan tiotal",
             "load_game": "\\{review}LUCHDAICH GEAMA",
+            "options": "\\{review}Roghainnean",
             "save_game": "\\{review}SÀBHAIL GEAMA",
+            "statistics": "\\{review}Staitistearachd",
             "use": "\\{review}CLEACHD",
         },
         "globe_select": {
@@ -189,7 +192,8 @@
                     "items": "Nithean",
                     "misc": "Measgaichte",
                     "system": "Siostam",
-                }
+                },
+                "title": "\\{review}Smachdan",
             },
             "gameplay": {
                 "tabs": {
