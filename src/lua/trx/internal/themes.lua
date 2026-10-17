@@ -17,21 +17,16 @@ require("trx.locale")
 
 local M = {}
 
-local STEPS = 5
+trx.locale.declare({
+  ["settings/ui.enable_bar_side_borders/title"] = "Side borders",
+  ["settings/ui.enable_bar_side_borders/description"] = "Draws the extra border at the sides of the PS1 bars.",
+})
 
--- The value that makes a bar follow the look the rest of the bars are drawn
--- with, rather than naming a look of its own.
-local INHERIT = "same"
-local INHERIT_LABEL = "dynamic/enums/bar_look/same"
-trx.locale.declare({ ["dynamic/enums/bar_look/same"] = "Automatic" })
-
--- The default look of the bars, and of the progress bar, in each game.
-local BAR_LOOK_DEFAULTS = { "tr1_pc", "tr2_ps1", "tr3_ps1", "tr3_ps1" }
-local PROGRESS_LOOK_DEFAULTS = { INHERIT, INHERIT, INHERIT, "loading" }
+-- The default look of the bars in each game.
+local BAR_LOOK_DEFAULTS = { "tr1_pc", "tr2_ps1", "tr3_ps1", "tr4_pc" }
 
 -- Each bar by its `trx.ui.BarType` value: the name `bar_colors` knows it by,
--- and the settings that choose its PC and PS1 colors. The progress bar picks
--- a look of its own and a default color for each game.
+-- and the settings that choose its PC and PS1 colors.
 local BARS = {
   [0] = {
     name = "lara_hp",
@@ -73,14 +68,13 @@ local BARS = {
   },
   [7] = {
     name = "progress",
-    look = { key = "ui.progressbar_look" },
     pc = {
       key = "ui.progressbar_color",
       default = { "maroon", "purple", "purple", "purple-gradient" },
     },
     ps1 = {
       key = "ui.progressbar_color_ps1",
-      default = { "maroon", "purple-teal", "purple-teal", "purple-gradient" },
+      default = { "maroon", "purple-teal", "purple-teal", "purple-teal" },
     },
   },
 }
@@ -158,12 +152,15 @@ local function color(text, owner)
   }
 end
 
-local function ramp(list, owner)
-  if type(list) ~= "table" or #list ~= STEPS then
-    fail(owner, "invalid color array (expected %d entries)", STEPS)
+local function ramp(list, owner, count)
+  if type(list) ~= "table" or #list < 2 then
+    fail(owner, "invalid color array (expected at least 2 entries)")
+  end
+  if count ~= nil and #list ~= count then
+    fail(owner, "invalid color array (expected %d entries)", count)
   end
   local out = {}
-  for i = 1, STEPS do
+  for i = 1, #list do
     out[i] = color(list[i], list)
   end
   return out
@@ -189,7 +186,13 @@ local function read_look(name, data)
     colors = {},
     order = {},
   }
-  local base = { kind = kind, basic_scale = data.scale or 1 }
+  local base = {
+    kind = kind,
+    basic_scale = data.scale or 1,
+    width = data.width,
+    height = data.height,
+    padding = data.padding or 1,
+  }
   if kind == "pc" then
     base.border_light = color(data.border_light, data)
     base.border_dark = color(data.border_dark, data)
@@ -198,6 +201,15 @@ local function read_look(name, data)
     base.border_tr = color(data.border_tr, data)
     base.border_bl = color(data.border_bl, data)
     base.border_br = color(data.border_br, data)
+    if data.border_side ~= nil then
+      if type(data.border_side) ~= "table" or #data.border_side ~= 2 then
+        fail(data, "'border_side' of look %s must hold 2 colors", name)
+      end
+      base.border_side = {
+        color(data.border_side[1], data.border_side),
+        color(data.border_side[2], data.border_side),
+      }
+    end
   end
 
   for _, color_name in ipairs(keys_of(colors)) do
@@ -217,7 +229,7 @@ local function read_look(name, data)
         )
       end
       theme.ramp_left = ramp(entry[1], entry)
-      theme.ramp_right = ramp(entry[2], entry)
+      theme.ramp_right = ramp(entry[2], entry, #theme.ramp_left)
     end
     look.colors[color_name] = theme
     look.order[#look.order + 1] = color_name
@@ -358,6 +370,13 @@ local function declare_settings()
       default = false,
     })
   end
+  if not pcall(trx.config.describe, "ui.enable_bar_side_borders") then
+    trx.config.declare({
+      key = "ui.enable_bar_side_borders",
+      kind = "boolean",
+      default = false,
+    })
+  end
   local look_values = {}
   for _, look in ipairs(looks) do
     look_values[#look_values + 1] = { value = look.name, label = look.label }
@@ -366,13 +385,6 @@ local function declare_settings()
 
   for type = 0, #BARS do
     local bar = BARS[type]
-    if bar.look ~= nil then
-      local values = { { value = INHERIT, label = INHERIT_LABEL } }
-      for _, entry in ipairs(look_values) do
-        values[#values + 1] = entry
-      end
-      declare(bar.look, values, PROGRESS_LOOK_DEFAULTS)
-    end
     declare(bar.pc, offered_colors(bar, "pc"), bar.pc.default)
     declare(bar.ps1, offered_colors(bar, "ps1"), bar.ps1.default)
   end
@@ -404,18 +416,11 @@ function M.load(data)
   declare_settings()
 end
 
--- Returns the look a bar is drawn with. A bar that names no look of its own
--- takes the one the rest of the bars are drawn with, and an unknown look
--- falls back to the first one the file states.
-local function look_of(bar)
+-- Returns the look the bars are drawn with. An unknown look falls back to
+-- the first one the file states.
+local function look_of()
   if #looks == 0 then
     return nil
-  end
-  if bar.look ~= nil then
-    local name = read(bar.look.key)
-    if name ~= nil and name ~= INHERIT and looks_by_name[name] ~= nil then
-      return looks_by_name[name]
-    end
   end
   return looks_by_name[read(BAR_LOOK.key)] or looks[1]
 end
@@ -426,7 +431,7 @@ function M.is_ps1(type)
   if bar == nil then
     error("unknown bar type", 2)
   end
-  local look = look_of(bar)
+  local look = look_of()
   return look ~= nil and look.kind == "ps1"
 end
 
@@ -442,7 +447,7 @@ function M.bar(type)
   if theme ~= nil then
     return theme
   end
-  local look = look_of(bar)
+  local look = look_of()
   if look == nil then
     return nil
   end

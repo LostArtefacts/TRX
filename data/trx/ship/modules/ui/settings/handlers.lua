@@ -333,6 +333,11 @@ local HANDLERS = {
   ["ui.bar_scale"] = { slow = 1, fast = 5, available = bars },
   ["ui.bar_look"] = { available = bars },
   ["ui.enable_smooth_bars"] = { available = bars },
+  ["ui.enable_bar_side_borders"] = {
+    available = function()
+      return bars() and ps1_bars()
+    end,
+  },
   ["ui.enable_bar_flashing"] = { available = bars },
   ["ui.healthbar_color"] = { available = bars, visible = pc_bars },
   ["ui.healthbar_color_ps1"] = { available = bars, visible = ps1_bars },
@@ -357,23 +362,14 @@ local HANDLERS = {
     available = ally_bar,
     visible = ps1_bars,
   },
-  ["ui.progressbar_look"] = {
-    visible = function()
-      return get("ui.show_loading_bar")
-    end,
-  },
-  -- The loading bar picks its own look, so which of its two colors applies
-  -- follows that look rather than the one the other bars take.
   ["ui.progressbar_color"] = {
     visible = function()
-      return get("ui.show_loading_bar")
-        and not trx.ui.is_ps1_bar(trx.ui.BarType.PROGRESS)
+      return get("ui.show_loading_bar") and pc_bars()
     end,
   },
   ["ui.progressbar_color_ps1"] = {
     visible = function()
-      return get("ui.show_loading_bar")
-        and trx.ui.is_ps1_bar(trx.ui.BarType.PROGRESS)
+      return get("ui.show_loading_bar") and ps1_bars()
     end,
   },
   ["ui.enemy_healthbar_show_mode"] = {

@@ -36,7 +36,7 @@
 - Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)
 - Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
-- Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
+- Added an option to draw the side borders of the PS1 bars (Graphics → Bars → Side borders) (TRX488)
 - Added an option to choose how a level comes in: a cross-fade from the loading screen, a fade through black, or none. TR4 fades through black by default, as in the original (Graphics → UI → Level start transition) (TRX1375)
 - Improved the position of the passport dialogs, which now line up on every page
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
@@ -151,6 +151,7 @@
 - Added the ability to carry a lit flare into the next level, as in the original game (TRX1345)
 - Added a skybox to the title screen (TRX1394)
 - Added all TR4 gun meshes into the outfit system (TRX1756)
+- Added the original PC and PS1 bars, with the PC bars used by default (Graphics → Bars → Bars appearance) (TRX488)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement

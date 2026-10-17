@@ -591,6 +591,63 @@ for _, scale in ipairs({ 0.5, 1.0, 1.3, 1.75, 2.0 }) do
   end)
 end
 
+test("a bar with no padding fills against its frame", function()
+  h.load_themes()
+  fake.set_viewport(640, 480)
+  trx.config.set("ui.bar_scale", 1.0)
+  trx.config.set("ui.bar_look", "plain")
+  local bar = widgets.Bar({
+    type = trx.ui.BarType.LARA_HP,
+    value = 1,
+    smooth = false,
+  })
+  local w, hh = bar:measure()
+  assert(w == 150 and hh == 12, ("%s x %s"):format(w, hh))
+  local quads = quads_of(fake.paint(function()
+    bar:paint(10, 10, w, hh)
+  end))
+  assert(#quads == 13, ("%d quads"):format(#quads))
+  local outer, inner, first, last = quads[1], quads[3], quads[4], quads[13]
+  assert(inner.x - outer.x == 1 and inner.y - outer.y == 1)
+  assert(first.x == inner.x and first.y == inner.y, "the fill is inset")
+  assert(last.y + last.h == inner.y + inner.h, "the fill stops short")
+  trx.config.set("ui.bar_look", "pc")
+end)
+
+test("a bar with side columns draws its frame inside them", function()
+  h.load_themes()
+  fake.set_viewport(640, 480)
+  trx.config.set("ui.bar_scale", 1.0)
+  trx.config.set("ui.bar_look", "ps1")
+  trx.config.set("ui.enable_bar_side_borders", true)
+  local bar = widgets.Bar({ type = trx.ui.BarType.LARA_HP, value = 1 })
+  local w, hh = bar:measure()
+  local quads = {}
+  for _, line in
+    ipairs(fake.paint(function()
+      bar:paint(10, 10, w, hh)
+    end))
+  do
+    local x, y, qw, qh = line:match(
+      "^gradient x=(%-?%d+) y=(%-?%d+) z=%-?%d+ w=(%-?%d+) h=(%-?%d+)"
+    )
+    if x ~= nil then
+      quads[#quads + 1] = {
+        x = tonumber(x),
+        y = tonumber(y),
+        w = tonumber(qw),
+        h = tonumber(qh),
+      }
+    end
+  end
+  local left, right, frame = quads[1], quads[2], quads[3]
+  assert(left.x == 10 and right.x + right.w == 10 + w, "the columns moved")
+  assert(left.y == 12 and left.h == hh - 4, "the columns span the frame")
+  assert(frame.x == 12 and frame.w == w - 4, "the frame overlaps them")
+  trx.config.set("ui.enable_bar_side_borders", false)
+  trx.config.set("ui.bar_look", "pc")
+end)
+
 test(
   "a level script's widget leaves its region when the level ends",
   function()
@@ -1086,10 +1143,9 @@ end)
 
 test("a bar says whether it takes the PS1 look", function()
   h.load_themes()
-  trx.config.set("ui.progressbar_look", "ps1")
+  trx.config.set("ui.bar_look", "ps1")
   assert(trx.ui.is_ps1_bar(trx.ui.BarType.PROGRESS))
-  assert(not trx.ui.is_ps1_bar(trx.ui.BarType.LARA_HP))
-  trx.config.set("ui.progressbar_look", "same")
+  trx.config.set("ui.bar_look", "pc")
   assert(not trx.ui.is_ps1_bar(trx.ui.BarType.PROGRESS))
 end)
 

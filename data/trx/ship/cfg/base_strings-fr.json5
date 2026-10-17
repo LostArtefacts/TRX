@@ -615,13 +615,13 @@
         },
         "enums": {
             "bar_look": {
-                "loading": "\\{review}Chargement",
-                "same": "\\{review}Automatique",
                 "tr1_pc": "TR1",
                 "tr2_pc": "\\{review}TR2 PC",
                 "tr2_ps1": "\\{review}TR2 PS1",
                 "tr3_pc": "\\{review}TR3 PC",
                 "tr3_ps1": "TR3 PS1",
+                "tr4_pc": "\\{review}TR4 PC",
+                "tr4_ps1": "\\{review}TR4 PS1",
             },
             "lara_outfit": {
                 "default": "\\{review}Par défaut",
@@ -1720,6 +1720,10 @@
             "title": "\\{review}Barres clignotantes",
             "description": "\\{review}Fait clignoter les barres de santé et d'oxygène de Lara lorsqu'elle est à court de l'une ou l'autre ressource.",
         },
+        "ui.enable_bar_side_borders": {
+            "title": "\\{review}Bordures latérales",
+            "description": "\\{review}Dessine la bordure supplémentaire sur les côtés des barres PS1.",
+        },
         "ui.enable_smooth_bars": {
             "title": "Barres fluides",
             "description": "Permet à la barre de santé et à la barre d'air d'utiliser des transitions de couleurs fluides.",
@@ -1819,10 +1823,6 @@
         "ui.progressbar_color_ps1": {
             "title": "\\{review}Couleur de la barre de chargement",
             "description": "\\{review}Couleur de la barre de chargement.",
-        },
-        "ui.progressbar_look": {
-            "title": "\\{review}Apparence de la barre de chargement",
-            "description": "\\{review}Choisit le cadre avec lequel la barre de chargement est dessinée. Ce choix détermine aussi quel réglage de couleur ci-dessous s'applique.",
         },
         "ui.show_bars": {
             "title": "\\{review}Afficher les barres",

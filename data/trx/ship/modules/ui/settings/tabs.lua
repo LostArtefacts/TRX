@@ -264,6 +264,7 @@ local TABS = {
     "ui.bar_scale",
     "ui.bar_look",
     "ui.enable_smooth_bars",
+    "ui.enable_bar_side_borders",
     "ui.enable_bar_flashing",
 
     "ui.healthbar_color",
@@ -281,7 +282,6 @@ local TABS = {
     "ui.enemy_healthbar_color_allies",
     "ui.enemy_healthbar_color_allies_ps1",
     "ui.show_loading_bar",
-    "ui.progressbar_look",
     "ui.progressbar_color",
     "ui.progressbar_color_ps1",
 

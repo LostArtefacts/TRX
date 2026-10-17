@@ -29,8 +29,10 @@ function M.raises(fn, needle)
 end
 
 -- Gives the bars and menus a theme of their own, as the game takes one from
--- cfg/ui.json5 at startup: a PC look, a PS1 look, and a PC look half the size,
--- each with one color, and black menus.
+-- cfg/ui.json5 at startup: a PC look, a PS1 look with side columns, a PC look
+-- half the size,
+-- and a PC look of ten bands with no padding, each with one color, and black
+-- menus.
 function M.load_themes()
   local function ramp(hex)
     return { hex, hex, hex, hex, hex }
@@ -85,9 +87,22 @@ function M.load_themes()
         border_tr = "#FFFFFF",
         border_bl = "#000000",
         border_br = "#000000",
+        border_side = { "#808080", "#404040" },
         colors = { red = { ramp("#FF0000"), ramp("#800000") } },
       },
       small = pc(0.5),
+      plain = {
+        name_gs = "dynamic/enums/bar_look/tr4_pc",
+        style = "pc",
+        width = 150,
+        height = 12,
+        padding = 0,
+        border_light = "#FFFFFF",
+        border_dark = "#FFFFFF",
+        colors = {
+          red = table.move(ramp("#FF0000"), 1, 5, 6, ramp("#FF0000")),
+        },
+      },
     },
     ui = { tr1 = menu, tr2 = menu, tr3 = menu, tr4 = menu },
   })
