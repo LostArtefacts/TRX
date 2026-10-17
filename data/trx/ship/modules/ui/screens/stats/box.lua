@@ -270,14 +270,14 @@ local function window(state)
             style = trx.ui.FrameStyle.HEADING,
             z = 160,
             child = trx.ui.widgets.Pad({
-              x = fitted(state, metrics.TITLE_PAD_X),
+              x = fitted(state, metrics.title_pad_x()),
               y = fitted(state, metrics.title_pad_y()),
               child = centered_widget(state, listing.title_of(state)),
             }),
           }),
           trx.ui.widgets.Pad({
             x = fitted(state, metrics.body_pad_x()),
-            y = fitted(state, metrics.BODY_PAD_Y),
+            y = fitted(state, metrics.body_pad_y()),
             child = trx.ui.widgets.Stack({
               align = trx.ui.HAlign.SPAN,
               children = body,

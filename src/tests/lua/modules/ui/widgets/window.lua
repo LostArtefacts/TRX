@@ -27,6 +27,14 @@ test("a window frames its content", function()
   assert(near(hh, 20 + window.chrome_height({})), hh)
 end)
 
+test("a window without frames takes no padding", function()
+  trx.ui.frames_shown = false
+  local w, hh = size(window.new({ content = content() }))
+  trx.ui.frames_shown = true
+  assert(near(w, 50), w)
+  assert(near(hh, 20), hh)
+end)
+
 test("a window over a list that fits keeps no room for arrows", function()
   local list = scroll.new({ count = 3, visible = 3 })
   local _, hh = size(window.new({ content = content(), scroll = list }))

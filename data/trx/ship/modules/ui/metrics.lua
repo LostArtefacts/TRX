@@ -13,14 +13,8 @@ M.TEXT_HEIGHT = 15
 -- The height of the arrows that say a list goes on past its edge.
 M.HINT_HEIGHT = 7
 
--- The room above and below the body of a dialog.
-M.BODY_PAD_Y = 4
-
 -- The most rows of settings a dialog shows at once.
 M.MAX_DIALOG_ROWS = 16
-
--- The room on each side of a dialog's heading, past the body's own.
-M.TITLE_PAD_X = 10
 
 -- The room on each side of a row of a short list of choices, such as a
 -- question.
@@ -46,18 +40,40 @@ function M.text_width(text)
   return width
 end
 
+-- The paddings below keep text clear of a dialog's frame, so a dialog drawn
+-- without frames takes none of them.
+
 -- The room between a dialog's frame and what it holds.
 function M.outer_pad()
+  if not trx.ui.frames_shown then
+    return 0
+  end
   return trx.game.tr_version == 1 and 2 or 3
 end
 
 -- The room on each side of the body of a dialog.
 function M.body_pad_x()
+  if not trx.ui.frames_shown then
+    return 0
+  end
   return trx.game.tr_version == 1 and 8 or 4
+end
+
+-- The room above and below the body of a dialog.
+function M.body_pad_y()
+  return trx.ui.frames_shown and 4 or 0
+end
+
+-- The room on each side of a dialog's heading, past the body's own.
+function M.title_pad_x()
+  return trx.ui.frames_shown and 10 or 0
 end
 
 -- The room above and below a dialog's heading.
 function M.title_pad_y()
+  if not trx.ui.frames_shown then
+    return 0
+  end
   return trx.game.tr_version == 1 and 2 or 1
 end
 
@@ -66,7 +82,7 @@ end
 -- where it scrolls.
 function M.chrome_height(title_spacing, scrolls)
   ---@type number
-  local height = 2 * (M.outer_pad() + M.BODY_PAD_Y)
+  local height = 2 * (M.outer_pad() + M.body_pad_y())
   if title_spacing ~= nil then
     height = height + M.TEXT_HEIGHT + 2 * M.title_pad_y() + title_spacing
   end
