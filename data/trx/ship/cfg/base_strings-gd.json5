@@ -1625,6 +1625,10 @@
             "title": "\\{review}Cainnideachadh a' phaileid",
             "description": "\\{review}Gluaisidh e gach dath a chaidh a reandaradh chun an datha as fhaisge ann am paileid na h-ìre. Le dithering air, bheir am paileid sgàilean eadar a dhathan.",
         },
+        "rendering.enable_ps1_blending": {
+            "title": "\\{review}Measgachadh PlayStation",
+            "description": "\\{review}Measgaichidh seo ceò, faileasan, lorgan-coise is fuil leis an t-sealladh mar a rinn am PlayStation. Bheir ceò, faileasan is lorgan-coise an dath aca fhèin air falbh on t-sealladh, a nì gach seanail dath nas dorcha leis an aon uiread, mar sin bidh an toradh nas sàithichte. Ann an TR3, thèid fuil cuideachd a mheasgachadh leth air leth leis an t-sealladh. Nuair a bhios e dheth, thèid an sealladh fo cheò, faileasan is lorgan-coise a dhèanamh dorcha le cuibhreann den dath aige fhèin, agus thèid fuil ann an TR3 a tharraing gu teann, mar air a’ PC.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Ceò PlayStation",
             "description": "\\{review}Measgaichidh seo geoimeatraidh fad às a-steach do dhath a' cheò mar a rinn lasachadh doimhneachd na PlayStation: a rèir 1/astar seach an astar fhèin, agus air a thomhas gach oisean, agus mar sin nochdaidh bannan air uachdaran mòra.",

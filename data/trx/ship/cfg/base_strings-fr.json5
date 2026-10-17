@@ -1625,6 +1625,10 @@
             "title": "\\{review}Quantification de la palette",
             "description": "\\{review}Ramène chaque couleur rendue à la couleur la plus proche de la palette du niveau. Avec le tramage activé, la palette nuance entre ses couleurs.",
         },
+        "rendering.enable_ps1_blending": {
+            "title": "\\{review}Mélange PlayStation",
+            "description": "\\{review}Mélange la fumée, les ombres, les empreintes et le sang avec la scène comme le faisait la PlayStation. La fumée, les ombres et les empreintes soustraient leur couleur de la scène, ce qui assombrit chaque canal de couleur de la même quantité et rend le résultat plus saturé. Dans TR3, le sang est aussi mélangé à moitié avec la scène. Désactivé, la scène sous la fumée, les ombres et les empreintes est assombrie d'une part de sa propre couleur, et le sang de TR3 est dessiné opaque, comme sur PC.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Brouillard PlayStation",
             "description": "\\{review}Fond la géométrie lointaine vers la couleur du brouillard comme le faisait l'atténuation en profondeur de la PlayStation : selon 1/distance plutôt que la distance, et calculée par sommet, ce qui fait apparaître des bandes sur les grandes surfaces.",

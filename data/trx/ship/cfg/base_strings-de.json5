@@ -1625,6 +1625,10 @@
             "title": "\\{review}Paletten-Quantisierung",
             "description": "\\{review}Rastet jede gerenderte Farbe auf die nächstgelegene Farbe der Levelpalette ein. Bei aktiviertem Dithering mischt die Palette zwischen ihren Farben.",
         },
+        "rendering.enable_ps1_blending": {
+            "title": "\\{review}PlayStation-Überblendung",
+            "description": "\\{review}Blendet Rauch, Schatten, Fußspuren und Blut wie auf der PlayStation mit der Szene. Rauch, Schatten und Fußspuren ziehen ihre Farbe von der Szene ab, wodurch jeder Farbkanal um denselben Betrag abgedunkelt wird und das Ergebnis gesättigter wirkt. In TR3 wird außerdem Blut zur Hälfte mit der Szene gemischt. Deaktiviert wird die Szene unter Rauch, Schatten und Fußspuren um einen Anteil ihrer eigenen Farbe abgedunkelt und Blut in TR3 deckend gezeichnet, wie auf dem PC.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}PlayStation-Nebel",
             "description": "\\{review}Blendet entfernte Geometrie so zur Nebelfarbe über, wie es die Tiefenabstufung der PlayStation tat: entlang 1/Entfernung statt der Entfernung und pro Vertex berechnet, sodass der Verlauf über große Flächen Stufen bildet.",

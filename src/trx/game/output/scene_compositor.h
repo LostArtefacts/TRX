@@ -21,3 +21,7 @@ void SceneCompositor_SetSamplerFilter(TEXTURE_FILTER filter);
 // Binds the texture atlas, the environment map and the sampler the sources
 // draw with.
 void SceneCompositor_BindTextures(void);
+// Sets the blend state that the subtractive pass draws with. PlayStation
+// blending subtracts the source color from the scene; otherwise the scene is
+// multiplied by the inverse of the source color, as on the PC.
+void SceneCompositor_SetSubtractiveBlend(void);

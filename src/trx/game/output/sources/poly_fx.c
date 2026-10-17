@@ -342,10 +342,12 @@ static bool M_UsesFxBuffer(const M_PRIV *const p)
 
 // Redirects rendering into the FX buffer, with the geometry depth brought
 // down to its resolution so occlusion still applies. The buffer starts white
-// for the subtractive pass and black for the additive one: with the pass
-// blend functions left in place, it accumulates the product of the
-// subtractive prims or the sum of the additive ones, which is what the pass
-// would have multiplied into or added onto the scene.
+// for a multiplying subtractive pass and black otherwise. With the pass blend
+// functions left in place, it accumulates the product of the subtractive
+// prims, or the sum of the additive ones, which is what the pass would have
+// multiplied into or added onto the scene. Under PlayStation blending the
+// subtractive prims are summed as well, and the sum is subtracted from the
+// scene.
 static void M_BeginFxBuffer(M_PRIV *const p, const SCENE_PASS pass)
 {
     const VIEWPORT_RECT scene = Viewport_GetRect(VIEWPORT_SCENE);
@@ -369,12 +371,17 @@ static void M_BeginFxBuffer(M_PRIV *const p, const SCENE_PASS pass)
 
     TRX_GL_FBO_Bind(&p->fx_fbo);
     glViewport(0, 0, scene.width, scene.height);
-    if (pass == SCENE_PASS_BLEND_SUB) {
+    const bool ps1_blending = g_Config.rendering.enable_ps1_blending;
+    if (pass == SCENE_PASS_BLEND_SUB && !ps1_blending) {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     } else {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
     glClear(GL_COLOR_BUFFER_BIT);
+    if (pass == SCENE_PASS_BLEND_SUB && ps1_blending) {
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ONE, GL_ONE);
+    }
     TRX_GL_CheckError();
 }
 
@@ -396,7 +403,11 @@ static void M_EndFxBuffer(M_PRIV *const p, const SCENE_PASS pass)
     Output_Shader_Bind(p->fx_blit_shader);
     glBindVertexArray(p->fx_blit_vao);
     glDisable(GL_DEPTH_TEST);
-    if (pass == SCENE_PASS_BLEND_SUB) {
+    if (pass == SCENE_PASS_BLEND_SUB
+        && g_Config.rendering.enable_ps1_blending) {
+        glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+        glBlendFunc(GL_ONE, GL_ONE);
+    } else if (pass == SCENE_PASS_BLEND_SUB) {
         glBlendFunc(GL_ZERO, GL_SRC_COLOR);
     } else {
         glBlendFunc(GL_ONE, GL_ONE);
@@ -404,7 +415,7 @@ static void M_EndFxBuffer(M_PRIV *const p, const SCENE_PASS pass)
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     if (pass == SCENE_PASS_BLEND_SUB) {
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+        SceneCompositor_SetSubtractiveBlend();
     } else {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
@@ -1026,6 +1037,15 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         sprite_idx = -1;
         if (draw_type == DRAW_BLEND_ADD
             || draw_type == DRAW_REFLECTIVE_BLEND_ADD) {
+            color.a = 128;
+        } else if (
+            spark->context == SPARK_CONTEXT_BLOOD
+            && g_Config.rendering.enable_ps1_blending) {
+            // The PlayStation mixes blood half and half with the scene. The
+            // framebuffer blend is premultiplied, so the color is halved too.
+            color.r >>= 1;
+            color.g >>= 1;
+            color.b >>= 1;
             color.a = 128;
         }
         draw_type = DRAW_BLEND;

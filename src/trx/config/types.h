@@ -306,6 +306,7 @@ typedef struct {
         bool enable_trapezoid_filter;
         bool enable_affine_mapping;
         bool enable_lighting;
+        bool enable_ps1_blending;
         bool enable_ps1_fog;
         bool enable_textures;
         TEXTURE_FILTER ui_filter;
