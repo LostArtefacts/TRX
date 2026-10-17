@@ -91,6 +91,8 @@ X_OBJ_NAME_DEFINE(O_SOUND_OPTION,           "Sound")
 X_OBJ_NAME_DEFINE(O_GAMMA_OPTION,           "Gamma")
 X_OBJ_NAME_DEFINE(O_GLOBE_OPTION,           "Globe")
 X_OBJ_NAME_DEFINE(O_PDA_OPTION,             "Gameplay")
+X_OBJ_NAME_DEFINE(O_LOAD_OPTION,            "Load")
+X_OBJ_NAME_DEFINE(O_SAVE_OPTION,            "Save")
 // Inventory ring - consumables
 // Inventory ring - guns
 // Inventory ring - ammo

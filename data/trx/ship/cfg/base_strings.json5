@@ -3107,6 +3107,9 @@
         "lizard": {
             "name": "Lizard",
         },
+        "load_option": {
+            "name": "Load",
+        },
         "m16_ammo_item": {
             "name": "M16 Clips",
         },
@@ -3699,6 +3702,9 @@
         },
         "save_crystal_option": {
             "name": "Crystal|Savegame Crystal",
+        },
+        "save_option": {
+            "name": "Save",
         },
         "scaled_spikes": {
             "name": "Spikes|Scaled Spikes",

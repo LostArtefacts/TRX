@@ -3029,6 +3029,9 @@
         "lizard": {
             "name": "\\{review}Lézard",
         },
+        "load_option": {
+            "name": "\\{review}Charger",
+        },
         "m16_ammo_item": {
             "name": "\\{review}Chargeurs pour M16",
         },
@@ -3562,6 +3565,9 @@
         },
         "save_crystal_option": {
             "name": "\\{review}Cristal|Cristal de Sauvegarde",
+        },
+        "save_option": {
+            "name": "\\{review}Sauvegarder",
         },
         "scaled_spikes": {
             "name": "\\{review}Pointes redimensionnées",
