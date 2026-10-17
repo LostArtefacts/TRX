@@ -108,6 +108,7 @@
 - Added the ability to embed into walls when collecting underwater flares, similar to the PS1 release (Gameplay → Fixes → Fix pickup embed glitch)
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 - Fixed Lara not colliding with the submarine in Diving Area room 70 when soft static collision is enabled (TRX1703, regression from 1.1)
+- Fixed the appearance of Lara's holstered Uzis not matching those in her hands (OG bug) (TRX1776)
 
 **TR3**
 - Added the Italian FMV names, so the Italian dub plays its FMVs without renaming them (#4618 / TRX1710)
@@ -125,6 +126,7 @@
 - Fixed missing gun flashes in the Antarctica cutscene (OG bug) (TRX1540)
 - Fixed crow 68 in Highland Fling dying as soon it spawned (#6849 / TRX1737)
 - Fixed the vultures at the beginning of Nevada Desert visibly shifting to the floor when triggered
+- Fixed the appearance of Lara's holstered Uzis not matching those in her hands (OG bug) (TRX1776)
 
 **TR4**
 - Added Small Scorpion control (TRX1562)
