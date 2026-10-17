@@ -20,6 +20,46 @@ local M = {}
 trx.locale.declare({
   ["settings/ui.enable_bar_side_borders/title"] = "Side borders",
   ["settings/ui.enable_bar_side_borders/description"] = "Draws the extra border at the sides of the PS1 bars.",
+  ["settings/ui.airbar_color/title"] = "Airbar color",
+  ["settings/ui.airbar_color/description"] = "Color of the airbar.",
+  ["settings/ui.airbar_color_ps1/title"] = "Airbar color",
+  ["settings/ui.airbar_color_ps1/description"] = "Color of the airbar.",
+  ["settings/ui.bar_look/title"] = "Bars appearance",
+  ["settings/ui.bar_look/description"] = "Chooses the frame and colors the UI bars are drawn with, taken from "
+    .. "one of the original releases. The choice also decides which set of "
+    .. "bar color settings below applies.",
+  ["settings/ui.enable_smooth_bars/title"] = "Smooth bars",
+  ["settings/ui.enable_smooth_bars/description"] = "Makes the UI bars use smooth color transitions.",
+  ["settings/ui.enemy_healthbar_color/title"] = "Enemy bar color",
+  ["settings/ui.enemy_healthbar_color/description"] = "Color of the enemy healthbar.",
+  ["settings/ui.enemy_healthbar_color_allies/title"] = "Ally bar color",
+  ["settings/ui.enemy_healthbar_color_allies/description"] = "Color of the allies healthbar. Shown in the location of the enemy "
+    .. "healthbars.",
+  ["settings/ui.enemy_healthbar_color_allies_ps1/title"] = "Ally bar color",
+  ["settings/ui.enemy_healthbar_color_allies_ps1/description"] = "Color of the allies healthbar. Shown in the location of the enemy "
+    .. "healthbars.",
+  ["settings/ui.enemy_healthbar_color_ps1/title"] = "Enemy bar color",
+  ["settings/ui.enemy_healthbar_color_ps1/description"] = "Color of the enemy healthbar.",
+  ["settings/ui.exposurebar_color/title"] = "Exposure bar color",
+  ["settings/ui.exposurebar_color/description"] = "Color of the cold water exposure bar.",
+  ["settings/ui.exposurebar_color_ps1/title"] = "Exposure bar color",
+  ["settings/ui.exposurebar_color_ps1/description"] = "Color of the cold water exposure bar.",
+  ["settings/ui.healthbar_color/title"] = "Healthbar color",
+  ["settings/ui.healthbar_color/description"] = "Color of the healthbar.",
+  ["settings/ui.healthbar_color_ps1/title"] = "Healthbar color",
+  ["settings/ui.healthbar_color_ps1/description"] = "Color of the healthbar.",
+  ["settings/ui.healthbar_poison_color/title"] = "Poison healthbar color",
+  ["settings/ui.healthbar_poison_color/description"] = "Color of the healthbar when Lara is poisoned.",
+  ["settings/ui.healthbar_poison_color_ps1/title"] = "Poison healthbar color",
+  ["settings/ui.healthbar_poison_color_ps1/description"] = "Color of the healthbar when Lara is poisoned.",
+  ["settings/ui.progressbar_color/title"] = "Loading bar color",
+  ["settings/ui.progressbar_color/description"] = "Color of the loading bar.",
+  ["settings/ui.progressbar_color_ps1/title"] = "Loading bar color",
+  ["settings/ui.progressbar_color_ps1/description"] = "Color of the loading bar.",
+  ["settings/ui.sprintbar_color/title"] = "Sprintbar color",
+  ["settings/ui.sprintbar_color/description"] = "Color of the sprintbar.",
+  ["settings/ui.sprintbar_color_ps1/title"] = "Sprintbar color",
+  ["settings/ui.sprintbar_color_ps1/description"] = "Color of the sprintbar.",
 })
 
 -- The default look of the bars in each game.

@@ -52,6 +52,26 @@ trx.locale.declare({
   ["enums/bar_show_mode/never"] = "Never",
   ["enums/bar_show_mode/always"] = "Always",
   ["enums/bar_show_mode/boss_only"] = "Boss only",
+  ["settings/ui.airbar_location/title"] = "Airbar location",
+  ["settings/ui.airbar_location/description"] = "Location where the airbar is displayed.",
+  ["settings/ui.enable_bar_flashing/title"] = "Flash bars",
+  ["settings/ui.enable_bar_flashing/description"] = "Makes Lara's health and oxygen bars blink when she's running low on "
+    .. "either resource.",
+  ["settings/ui.enemy_healthbar_location/title"] = "Enemy bar location",
+  ["settings/ui.enemy_healthbar_location/description"] = "Location where the enemy healthbar is displayed.",
+  ["settings/ui.enemy_healthbar_show_mode/title"] = "Enemy bar mode",
+  ["settings/ui.enemy_healthbar_show_mode/description"] = "Controls when a healthbar is shown for the enemy Lara has "
+    .. "targeted.\n\n- Always: show it for any target.\n- Boss only: show it "
+    .. "only when the target is a boss.\n- Never: never show it.",
+  ["settings/ui.exposurebar_location/title"] = "Exposure bar location",
+  ["settings/ui.exposurebar_location/description"] = "Location where the cold water exposure bar is displayed.",
+  ["settings/ui.healthbar_location/title"] = "Healthbar location",
+  ["settings/ui.healthbar_location/description"] = "Location where the healthbar is displayed.",
+  ["settings/ui.show_bars/title"] = "Show bars",
+  ["settings/ui.show_bars/description"] = "Shows the ingame bars. Turning them off obscures information on "
+    .. "Lara's health and other resources (for challenge runs).",
+  ["settings/ui.sprintbar_location/title"] = "Sprintbar location",
+  ["settings/ui.sprintbar_location/description"] = "Location where the sprintbar is displayed.",
 })
 trx.config.declare({
   key = "ui.enemy_healthbar_show_mode",

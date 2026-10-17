@@ -10,6 +10,11 @@ local timer = require("common.timer")
 
 local M = {}
 
+trx.locale.declare({
+  ["settings/ui.show_title_version/title"] = "Title version text",
+  ["settings/ui.show_title_version/description"] = "Shows the TRX version string in the title inventory ring.",
+})
+
 trx.config.declare({
   key = "ui.show_title_version",
   kind = "boolean",

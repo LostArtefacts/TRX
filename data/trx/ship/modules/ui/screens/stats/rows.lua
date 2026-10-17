@@ -6,6 +6,34 @@ local metrics = require("common.ui.metrics")
 
 local M = {}
 
+trx.locale.declare({
+  ["settings/ui.stats.show_ammo/title"] = "Ammo hits/used",
+  ["settings/ui.stats.show_ammo/description"] = "Shows the ammo row in the level statistics.",
+  ["settings/ui.stats.show_crystals/title"] = "Crystals",
+  ["settings/ui.stats.show_crystals/description"] = "Shows the crystals row in the level statistics.",
+  ["settings/ui.stats.show_deaths/title"] = "Deaths",
+  ["settings/ui.stats.show_deaths/description"] = "Shows Lara's deaths in the compass statistics and in the level "
+    .. "statistics. Death count is updated in the currently loaded save as "
+    .. "soon as Lara dies.",
+  ["settings/ui.stats.show_distance_travelled/title"] = "Distance traveled",
+  ["settings/ui.stats.show_distance_travelled/description"] = "Shows the distance traveled row in the level statistics.",
+  ["settings/ui.stats.show_kills/title"] = "Kills",
+  ["settings/ui.stats.show_kills/description"] = "Shows the kills row in the level statistics.",
+  ["settings/ui.stats.show_level_header/title"] = "Level counter",
+  ["settings/ui.stats.show_level_header/description"] = "Shows the current level number at the top of the level statistics.",
+  ["settings/ui.stats.show_medipacks_used/title"] = "Health packs used",
+  ["settings/ui.stats.show_medipacks_used/description"] = "Shows the health packs used row in the level statistics.",
+  ["settings/ui.stats.show_pickups/title"] = "Pickups",
+  ["settings/ui.stats.show_pickups/description"] = "Shows the pickups row in the level statistics.",
+  ["settings/ui.stats.show_secrets/title"] = "Secrets found",
+  ["settings/ui.stats.show_secrets/description"] = "Shows the secrets found row in the level statistics.",
+  ["settings/ui.stats.show_time_taken/title"] = "Time taken",
+  ["settings/ui.stats.show_time_taken/description"] = "Shows the time taken row in the level statistics.",
+  ["settings/ui.stats.show_totals/title"] = "Show totals",
+  ["settings/ui.stats.show_totals/description"] = "Shows totals next to stats when applicable. Secrets remain unaffected "
+    .. "by this setting.",
+})
+
 trx.config.declare({
   key = "ui.stats.show_ammo",
   kind = "boolean",

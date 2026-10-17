@@ -9,6 +9,11 @@
 
 local M = {}
 
+trx.locale.declare({
+  ["settings/ui.enable_wraparound/title"] = "Scroll wrap",
+  ["settings/ui.enable_wraparound/description"] = "Lets directional navigation in menus loop around.",
+})
+
 trx.config.declare({
   key = "ui.enable_wraparound",
   kind = "boolean",
