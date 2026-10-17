@@ -27,6 +27,7 @@ local function store_amulet()
   if not trx.inventory.has(trx.catalog.objects.quest_item_1) then
     trx.inventory.give(trx.catalog.objects.quest_item_1)
     trx.stats.pickups.count = trx.stats.pickups.count + 1
+    trx.overlay.show_pickup(trx.catalog.objects.quest_item_1)
   end
 end
 
