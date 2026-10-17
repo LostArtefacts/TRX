@@ -62,6 +62,22 @@ test("an entry turned by hand stops spinning between ticks", function()
   assert(y_rot.last == y_rot.now, "the spin went on between ticks")
 end)
 
+test("an entry let go turns back while the ring spins", function()
+  local view = new_view()
+  local hand = view.entries[1].hand
+  view:turn_by_hand(2 * trx.math.DEG_90 - 1, 0)
+  view:tick(motion.Spin.HELD)
+  view:let_go()
+  view:tick(motion.Spin.HELD)
+  for _ = 1, 30 do
+    view:tick(motion.Spin.IDLE)
+  end
+  assert(
+    math.abs(hand.now.w) > 0.9999,
+    ("the turn stayed at %f"):format(hand.now.w)
+  )
+end)
+
 test("a ring wholly below the camera leaves by a small tilt", function()
   local view = motion.new({
     entries = {

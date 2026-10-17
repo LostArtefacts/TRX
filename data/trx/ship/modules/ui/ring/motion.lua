@@ -462,12 +462,14 @@ function View:tick(how)
         spin(entry, still)
       else
         spin(entry, towards(entry.spec.y_rot_sel or 0))
-        hand = slerp(hand, IDENTITY, UNTURN_RATE)
       end
     elseif how == M.Spin.IDLE then
       spin(entry, round_and_round)
     else
       spin(entry, still)
+    end
+    if not entry.turned then
+      hand = slerp(hand, IDENTITY, UNTURN_RATE)
     end
     entry.hand.last = entry.hand.now
     entry.hand.now = hand
@@ -522,7 +524,7 @@ function View:turn_by_hand(yaw, roll)
 end
 
 -- Lets go of the entry the ring rests on, which then turns back from where
--- the player turned it while it is held.
+-- the player turned it.
 function View:let_go()
   self.entries[self.current].turned = false
 end
