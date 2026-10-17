@@ -41,6 +41,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 - <a id="ui.text_scale" name="ui.text_scale"></a>**`trx.ui.text_scale`** (number). The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. *(read-only)*
 - <a id="ui.screen" name="ui.screen"></a>**`trx.ui.screen`** ([trx.ui.Area](#ui.Area)). The whole screen, in canvas units. The canvas holds a whole number of units, so its right and bottom edges can stop short of the screen by a fraction of a unit; the screen reaches the edges. Something drawn from edge to edge, such as a frame around the screen, uses this area. *(read-only)*
 - <a id="ui.safe_area" name="ui.safe_area"></a>**`trx.ui.safe_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there. *(read-only)*
+- <a id="ui.frames_shown" name="ui.frames_shown"></a>**`trx.ui.frames_shown`** (boolean). Whether the game's frames are drawn: the boxes of dialogs, the strips of headings and the boxes around the option the player is on. A script that draws its menus flat turns them off, and the option the player is on then shows in the picked text colour instead. `true` by default.
 - <a id="ui.working_area" name="ui.working_area"></a>**`trx.ui.working_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas between the cinematic bars. It is the whole canvas while there are none, and follows the bars as they move in and out. The interface regions lay out inside it, so [`trx.ui.safe_area`](#ui.safe_area) lies within it too. *(read-only)*
 - <a id="ui.signals.layout" name="ui.signals.layout"></a>**`trx.ui.signals.layout`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the room that the interface lays out in changes: the canvas, [`trx.ui.safe_area`](#ui.safe_area), [`trx.ui.working_area`](#ui.working_area) or [`trx.ui.text_scale`](#ui.text_scale). It holds a count that goes up with each change. A widget that lays itself out by that room listens to this rather than reading the room every frame. *(read-only)*
 
@@ -599,8 +600,9 @@ arrow, and `\{button left}` draws the button the player has bound.
 - <a id="ui.List" name="ui.List"></a>[lua]`trx.ui.List`
 
     A column of rows that the player picks one entry from. The row under the
-    cursor is drawn in a frame. Arrows show where the list runs past the rows it
-    shows.
+    cursor is drawn in a frame, or in the picked colour while
+    [`trx.ui.frames_shown`](#ui.frames_shown) is off. Arrows show where the list runs past the rows
+    it shows.
 
     Methods:
 
@@ -973,7 +975,8 @@ arrow, and `\{button left}` draws the button the player has bound.
   Draws the box the game draws behind a dialog, in the style the player chose.
 
   The look follows the menu style setting, so a panel drawn this way matches
-  the game's own dialogs rather than standing apart from them.
+  the game's own dialogs rather than standing apart from them. Nothing is
+  drawn while [`trx.ui.frames_shown`](#ui.frames_shown) is off.
 
   Parameters:
   - <a id="ui.primitive.panel.x" name="ui.primitive.panel.x"></a>**`x`** (number). The left edge.
@@ -1631,7 +1634,9 @@ arrow, and `\{button left}` draws the button the player has bound.
   Draws one of the game's frames behind a child widget.
 
   The frame takes the whole box the child asks for, so pad the child where the
-  text would otherwise sit against the edge.
+  text would otherwise sit against the edge. While [`trx.ui.frames_shown`](#ui.frames_shown) is
+  off, no frame is drawn, and the child of the box around the option the
+  player is on draws its text in the picked colour instead.
 
   Parameters:
   - <a id="ui.widgets.Frame.settings" name="ui.widgets.Frame.settings"></a>**`settings`** (table). The frame settings.

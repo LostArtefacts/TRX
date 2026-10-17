@@ -764,6 +764,14 @@ static UI_MENU_COLORS M_ReadMenuColors(
     return colors;
 }
 
+// trxc.ui.set_text_color(color: integer): integer
+static int M_L_UISetTextColor(lua_State *const L)
+{
+    lua_pushinteger(
+        L, UI_Text_SetDefaultColor((int32_t)luaL_checkinteger(L, 1)));
+    return 1;
+}
+
 // trxc.ui.horizontal_line(x0: number, x1: number, y: number, z?: integer, colors?: table)
 static int M_L_UIHorizontalLine(lua_State *const L)
 {
@@ -978,6 +986,7 @@ static const luaL_Reg m_Module[] = {
     { "sprite_bounds", M_L_UISpriteBounds },
     { "sprite_count", M_L_UISpriteCount },
     { "interpolation_rate", M_L_UIInterpolationRate },
+    { "set_text_color", M_L_UISetTextColor },
     { "draw_background", M_L_UIDrawBackground },
     { "draw_backdrop", M_L_UIDrawBackdrop },
     { "draw_model", M_L_UIDrawModel },

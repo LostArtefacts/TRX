@@ -163,6 +163,7 @@ static const RGB_888 m_TR4Shades[M_TR4_COLOR_COUNT][2] = {
 };
 
 static RGBA_F m_TextColor[M_MAX_COLOR][4] = {};
+static int32_t m_DefaultColor = 0;
 
 // The height of a capital in each font, in sprite units above the baseline,
 // which the TR4 shades are spread over.
@@ -630,7 +631,7 @@ static void M_Process(
     const float start_x = x;
 
     M_FONT current_font = M_FONT_DEFAULT;
-    int32_t color_idx = 0;
+    int32_t color_idx = m_DefaultColor;
     int32_t prev_color_idx = color_idx;
     bool visible = true;
 
@@ -849,6 +850,13 @@ void UI_Text_Measure(
 {
     M_Process(
         text, out_w, out_h, settings, 0.0f, 0.0f, M_ScaleNeutral, nullptr);
+}
+
+int32_t UI_Text_SetDefaultColor(const int32_t color_idx)
+{
+    const int32_t previous = m_DefaultColor;
+    m_DefaultColor = color_idx >= 0 && color_idx < M_MAX_COLOR ? color_idx : 0;
+    return previous;
 }
 
 void UI_Text_Draw(

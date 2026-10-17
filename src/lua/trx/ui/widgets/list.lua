@@ -89,8 +89,9 @@ local function list_scroll_into_view(list)
 end
 
 ---A column of rows that the player picks one entry from. The row under the
----cursor is drawn in a frame. Arrows show where the list runs past the rows it
----shows.
+---cursor is drawn in a frame, or in the picked colour while
+---`trx.ui.frames_shown` is off. Arrows show where the list runs past the rows
+---it shows.
 ---@class (exact) trx.ui.List: trx.ui.Widget
 local List = h.class("ui.List", { extends = "ui.Widget" })
 
@@ -242,7 +243,8 @@ local function list_paint(list, x, y, w)
       )
       top = top + LIST_RULE_HEIGHT * scale
     end
-    if i == list._selected then
+    local picked = i == list._selected
+    if picked then
       local overhang = setting(list, "frame_overhang") * scale
       primitive.panel(
         x,
@@ -253,7 +255,13 @@ local function list_paint(list, x, y, w)
         trx.ui.FrameStyle.SELECTED
       )
     end
-    list_draw_row(list, row, x, top, w, scale)
+    if picked and not trx.ui.frames_shown then
+      local previous = raw.set_text_color(base.PICKED_COLOR)
+      list_draw_row(list, row, x, top, w, scale)
+      raw.set_text_color(previous)
+    else
+      list_draw_row(list, row, x, top, w, scale)
+    end
     top = top
       + (setting(list, "row_height") + setting(list, "row_spacing")) * scale
   end

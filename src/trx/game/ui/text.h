@@ -18,6 +18,11 @@ void UI_ShutdownText(void);
 // Observe level load to establish glyph widths.
 void UI_LoadText(void);
 
+// Sets the colour text is drawn in where it names none, until a colour marker
+// in the text changes it. Returns the colour it replaces. 0 is the plain
+// colour.
+int32_t UI_Text_SetDefaultColor(int32_t color_idx);
+
 // Draw the given text at screen coordinates (x, y) with specified settings.
 void UI_Text_Draw(
     const char *text, float x, float y, UI_TEXT_SETTINGS settings);

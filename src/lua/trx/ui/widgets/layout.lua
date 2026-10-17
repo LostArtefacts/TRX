@@ -3,6 +3,7 @@ require("trx.internal.helpers")
 local base = require("trx.ui.widgets.base")
 
 local primitive = trx.ui.primitive
+
 ---@class (partial) trx.ui.widgets
 local widgets = trx.ui.widgets
 local W = base.W
@@ -125,7 +126,9 @@ end
 ---Draws one of the game's frames behind a child widget.
 ---
 ---The frame takes the whole box the child asks for, so pad the child where the
----text would otherwise sit against the edge.
+---text would otherwise sit against the edge. While `trx.ui.frames_shown` is
+---off, no frame is drawn, and the child of the box around the option the
+---player is on draws its text in the picked colour instead.
 ---@param settings trx.ui.widgets.Frame.settings The frame settings.
 ---@return trx.ui.Widget # The framed widget.
 function widgets.Frame(settings)
@@ -133,6 +136,16 @@ function widgets.Frame(settings)
     return w.child:measure()
   end, function(w, x, y, bw, bh)
     local style = value_of(w.style)
+    if not trx.ui.frames_shown then
+      if style == trx.ui.FrameStyle.SELECTED then
+        local previous = raw.set_text_color(base.PICKED_COLOR)
+        w.child:paint(x, y, bw, bh)
+        raw.set_text_color(previous)
+      else
+        w.child:paint(x, y, bw, bh)
+      end
+      return
+    end
     if style ~= false then
       primitive.panel(
         x,
