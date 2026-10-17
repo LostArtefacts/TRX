@@ -7,6 +7,8 @@
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/clock/common.h>
+#include <trx/game/clock/const.h>
 #include <trx/game/input/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
@@ -25,6 +27,11 @@
 #define M_WORD_SPACING 6.0f
 #define M_DIM_COLOR 12
 #define M_MAX_COLOR 13
+#define M_TR4_COLOR_COUNT 10
+#define M_TR4_SHADE_ROWS 16
+#define M_TR4_BASE_ROW 11
+#define M_TR4_PULSE_COLOR 1
+#define M_TR4_PULSE_FRAMES 32
 
 typedef enum {
     M_FONT_DEFAULT = 0,
@@ -137,7 +144,29 @@ static RGB_888 m_ColorDark[M_MAX_COLOR] = {
     // clang-format on
 };
 
+// The colours of the original TR4 font. Each grades from its first shade at
+// the top of a capital to its second one sixteen rows down, past the baseline.
+// A shade of 128 leaves the glyph as it is drawn.
+static const RGB_888 m_TR4Shades[M_TR4_COLOR_COUNT][2] = {
+    // clang-format off
+    { { 128, 128, 128 }, { 128, 128, 128 } },
+    { { 128, 128, 128 }, { 128, 128, 128 } },
+    { { 128, 128, 128 }, { 128, 128, 128 } },
+    { { 128,   0,   0 }, {  64,   0,   0 } },
+    { {   0,   0, 160 }, {   0,   0,  80 } },
+    { { 128, 128, 128 }, {  16,  16,  16 } },
+    { { 192, 128,  64 }, {  64,  16,   0 } },
+    { {  16,  16,  16 }, { 128, 128, 128 } },
+    { { 224, 192,   0 }, {  64,  32,   0 } },
+    { { 128,   0,   0 }, {  64,   0,   0 } },
+    // clang-format on
+};
+
 static RGBA_F m_TextColor[M_MAX_COLOR][4] = {};
+
+// The height of a capital in each font, in sprite units above the baseline,
+// which the TR4 shades are spread over.
+static int32_t m_CapHeight[M_FONT_COUNT] = {};
 
 static float M_ScaleScreen(const float value)
 {
@@ -157,6 +186,70 @@ static RGBA_F M_ToRGBA_F(const RGB_888 color)
         .b = color.b / 255.0f,
         .a = 1.0f,
     };
+}
+
+// Doubles a TR4 shade, as the original lights a glyph: 128 and above draw at
+// full brightness.
+static float M_TR4Light(const int32_t shade)
+{
+    return MIN(shade * 2, 255) / 255.0f;
+}
+
+// Returns a TR4 colour at a shade row. The pulsing colour brightens and dims
+// over 32 frames, the same at every row.
+static RGBA_F M_GetTR4Shade(const int32_t color_idx, const int32_t row)
+{
+    if (color_idx == M_TR4_PULSE_COLOR) {
+        const int32_t frame =
+            (int32_t)(Clock_GetRealTime() * LOGIC_FPS) % M_TR4_PULSE_FRAMES;
+        const uint8_t pulse =
+            (uint8_t)((frame > 16 ? (uint8_t)-frame : frame) << 3);
+        const float light = M_TR4Light(pulse);
+        return (RGBA_F) { .r = light, .g = light, .b = light, .a = 1.0f };
+    }
+    const RGB_888 from = m_TR4Shades[color_idx][0];
+    const RGB_888 to = m_TR4Shades[color_idx][1];
+    const int32_t rest = M_TR4_SHADE_ROWS - row;
+    return (RGBA_F) {
+        .r = M_TR4Light(((to.r * row) >> 4) + ((from.r * rest) >> 4)),
+        .g = M_TR4Light(((to.g * row) >> 4) + ((from.g * rest) >> 4)),
+        .b = M_TR4Light(((to.b * row) >> 4) + ((from.b * rest) >> 4)),
+        .a = 1.0f,
+    };
+}
+
+// Returns the TR4 shade row at a height in a glyph's sprite. The original
+// shades the top of a capital at the first row and the baseline at row 11.
+static int32_t M_GetTR4Row(const M_FONT font, const int32_t y)
+{
+    const int32_t cap = m_CapHeight[font];
+    if (cap <= 0) {
+        return M_TR4_BASE_ROW;
+    }
+    const int32_t above = MAX(y + cap, 0);
+    int32_t row = (M_TR4_BASE_ROW * above + cap / 2) / cap;
+    CLAMP(row, 0, M_TR4_SHADE_ROWS - 1);
+    return row;
+}
+
+static bool M_IsTR4Shaded(const int32_t color_idx)
+{
+    return g_TRVersion == 4 && color_idx >= 0 && color_idx < M_TR4_COLOR_COUNT;
+}
+
+// Colours a glyph in a TR4 colour, its top and its bottom at the rows its
+// sprite reaches.
+static void M_ShadeTR4Glyph(
+    const M_FONT font, const int32_t sprite_idx, const int32_t color_idx,
+    RGBA_F out[4])
+{
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
+    const int32_t top_row = M_GetTR4Row(font, sprite->y0);
+    const int32_t bottom_row = M_GetTR4Row(font, sprite->y1);
+    out[0] = M_GetTR4Shade(color_idx, top_row);
+    out[1] = out[0];
+    out[2] = M_GetTR4Shade(color_idx, bottom_row);
+    out[3] = out[2];
 }
 
 static int32_t M_HasGlyph(const M_FONT font, const M_GLYPH_INFO *const glyph)
@@ -499,9 +592,14 @@ static float M_DrawGlyph(
     const bool renders = glyph->role != GLYPH_TEXT || glyph->mesh_idx >= 0;
     if (renders && visible && draw_func != nullptr) {
         const OBJECT *const object = Object_Get(m_FontObjects[glyph_font]);
-        draw_func(
-            x, y, z, scale, scale, object->mesh_idx + glyph->mesh_idx,
-            m_TextColor[color_idx]);
+        const int32_t sprite_idx = object->mesh_idx + glyph->mesh_idx;
+        RGBA_F shaded[4];
+        const RGBA_F *colors = m_TextColor[color_idx];
+        if (M_IsTR4Shaded(color_idx)) {
+            M_ShadeTR4Glyph(glyph_font, sprite_idx, color_idx, shaded);
+            colors = shaded;
+        }
+        draw_func(x, y, z, scale, scale, sprite_idx, colors);
     }
 
     return spacing * scale / UI_TEXT_BASE_SCALE;
@@ -688,7 +786,12 @@ void UI_LoadText(void)
     for (int32_t i = 0; i < M_MAX_COLOR; i++) {
         m_TextColor[i][0] = M_ToRGBA_F(m_ColorLight[i]);
         m_TextColor[i][1] = M_ToRGBA_F(m_ColorLight[i]);
-        if (g_TRVersion == 3) {
+        if (M_IsTR4Shaded(i)) {
+            m_TextColor[i][0] = M_GetTR4Shade(i, 0);
+            m_TextColor[i][1] = m_TextColor[i][0];
+            m_TextColor[i][2] = M_GetTR4Shade(i, M_TR4_BASE_ROW);
+            m_TextColor[i][3] = m_TextColor[i][2];
+        } else if (g_TRVersion == 3) {
             m_TextColor[i][2] = M_ToRGBA_F(m_ColorDark[i]);
             m_TextColor[i][3] = M_ToRGBA_F(m_ColorDark[i]);
         } else {
@@ -698,9 +801,17 @@ void UI_LoadText(void)
     }
 
     for (M_FONT font = 0; font < M_FONT_COUNT; font++) {
+        m_CapHeight[font] = 0;
         for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
              glyph_ptr++) {
             glyph_ptr->width[font] = M_GetGlyphWidth(font, glyph_ptr);
+            if (glyph_ptr->width[font] > 0
+                && strcmp(glyph_ptr->text, "A") == 0) {
+                const OBJECT *const object = Object_Get(m_FontObjects[font]);
+                const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(
+                    object->mesh_idx + glyph_ptr->mesh_idx);
+                m_CapHeight[font] = -sprite->y0;
+            }
         }
     }
 }

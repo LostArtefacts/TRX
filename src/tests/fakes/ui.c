@@ -6,6 +6,7 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
+#include <trx/game/clock/common.h>
 #include <trx/game/anims/types.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/common.h>
@@ -199,4 +200,10 @@ OBJECT_ID ObjectFamily_GetMember(const OBJECT_FAMILY family, const int32_t idx)
     };
     return idx >= 0 && idx < (int32_t)ARRAY_SIZE(secrets) ? secrets[idx]
                                                           : NO_OBJECT;
+}
+
+// The clock stands still, so the pulsing TR4 text colour holds one shade.
+double Clock_GetRealTime(void)
+{
+    return 0.0;
 }
