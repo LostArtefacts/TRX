@@ -60,6 +60,9 @@ typedef struct {
     char *level_title;
     int16_t initial_version;
     bool is_quick;
+    // When the save was made, in seconds since the epoch, or 0 for a save that
+    // does not record it.
+    int64_t saved_at;
     struct {
         bool restart;
         bool select_level;

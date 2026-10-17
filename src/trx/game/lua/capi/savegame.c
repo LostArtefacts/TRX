@@ -8,6 +8,7 @@
 #include <trx/game/savegame.h>
 
 #include <lauxlib.h>
+#include <time.h>
 
 // trxc.savegame.slot_count(pool: trx.savegame.Pool): integer
 static int M_L_SavegameSlotCount(lua_State *const L)
@@ -57,6 +58,26 @@ static int M_L_SavegameInfo(lua_State *const L)
     lua_setfield(L, -2, "can_select_level");
     lua_pushboolean(L, GF_HasAvailableStory(slot));
     lua_setfield(L, -2, "has_story");
+    if (info->saved_at != 0) {
+        const time_t saved_at = (time_t)info->saved_at;
+        const struct tm *const local = localtime(&saved_at);
+        if (local != nullptr) {
+            lua_newtable(L);
+            lua_pushinteger(L, local->tm_year + 1900);
+            lua_setfield(L, -2, "year");
+            lua_pushinteger(L, local->tm_mon + 1);
+            lua_setfield(L, -2, "month");
+            lua_pushinteger(L, local->tm_mday);
+            lua_setfield(L, -2, "day");
+            lua_pushinteger(L, local->tm_hour);
+            lua_setfield(L, -2, "hour");
+            lua_pushinteger(L, local->tm_min);
+            lua_setfield(L, -2, "minute");
+            lua_pushinteger(L, local->tm_sec);
+            lua_setfield(L, -2, "second");
+            lua_setfield(L, -2, "saved_at");
+        }
+    }
     return 1;
 }
 

@@ -48,6 +48,7 @@ Manage save slots and saved games.
     - <a id="savegame.SlotInfo.is_quick" name="savegame.SlotInfo.is_quick"></a>**`is_quick`**: boolean. Whether the save is a quick save.
     - <a id="savegame.SlotInfo.level_num" name="savegame.SlotInfo.level_num"></a>**`level_num`**: integer. Where the level sits in the main level table.
     - <a id="savegame.SlotInfo.level_title" name="savegame.SlotInfo.level_title"></a>**`level_title`**: string. The name of the level the save was made in.
+    - <a id="savegame.SlotInfo.saved_at" name="savegame.SlotInfo.saved_at"></a>**`saved_at`**: table, optional. When the save was made, in the player's local time, or `nil` for a save that does not record it.
 
 ### Functions
 
