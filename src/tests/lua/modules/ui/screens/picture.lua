@@ -14,6 +14,7 @@ local CHOICE_CONFIRM = 2
 local DISPLAY = 20
 local FADE_IN = 5
 local FADE_OUT = 4
+local HOLD = 3
 local LEVEL_FADE_IN = 16
 
 require("common.ui.fade").setup()
@@ -96,9 +97,13 @@ test("a picture fades out after its time and ends", function()
   open(false, false)
   ticks(FADE_IN + DISPLAY + 2)
   assert(black() ~= nil, "the picture did not start to fade out")
-  ticks(FADE_OUT - 3)
+  ticks(FADE_OUT - 1)
+  assert(black() == 0xFF, "the picture did not fade out to black")
+  assert(fake.take_choice(PICTURE) == CHOICE_NONE, "it ended on the fade")
+  ticks(HOLD - 2)
+  assert(black() == 0xFF, "the picture did not rest on black")
   assert(fake.take_choice(PICTURE) == CHOICE_NONE, "it ended too soon")
-  ticks(2)
+  fake.tick()
   assert(fake.take_choice(PICTURE) == CHOICE_CONFIRM, "it did not end")
   finish()
 end)

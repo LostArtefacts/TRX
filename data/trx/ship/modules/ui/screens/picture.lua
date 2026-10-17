@@ -14,6 +14,9 @@ local M = {}
 -- The loading bar of a loading picture, narrower than the level views' one.
 local BAR = { width = 0.76, height = 12, y = 0.941 }
 
+-- How long the screen stays black after the picture has faded out.
+local HOLD_TICKS = 3
+
 ---@param ctx trx.ui.PictureContext
 local function open(ctx)
   local drawn = false
@@ -33,7 +36,7 @@ local function open(ctx)
     skip = trx.input.SkipContext.TO_SCREEN,
     leave = function(fades)
       if not ctx.is_loading then
-        fades:leave({ ticks = ctx.fade_out_ticks })
+        fades:leave({ ticks = ctx.fade_out_ticks, hold = HOLD_TICKS })
       elseif drawn then
         hand_over()
       else
