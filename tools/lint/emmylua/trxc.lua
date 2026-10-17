@@ -564,6 +564,7 @@ trxc = {}
 ---@field push_text_scale fun(factor: number)
 ---@field reserve fun(region: trx.ui.Region, w: number, h: number): integer
 ---@field set_clipboard fun(text: string)
+---@field set_text_color fun(color: integer): integer
 ---@field slot_box fun(slot: integer): number?, number, number, number
 ---@field sprite fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, color: trx.math.Color|table)
 ---@field sprite_bounds fun(object: trx.catalog.objects, sprite_num: integer): number, number, number, number

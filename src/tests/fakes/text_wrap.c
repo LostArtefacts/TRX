@@ -51,3 +51,13 @@ char *UI_Text_WordWrap(
     Memory_Free(line);
     return result;
 }
+
+// Keeps the default text colour and hands the last one back. Nothing a test
+// reads depends on it.
+int32_t UI_Text_SetDefaultColor(const int32_t color_idx)
+{
+    static int32_t current = 0;
+    const int32_t previous = current;
+    current = color_idx;
+    return previous;
+}

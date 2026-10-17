@@ -23,6 +23,10 @@ local Tween = h.class_of("ui.Tween")
 -- The draw order of a frame, behind text.
 local FRAME_Z = 160
 
+-- The text colour that marks the option the player is on where no frame
+-- does: the colour the original TR4 pulses its picked entry in.
+local PICKED_COLOR = 1
+
 -- Removes a placed widget from its region. trx.ui.regions sets it, because
 -- the regions are built on top of the widgets.
 ---@type fun(widget: trx.ui.Widget)?
@@ -298,6 +302,7 @@ end
 return {
   W = Widget,
   FRAME_Z = FRAME_Z,
+  PICKED_COLOR = PICKED_COLOR,
   is_signal = is_signal,
   value_of = value_of,
   new_widget = new_widget,

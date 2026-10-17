@@ -132,7 +132,8 @@ end)()
 ---Draws the box the game draws behind a dialog, in the style the player chose.
 ---
 ---The look follows the menu style setting, so a panel drawn this way matches
----the game's own dialogs rather than standing apart from them.
+---the game's own dialogs rather than standing apart from them. Nothing is
+---drawn while `trx.ui.frames_shown` is off.
 ---@param x number The left edge.
 ---@param y number The top edge.
 ---@param z integer The draw order.
@@ -143,6 +144,9 @@ function primitive.panel(x, y, z, w, h, style)
   local frame = frames[style]
   if frame == nil then
     error("unknown frame style", 2)
+  end
+  if not trx.ui.frames_shown then
+    return
   end
   raw.panel(x, y, z, w, h, frame.look, frame.fill, themes.menu())
 end
