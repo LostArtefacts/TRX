@@ -27,7 +27,9 @@
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
 - Added an option to blend smoke, shadows, footprints and blood as the PlayStation did (Graphic Options → Rendering → PlayStation blending)
+- Added splashes where rain hits the ground or the water (Graphic Options → Visuals → Rain splashes) (#6838 / TRX1726)
 - Improved the frame rate, as the game now draws solid surfaces faster
+- Changed rain to fall as far as the fog reaches, rather than only near Lara
 - Fixed the screen not fading to black after a skipped FMV (TRX1613)
 - Fixed static objects keeping the underwater tint and lighting after their room drains (TRX1630, regression from 1.11)
 - Fixed dynamic lights, such as a flare in Lara's hand, not lighting the room once more than 32 were active, for example in the Temple of Horus (OG bug) (TRX1533)

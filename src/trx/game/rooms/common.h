@@ -69,6 +69,11 @@ BOUNDS_32 Room_GetWorldBounds(void);
 void Room_BuildOutsideTable(void);
 int32_t Room_GetOutsideStatus(
     XYZ_32 pos, int16_t *out_room_num, int16_t *out_bbox_room_num);
+// Finds the open sky above a spot: the ceiling and the floor there, as seen
+// from the first outside room that the spot lies in. Returns false where no
+// outside room covers the spot.
+bool Room_GetOutsideColumn(
+    int32_t x, int32_t z, int32_t *out_ceiling, int32_t *out_floor);
 
 bool Room_PointInside(const ROOM *room, XYZ_32 point);
 

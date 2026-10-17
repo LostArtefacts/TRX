@@ -1993,6 +1993,10 @@
             "title": "PS1 raindrops",
             "description": "Raindrops will be added to the scene rather than blended into it, so they appear pale as on the PS1.",
         },
+        "visuals.enable_rain_splashes": {
+            "title": "Rain splashes",
+            "description": "Raindrops will splash where they hit the ground or the water.",
+        },
         "visuals.enable_reflections": {
             "title": "Reflections",
             "description": "Enables reflections on certain objects.",

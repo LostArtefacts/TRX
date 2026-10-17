@@ -1993,6 +1993,10 @@
             "title": "\\{review}Gouttes de pluie PS1",
             "description": "\\{review}Les gouttes de pluie seront ajoutées à la scène au lieu d'y être fondues, et paraîtront donc claires comme sur PS1.",
         },
+        "visuals.enable_rain_splashes": {
+            "title": "\\{review}Éclaboussures de pluie",
+            "description": "\\{review}Les gouttes de pluie éclabousseront là où elles touchent le sol ou l'eau.",
+        },
         "visuals.enable_reflections": {
             "title": "Reflets",
             "description": "Active les reflets sur certains objets.",

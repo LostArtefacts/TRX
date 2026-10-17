@@ -1993,6 +1993,10 @@
             "title": "\\{review}PS1-Regentropfen",
             "description": "\\{review}Regentropfen werden der Szene hinzugefügt, statt mit ihr vermischt zu werden, und wirken dadurch hell wie auf der PS1.",
         },
+        "visuals.enable_rain_splashes": {
+            "title": "\\{review}Regenspritzer",
+            "description": "\\{review}Regentropfen spritzen dort auf, wo sie auf den Boden oder das Wasser treffen.",
+        },
         "visuals.enable_reflections": {
             "title": "Reflektionen",
             "description": "Aktiviert Reflektionen auf bestimmten Objekten.",

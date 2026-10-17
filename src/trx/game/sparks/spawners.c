@@ -207,6 +207,48 @@ void Sparks_TriggerSmallSplash(const XYZ_32 pos, const int32_t count)
     }
 }
 
+void Sparks_TriggerRainSplash(const XYZ_32 pos)
+{
+    for (int32_t i = 0; i < 2; i++) {
+        SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_SPLASH);
+        spark->src_color.r = 88;
+        spark->src_color.g = 100;
+        spark->src_color.b = (Random_GetDraw() & 0x1F) + 120;
+        spark->dst_color.r = spark->src_color.r >> 1;
+        spark->dst_color.g = spark->src_color.g >> 1;
+        spark->dst_color.b = spark->src_color.b >> 1;
+        spark->col_fade_speed = 2;
+        spark->fade_to_black = 4;
+        spark->life = 12;
+        spark->s_life = 12;
+        spark->draw_type = DRAW_BLEND_ADD;
+        spark->extras = 0;
+        spark->dynamic = -1;
+        const int32_t ang = Random_GetDraw() & 0xFFF;
+        const int32_t speed = 64 + (Random_GetDraw() & 0x7F);
+        const XYZ_32 dir =
+            XYZ_32_RotateYaw((XYZ_32) { .z = speed }, -(ang << 4));
+        spark->vel.x = dir.x;
+        spark->vel.y = -64 - (Random_GetDraw() & 0x7F);
+        spark->vel.z = dir.z;
+        spark->pos = pos;
+        spark->friction = 5;
+        // Each spark keeps one pixel of the reference screen at any distance,
+        // so that it neither swells near the camera nor vanishes far away.
+        spark->flags = 0;
+        spark->scalar = 0;
+        spark->max_y_vel = 0;
+        spark->gravity = (Random_GetDraw() & 0xF) + 48;
+        spark->size.width = 1;
+        spark->src_size.width = 1;
+        spark->size.height = 1;
+        spark->src_size.height = 1;
+        spark->dst_size.width = 1;
+        spark->dst_size.height = 1;
+        Sparks_FinishSetup(spark);
+    }
+}
+
 void Sparks_TriggerBreath(
     const XYZ_32 pos, const XYZ_32 vel, const int16_t room_num)
 {
