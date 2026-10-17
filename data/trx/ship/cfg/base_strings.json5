@@ -23,6 +23,17 @@
             "no_changes": "No changes to apply.",
             "title_fmt": "Apply preset %s?",
         },
+        "flat_menu": {
+            "combine": "COMBINE",
+            "combine_with": "COMBINE WITH",
+            "count_fmt": "%d x %s",
+            "empty_slot": "Empty Slot",
+            "equip": "EQUIP",
+            "examine": "EXAMINE",
+            "load_game": "LOAD GAME",
+            "save_game": "SAVE GAME",
+            "use": "USE",
+        },
         "globe_select": {
             "area_1": "Area 1",
             "area_2": "Area 2",
@@ -1811,6 +1822,14 @@
         "ui.menu_style": {
             "title": "Menu style",
             "description": "Changes how menus are displayed.\n\n- PC: UI style matches the PC version.\n- PS1: UI style matches the PS1 version.",
+        },
+        "ui.menu_system": {
+            "description": "How the game shows its menus. Ring shows what Lara carries on a ring that turns, as in TR1 to TR3. Flat shows it in a row across the screen with a list of what can be done with it, as in the original TR4.",
+            "title": "Menu system",
+            "values": {
+                "flat": "Flat",
+                "ring": "Ring",
+            }
         },
         "ui.pause_background_style": {
             "title": "Pause background",

@@ -23,6 +23,17 @@
             "no_changes": "\\{review}Aucun changement à appliquer.",
             "title_fmt": "\\{review}Appliquer le préréglage %s ?",
         },
+        "flat_menu": {
+            "combine": "\\{review}COMBINER",
+            "combine_with": "\\{review}COMBINER AVEC",
+            "count_fmt": "\\{review}%d x %s",
+            "empty_slot": "\\{review}Emplacement vide",
+            "equip": "\\{review}ÉQUIPER",
+            "examine": "\\{review}EXAMINER",
+            "load_game": "\\{review}CHARGER PARTIE",
+            "save_game": "\\{review}SAUVER PARTIE",
+            "use": "\\{review}UTILISER",
+        },
         "globe_select": {
             "area_1": "\\{review}Zone 1",
             "area_2": "\\{review}Zone 2",
@@ -1811,6 +1822,14 @@
         "ui.menu_style": {
             "title": "Style des menus",
             "description": "Changer la manière dont les menus sont affichés.\n\n- PC : Interface de la version PC.\n- PS1 : Interface de la version PlayStation.",
+        },
+        "ui.menu_system": {
+            "description": "\\{review}Comment le jeu affiche ses menus. Anneau montre ce que porte Lara sur un anneau qui tourne, comme dans TR1 à TR3. Plat le montre en une rangée sur l'écran avec la liste de ce qu'on peut en faire, comme dans le TR4 original.",
+            "title": "\\{review}Système de menu",
+            "values": {
+                "flat": "\\{review}Plat",
+                "ring": "\\{review}Anneau",
+            }
         },
         "ui.pause_background_style": {
             "title": "\\{review}Pause en arrière-plan",

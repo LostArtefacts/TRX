@@ -2190,6 +2190,18 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'modules/ui/flat_menu',
+  'bundles': [
+    b_lua_surface,
+    b_lua_math,
+    b_lua_strings,
+    b_matrix,
+    b_screen_module,
+  ],
+  'stubs': false,
+}
+
+unit_tests += {
   'name': 'modules/ui/ring/screen',
   'bundles': [
     b_lua_surface,

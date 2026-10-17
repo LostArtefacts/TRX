@@ -28,6 +28,10 @@ trx.locale.declare({
 })
 
 require("common.ui.screens.passport").setup()
+trx.ui.screens.define(
+  trx.ui.Screen.SAVE_LOAD,
+  require("common.ui.screens.passport").open_save_load
+)
 
 -- One tick of the game: the scripts read their input, and then the ring runs
 -- the book to the frame they asked for.

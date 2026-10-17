@@ -8,7 +8,7 @@
 -- closes once the player backs out or uses what they chose.
 --
 -- Usage:
---   require("common.ui.ring.screen").setup()
+--   require("common.ui.menu").setup()
 
 local entries = require("common.ui.ring.entries")
 local fade = require("common.ui.fade")
@@ -1445,13 +1445,15 @@ local function open(ctx)
   })
 end
 
--- Draws the game's menu as the inventory ring.
+-- Opens the game's menu as the inventory ring.
+M.open = open
+
+-- Forgets where the rings rested when a game starts.
 function M.setup()
   trx.events.on_game_start(forget)
   trx.events.on_level_unload(function()
     generic = nil
   end)
-  trx.ui.screens.define(trx.ui.Screen.MENU, open)
 end
 
 return M

@@ -120,10 +120,23 @@ function M.animate_selection(goal_frame, direction)
   end
 end
 
+-- Turns the entry being examined where no ring is open, or nil.
+---@type fun(yaw: number, pitch: number)?
+local turner = nil
+
+-- Lets a menu other than the ring, such as the flat menu, turn the entry
+-- being examined by hand. Pass nil once the entry is put away.
+---@param turn fun(yaw: number, pitch: number)?
+function M.set_turner(turn)
+  turner = turn
+end
+
 -- Turns the picked entry by hand, as the player examines it.
 function M.turn_selection(yaw, pitch)
   if active ~= nil then
     active.view:turn_by_hand(yaw, pitch)
+  elseif turner ~= nil then
+    turner(yaw, pitch)
   end
 end
 
