@@ -555,6 +555,7 @@ trxc = {}
 ---@field gradient_sprite fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 ---@field horizontal_line fun(x0: number, x1: number, y: number, z?: integer, colors?: table)
 ---@field image fun(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
+---@field image_size fun(path: string): integer?, integer?
 ---@field interpolation_rate fun(): number
 ---@field line fun(x0: number, y0: number, x1: number, y1: number, z?: integer, width: number, color: trx.math.Color|table)
 ---@field measure_text fun(text: string, scale?: number): number, number

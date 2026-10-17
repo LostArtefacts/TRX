@@ -120,6 +120,16 @@ void UI_ScheduleDrawScreenLine(
         y0, x1, y1, width, z, M_COLOR(color)));
 }
 
+// Reports every image as four times as wide as it is tall, so that a test can
+// tell the shape was read.
+RESULT UI_GetImageSize(
+    const char *const path, int32_t *const out_width, int32_t *const out_height)
+{
+    *out_width = 400;
+    *out_height = 100;
+    return OK;
+}
+
 void UI_ScheduleDrawImage(
     const char *const path, const int32_t x0, const int32_t y0,
     const int32_t x1, const int32_t y1, const float opacity)

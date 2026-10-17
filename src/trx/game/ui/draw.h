@@ -3,6 +3,7 @@
 #include <trx/config/enum.h>
 #include <trx/core/colors.h>
 #include <trx/core/math/types.h>
+#include <trx/core/result.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/output/draw.h>
 
@@ -51,6 +52,9 @@ void UI_ScheduleDrawTextOutline(
 void UI_ScheduleDrawScreenSprite(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprite_idx, const RGBA_F colors[4]);
+// Reports the size of an already resolved image file, in pixels.
+RESULT UI_GetImageSize(
+    const char *path, int32_t *out_width, int32_t *out_height);
 // Draw an already resolved image file in a screen box beneath all other canvas
 // content.
 void UI_ScheduleDrawImage(

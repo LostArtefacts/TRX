@@ -2,6 +2,7 @@
 
 #include <trx/config/enum.h>
 #include <trx/core/colors.h>
+#include <trx/core/result.h>
 
 // A box on the screen, as fractions of the screen width and height measured
 // from the top left corner. The whole screen is 0,0 to 1,1.
@@ -51,6 +52,11 @@ void Output_Overlay_DrawLetterbox(void);
 void Output_Overlay_SetFade(float opacity);
 float Output_Overlay_GetFade(void);
 bool Output_Overlay_LoadImage(const char *file_name);
+// Reports the size of the image that drawing a file shows, in pixels. Where
+// the file has versions for other screen shapes, the size is that of the
+// version the screen picks.
+RESULT Output_Overlay_GetImageSize(
+    const char *file_name, int32_t *out_width, int32_t *out_height);
 void Output_Overlay_DrawImage(const char *file_name);
 void Output_Overlay_DrawImageBilinear(const char *file_name);
 void Output_Overlay_DrawImageMono(const char *file_name, float intensity);

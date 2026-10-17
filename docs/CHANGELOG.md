@@ -238,6 +238,7 @@
 - Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
 - Added `false` as a style of `trx.ui.widgets.Frame`, which draws no frame, so that a frame can come and go with the cursor
 - Added `trx.ui.frames_shown`, which hides the game's frames and marks the option the player is on by its text colour instead
+- Added `trx.ui.primitive.image_size`, which reports the size of an image, and let `trx.ui.widgets.Image` take only its width or its height and keep the picture's shape
 - Added `trx.config.signals.changed`, which says when any setting changes
 - Added `scaled` to `trx.ui.widgets.Resize`, which gives a size at the default text size
 - Added `preview` to `trx.ui.widgets.Bar`, which sizes a bar by the text around it

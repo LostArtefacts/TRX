@@ -903,6 +903,26 @@ static int M_L_UIImage(lua_State *const L)
     return 1;
 }
 
+// trxc.ui.image_size(path: string): integer?, integer?
+static int M_L_UIImageSize(lua_State *const L)
+{
+    const char *const path = GamePath_PeekResolve(
+        GAME_DYNAMIC_PATH_IMAGE_FILE, luaL_checkstring(L, 1));
+    if (path == nullptr) {
+        return 0;
+    }
+    int32_t width = 0;
+    int32_t height = 0;
+    const RESULT result = UI_GetImageSize(path, &width, &height);
+    if (!IS_OK(result)) {
+        IGNORE(result);
+        return 0;
+    }
+    lua_pushinteger(L, width);
+    lua_pushinteger(L, height);
+    return 2;
+}
+
 // trxc.ui.to_screen(length: number): number
 static int M_L_UIToScreen(lua_State *const L)
 {
@@ -981,6 +1001,7 @@ static const luaL_Reg m_Module[] = {
     { "pop_text_scale", M_L_UIPopTextScale },
     { "gradient_quad", M_L_UIGradientQuad },
     { "image", M_L_UIImage },
+    { "image_size", M_L_UIImageSize },
     { "sprite", M_L_UISprite },
     { "sprite_rect", M_L_UISpriteRect },
     { "sprite_bounds", M_L_UISpriteBounds },

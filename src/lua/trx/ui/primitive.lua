@@ -208,6 +208,21 @@ primitive.gradient_quad = raw.gradient_quad
 ---@type fun(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
 primitive.image = raw.image
 
+---Reports the size of an image file, in pixels.
+---
+---Where the game keeps versions of the image for other screen shapes, the size
+---is that of the version the screen draws. Use it to give a box the shape of
+---the image it holds.
+---
+---```lua
+---local w, h = trx.ui.primitive.image_size("uklogo.pak")
+---```
+---@param path string The image file, named from the images directory.
+---@return integer? # The width, or `nil` where the game has no such image.
+---@return integer? # The height, or `nil` where the game has no such image.
+---@type fun(path: string): integer?, integer?
+primitive.image_size = raw.image_size
+
 ---Reports how many sprites an object has.
 ---
 ---An object the level did not load has none, and a model has none as well. Use
