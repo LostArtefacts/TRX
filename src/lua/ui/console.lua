@@ -395,6 +395,16 @@ local function handle_key(key)
   end
 end
 
+-- The key that closes the console is still down as the game takes the input
+-- back, and the game reads it as pressed only on its next update. Every role
+-- stays inactive until the keys that hold it are released, so the press does
+-- not reach a menu.
+local function hold_off_all()
+  for _, role in pairs(trx.input.Role) do
+    trx.input.hold_off(role)
+  end
+end
+
 trx.events.on_console_open(function()
   line.clear()
   line.forget_recall()
@@ -410,6 +420,7 @@ trx.events.on_console_close(function()
     grab:release()
     grab = nil
   end
+  hold_off_all()
 end)
 
 trx.events.on_console_log(function(text)
