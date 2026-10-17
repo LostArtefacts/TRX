@@ -43,6 +43,7 @@
 - Changed the PS1 loading bars to match the size and position of the PS1 releases, with a "Loading" caption in TR4 (TRX1619)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
+- Changed the passport, compass and other inventory items to show their dialog only once they have finished opening, rather than sometimes while still turning (TRX1779)
 - Changed the default controller layout to follow the PS1 releases: TR3 and TR4 sprint with R2, crouch with L2 and have no side steps, and TR2 to TR4 light a flare with R1 and Select together (#6019 / TRX864)
 - Changed the interface and the pickups in the corner to move in with the cinematic bars, so the bars no longer cover them (TRX1426)
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
