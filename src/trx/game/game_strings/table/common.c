@@ -11,12 +11,14 @@ typedef void (*M_LOAD_STRING_FUNC)(const char *, const char *);
 
 static VECTOR *m_GST_Layers = nullptr;
 
-static void M_Apply(const GS_TABLE *const table)
+static void M_Apply(const GS_TABLE *const table, const bool is_level)
 {
     for (const GS_GAME_STRING_ENTRY *cur = table->game_strings;
          cur != nullptr && cur->key != nullptr; cur++) {
         if (cur->value == nullptr) {
             LOG_ERROR("Invalid game string value: %s", cur->key);
+        } else if (is_level) {
+            GameString_Override(cur->key, cur->value);
         } else {
             GameString_Define(cur->key, cur->value);
         }
@@ -46,7 +48,7 @@ static void M_ApplyLayer(
     const GF_LEVEL *const level, const GS_FILE *const gs_file)
 {
     LOG_DEBUG("applying layer: %s", gs_file->path);
-    M_Apply(&gs_file->global);
+    M_Apply(&gs_file->global, false);
 
     for (int32_t i = 0; i < GFLT_NUMBER_OF; i++) {
         M_ApplyLevelTitles(gs_file, i);
@@ -68,13 +70,14 @@ static void M_ApplyLayer(
         if (gs_level_table != nullptr && gs_level_table->count != 0) {
             ASSERT(level->num >= 0);
             ASSERT(level->num < gs_level_table->count);
-            M_Apply(&gs_level_table->entries[level->num].table);
+            M_Apply(&gs_level_table->entries[level->num].table, true);
         }
     }
 }
 
 void GameStringTable_Apply(const GF_LEVEL *const level)
 {
+    GameString_RevertOverrides();
     GameString_RestoreDefaults();
     Object_ResetAllNames();
     ASSERT(m_GST_Layers != nullptr);

@@ -92,3 +92,47 @@ TEST(preserves_strings_not_in_the_build)
         GameString_Get("objects/lead_bar_item/name"), "Barra di Piombo");
     GameString_Clear();
 }
+
+TEST(an_override_is_taken_back)
+{
+    GameString_Clear();
+    GameString_Define("objects/key_item_1/name", "Key 1");
+    GameString_Override("objects/key_item_1/name", "Guardhouse Key");
+    CHECK_EQ_STR(GameString_Get("objects/key_item_1/name"), "Guardhouse Key");
+    GameString_RevertOverrides();
+    CHECK_EQ_STR(GameString_Get("objects/key_item_1/name"), "Key 1");
+    GameString_Clear();
+}
+
+TEST(a_key_overridden_twice_returns_to_its_first_value)
+{
+    GameString_Clear();
+    GameString_Define("objects/key_item_1/name", "Key 1");
+    GameString_Override("objects/key_item_1/name", "Guardhouse Key");
+    GameString_Override("objects/key_item_1/name", "Boathouse Key");
+    GameString_RevertOverrides();
+    CHECK_EQ_STR(GameString_Get("objects/key_item_1/name"), "Key 1");
+    GameString_Clear();
+}
+
+TEST(a_key_only_an_override_gave_is_unknown_again)
+{
+    GameString_Clear();
+    GameString_Override("objects/key_item_1/description", "Test");
+    CHECK(GameString_IsKnown("objects/key_item_1/description"));
+    GameString_RevertOverrides();
+    CHECK(!GameString_IsKnown("objects/key_item_1/description"));
+    CHECK_NULL(GameString_Get("objects/key_item_1/description"));
+    GameString_Clear();
+}
+
+TEST(a_reverted_key_reads_through_its_parent_reference)
+{
+    GameString_Clear();
+    GameString_Define("objects/key_item_1/description", "A key.");
+    GameString_Define("objects/key_option_1", "$objects/key_item_1");
+    GameString_Override("objects/key_option_1/description", "Test");
+    GameString_RevertOverrides();
+    CHECK_EQ_STR(GameString_Get("objects/key_option_1/description"), "A key.");
+    GameString_Clear();
+}
