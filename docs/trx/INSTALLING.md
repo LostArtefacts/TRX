@@ -1435,7 +1435,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── sound.lua
 │   │   │   ├── stats.lua
 │   │   │   ├── strip.lua
-│   │   │   └── text.lua
+│   │   │   ├── text.lua
+│   │   │   └── title.lua
 │   │   ├── hud
 │   │   │   ├── overlay
 │   │   │   │   ├── ammo.lua
@@ -2977,7 +2978,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── sound.lua
     │   │   │   │   ├── stats.lua
     │   │   │   │   ├── strip.lua
-    │   │   │   │   └── text.lua
+    │   │   │   │   ├── text.lua
+    │   │   │   │   └── title.lua
     │   │   │   ├── hud
     │   │   │   │   ├── overlay
     │   │   │   │   │   ├── ammo.lua
