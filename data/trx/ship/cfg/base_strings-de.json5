@@ -30,8 +30,11 @@
             "empty_slot": "\\{review}Leerer Platz",
             "equip": "\\{review}AUSRÜSTEN",
             "examine": "\\{review}UNTERSUCHEN",
+            "exit_to_title": "\\{review}Zurück zum Titel",
             "load_game": "\\{review}SPIEL LADEN",
+            "options": "\\{review}Optionen",
             "save_game": "\\{review}SPIEL SPEICHERN",
+            "statistics": "\\{review}Statistiken",
             "use": "\\{review}BENUTZEN",
         },
         "globe_select": {
@@ -189,7 +192,8 @@
                     "items": "Items",
                     "misc": "Sonstiges",
                     "system": "System",
-                }
+                },
+                "title": "\\{review}Steuerung",
             },
             "gameplay": {
                 "tabs": {

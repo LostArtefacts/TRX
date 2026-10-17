@@ -116,7 +116,7 @@ end
 -- settings, the room that the rest of the interface leaves, and for the best
 -- times, how many rows the box shows and the times themselves. The scroll
 -- moves the rows on show without building the box again. The screen ending
--- stops it.
+-- stops it, and so does the box closing.
 local function follow(ctx, state)
   local sources = { trx.ui.signals.layout }
   for _, key in ipairs(ROW_SETTINGS) do
@@ -133,18 +133,23 @@ local function follow(ctx, state)
   for _, source in ipairs(sources) do
     listeners[#listeners + 1] = source:on(rebuild)
   end
-  ctx:on_end(function()
+  local function stop()
     for _, listener in ipairs(listeners) do
       listener:detach()
     end
+    listeners = {}
     if state.clock ~= nil then
       state.time_text:stop()
       state.clock:stop()
+      state.clock = nil
     end
     if state.resting ~= nil then
       state.resting:stop()
+      state.resting = nil
     end
-  end)
+  end
+  ctx:on_end(stop)
+  state.stop_following = stop
 end
 
 local function new_state(level, mode, bare, live)
@@ -169,6 +174,11 @@ local function push(ctx, state, on_input)
     root = box_of(state),
     place = box.place(state),
     on_input = on_input,
+    on_close = function()
+      if state.stop_following ~= nil then
+        state.stop_following()
+      end
+    end,
   })
   follow(ctx, state)
   return state.layer
@@ -387,6 +397,19 @@ local function open_ring_entry(ctx)
       end
     end)
   )
+end
+
+-- Returns the name of the level being played and the rows of its
+-- statistics as the screen lists them, or nil outside a level. A row names a
+-- counter in `key` and gives its value in `value`, or holds a line of `text`.
+---@return string?, table[]?
+function M.level_rows()
+  local level = trx.game.current_level
+  if level == nil then
+    return nil, nil
+  end
+  local state = new_state(level, Mode.LEVEL, false, false)
+  return level.title, state.rows
 end
 
 function M.setup()

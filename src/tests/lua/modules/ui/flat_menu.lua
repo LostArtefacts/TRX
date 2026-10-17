@@ -438,6 +438,13 @@ test("the ring draws the menu unless the flat menu is picked", function()
   finish()
 end)
 
+test("the flat menu system draws no frames", function()
+  trx.config.set("ui.menu_system", "flat")
+  assert(not trx.ui.frames_shown, "the frames still show")
+  trx.config.set("ui.menu_system", "ring")
+  assert(trx.ui.frames_shown, "the frames did not come back")
+end)
+
 test("a change of the menu system waits for the open menu to close", function()
   carry()
   trx.config.set("ui.menu_system", "ring")

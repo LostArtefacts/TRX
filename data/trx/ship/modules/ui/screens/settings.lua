@@ -1,5 +1,6 @@
 -- The settings dialogs of the inventory ring: the graphics, the sound and the
--- gameplay settings, each a dialog of tabs, and the controls.
+-- gameplay settings, each a dialog of tabs, and the controls. A menu outside
+-- the ring lists them through `dialogs`.
 
 local color_editor = require("common.ui.settings.color_editor")
 local controls = require("common.ui.settings.controls")
@@ -11,6 +12,10 @@ local ring = require("common.ui.ring")
 local tabs = require("common.ui.settings.tabs")
 
 local M = {}
+
+trx.locale.declare({
+  ["general/settings/controls/title"] = "Controls",
+})
 
 -- What each dialog holds: its title, and its tabs, each the settings tab it
 -- shows or the presets. The text is read again whenever a setting changes,
@@ -158,12 +163,39 @@ end
 ---@type table<string, common.ui.settings.Dialog.Place>
 local places = {}
 
+-- Returns a function that pushes a layer over a dialog, and a signal that
+-- holds whether the dialog shows. Without frames, nothing sets a layer apart
+-- from the dialog under it, so the dialog hides until the layer closes.
+local function covering(ctx)
+  local shown = trx.signal.new(true)
+  local count = 0
+  local function follow()
+    shown:set(count == 0 or trx.ui.frames_shown)
+  end
+  local function push(settings)
+    local copy = {}
+    for key, value in pairs(settings) do
+      copy[key] = value
+    end
+    copy.on_close = function(layer)
+      count = count - 1
+      follow()
+      if settings.on_close ~= nil then
+        settings.on_close(layer)
+      end
+    end
+    count = count + 1
+    follow()
+    return ctx:push(copy)
+  end
+  return push, shown
+end
+
 local function opener(which)
   ---@param ctx trx.ui.EntryContext
   return function(ctx)
-    local settings_dialog = build_dialog(which, function(settings)
-      return ctx:push(settings)
-    end)
+    local push, shown = covering(ctx)
+    local settings_dialog = build_dialog(which, push)
     if places[which] ~= nil then
       settings_dialog:restore(places[which])
     end
@@ -175,7 +207,7 @@ local function opener(which)
     end)
     return ctx:push({
       root = trx.ui.widgets.Stack({
-        visible = resting,
+        visible = resting & shown,
         children = { settings_dialog.widget },
       }),
       place = dialog.PLACE,
@@ -213,6 +245,89 @@ local function open_controls(ctx)
     resting:stop()
   end)
   return layer
+end
+
+-- Pushes one of the dialogs over a screen outside the ring, in the middle of
+-- the screen. Backing out of it closes it and runs `on_close`.
+local function push_dialog(ctx, which, on_close)
+  local push, shown = covering(ctx)
+  local settings_dialog = build_dialog(which, push)
+  if places[which] ~= nil then
+    settings_dialog:restore(places[which])
+  end
+  local is_open = true
+  local function finish()
+    if is_open then
+      is_open = false
+      places[which] = settings_dialog:remember()
+      settings_dialog:close()
+    end
+  end
+  ctx:on_end(finish)
+  return ctx:push({
+    root = trx.ui.widgets.Stack({
+      visible = shown,
+      children = { settings_dialog.widget },
+    }),
+    place = { y = 0.5 },
+    on_input = function(layer, keys)
+      if settings_dialog:control(keys) then
+        finish()
+        layer:close()
+        on_close()
+      end
+    end,
+  })
+end
+
+-- Pushes the controls dialog over a screen outside the ring, in the middle of
+-- the screen. Leaving it closes it and runs `on_close`.
+local function push_controls(ctx, on_close)
+  local is_open = true
+  ---@type trx.ui.StackLayer
+  local layer
+  ---@type fun()
+  local close_dialog
+  local function finish()
+    if is_open then
+      is_open = false
+      close_dialog()
+    end
+  end
+  layer, close_dialog = controls.open({
+    push = function(settings)
+      return ctx:push(settings)
+    end,
+    centred = true,
+    finish = function()
+      finish()
+      layer:close()
+      on_close()
+    end,
+  })
+  ctx:on_end(finish)
+  return layer
+end
+
+-- The dialogs, in the order a menu outside the ring lists them: each with
+-- its title, and a function that pushes it over a screen and runs `on_close`
+-- once the player leaves it.
+---@return { title: string, push: fun(ctx: trx.ui.ScreenContext, on_close: fun()): trx.ui.StackLayer }[]
+function M.dialogs()
+  local result = {}
+  for _, which in ipairs({ "graphics", "sound", "gameplay" }) do
+    result[#result + 1] = {
+      title = (DIALOGS[which]()),
+      push = function(ctx, on_close)
+        return push_dialog(ctx, which, on_close)
+      end,
+    }
+  end
+  result[#result + 1] = {
+    title = trx.locale.get("general/settings/controls/title"),
+    push = push_controls,
+  }
+  return result
 end
 
 function M.setup()
