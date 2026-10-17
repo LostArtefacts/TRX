@@ -406,6 +406,9 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     The context of the pause screen, for [`trx.ui.Screen.PAUSE`](#ui.Screen).
 
+    Properties:
+    - <a id="ui.PauseContext.can_exit_to_title" name="ui.PauseContext.can_exit_to_title"></a>**`can_exit_to_title`**: boolean. Whether the screen can leave for the title screen. It cannot while an FMV plays. *(read-only)*
+
     Methods:
 
     - <a id="ui.PauseContext.exit_to_title" name="ui.PauseContext.exit_to_title"></a>[lua]`pausecontext:exit_to_title()`  
