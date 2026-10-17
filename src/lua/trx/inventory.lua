@@ -262,8 +262,7 @@ end
 M.combine_partners = raw.combine_partners
 
 ---Combines two things Lara carries into what they make, taking one of each,
----as combining them in the inventory ring does. The ring rests on what they
----made when it next settles.
+---as combining them in the inventory ring does.
 ---
 ---```lua
 ---local made = trx.inventory.combine(item, partner)
@@ -273,6 +272,43 @@ M.combine_partners = raw.combine_partners
 ---@return trx.catalog.objects? # What they made, or `nil`, changing nothing, where the two do not combine or Lara lacks either.
 ---@type fun(object_id: trx.catalog.objects, partner_id: trx.catalog.objects): trx.catalog.objects?
 M.combine = raw.combine
+
+---Returns the inventory icon for a pickup, whether or not Lara has one.
+---@param object trx.catalog.objects The pickup to check.
+---@return trx.catalog.objects? # The icon's object id, or `nil` for a pickup that has none.
+---@type fun(object: trx.catalog.objects): trx.catalog.objects?
+M.icon_of = raw.icon_of
+
+---Uses something Lara carries, as choosing it in the inventory ring does:
+---she draws a weapon, takes a medipack, lights a flare, or uses a key on what
+---she stands at. Something that has no use does nothing.
+---
+---```lua
+---trx.inventory.use(trx.catalog.objects.SMALL_MEDIPACK_OPTION)
+---```
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@type fun(object_id: trx.catalog.objects)
+M.use = raw.use
+
+---What the inventory ring offers for an entry.
+---@trx.record
+---@class trx.inventory.Actions
+---@field use boolean Whether choosing it uses it.
+---@field examine boolean Whether it can be examined, which the player's settings and its description decide.
+---@field combine boolean Whether Lara carries something it combines with, so that choosing it combines rather than uses it.
+
+---What the inventory ring offers for an entry: using, examining or combining
+---it.
+---
+---```lua
+---if trx.inventory.actions(object).examine then
+---  trx.log.info("it can be examined")
+---end
+---```
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return trx.inventory.Actions # What it offers.
+---@type fun(object_id: trx.catalog.objects): trx.inventory.Actions
+M.actions = raw.actions
 
 ---Indexing the module reaches an entry of Lara's inventory, and
 ---`#trx.inventory` is how many kinds of thing she carries. Entries are keyed

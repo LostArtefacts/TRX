@@ -201,11 +201,32 @@ void UI_ScheduleDrawModelInWorld(
     const OBJECT_ID object_id, const uint32_t mesh_mask,
     const UI_MODEL_WORLD *const world, const UI_MODEL_LIGHT *const light)
 {
+    // Each step as M for a move, T for a turn and S for a scale, and each bone
+    // turn as the bone and the axes it turns about.
+    char kinds[UI_MODEL_STEPS + 1] = "";
+    for (int32_t i = 0; i < world->step_count; i++) {
+        kinds[i] = world->steps[i].kind == UI_MODEL_STEP_TURN ? 'T'
+            : world->steps[i].kind == UI_MODEL_STEP_SCALE     ? 'S'
+                                                              : 'M';
+    }
+    char bones[UI_MODEL_BONES * 24] = "";
+    for (int32_t i = 0; i < world->bone_count; i++) {
+        char part[24];
+        snprintf(
+            part, sizeof(part), "%s%d:%d,%d,%d", i > 0 ? ";" : "",
+            world->bones[i].bone,
+            world->bones[i].axes.x ? world->bones[i].rot.x : 0,
+            world->bones[i].axes.y ? world->bones[i].rot.y : 0,
+            world->bones[i].axes.z ? world->bones[i].rot.z : 0);
+        strcat(bones, part);
+    }
     FakeUIDraw_Record(String_FormatStatic(
-        "world_model obj=%d mask=%u lit=%u lights=%d steps=%d fov=%d",
+        "world_model obj=%d mask=%u lit=%u lights=%d steps=%d fov=%d kinds=%s "
+        "frame=%d next=%d blend=%.2f bones=%s pivot=%d",
         (int32_t)object_id, mesh_mask, light != nullptr ? light->lit_mask : 0,
         light != nullptr ? light->light_count : 0, world->step_count,
-        world->fov));
+        world->fov, kinds, world->frame, world->next_frame, world->blend, bones,
+        world->at_pivot ? 1 : 0));
 }
 
 void UI_ScheduleDrawDarken(const float opacity)
@@ -232,6 +253,14 @@ void UI_ScheduleDrawBackground(
     FakeUIDraw_Record(String_FormatStatic(
         "background path=%s mono=%d dim=%.2f", path != nullptr ? path : "-",
         mono, dim));
+}
+
+void UI_ScheduleDrawBackdrop(
+    const BACKGROUND_TYPE style, const float progress, const char *const path)
+{
+    FakeUIDraw_Record(String_FormatStatic(
+        "backdrop style=%d progress=%.2f path=%s", (int32_t)style, progress,
+        path != nullptr ? path : "-"));
 }
 
 void UI_Draw(void)

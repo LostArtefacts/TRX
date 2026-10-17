@@ -20,7 +20,6 @@
 ---@field inject trxc.inject
 ---@field input trxc.input
 ---@field inventory trxc.inventory
----@field inventory_ring trxc.inventory_ring
 ---@field items trxc.items
 ---@field json trxc.json
 ---@field lara trxc.lara
@@ -242,6 +241,7 @@ trxc = {}
 ---@field get_level fun(table_type: trx.game.LevelTable, num: integer): trx.game.Level?
 ---@field get_version fun(): integer
 ---@field globe fun(): trx.game.GlobeArea[]
+---@field is_leaving fun(): boolean
 ---@field is_loaded fun(): boolean
 ---@field is_ngplus fun(): boolean
 ---@field is_photo_mode fun(): boolean
@@ -310,23 +310,13 @@ trxc = {}
 ---@field unbind fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout)
 
 ---@class (exact) trxc.inventory
+---@field actions fun(object: trx.catalog.objects): { use: boolean, examine: boolean, combine: boolean }
 ---@field combine fun(object: trx.catalog.objects, partner: trx.catalog.objects): trx.catalog.objects?
 ---@field combine_partners fun(object: trx.catalog.objects): trx.catalog.objects[]
 ---@field get fun(level_num: trx.game.LevelNum): trx.inventory.Inventory?
 ---@field get_current fun(): trx.inventory.Inventory
-
----@class (exact) trxc.inventory_ring
----@field animate_selection fun(goal_frame: integer, direction: integer)
----@field count fun(): string?
----@field declare_item fun(spec: table)
----@field hint fun(): string...
----@field hint_revision fun(): integer
 ---@field icon_of fun(object: trx.catalog.objects): trx.catalog.objects?
----@field item fun(object_id: trx.catalog.objects): table?
----@field mode fun(): trx.inventory_ring.Mode?
----@field selection_anim fun(): trx.inventory_ring.EntryAnim?
----@field set_hint fun(...: string)
----@field turn_selection fun(yaw: integer, pitch: integer)
+---@field use fun(object: trx.catalog.objects)
 
 ---@class (exact) trxc.items
 ---@field count fun(): integer
@@ -428,18 +418,10 @@ trxc = {}
 ---@field swap_sprite fun(obj1_id: trx.catalog.objects, obj2_id: trx.catalog.objects)
 
 ---@class (exact) trxc.overlay
----@field caption fun(): string?
 ---@field get_letterbox fun(): number
 ---@field has_letterbox fun(): boolean
----@field is_arrow_shown fun(arrow: trx.overlay.Arrow): boolean
----@field is_caption_flashing fun(): boolean
----@field is_health_bar_forced fun(): boolean
----@field is_version_shown fun(): boolean
----@field set_caption fun(text?: string, count?: integer)
 ---@field set_letterbox fun(depth: number)
----@field show_arrow fun(arrow: trx.overlay.Arrow, shown?: boolean)
 ---@field show_pickup fun(object: trx.catalog.objects)
----@field top_text fun(): string?
 
 ---@class (exact) trxc.path
 ---@field exists fun(raw: string): boolean
@@ -551,6 +533,7 @@ trxc = {}
 ---@class (exact) trxc.ui
 ---@field bar_scale fun(): number
 ---@field darken fun(opacity: number)
+---@field draw_backdrop fun(style: string, opacity: number, path?: string)
 ---@field draw_background fun(path?: string, mono?: boolean, dim?: number): boolean
 ---@field draw_model fun(object: trx.catalog.objects, x: number, y: number, w: number, h: number, opts?: trx.ui.primitive.model.opts)
 ---@field draw_text fun(text: string, x: number, y: number, scale?: number, z?: integer)

@@ -19,15 +19,14 @@
 #include <trx/game/lara/hair.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/music.h>
-#include <trx/game/option/save_crystal.h>
 #include <trx/game/output.h>
-#include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/menu.h>
 #include <trx/version.h>
 
 #define M_FRAME_BUFFER(key)                                                    \
@@ -77,10 +76,10 @@ void Game_End(void)
 GF_COMMAND Game_Control(const bool demo_mode)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_SaveCrystal_AskForSave && !lara->extra_anim) {
+    if (UI_IsSaveRequested() && !lara->extra_anim) {
         // ask for a save at the start of a level for the save crystals mode
         const GF_COMMAND gf_cmd = GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
-        g_SaveCrystal_AskForSave = false;
+        UI_RequestSave(false);
         if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;
         }

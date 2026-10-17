@@ -99,8 +99,8 @@ end
 
 -- Puts the entry away, playing its animation back to the start as it goes.
 local function close(ctx)
-  if trx.inventory_ring.selection_anim() ~= nil then
-    trx.inventory_ring.animate_selection(0, -1)
+  if ring.selection_anim() ~= nil then
+    ring.animate_selection(0, -1)
   end
   ctx:cancel()
 end
@@ -198,7 +198,7 @@ local function open_controls(ctx)
       return ctx:push(settings)
     end,
     finish = function(confirmed)
-      local title = trx.inventory_ring.mode() == trx.inventory_ring.Mode.TITLE
+      local title = ring.mode() == trx.ui.MenuMode.TITLE
       if confirmed and not title then
         ctx:confirm()
       else

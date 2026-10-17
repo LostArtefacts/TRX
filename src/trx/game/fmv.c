@@ -11,29 +11,23 @@
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
 #include <trx/game/const.h>
-#include <trx/game/fader.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/events/ui.h>
 #include <trx/game/music.h>
-#include <trx/game/objects.h>
 #include <trx/game/output.h>
-#include <trx/game/output/overlay.h>
 #include <trx/game/output/quad.h>
-#include <trx/game/overlay.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/takeover.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/game/viewport.h>
 
 #include <string.h>
-
-#define M_FADE_TIME 0.4f
 
 typedef struct {
     OUTPUT_QUAD_SURFACE_DESC desc;
@@ -42,14 +36,7 @@ typedef struct {
 
 typedef struct {
     OUTPUT_QUAD *renderer_2d;
-    bool show_pause_overlay;
-    FADER pause_fader;
 } M_RENDER_CONTEXT;
-
-typedef struct {
-    bool wave;
-    float opacity;
-} M_PATTERN;
 
 static bool m_IsPlaying = false;
 
@@ -150,77 +137,15 @@ static void M_DrawUI(void)
     UI_Draw();
 }
 
-static float M_GetPauseProgress(const M_RENDER_CONTEXT *const ctx)
-{
-    if (!g_Config.ui.pause_fade_effects) {
-        return ctx->show_pause_overlay ? 1.0f : 0.0f;
-    }
-    return Fader_GetCurrentValue(&ctx->pause_fader);
-}
-
-static BACKGROUND_TYPE M_GetPauseBackgroundStyle(void)
-{
-    const BACKGROUND_TYPE style = g_Config.ui.pause_background_style;
-    const bool is_pattern =
-        style == BK_PATTERN_STATIC || style == BK_PATTERN_WAVE;
-    if (is_pattern && !Object_Get(O_INV_BACKGROUND)->loaded) {
-        return BK_TRANSPARENT_DARK;
-    }
-    return style;
-}
-
-static void M_DrawPattern(const void *const args)
-{
-    const M_PATTERN *const pattern = args;
-    Output_Overlay_DrawPatternOpacity(pattern->wave, pattern->opacity);
-}
-
-static float M_ApplyPauseBackground(const M_RENDER_CONTEXT *const ctx)
-{
-    Output_SetTime((float)(Clock_GetRealTime() * LOGIC_FPS));
-
-    const BACKGROUND_TYPE style = M_GetPauseBackgroundStyle();
-    const float progress = M_GetPauseProgress(ctx);
-    const bool is_pattern =
-        style == BK_PATTERN_STATIC || style == BK_PATTERN_WAVE;
-
-    const OUTPUT_BACKGROUND_TINT tint = Output_Overlay_GetBackgroundTint(
-        is_pattern ? BK_NONE : style, progress);
-    Output_Quad_SetDesaturation(ctx->renderer_2d, tint.desaturation);
-    Output_Quad_SetGlobalTint(ctx->renderer_2d, tint.tint);
-    Output_Quad_SetBlur(ctx->renderer_2d, tint.blur);
-    if (is_pattern) {
-        const M_PATTERN pattern = {
-            .wave = style == BK_PATTERN_WAVE,
-            .opacity = progress,
-        };
-        UI_ScheduleDrawOverlay(M_DrawPattern, &pattern, sizeof(pattern));
-    }
-    return tint.black_opacity;
-}
-
-// Draws the film's frame, and opens the interface with the pause background
-// the frame stands on.
+// Draws the FMV's frame, and opens the interface on it, so that the pause
+// screen's backdrop stands over the frame.
 static void M_DrawFrame(const M_RENDER_CONTEXT *const ctx)
 {
+    Output_SetTime((float)(Clock_GetRealTime() * LOGIC_FPS));
     UI_BeginScene();
     UI_BeginLayer(UI_LAYER_BACKDROP);
-    const float black_opacity = M_ApplyPauseBackground(ctx);
     Output_Quad_Render(ctx->renderer_2d);
-    UI_ScheduleDrawScreenBlack(black_opacity);
     UI_EndLayer(UI_LAYER_BACKDROP);
-}
-
-static bool M_ShouldShowPauseText(const M_RENDER_CONTEXT *const ctx)
-{
-    if (!ctx->show_pause_overlay) {
-        return false;
-    }
-    if (!g_Config.ui.pause_fade_effects) {
-        return true;
-    }
-    return !Fader_IsActive(&ctx->pause_fader)
-        && Fader_GetCurrentValue(&ctx->pause_fader) >= 1.0f;
 }
 
 static void M_RenderEnd(void *const surface, void *const user_data)
@@ -256,18 +181,6 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     M_DrawUI();
 }
 
-static void M_SetPauseText(const bool show)
-{
-    if (show) {
-        Overlay_SetBottomText((OVERLAY_TEXT) {
-            .kind = OVERLAY_TEXT_GS_KEY,
-            .gs_key = GS_ID("general/pause/paused"),
-        });
-    } else {
-        Overlay_SetBottomText((OVERLAY_TEXT) {});
-    }
-}
-
 static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
 {
     Output_BeginScene();
@@ -300,20 +213,23 @@ static RESULT M_Play(const char *const file_name)
     Video_SetAudioEnabled(video, false);
 
     const int32_t audio_id = M_OpenAudioStream(file_name);
-    bool input_paused = false;
+    bool is_pause_shown = false;
     bool paused = false;
-    bool resume_pending = false;
     bool exiting = false;
 
     g_OldInputDB = g_Input;
-    Fader_InitTo(&render_ctx.pause_fader, 0.0f, 0.0f, 0.0f);
-    M_SetPauseText(false);
     Video_Start(video);
 
     IGNORE(Audio_Stream_SetVolume(audio_id, M_GetAudioVolume()));
     IGNORE(Audio_Stream_Unpause(audio_id));
 
     while (video->is_playing) {
+        // A paused film draws nothing new, so the loop would spin as fast as
+        // the screen redraws. Waiting for each frame keeps the pause screen,
+        // which counts its fades in ticks, at the speed of the game.
+        if (paused) {
+            Clock_WaitTick();
+        }
         Shell_ProcessEvents();
 
         const bool focus_paused = Shell_ShouldPauseForFocusLoss();
@@ -328,35 +244,27 @@ static RESULT M_Play(const char *const file_name)
             exiting = GF_GetOverrideCommand().action == GF_EXIT_GAME
                 || Shell_IsExiting();
             break;
-        } else if (
-            (g_InputDB.pause || (input_paused && g_InputDB.menu_back))
-            && !focus_paused) {
-            input_paused = !input_paused;
-            if (g_Config.ui.pause_fade_effects) {
-                Fader_InitFromCurrent(
-                    &render_ctx.pause_fader, input_paused ? 1.0f : 0.0f,
-                    M_FADE_TIME);
-                if (!input_paused) {
-                    resume_pending = true;
-                }
-            }
+        } else if (g_InputDB.pause && !focus_paused && !is_pause_shown) {
+            is_pause_shown =
+                UI_Takeover_Offer(UI_TAKEOVER_PAUSE, (UI_TAKEOVER_ARGS) {});
         }
 
-        if (resume_pending && !Fader_IsActive(&render_ctx.pause_fader)) {
-            resume_pending = false;
+        // An FMV offers no way to leave from its pause screen, so every
+        // choice the screen makes plays the FMV on.
+        if (is_pause_shown
+            && UI_Takeover_TakeChoice(UI_TAKEOVER_PAUSE)
+                != UI_TAKEOVER_CHOICE_NONE) {
+            UI_Takeover_Release(UI_TAKEOVER_PAUSE);
+            is_pause_shown = false;
         }
 
-        const bool should_pause =
-            focus_paused || input_paused || resume_pending;
+        const bool should_pause = focus_paused || is_pause_shown;
         if (should_pause != paused) {
             Video_SetPaused(video, should_pause);
             IGNORE(Audio_Stream_SetPaused(audio_id, should_pause));
             paused = should_pause;
         }
 
-        render_ctx.show_pause_overlay = input_paused;
-        M_SetPauseText(M_ShouldShowPauseText(&render_ctx));
-        Overlay_Control();
         LUA_Tick();
 
         IGNORE(Audio_Stream_SetVolume(audio_id, M_GetAudioVolume()));
@@ -367,7 +275,15 @@ static RESULT M_Play(const char *const file_name)
 
         Video_PumpEvents(video);
 
+        // At 60 FPS a tick lasts two frames, as it does in play, so the pause
+        // screen draws a frame between two ticks before the next one.
         if (paused) {
+            if (Clock_GetCurrentFPS() == 60) {
+                Interpolation_SetUIRate(0.5);
+                M_RedrawFrame(&render_ctx);
+                Clock_WaitTick();
+            }
+            Interpolation_SetUIRate(1.0);
             M_RedrawFrame(&render_ctx);
         }
     }
@@ -388,12 +304,12 @@ static RESULT M_Play(const char *const file_name)
         M_RedrawFrame(&render_ctx);
     }
 
-    M_SetPauseText(false);
+    if (is_pause_shown) {
+        UI_Takeover_Release(UI_TAKEOVER_PAUSE);
+    }
     IGNORE(Audio_Stream_Close(audio_id));
     Video_Close(video);
 
-    render_ctx.show_pause_overlay = false;
-    Fader_InitTo(&render_ctx.pause_fader, 0.0f, 0.0f, 0.0f);
     Output_SetSupersamplingEnabled(true);
     M_RedrawFrame(&render_ctx);
 

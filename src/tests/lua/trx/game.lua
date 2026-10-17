@@ -376,4 +376,10 @@ test("a listener a level script attaches outlives the level", function()
   assert(#heard == 2, "the detached listener still heard changes")
 end)
 
+test("the game leaves once a script tells it what to play next", function()
+  assert(not trx.game.is_leaving, "it was leaving before it was told to")
+  trx.game.play_level(2)
+  assert(trx.game.is_leaving, "it did not take the next level")
+end)
+
 return h.report()

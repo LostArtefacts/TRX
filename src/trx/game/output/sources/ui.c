@@ -219,8 +219,7 @@ static void M_PoseOnCanvas(
 
 // Poses a model where it stands in a world of its own, as that world's camera
 // sees it, the way the engine places and views a model in its own world.
-static void M_PoseInWorld(
-    const OUTPUT_UI_MESH_WORLD *const world, const ANIM_FRAME *const frame)
+static void M_PoseInWorld(const OUTPUT_UI_MESH_WORLD *const world)
 {
     Viewport_AlterFOV(world->fov, FOV_MODE_PASSPORT);
     Output_ApplyFOV();
@@ -237,18 +236,94 @@ static void M_PoseInWorld(
     Matrix_TranslateAbs32((XYZ_32) {});
     for (int32_t i = 0; i < world->step_count; i++) {
         const XYZ_32 vec = world->steps[i].vec;
-        if (world->steps[i].turn) {
+        switch (world->steps[i].kind) {
+        case OUTPUT_UI_MESH_STEP_TURN:
             Matrix_Rot16((XYZ_16) {
                 .x = (int16_t)vec.x,
                 .y = (int16_t)vec.y,
                 .z = (int16_t)vec.z,
             });
-        } else {
+            break;
+        case OUTPUT_UI_MESH_STEP_SCALE:
+            Matrix_Scale((1 << W2V_SHIFT) * vec.x / 1024);
+            break;
+        case OUTPUT_UI_MESH_STEP_MOVE:
             Matrix_TranslateRel32(vec);
+            break;
         }
     }
-    Matrix_TranslateRel16(frame->offset);
-    Matrix_Rot16(frame->mesh_rots[0]);
+}
+
+// Returns the frame of a model's first animation, or nullptr past its last.
+static const ANIM_FRAME *M_GetWorldFrame(
+    const OBJECT *const object, const int32_t frame)
+{
+    const ANIM *const anim = Object_GetAnim(object, 0);
+    if (frame < 0 || frame > anim->frame_end - anim->frame_base) {
+        return nullptr;
+    }
+    return &object->frame_base[frame];
+}
+
+// Draws a model in a world of its own in its frame, blended towards the next,
+// with the turns its bones take on top. The bones that take a turn keep the
+// axes they turn about, as the engine's own animated bones do.
+static void M_DrawWorldFrame(const OUTPUT_UI_MESH *const mesh)
+{
+    const OUTPUT_UI_MESH_WORLD *const world = mesh->world;
+    const OBJECT *const obj = mesh->object;
+    const ANIM_FRAME *const frame1 = M_GetWorldFrame(obj, world->frame);
+    const ANIM_FRAME *frame2 = M_GetWorldFrame(obj, world->next_frame);
+    if (frame1 == nullptr) {
+        return;
+    }
+    if (frame2 == nullptr) {
+        frame2 = frame1;
+    }
+
+    for (int32_t i = 0; i < world->bone_count; i++) {
+        const int32_t bone = world->bones[i].bone;
+        if (bone >= 0 && bone < obj->mesh_count - 1) {
+            ANIM_BONE *const anim_bone = Object_GetBone(obj, bone);
+            anim_bone->rot.x |= world->bones[i].axes.x;
+            anim_bone->rot.y |= world->bones[i].axes.y;
+            anim_bone->rot.z |= world->bones[i].axes.z;
+        }
+    }
+
+    // The turns go in the order the bones are walked, each bone's as yaw,
+    // pitch, then roll, which is the order the walk reads them back in.
+    int16_t extra_rotation[(OUTPUT_UI_MESH_BONES + 32) * 3] = {};
+    int32_t count = 0;
+    for (int32_t bone = 0; bone < obj->mesh_count - 1 && bone < 32; bone++) {
+        const ANIM_BONE *const anim_bone = Object_GetBone(obj, bone);
+        XYZ_16 rot = {};
+        for (int32_t i = 0; i < world->bone_count; i++) {
+            if (world->bones[i].bone == bone) {
+                rot = world->bones[i].rot;
+            }
+        }
+        if (anim_bone->rot.y) {
+            extra_rotation[count++] = rot.y;
+        }
+        if (anim_bone->rot.x) {
+            extra_rotation[count++] = rot.x;
+        }
+        if (anim_bone->rot.z) {
+            extra_rotation[count++] = rot.z;
+        }
+    }
+
+    const int32_t rate = 1024;
+    int32_t frac = (int32_t)(world->blend * rate + 0.5f);
+    CLAMP(frac, 0, rate);
+    if (world->at_pivot) {
+        Object_DrawInterpolatedObjectAtPivot(
+            obj, mesh->mesh_mask, extra_rotation, frame1, frame2, frac, rate);
+    } else {
+        Object_DrawInterpolatedObject(
+            obj, mesh->mesh_mask, extra_rotation, frame1, frame2, frac, rate);
+    }
 }
 
 // Draws a model in a world of its own through the passes the scene draws
@@ -315,7 +390,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
         OUTPUT_UI_MESH_LIGHT light =
             mesh->light != nullptr ? *mesh->light : m_PlainLight;
         if (mesh->world != nullptr) {
-            M_PoseInWorld(mesh->world, frame);
+            M_PoseInWorld(mesh->world);
             for (int32_t j = 0; j < light.light_count; j++) {
                 light.lights[j].dir =
                     Matrix_MulVec32_M(&g_ViewMatrix, light.lights[j].dir);
@@ -324,7 +399,19 @@ static void M_DrawMeshes(const M_PRIV *const p)
             M_PoseOnCanvas(mesh, frame);
         }
         if (light.lit_mask != 0 && g_TRVersion == 3) {
-            M_DrawColoredMeshes(mesh, frame, &light);
+            const ANIM_FRAME *posed = frame;
+            if (mesh->world != nullptr) {
+                posed = M_GetWorldFrame(mesh->object, mesh->world->frame);
+                if (posed == nullptr) {
+                    posed = frame;
+                }
+                Matrix_TranslateRel16(posed->offset);
+                Matrix_Rot16(posed->mesh_rots[0]);
+            }
+            M_DrawColoredMeshes(mesh, posed, &light);
+        } else if (mesh->world != nullptr) {
+            M_ApplyLight(&light, nullptr);
+            M_DrawWorldFrame(mesh);
         } else {
             M_ApplyLight(&light, nullptr);
             Object_DrawStaticObject(mesh->object, frame, mesh->mesh_mask);

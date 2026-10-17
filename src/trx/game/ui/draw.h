@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/config/enum.h>
 #include <trx/core/colors.h>
 #include <trx/core/math/types.h>
 #include <trx/game/objects/ids.h>
@@ -104,19 +105,42 @@ void UI_ScheduleDrawModel(
     int32_t h, XYZ_16 rot, bool held, int16_t tilt,
     const UI_MODEL_LIGHT *light);
 
-// Where a model stands in a world of its own, and the camera that sees it. The
-// model is placed by turns and moves applied in order from the world's origin,
-// as the engine places one, and seen through the camera's field of view.
+// Where a model stands in a world of its own, the camera that sees it, and the
+// frame it is posed in. The model is placed by turns, moves and scales applied
+// in order from the world's origin, as the engine places one, and seen through
+// the camera's field of view.
 #define UI_MODEL_STEPS 16
+#define UI_MODEL_BONES 8
+typedef enum {
+    UI_MODEL_STEP_MOVE,
+    UI_MODEL_STEP_TURN,
+    // Scales the model by vec.x, in 1/1024ths.
+    UI_MODEL_STEP_SCALE,
+} UI_MODEL_STEP;
+
 typedef struct {
     XYZ_32 camera_pos;
     XYZ_32 camera_target;
     int16_t fov;
     int32_t step_count;
     struct {
-        bool turn;
+        UI_MODEL_STEP kind;
         XYZ_32 vec;
     } steps[UI_MODEL_STEPS];
+    // The frame of its first animation that the model is posed in, and the
+    // frame it blends towards by the blend, from 0 to 1.
+    int32_t frame;
+    int32_t next_frame;
+    float blend;
+    // Turns that bones take on top of the frame, about the axes each names.
+    int32_t bone_count;
+    struct {
+        int32_t bone;
+        XYZ_BOOL axes;
+        XYZ_16 rot;
+    } bones[UI_MODEL_BONES];
+    // Whether the model is drawn about its pivot, without its frame offset.
+    bool at_pivot;
 } UI_MODEL_WORLD;
 
 // Draws an object's model where it stands in a world of its own, as that
@@ -131,6 +155,11 @@ void UI_ScheduleDrawModelInWorld(
 // colour, then darkens it by the dim. Without an image the screen behind the
 // interface is black.
 void UI_ScheduleDrawBackground(const char *path, bool mono, float dim);
+// Draws a backdrop behind the whole interface as the engine draws the ones
+// behind its menus, in a style, by how far it has come in, from 0 to 1. A
+// picture takes the path of its image.
+void UI_ScheduleDrawBackdrop(
+    BACKGROUND_TYPE style, float progress, const char *path);
 // Darkens the scene behind the whole interface by the opacity, as the engine
 // darkens it behind a screen and fades it to black.
 void UI_ScheduleDrawDarken(float opacity);
@@ -143,3 +172,7 @@ void UI_ShutdownDraw(void);
 
 // Execute all scheduled UI draw operations in order.
 void UI_Draw(void);
+
+// Draws the mask Lara looks through while she holds binoculars to her eyes,
+// over a level that is being played.
+void UI_DrawBinocularMask(void);

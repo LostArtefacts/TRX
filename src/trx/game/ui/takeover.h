@@ -1,8 +1,8 @@
 #pragma once
 
 #include <trx/game/game_flow/types.h>
-#include <trx/game/inventory_ring/enum.h>
 #include <trx/game/objects/ids.h>
+#include <trx/game/ui/menu.h>
 
 #include <stdint.h>
 
@@ -21,6 +21,7 @@ typedef enum {
     UI_TAKEOVER_GLOBE_SELECT,
     UI_TAKEOVER_LEVEL_VIEW,
     UI_TAKEOVER_PICTURE,
+    UI_TAKEOVER_MENU,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
@@ -29,9 +30,10 @@ typedef enum {
 typedef struct {
     // The entry that the player uses, examines or combines in the inventory
     // ring, for UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_EXAMINE and
-    // UI_TAKEOVER_COMBINE.
+    // UI_TAKEOVER_COMBINE, and the entry the menu opens on, or NO_OBJECT for
+    // none, for UI_TAKEOVER_MENU.
     OBJECT_ID object_id;
-    // What the inventory ring opened for, for UI_TAKEOVER_SAVE_LOAD.
+    // What the menu opened for, for UI_TAKEOVER_SAVE_LOAD and UI_TAKEOVER_MENU.
     INVENTORY_MODE mode;
     // The level whose statistics the screen shows, whether it shows the totals
     // of the whole game, and whether it is drawn bare, for UI_TAKEOVER_STATS.
@@ -39,9 +41,12 @@ typedef struct {
     bool is_final;
     bool is_bare;
     // The picture the screen stands on, or nullptr for none, for
-    // UI_TAKEOVER_STATS, UI_TAKEOVER_GLOBE_SELECT and UI_TAKEOVER_PICTURE. The
-    // screen owns the path, and keeps it while the owner holds the screen.
+    // UI_TAKEOVER_STATS, UI_TAKEOVER_GLOBE_SELECT, UI_TAKEOVER_PICTURE and
+    // UI_TAKEOVER_MENU. The screen owns the path, and keeps it while the owner
+    // holds the screen.
     const char *background;
+    // Whether the title level runs behind the menu, for UI_TAKEOVER_MENU.
+    bool is_live;
     // How long the screen shows and fades, in ticks, for
     // UI_TAKEOVER_LEVEL_VIEW and UI_TAKEOVER_PICTURE.
     int32_t display_ticks;

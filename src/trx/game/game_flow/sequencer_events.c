@@ -18,13 +18,13 @@
 #include <trx/game/lua.h>
 #include <trx/game/lua/hooks.h>
 #include <trx/game/music.h>
-#include <trx/game/option/save_crystal.h>
 #include <trx/game/output.h>
 #include <trx/game/paths.h>
 #include <trx/game/phase.h>
 #include <trx/game/phase/phase_loading_camera.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui/menu.h>
 #include <trx/version.h>
 
 #define M_GF_HANDLER(name)                                                     \
@@ -203,11 +203,12 @@ M_GF_HANDLER(M_HandlePlayLevel)
     GF_DisableObjectsIfNeeded();
 
     const SAVE_CRYSTAL_MODE crystal_mode = g_Config.gameplay.save_crystal_mode;
-    g_SaveCrystal_AskForSave = (crystal_mode == SAVE_CRYSTAL_SAVE
-                                || crystal_mode == SAVE_CRYSTAL_SAVE_PICKUP)
+    UI_RequestSave(
+        (crystal_mode == SAVE_CRYSTAL_SAVE
+         || crystal_mode == SAVE_CRYSTAL_SAVE_PICKUP)
         && seq_ctx == GFSC_NORMAL
         && GF_GetLevelTableType(level->type) == GFLT_MAIN
-        && level != GF_GetFirstLevel() && level != GF_GetGymLevel();
+        && level != GF_GetFirstLevel() && level != GF_GetGymLevel());
 
     ASSERT(GF_GetCurrentLevel() == level);
     if (level->type == GFL_DEMO) {

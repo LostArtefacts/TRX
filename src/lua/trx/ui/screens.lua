@@ -30,6 +30,7 @@ local held = {}
 ---@class (partial) trx.ui
 ---@field screens trx.ui.screens
 ---@field Screen table<string, trx.ui.Screen>
+---@field MenuMode table<string, trx.ui.MenuMode>
 
 ---Lets a script draw an engine screen in place of the engine.
 ---
@@ -61,8 +62,8 @@ local Screen = {
   ---opened to save or load leaves when the screen ends, and any ring leaves
   ---when the screen ends with `trx.ui.ScreenContext:confirm`.
   RING_ENTRY = h.IntegerConstant,
-  ---The pause screen, from the moment the game pauses until it resumes or
-  ---leaves for the title screen. It has a `trx.ui.PauseContext`.
+  ---The pause screen, from the moment the game or an FMV pauses until it
+  ---resumes or leaves for the title screen. It has a `trx.ui.PauseContext`.
   PAUSE = h.IntegerConstant,
   ---The quick save or load screen, with a `trx.ui.SaveLoadContext`. The save
   ---and load keys open it when the instant screen setting is on.
@@ -99,8 +100,33 @@ local Screen = {
   ---picture ends with `trx.ui.ScreenContext:confirm` or
   ---`trx.ui.ScreenContext:cancel`.
   PICTURE = h.IntegerConstant,
+  ---The menu the game opens over the play and on the title screen, such as
+  ---the inventory ring, with a `trx.ui.MenuContext`. The menu ends with
+  ---`trx.ui.ScreenContext:confirm` once it has done what the player chose.
+  MENU = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
+
+---What the engine opens its menu for, which the menu screen is told as it
+---opens.
+---@enum trx.ui.MenuMode
+local MenuMode = {
+  ---Opened during play.
+  GAME = h.IntegerConstant,
+  ---The title screen's menu.
+  TITLE = h.IntegerConstant,
+  ---The keys ring, opened against a locked door or receptacle.
+  KEYS = h.IntegerConstant,
+  ---Opened to save, with the save list already on show.
+  SAVE = h.IntegerConstant,
+  ---Opened to load, with the save list already on show.
+  LOAD = h.IntegerConstant,
+  ---Opened because Lara died.
+  DEATH = h.IntegerConstant,
+  ---Opened by a save crystal.
+  SAVE_CRYSTAL = h.IntegerConstant,
+}
+ui.MenuMode = h.enum("ui.MenuMode", "INVENTORY_MODE", MenuMode)
 
 local function key_of(screen, object)
   if object ~= nil then
@@ -138,7 +164,7 @@ local function finish(ctx, choice)
 
   local layers = ctx._layers
   ctx._layers = {}
-  if choice ~= nil then
+  if choice ~= nil and ctx._report == nil then
     raw.close(ctx.screen, choice)
   end
   local failed = nil
@@ -150,6 +176,10 @@ local function finish(ctx, choice)
   ctx._ended = {}
   for _, callback in ipairs(ended) do
     local err = h.failure(callback)
+    failed = failed or err
+  end
+  if ctx._report ~= nil then
+    local err = h.failure(ctx._report, choice == choices.CONFIRM)
     failed = failed or err
   end
   if failed ~= nil then
@@ -187,6 +217,7 @@ local background = reported("background")
 ---@field private _ended function[]
 ---@field private _done boolean
 ---@field private _main? trx.ui.StackLayer
+---@field private _report? function
 local Context = h.class("ui.ScreenContext", {
   fields = {
     screen = {
@@ -296,7 +327,7 @@ end
 ---`trx.ui.Screen.SAVE_LOAD`.
 ---@class (exact) trx.ui.SaveLoadContext: trx.ui.ScreenContext
 ---@trx.readonly mode
----@field mode trx.inventory_ring.Mode Whether the screen opened for saving or for loading.
+---@field mode trx.ui.MenuMode Whether the screen opened for saving or for loading.
 local SaveLoadContext = h.class("ui.SaveLoadContext", {
   extends = "ui.ScreenContext",
   fields = { mode = reported("mode") },
@@ -361,6 +392,24 @@ local PictureContext = h.class("ui.PictureContext", {
 
 -- The context class of each screen.
 ---@type table<integer, table>
+---The context of the game's menu, for `trx.ui.Screen.MENU`.
+---@class (exact) trx.ui.MenuContext: trx.ui.ScreenContext
+---@trx.readonly mode, object, background, is_live
+---@field mode trx.ui.MenuMode What the menu opened for.
+---@field object trx.catalog.objects? The entry the menu opens on, such as the crowbar a door asks for, or `nil` for none.
+---@field background string? The picture the title's menu stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
+---@field is_live boolean Whether the title level runs behind the menu, in place of a picture.
+local MenuContext = h.class("ui.MenuContext", {
+  extends = "ui.ScreenContext",
+  fields = {
+    mode = reported("mode"),
+    object = reported("object"),
+    background = background,
+    is_live = reported("is_live"),
+  },
+})
+
+---@type table<trx.ui.Screen, table>
 local KINDS = {
   [trx.ui.Screen.RING_ENTRY] = EntryContext,
   [trx.ui.Screen.EXAMINE] = EntryContext,
@@ -371,6 +420,7 @@ local KINDS = {
   [trx.ui.Screen.GLOBE_SELECT] = GlobeContext,
   [trx.ui.Screen.LEVEL_VIEW] = TimedContext,
   [trx.ui.Screen.PICTURE] = PictureContext,
+  [trx.ui.Screen.MENU] = MenuContext,
 }
 
 -- `args` is what the engine reports as it opens the screen, keyed by the
@@ -444,18 +494,18 @@ function screens.define(screen, open, options)
   end)
 end
 
--------------------------------------------------------------------------------
--- The engine's side
--------------------------------------------------------------------------------
-
-local function open_screen(screen, args)
+-- Opens a screen's definition and returns its context, or nil where no
+-- definition draws the screen. A context opened with a report tells it how
+-- the screen ended instead of telling the engine.
+local function start(screen, args, report)
   local object = screen == trx.ui.Screen.RING_ENTRY and args.object or nil
   local definition = definition_of(screen, object)
   if definition == nil then
-    return false
+    return nil
   end
 
   local ctx = new_context(screen, args)
+  ctx._report = report
   local ok, result = pcall(definition.open, ctx)
   if not ok then
     finish(ctx, nil)
@@ -463,7 +513,7 @@ local function open_screen(screen, args)
   end
   if result == nil then
     finish(ctx, nil)
-    return false
+    return nil
   end
 
   local owned = false
@@ -476,6 +526,40 @@ local function open_screen(screen, args)
   end
 
   ctx._main = result
+  return ctx
+end
+
+---Opens a screen from a script, as the engine opens one, with its definition
+---drawing it. This is how a menu that a script draws opens what an entry
+---leads to, such as `trx.ui.Screen.EXAMINE`.
+---
+---The fields are what the screen reports to its definition, such as the
+---object of a ring entry's screens. The function given runs once the screen
+---ends, after its layers have closed, and is told whether it ended with
+---`trx.ui.ScreenContext:confirm`.
+---
+---```lua
+---trx.ui.screens.open(trx.ui.Screen.EXAMINE, { object = object }, function(confirmed)
+---  trx.log.info(confirmed and "confirmed" or "put away")
+---end)
+---```
+---@param screen trx.ui.Screen The screen.
+---@param fields table What the screen reports to its definition.
+---@param on_end? function Runs once the screen ends, with whether it ended confirmed.
+---@return trx.ui.ScreenContext? # The screen's context, or `nil` where no definition draws the screen, in which case the function given never runs.
+function screens.open(screen, fields, on_end)
+  return start(screen, fields, on_end or function() end)
+end
+
+-------------------------------------------------------------------------------
+-- The engine's side
+-------------------------------------------------------------------------------
+
+local function open_screen(screen, args)
+  local ctx = start(screen, args, nil)
+  if ctx == nil then
+    return false
+  end
   held[screen] = ctx
   return true
 end

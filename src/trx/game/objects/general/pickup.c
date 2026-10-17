@@ -9,19 +9,18 @@
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
-#include <trx/game/inventory_ring/control.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/output.h>
-#include <trx/game/overlay.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sparks.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui/menu.h>
 #include <trx/version.h>
 
 // clang-format off
@@ -425,7 +424,7 @@ static void M_DoPickup(const int16_t item_num)
         return;
     }
 
-    Overlay_AddDisplayPickup(item->object_id);
+    UI_ShowPickup(item->object_id);
     if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SECRET)) {
         Stats_MarkSecretCollected(item);
         if (Stats_CheckAllLevelSecretsCollected()) {
@@ -777,7 +776,7 @@ static bool M_ShowCrowbarInventory(void)
         return false;
     }
 
-    InvRing_SetRequestedObjectID(O_CROWBAR_OPTION);
+    UI_RequestItem(O_CROWBAR_OPTION);
     const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
     if (gf_cmd.action != GF_NOOP) {
         GF_OverrideCommand(gf_cmd, true);

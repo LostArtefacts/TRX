@@ -160,7 +160,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - `trx.ui.Screen.RING_ENTRY`  
         An entry that the player uses in the inventory ring, with a [`trx.ui.EntryContext`](#ui.EntryContext). A definition can name the entry it draws. A ring opened to save or load leaves when the screen ends, and any ring leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
     - `trx.ui.Screen.PAUSE`  
-        The pause screen, from the moment the game pauses until it resumes or leaves for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
+        The pause screen, from the moment the game or an FMV pauses until it resumes or leaves for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
     - `trx.ui.Screen.SAVE_LOAD`  
         The quick save or load screen, with a [`trx.ui.SaveLoadContext`](#ui.SaveLoadContext). The save and load keys open it when the instant screen setting is on.
     - `trx.ui.Screen.STATS`  
@@ -175,6 +175,28 @@ arrow, and `\{button left}` draws the button the player has bound.
         A view of the level from one of its cameras, which the game shows while the level starts, as TR4 does. It has a [`trx.ui.TimedContext`](#ui.TimedContext). The view ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
     - `trx.ui.Screen.PICTURE`  
         A picture that the game shows between levels, while a level loads, or for the legal notice and the credits, with a [`trx.ui.PictureContext`](#ui.PictureContext). The picture ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
+    - `trx.ui.Screen.MENU`  
+        The menu the game opens over the play and on the title screen, such as the inventory ring, with a [`trx.ui.MenuContext`](#ui.MenuContext). The menu ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) once it has done what the player chose.
+
+- <a id="ui.MenuMode" name="ui.MenuMode"></a>[lua]`trx.ui.MenuMode`
+
+    What the engine opens its menu for, which the menu screen is told as it
+    opens.
+
+    - `trx.ui.MenuMode.GAME`  
+        Opened during play.
+    - `trx.ui.MenuMode.TITLE`  
+        The title screen's menu.
+    - `trx.ui.MenuMode.KEYS`  
+        The keys ring, opened against a locked door or receptacle.
+    - `trx.ui.MenuMode.SAVE`  
+        Opened to save, with the save list already on show.
+    - `trx.ui.MenuMode.LOAD`  
+        Opened to load, with the save list already on show.
+    - `trx.ui.MenuMode.DEATH`  
+        Opened because Lara died.
+    - `trx.ui.MenuMode.SAVE_CRYSTAL`  
+        Opened by a save crystal.
 
 ### Structures
 
@@ -401,7 +423,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     [`trx.ui.Screen.SAVE_LOAD`](#ui.Screen).
 
     Properties:
-    - <a id="ui.SaveLoadContext.mode" name="ui.SaveLoadContext.mode"></a>**`mode`**: [trx.inventory_ring.Mode](INVENTORY_RING.md#inventory_ring.Mode). Whether the screen opened for saving or for loading. *(read-only)*
+    - <a id="ui.SaveLoadContext.mode" name="ui.SaveLoadContext.mode"></a>**`mode`**: [trx.ui.MenuMode](#ui.MenuMode). Whether the screen opened for saving or for loading. *(read-only)*
 
 - <a id="ui.StatsContext" name="ui.StatsContext"></a>[lua]`trx.ui.StatsContext`
 
@@ -438,6 +460,16 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.PictureContext.background" name="ui.PictureContext.background"></a>**`background`**: string. The picture, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
     - <a id="ui.PictureContext.can_cross_fade_in" name="ui.PictureContext.can_cross_fade_in"></a>**`can_cross_fade_in`**: boolean. Whether the picture may fade in from the frame shown before it, rather than from black. *(read-only)*
     - <a id="ui.PictureContext.is_loading" name="ui.PictureContext.is_loading"></a>**`is_loading`**: boolean. Whether the picture shows while a level loads. *(read-only)*
+
+- <a id="ui.MenuContext" name="ui.MenuContext"></a>[lua]`trx.ui.MenuContext`
+
+    The context of the game's menu, for [`trx.ui.Screen.MENU`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.MenuContext.background" name="ui.MenuContext.background"></a>**`background`**: string. The picture the title's menu stands on, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
+    - <a id="ui.MenuContext.is_live" name="ui.MenuContext.is_live"></a>**`is_live`**: boolean. Whether the title level runs behind the menu, in place of a picture. *(read-only)*
+    - <a id="ui.MenuContext.mode" name="ui.MenuContext.mode"></a>**`mode`**: [trx.ui.MenuMode](#ui.MenuMode). What the menu opened for. *(read-only)*
+    - <a id="ui.MenuContext.object" name="ui.MenuContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The entry the menu opens on, such as the crowbar a door asks for, or `nil` for none. *(read-only)*
 
 - <a id="ui.Tween" name="ui.Tween"></a>[lua]`trx.ui.Tween`
 
@@ -1102,6 +1134,11 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.primitive.world_model.opts.camera" name="ui.primitive.world_model.opts.camera"></a>**`camera`** (table). The camera that sees the model.
     - <a id="ui.primitive.world_model.opts.pose" name="ui.primitive.world_model.opts.pose"></a>**`pose`** (a list of table). The steps that place the model, applied in order from the world's origin, up to sixteen.
+    - <a id="ui.primitive.world_model.opts.frame" name="ui.primitive.world_model.opts.frame"></a>**`frame`** (integer, optional). The frame of the model's first animation to pose it in, counted from 0. The first by default.
+    - <a id="ui.primitive.world_model.opts.next_frame" name="ui.primitive.world_model.opts.next_frame"></a>**`next_frame`** (integer, optional). The frame to blend towards. The same frame by default.
+    - <a id="ui.primitive.world_model.opts.blend" name="ui.primitive.world_model.opts.blend"></a>**`blend`** (number, optional). How far to blend towards the next frame, from `0` to `1`. `0` by default.
+    - <a id="ui.primitive.world_model.opts.bones" name="ui.primitive.world_model.opts.bones"></a>**`bones`** (a list of table, optional). Turns that bones take on top of the frame, up to eight.
+    - <a id="ui.primitive.world_model.opts.at_pivot" name="ui.primitive.world_model.opts.at_pivot"></a>**`at_pivot`** (boolean, optional). Whether to draw the model about its pivot, without the offset its frame stands it at. `false` by default.
     - <a id="ui.primitive.world_model.opts.mesh_mask" name="ui.primitive.world_model.opts.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
     - <a id="ui.primitive.world_model.opts.light" name="ui.primitive.world_model.opts.light"></a>**`light`** (table, optional). The light to draw it in, with its directions in the model's world. A plain white light by default.
 
@@ -1113,6 +1150,22 @@ arrow, and `\{button left}` draws the button the player has bound.
 
   Parameters:
   - <a id="ui.primitive.darken.opacity" name="ui.primitive.darken.opacity"></a>**`opacity`** (number). How dark, from `0` for not at all to `1` for black.
+
+- <a id="ui.primitive.backdrop" name="ui.primitive.backdrop"></a>[lua]`trx.ui.primitive.backdrop(style, opacity, [path])`  
+  Draws a backdrop behind the whole interface, as the game draws the ones
+  behind its menus, part way in by the opacity. It goes under any model in a
+  world of its own drawn after it, as the inventory ring's models stand on
+  their backdrop.
+
+  Parameters:
+  - <a id="ui.primitive.backdrop.style" name="ui.primitive.backdrop.style"></a>**`style`** (string). The backdrop style, by the names that the `ui.inventory_background_style` setting takes.
+  - <a id="ui.primitive.backdrop.opacity" name="ui.primitive.backdrop.opacity"></a>**`opacity`** (number). How far it has come in, from `0` for not at all to `1`.
+  - <a id="ui.primitive.backdrop.path" name="ui.primitive.backdrop.path"></a>**`path`** (string, optional). The picture of an `image` backdrop, as [`background`](#ui.primitive.background) takes it.
+
+  Example:
+  ```lua
+  trx.ui.primitive.backdrop("transparent", 0.5)
+  ```
 
 - <a id="ui.primitive.background" name="ui.primitive.background"></a>[lua]`trx.ui.primitive.background([path], [mono], [dim])`  
   Draws an image behind the whole interface, as the game draws the pictures
@@ -1233,6 +1286,30 @@ arrow, and `\{button left}` draws the button the player has bound.
       end,
     })
   end, { object = trx.catalog.objects.COMPASS_OPTION })
+  ```
+
+- <a id="ui.screens.open" name="ui.screens.open"></a>[lua]`trx.ui.screens.open(screen, fields, [on_end])`  
+  Opens a screen from a script, as the engine opens one, with its definition
+  drawing it. This is how a menu that a script draws opens what an entry
+  leads to, such as [`trx.ui.Screen.EXAMINE`](#ui.Screen).
+
+  The fields are what the screen reports to its definition, such as the
+  object of a ring entry's screens. The function given runs once the screen
+  ends, after its layers have closed, and is told whether it ended with
+  [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
+
+  Parameters:
+  - <a id="ui.screens.open.screen" name="ui.screens.open.screen"></a>**`screen`** ([trx.ui.Screen](#ui.Screen)). The screen.
+  - <a id="ui.screens.open.fields" name="ui.screens.open.fields"></a>**`fields`** (table). What the screen reports to its definition.
+  - <a id="ui.screens.open.on_end" name="ui.screens.open.on_end"></a>**`on_end`** (function, optional). Runs once the screen ends, with whether it ended confirmed.
+
+  Returns: [trx.ui.ScreenContext](#ui.ScreenContext) or `nil`. The screen's context, or `nil` where no definition draws the screen, in which case the function given never runs.
+
+  Example:
+  ```lua
+  trx.ui.screens.open(trx.ui.Screen.EXAMINE, { object = object }, function(confirmed)
+    trx.log.info(confirmed and "confirmed" or "put away")
+  end)
   ```
 
 - <a id="ui.ease.linear" name="ui.ease.linear"></a>[lua]`trx.ui.ease.linear(ratio)`  

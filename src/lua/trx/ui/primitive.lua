@@ -241,7 +241,9 @@ primitive.sprite_bounds = raw.sprite_bounds
 primitive.mesh_bounds = raw.mesh_bounds
 
 ---The colour of a light, from `0` to `255` in each channel, where a channel
----may fall between two whole values as the game's own lights do.
+---may fall between two whole values as the game's own lights do. A channel
+---above `255`, up to `510`, lights a model brighter than its own colour, as
+---the TR4 inventory lights the entry the ring rests on.
 ---@class trx.ui.LightColor
 ---@field r number The red channel.
 ---@field g number The green channel.
@@ -352,14 +354,29 @@ end
 ---@field target trx.math.Vec3 The point it looks at.
 ---@field fov trx.math.Angle Its field of view, measured as the game measures the inventory's.
 
----One step of placing a model in its world.
+---One step of placing a model in its world. A step takes one of the fields.
 ---@class (exact) trx.ui.PoseStep
 ---@field move? trx.math.Vec3 How far to move, along the axes as the steps before have turned them.
 ---@field turn? trx.math.Rot How far to turn, by its yaw, then its pitch, then its roll.
+---@field scale? number How much to scale the model, with `1` for its own size.
+
+---A turn that one bone of a model takes on top of the frame the model is posed
+---in, as the compass needle and the hands of the stopwatch turn. A field left
+---out turns the bone not at all about that axis.
+---@class (exact) trx.ui.BoneTurn
+---@field bone integer The bone, counted from 0, which moves the mesh after it.
+---@field x? trx.math.Angle How far to pitch it.
+---@field y? trx.math.Angle How far to yaw it.
+---@field z? trx.math.Angle How far to roll it.
 
 ---@class (exact) trx.ui.primitive.world_model.opts
 ---@field camera trx.ui.WorldCamera The camera that sees the model.
 ---@field pose trx.ui.PoseStep[] The steps that place the model, applied in order from the world's origin, up to sixteen.
+---@field frame? integer The frame of the model's first animation to pose it in, counted from 0. The first by default.
+---@field next_frame? integer The frame to blend towards. The same frame by default.
+---@field blend? number How far to blend towards the next frame, from `0` to `1`. `0` by default.
+---@field bones? trx.ui.BoneTurn[] Turns that bones take on top of the frame, up to eight.
+---@field at_pivot? boolean Whether to draw the model about its pivot, without the offset its frame stands it at. `false` by default.
 ---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
 ---@field light? trx.ui.ModelLight The light to draw it in, with its directions in the model's world. A plain white light by default.
 
@@ -383,6 +400,20 @@ primitive.world_model = raw.draw_world_model
 ---@param opacity number How dark, from `0` for not at all to `1` for black.
 ---@type fun(opacity: number)
 primitive.darken = raw.darken
+
+---Draws a backdrop behind the whole interface, as the game draws the ones
+---behind its menus, part way in by the opacity. It goes under any model in a
+---world of its own drawn after it, as the inventory ring's models stand on
+---their backdrop.
+---
+---```lua
+---trx.ui.primitive.backdrop("transparent", 0.5)
+---```
+---@param style string The backdrop style, by the names that the `ui.inventory_background_style` setting takes. <!--noref: ui.inventory_background_style-->
+---@param opacity number How far it has come in, from `0` for not at all to `1`.
+---@param path? string The picture of an `image` backdrop, as `trx.ui.primitive.background` takes it. <!--noref: image-->
+---@type fun(style: string, opacity: number, path?: string)
+primitive.backdrop = raw.draw_backdrop
 
 ---Draws an image behind the whole interface, as the game draws the pictures
 ---behind its screens, fitted to the screen's shape and darkened by the dim.

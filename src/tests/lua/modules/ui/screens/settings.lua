@@ -21,7 +21,7 @@ end
 
 local function open(object)
   trx.config.set("ui.text_scale", 1.0)
-  fake.open_ring(trx.inventory_ring.Mode.GAME, object, 0, 10)
+  h.open_ring(trx.ui.MenuMode.GAME, object, 0, 10)
   assert(
     fake.offer(RING_ENTRY, { object = object }),
     "the entry was not taken"
@@ -35,7 +35,7 @@ end
 local function finish(keep)
   fake.release(RING_ENTRY)
   fake.take_choice(RING_ENTRY)
-  fake.close_ring()
+  h.close_ring()
   fake.release_all()
   if not keep then
     fake.end_level()
@@ -62,7 +62,7 @@ test("the player changes a setting and backs out", function()
   assert(math.abs(trx.config.get("audio.master_volume") - 0.6) < 0.001)
   press(Role.MENU_BACK)
   assert(fake.take_choice(RING_ENTRY) == CHOICE_CANCEL)
-  local anim = trx.inventory_ring.selection_anim()
+  local anim = require("common.ui.ring").selection_anim()
   assert(anim.goal_frame == 0 and anim.direction == -1, "not put away")
   finish()
 end)

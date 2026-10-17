@@ -4,6 +4,7 @@
 
 local book = require("common.ui.screens.passport.book")
 local pages = require("common.ui.screens.passport.pages")
+local ring = require("common.ui.ring")
 
 local M = {}
 
@@ -28,7 +29,7 @@ trx.locale.declare({
 
 ---@param ctx trx.ui.EntryContext
 local function open(ctx)
-  local mode = trx.inventory_ring.mode()
+  local mode = ring.mode()
   local book_pages = pages.determine_pages(mode)
   local index = pages.first_available(book_pages)
   if index == nil then
@@ -46,14 +47,26 @@ local function open_save_load(ctx)
   if index == nil or pages.FLAT[book_pages[index].role] then
     return nil
   end
-  return book.open_alone(ctx, book_pages, index, false)
+  local opened = book.open_alone(ctx, book_pages, index, false)
+  if opened == nil then
+    return nil
+  end
+  if ctx.mode == trx.ui.MenuMode.LOAD then
+    trx.overlay.set_caption(trx.locale.get("general/passport/load_game"))
+  else
+    trx.overlay.set_caption(trx.locale.get("general/passport/save_game"))
+  end
+  ctx:on_end(function()
+    trx.overlay.set_caption()
+  end)
+  return opened
 end
 
 local function name_crystal()
   local crystal = trx.catalog.objects.SAVE_CRYSTAL_ITEM
   local name = trx.locale.get("objects/save_crystal_item/name"):match("^[^|]*")
-  local count = trx.inventory.count(crystal)
-  trx.overlay.set_caption(name, count > 1 and count or nil)
+  trx.overlay.set_caption(name)
+  ring.show_count(trx.inventory.count(crystal))
 end
 
 -- Opens the save page of the save crystal entry. The crystal saves only in the
@@ -63,7 +76,7 @@ end
 local function open_crystal(ctx)
   if
     trx.config.get("gameplay.save_crystal_mode") ~= "save_pickup"
-    or trx.inventory_ring.mode() ~= trx.inventory_ring.Mode.GAME
+    or ring.mode() ~= trx.ui.MenuMode.GAME
   then
     return nil
   end

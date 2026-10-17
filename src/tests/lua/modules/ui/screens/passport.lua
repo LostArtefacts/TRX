@@ -5,7 +5,7 @@
 local h = require("harness")
 local test = h.test
 
-local Mode = trx.inventory_ring.Mode
+local Mode = trx.ui.MenuMode
 local Pool = trx.savegame.Pool
 local Role = trx.input.Role
 local RING_ENTRY = trx.ui.Screen.RING_ENTRY
@@ -33,7 +33,7 @@ require("common.ui.screens.passport").setup()
 -- the book to the frame they asked for.
 local function tick()
   fake.tick()
-  fake.settle_ring()
+  h.settle_ring()
 end
 
 local function press(role)
@@ -52,14 +52,14 @@ local function clean()
   fake.take_choice(RING_ENTRY)
   fake.release(SAVE_LOAD)
   fake.take_choice(SAVE_LOAD)
-  fake.close_ring()
+  h.close_ring()
   fake.release_all()
 end
 
 local function open(mode, tr_version)
   clean()
   fake.set_tr_version(tr_version or 2)
-  fake.open_ring(mode, PASSPORT, OPEN_FRAME, FRAME_COUNT)
+  h.open_ring(mode, PASSPORT, OPEN_FRAME, FRAME_COUNT)
   assert(
     fake.offer(RING_ENTRY, { object = PASSPORT }),
     "the passport was not taken"
@@ -130,8 +130,10 @@ test("the book turns to the next page", function()
   press(Role.MENU_RIGHT)
   -- The press picks the page, and the book starts to turn on the next tick.
   fake.tick()
-  assert(trx.inventory_ring.selection_anim().goal_frame == OPEN_FRAME + 5)
-  fake.settle_ring()
+  assert(
+    require("common.ui.ring").selection_anim().goal_frame == OPEN_FRAME + 5
+  )
+  h.settle_ring()
   tick()
   assert(has(texts(), L("general/passport/new_game")))
   finish()
@@ -161,7 +163,7 @@ test("the caption stands down while the book turns", function()
     "the caption kept the page the book left"
   )
   assert(not has(drawn, "\\{button left}"))
-  fake.settle_ring()
+  h.settle_ring()
   tick()
   assert(
     has(texts(), L("general/passport/new_game")),
@@ -203,7 +205,7 @@ end)
 local function turn_right()
   press(Role.MENU_RIGHT)
   fake.tick()
-  fake.settle_ring()
+  h.settle_ring()
   tick()
 end
 
@@ -242,7 +244,7 @@ test("TR1 does not turn the page while a page is open", function()
   press(Role.MENU_RIGHT)
   fake.tick()
   assert(
-    trx.inventory_ring.selection_anim().goal_frame == OPEN_FRAME,
+    require("common.ui.ring").selection_anim().goal_frame == OPEN_FRAME,
     "the book turned"
   )
   assert(
@@ -268,7 +270,7 @@ test("TR1 backs out of a list to the pages when Lara is dead", function()
   press(Role.MENU_RIGHT)
   fake.tick()
   assert(
-    trx.inventory_ring.selection_anim().goal_frame == OPEN_FRAME + 5,
+    require("common.ui.ring").selection_anim().goal_frame == OPEN_FRAME + 5,
     "the pages did not turn"
   )
   finish()
@@ -436,7 +438,7 @@ test("a list opened from a list hides the one under it", function()
   tick()
   press(Role.MENU_RIGHT)
   fake.tick()
-  fake.settle_ring()
+  h.settle_ring()
   tick()
   -- New Game, New Game+, then the saves to play earlier levels from.
   press(Role.MENU_DOWN)
@@ -529,7 +531,7 @@ local function open_crystal(crystal_mode, count)
   fake.set_current_level(2)
   trx.config.set("gameplay.save_crystal_mode", crystal_mode or "save_pickup")
   trx.inventory.set_count(CRYSTAL_ITEM, count or 1)
-  fake.open_ring(Mode.GAME, CRYSTAL, OPEN_FRAME, FRAME_COUNT)
+  h.open_ring(Mode.GAME, CRYSTAL, OPEN_FRAME, FRAME_COUNT)
   local taken = fake.offer(RING_ENTRY, { object = CRYSTAL })
   tick()
   return taken
@@ -541,7 +543,7 @@ test("the save crystal shows the save list and its own name", function()
   assert(has(drawn, L("general/passport/save_game")), table.concat(drawn, ","))
   assert(not has(drawn, "\\{button right}"), "the crystal drew page arrows")
   assert(
-    fake.calls().set_caption.caption == "objects/save_crystal_item/name",
+    trx.overlay.signals.caption:get() == "objects/save_crystal_item/name",
     "the crystal was not named"
   )
   finish()
@@ -549,31 +551,30 @@ end)
 
 test("the save crystal counts with its name above one crystal", function()
   assert(open_crystal("save_pickup", 3))
-  assert(fake.calls().set_caption_count.qty == 3, "the count was not shown")
+  local count = require("common.ui.ring").signals.count:get()
+  assert(count ~= nil and count:find("3", 1, true), "the count was not shown")
   finish()
 end)
 
 test("the save crystal shows no count for one crystal", function()
   assert(open_crystal())
-  local calls = fake.calls()
-  assert(calls.set_caption_count.count == 0, "a count was shown")
-  assert(calls.clear_caption_count.count > 0, "no count was cleared")
+  local count = require("common.ui.ring").signals.count:get()
+  assert(count == nil, "a count was shown")
   finish()
 end)
 
 test("the save crystal takes its name down as it closes", function()
   assert(open_crystal("save_pickup", 3))
   press(Role.MENU_BACK)
-  local calls = fake.calls()
-  assert(calls.set_caption.count > 1, "the caption was only ever set")
-  assert(calls.set_caption.caption == "", "the name stayed up")
-  assert(calls.clear_caption_count.count > 0, "the count stayed up")
+  assert(trx.overlay.signals.caption:get() == nil, "the name stayed up")
+  local count = require("common.ui.ring").signals.count:get()
+  assert(count == nil, "the count stayed up")
   finish()
 end)
 
 test("the passport takes the name the ring gave the entry down", function()
   open(Mode.GAME)
-  assert(fake.calls().set_caption.caption == "", "the ring's name stayed up")
+  assert(trx.overlay.signals.caption:get() == nil, "the ring's name stayed up")
   finish()
 end)
 

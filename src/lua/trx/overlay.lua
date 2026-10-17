@@ -6,8 +6,8 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---@field overlay trx.overlay
 
 ---What the game shows over the play: the pickups that slide in, the cinematic
----bars, and the lines of text and the arrows that the inventory ring, a demo
----or a film asks for. The shipped scripts draw all of it; the signals here
+---bars, and the caption and the arrows that the inventory ring, a demo or an
+---FMV asks for. The shipped scripts draw all of it; the signals here
 ---say what to draw.
 ---@trx.module 41 Overlay
 ---@class (exact) trx.overlay
@@ -18,14 +18,12 @@ local M = h.module("overlay")
 
 ---What the overlay tells a script, for the parts of it a script draws.
 ---@class (exact) trx.overlay.signals
----@trx.readonly arrows, caption, caption_flashing, health_bar_forced, letterbox, top_text, version_shown
----@field top_text trx.signal.Signal Holds the line the game shows at the top of the screen, such as the name of the inventory ring, in the player's language, or nil for none.
+---@trx.readonly arrows, caption, caption_flashing, letterbox, version_shown
 ---@field caption trx.signal.Signal Holds the caption at the bottom of the screen, such as the name of the entry under the cursor of the inventory ring, in the player's language, or nil for none.
 ---@field caption_flashing trx.signal.Signal Holds whether the caption flashes, as it does while a demo plays.
 ---@field arrows trx.signal.Signal Holds the arrows on screen, as a table that maps each `trx.overlay.Arrow` that shows to `true`.
 ---@field version_shown trx.signal.Signal Holds whether the game asks for its version on screen, as the title screen does. The `ui.show_title_version` setting decides whether it shows. <!--noref: ui.show_title_version-->
 ---@field letterbox trx.signal.Signal Says when the cinematic bars take the screen and when they give it back. True while they are moving, so a script can hold something back until they have gone.
----@field health_bar_forced trx.signal.Signal Says when something asks for Lara's health bar whatever else is on screen, which the inventory ring does while it shows a medipack.
 M.signals = h.namespace("overlay.signals")
 
 local polled = {}
@@ -44,31 +42,70 @@ end
 ---@enum trx.overlay.Arrow
 local Arrow = {
   ---The top-left screen corner.
-  TOP_LEFT = h.IntegerConstant,
+  TOP_LEFT = 0,
   ---The top-right screen corner.
-  TOP_RIGHT = h.IntegerConstant,
+  TOP_RIGHT = 1,
   ---The bottom-left screen corner.
-  BOTTOM_LEFT = h.IntegerConstant,
+  BOTTOM_LEFT = 2,
   ---The bottom-right screen corner.
-  BOTTOM_RIGHT = h.IntegerConstant,
+  BOTTOM_RIGHT = 3,
   ---To the left of the caption.
-  CAPTION_LEFT = h.IntegerConstant,
+  CAPTION_LEFT = 4,
   ---To the right of the caption.
-  CAPTION_RIGHT = h.IntegerConstant,
+  CAPTION_RIGHT = 5,
 }
-M.Arrow = h.enum("overlay.Arrow", "OVERLAY_ARROW", Arrow)
+M.Arrow = h.coined_enum("overlay.Arrow", Arrow)
+
+local is_arrow = {}
+for _, arrow in pairs(M.Arrow) do
+  is_arrow[arrow] = true
+end
+
+local caption = trx.signal.new(nil)
+local caption_flashing = trx.signal.new(false)
+
+---@class (exact) trx.overlay.set_caption.opts
+---@field flashing? boolean Whether the caption flashes, as it does while a demo plays. `false` by default.
+---@field plain? boolean Whether the text shows as given. By default it takes the style that the `general/inventory_ring/object_name_fmt` string gives the name of an entry.
 
 ---Sets the caption at the bottom of the screen.
 ---
 ---The inventory ring uses it for the selected entry. The caption reduces the
 ---safe area. Passing no value removes it.
 ---
----The count stands above the caption, where the ring puts the count of an
----entry Lara carries more than one of, and shows while the ring is open.
+---```lua
+---trx.overlay.set_caption(trx.locale.get("general/misc/demo_mode"), {
+---  plain = true,
+---  flashing = true,
+---})
+---```
 ---@param text? string Text to show. Omit this parameter to remove the caption.
----@param count? integer The count to show with it. Omit it to show none.
----@type fun(text?: string, count?: integer)
-M.set_caption = raw.set_caption
+---@param opts? trx.overlay.set_caption.opts How it shows.
+function M.set_caption(text, opts)
+  opts = opts or {}
+  if text ~= nil and not opts.plain then
+    text =
+      trx.locale.get("general/inventory_ring/object_name_fmt"):format(text)
+  end
+  caption:set(text)
+  caption_flashing:set(text ~= nil and opts.flashing == true)
+end
+
+local arrows = trx.signal.new({})
+local version_shown = trx.signal.new(false)
+
+---Asks for the game's version on screen, as the title screen does. The
+---`ui.show_title_version` setting decides whether it shows. <!--noref: ui.show_title_version-->
+---@param shown boolean Whether it is asked for.
+function M.show_version(shown)
+  version_shown:set(shown == true)
+end
+
+-- A caption or an arrow that its screen left up goes with the level.
+trx.events.on_level_unload(function()
+  M.set_caption()
+  arrows:set({})
+end)
 
 ---Shows or hides an interface arrow.
 ---
@@ -76,8 +113,22 @@ M.set_caption = raw.set_caption
 ---sets.
 ---@param arrow trx.overlay.Arrow Which arrow to show.
 ---@param shown boolean Whether it is on screen.
----@type fun(arrow: trx.overlay.Arrow, shown: boolean)
-M.show_arrow = raw.show_arrow
+function M.show_arrow(arrow, shown)
+  if not is_arrow[arrow] then
+    error("unknown arrow", 2)
+  end
+  shown = shown == true
+  local now = arrows:get()
+  if (now[arrow] == true) == shown then
+    return
+  end
+  local next_arrows = {}
+  for other in pairs(now) do
+    next_arrows[other] = true
+  end
+  next_arrows[arrow] = shown or nil
+  arrows:set(next_arrows)
+end
 
 h.properties(M, "overlay", {
   has_letterbox = {
@@ -89,67 +140,37 @@ h.properties(M, "overlay", {
   },
 })
 
--- The arrows on screen, as a number with one bit for each, so that the poll
--- says only when one of them moves.
-local function arrow_bits()
-  local bits = 0
-  for _, arrow in pairs(M.Arrow) do
-    if raw.is_arrow_shown(arrow) then
-      bits = bits | (1 << arrow)
-    end
-  end
-  return bits
-end
-
 h.properties(M.signals, "overlay.signals", {
-  top_text = {
-    get = lasting("top_text", function()
-      return lasting_polled(raw.top_text)
-    end),
-  },
   caption = {
-    get = lasting("caption", function()
-      return lasting_polled(raw.caption)
-    end),
+    get = function()
+      return caption
+    end,
   },
   caption_flashing = {
-    get = lasting("caption_flashing", function()
-      return lasting_polled(raw.is_caption_flashing)
-    end),
+    get = function()
+      return caption_flashing
+    end,
   },
   arrows = {
-    get = lasting("arrows", function()
-      return lasting_polled(arrow_bits):map(function(bits)
-        local shown = {}
-        for _, arrow in pairs(M.Arrow) do
-          if bits & (1 << arrow) ~= 0 then
-            shown[arrow] = true
-          end
-        end
-        return shown
-      end)
-    end),
+    get = function()
+      return arrows
+    end,
   },
   version_shown = {
-    get = lasting("version_shown", function()
-      return lasting_polled(raw.is_version_shown)
-    end),
+    get = function()
+      return version_shown
+    end,
   },
   letterbox = {
     get = lasting("letterbox", function()
       return lasting_polled(raw.has_letterbox)
     end),
   },
-  health_bar_forced = {
-    get = lasting("health_bar_forced", function()
-      return lasting_polled(raw.is_health_bar_forced)
-    end),
-  },
 })
 
 ---Shows an object in the bottom-right corner of the screen, as the game shows
----a pickup Lara collects. It fires `trx.events.on_show_pickup`. It also plays
----secret music for a secret pickup.
+---a pickup Lara collects. It fires `trx.events.on_show_pickup`, which the
+---shipped scripts answer by playing the secret music for a secret.
 ---
 ---It does not add the object to Lara's inventory. Use
 ---`trx.inventory.Inventory:give` for that.

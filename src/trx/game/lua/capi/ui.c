@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/enum_map.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/types.h>
@@ -163,7 +164,8 @@ static RGBA_F M_CheckColorF(lua_State *const L, const int arg)
 }
 
 // Reads the colour of a light, keeping a channel's fraction: a light may be a
-// shade no whole byte gives.
+// shade no whole byte gives. A channel may reach twice the full value, which
+// brightens a model past its own colour.
 static RGB_F M_CheckLightColor(lua_State *const L, const int arg)
 {
     luaL_checktype(L, arg, LUA_TTABLE);
@@ -174,7 +176,7 @@ static RGB_F M_CheckLightColor(lua_State *const L, const int arg)
         lua_getfield(L, arg, keys[i]);
         double value = luaL_optnumber(L, -1, 0.0);
         lua_pop(L, 1);
-        CLAMP(value, 0.0, 255.0);
+        CLAMP(value, 0.0, 510.0);
         *channels[i] = (float)(value / 255.0);
     }
     return color;
@@ -409,17 +411,65 @@ static int M_L_UIDrawWorldModel(lua_State *const L)
         luaL_checktype(L, -1, LUA_TTABLE);
         const int step = lua_absindex(L, -1);
         lua_getfield(L, step, "turn");
-        if (!lua_isnil(L, -1)) {
-            world.steps[i].turn = true;
-            world.steps[i].vec = LUA_CheckXYZ(L, lua_absindex(L, -1));
+        lua_getfield(L, step, "scale");
+        if (!lua_isnil(L, -2)) {
+            world.steps[i].kind = UI_MODEL_STEP_TURN;
+            world.steps[i].vec = LUA_CheckXYZ(L, lua_absindex(L, -2));
+        } else if (!lua_isnil(L, -1)) {
+            world.steps[i].kind = UI_MODEL_STEP_SCALE;
+            world.steps[i].vec.x =
+                (int32_t)lround(luaL_checknumber(L, -1) * 1024.0);
         } else {
-            lua_pop(L, 1);
             lua_getfield(L, step, "move");
+            world.steps[i].kind = UI_MODEL_STEP_MOVE;
             world.steps[i].vec = LUA_CheckXYZ(L, lua_absindex(L, -1));
+            lua_pop(L, 1);
         }
-        lua_pop(L, 2);
+        lua_pop(L, 3);
     }
     world.step_count = count;
+    lua_pop(L, 1);
+
+    lua_getfield(L, 2, "frame");
+    world.frame = (int32_t)luaL_optinteger(L, -1, 0);
+    lua_getfield(L, 2, "next_frame");
+    world.next_frame = (int32_t)luaL_optinteger(L, -1, world.frame);
+    lua_getfield(L, 2, "blend");
+    world.blend = (float)luaL_optnumber(L, -1, 0.0);
+    lua_getfield(L, 2, "at_pivot");
+    world.at_pivot = lua_toboolean(L, -1);
+    lua_pop(L, 4);
+
+    lua_getfield(L, 2, "bones");
+    if (!lua_isnil(L, -1)) {
+        luaL_checktype(L, -1, LUA_TTABLE);
+        const int bones = lua_absindex(L, -1);
+        const int32_t bone_count = (int32_t)lua_rawlen(L, bones);
+        luaL_argcheck(
+            L, bone_count <= UI_MODEL_BONES, 2,
+            "a model takes up to eight bone turns");
+        for (int32_t i = 0; i < bone_count; i++) {
+            lua_rawgeti(L, bones, i + 1);
+            luaL_checktype(L, -1, LUA_TTABLE);
+            const int turn = lua_absindex(L, -1);
+            lua_getfield(L, turn, "bone");
+            world.bones[i].bone = (int32_t)luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+#define M_READ_AXIS(axis)                                                      \
+    lua_getfield(L, turn, #axis);                                              \
+    if (!lua_isnil(L, -1)) {                                                   \
+        world.bones[i].axes.axis = true;                                       \
+        world.bones[i].rot.axis = (int16_t)luaL_checkinteger(L, -1);           \
+    }                                                                          \
+    lua_pop(L, 1);
+            M_READ_AXIS(x);
+            M_READ_AXIS(y);
+            M_READ_AXIS(z);
+#undef M_READ_AXIS
+            lua_pop(L, 1);
+        }
+        world.bone_count = bone_count;
+    }
     lua_pop(L, 1);
 
     lua_getfield(L, 2, "mesh_mask");
@@ -447,6 +497,24 @@ static int M_L_UIDarken(lua_State *const L)
     float opacity = (float)luaL_checknumber(L, 1);
     CLAMP(opacity, 0.0f, 1.0f);
     UI_ScheduleDrawDarken(opacity);
+    return 0;
+}
+
+// trxc.ui.draw_backdrop(style: string, opacity: number, path?: string)
+//
+// A picture comes in from black, so the overlay takes how dark it is; every
+// other style takes how far it has come in.
+static int M_L_UIDrawBackdrop(lua_State *const L)
+{
+    M_CheckPainting(L);
+    const int32_t style =
+        ENUM_MAP_GET(BACKGROUND_TYPE, luaL_checkstring(L, 1), -1);
+    luaL_argcheck(L, style != -1, 1, "unknown backdrop");
+    float opacity = (float)luaL_checknumber(L, 2);
+    CLAMP(opacity, 0.0f, 1.0f);
+    UI_ScheduleDrawBackdrop(
+        (BACKGROUND_TYPE)style, style == BK_IMAGE ? 1.0f - opacity : opacity,
+        luaL_optstring(L, 3, nullptr));
     return 0;
 }
 
@@ -843,6 +911,7 @@ static const luaL_Reg m_Module[] = {
     { "sprite_count", M_L_UISpriteCount },
     { "interpolation_rate", M_L_UIInterpolationRate },
     { "draw_background", M_L_UIDrawBackground },
+    { "draw_backdrop", M_L_UIDrawBackdrop },
     { "draw_model", M_L_UIDrawModel },
     { "draw_world_model", M_L_UIDrawWorldModel },
     { "darken", M_L_UIDarken },

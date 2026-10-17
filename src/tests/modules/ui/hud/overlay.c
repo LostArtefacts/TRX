@@ -173,12 +173,12 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "ui",
-        .deps = { "config",     "events",         "signal",       "lara",
-                  "items",      "objects",        "weapons",      "camera",
-                  "rooms",      "catalog",        "locale",       "rules",
-                  "inventory",  "inventory_ring", "game",         "cutscenes",
-                  "overlay",    "input",          "ui.primitive", "ui.widgets",
-                  "ui.regions", "ui.tween",       nullptr },
+        .deps = { "config",    "events",       "signal",     "lara",
+                  "items",     "objects",      "weapons",    "camera",
+                  "rooms",     "catalog",      "locale",     "rules",
+                  "inventory", "game",         "cutscenes",  "overlay",
+                  "input",     "ui.primitive", "ui.widgets", "ui.regions",
+                  "ui.tween",  nullptr },
         .seal = true,
         .setup_extra = M_Setup,
         .push_fake = M_PushFake,

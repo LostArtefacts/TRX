@@ -196,6 +196,15 @@ end
 
       Returns: integer. How many came out.
 
+- <a id="inventory.Actions" name="inventory.Actions"></a>[lua]`trx.inventory.Actions`
+
+    What the inventory ring offers for an entry.
+
+    Properties:
+    - <a id="inventory.Actions.combine" name="inventory.Actions.combine"></a>**`combine`**: boolean. Whether Lara carries something it combines with, so that choosing it combines rather than uses it.
+    - <a id="inventory.Actions.examine" name="inventory.Actions.examine"></a>**`examine`**: boolean. Whether it can be examined, which the player's settings and its description decide.
+    - <a id="inventory.Actions.use" name="inventory.Actions.use"></a>**`use`**: boolean. Whether choosing it uses it.
+
 ### Functions
 
 - <a id="inventory.count" name="inventory.count"></a>[lua]`trx.inventory.count(object_id)`  
@@ -318,8 +327,7 @@ end
 
 - <a id="inventory.combine" name="inventory.combine"></a>[lua]`trx.inventory.combine(object_id, partner_id)`  
   Combines two things Lara carries into what they make, taking one of each,
-  as combining them in the inventory ring does. The ring rests on what they
-  made when it next settles.
+  as combining them in the inventory ring does.
 
   Parameters:
   - <a id="inventory.combine.object_id" name="inventory.combine.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to combine.
@@ -330,4 +338,41 @@ end
   Example:
   ```lua
   local made = trx.inventory.combine(item, partner)
+  ```
+
+- <a id="inventory.icon_of" name="inventory.icon_of"></a>[lua]`trx.inventory.icon_of(object)`  
+  Returns the inventory icon for a pickup, whether or not Lara has one.
+
+  Parameters:
+  - <a id="inventory.icon_of.object" name="inventory.icon_of.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup to check.
+
+  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The icon's object id, or `nil` for a pickup that has none.
+
+- <a id="inventory.use" name="inventory.use"></a>[lua]`trx.inventory.use(object_id)`  
+  Uses something Lara carries, as choosing it in the inventory ring does:
+  she draws a weapon, takes a medipack, lights a flare, or uses a key on what
+  she stands at. Something that has no use does nothing.
+
+  Parameters:
+  - <a id="inventory.use.object_id" name="inventory.use.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+
+  Example:
+  ```lua
+  trx.inventory.use(trx.catalog.objects.SMALL_MEDIPACK_OPTION)
+  ```
+
+- <a id="inventory.actions" name="inventory.actions"></a>[lua]`trx.inventory.actions(object_id)`  
+  What the inventory ring offers for an entry: using, examining or combining
+  it.
+
+  Parameters:
+  - <a id="inventory.actions.object_id" name="inventory.actions.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+
+  Returns: [trx.inventory.Actions](#inventory.Actions). What it offers.
+
+  Example:
+  ```lua
+  if trx.inventory.actions(object).examine then
+    trx.log.info("it can be examined")
+  end
   ```

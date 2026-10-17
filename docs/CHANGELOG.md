@@ -195,8 +195,8 @@
 - Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
 - Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
 - Added `order` and `alone` to `trx.ui.regions.place`, which say where a widget stacks in its region and whether it shows only while the region holds nothing else
-- Added `top_text`, `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
-- Added `hint` and `count` to `trx.inventory_ring.signals`, which say what key hints and count the inventory ring shows
+- Added `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
+- Added `trx.overlay.show_version`, which asks for the game's version on screen as the title screen does
 - Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
 - Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
 - Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
@@ -215,7 +215,8 @@
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
 - Added `trx.ui.primitive.model` and `trx.ui.widgets.Model`, which draw a model on the canvas as the interface is painted, turned any way and in the game or over the inventory ring, held as a pickup or standing free, and lit as the script says, each game in its own terms, by the light the game holds a pickup up in unless told otherwise
 - Added `trx.ui.primitive.background`, which draws a picture behind the whole interface, in colour or greyed and dimmed
-- Added `trx.ui.primitive.world_model`, which draws a model in a world of its own as a camera there sees it, placed step by step as the engine places one, so a script can show a model as the game shows it
+- Added `trx.ui.primitive.backdrop`, which draws one of the game's menu backdrops behind the whole interface, under any model drawn after it
+- Added `trx.ui.primitive.world_model`, which draws a model in a world of its own as a camera there sees it, placed step by step as the engine places one and posed in any frame of its animation, so a script can show a model as the game shows it
 - Added `trx.ui.primitive.darken`, which darkens the screen behind the interface, as the game does behind a menu and to fade to black
 - Added `trx.ui.primitive.mesh_bounds`, the box a model occupies
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
@@ -224,6 +225,7 @@
 - Added `trx.items.EarthquakeMode`, the values that an earthquake's `mode` property takes
 - Added `trx.objects.Object:set_hit_effect()`, so a script can decide whether a bullet hit spawns blood, a ricochet, smoke or nothing (`trx.items.HitEffect`) (TRX1676)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
+- Added `trx.game.is_leaving`, which says whether the game has been told what to play next once the screens on show end
 - Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
 - Added `trx.events.on_show_pickup`, which happens when the game announces an object in the corner of the screen
 - Added the ability for a script to draw outlines in the world the camera is looking at
@@ -248,9 +250,7 @@
     - `trx.savegame.play_story`
     - `trx.savegame.recent_slot`
     - `trx.mod.can_switch`
-- Added `trx.inventory_ring`, which holds what the inventory ring draws. `trx.inventory` now holds only what Lara carries.
-    - `trx.inventory_ring.Mode` and `trx.inventory_ring.mode`, which report what the open ring was opened for
-    - `trx.inventory_ring.EntryAnim`, `trx.inventory_ring.selection_anim` and `trx.inventory_ring.animate_selection`, which run the selected entry through its animation
+- Added `trx.ui.MenuMode`, which says what the game opened its menu for
 - Added `ng_plus` to `trx.game.play_level`, so a script can pick the game mode a level starts in
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
@@ -296,8 +296,9 @@
 - Added `trx.ui.widgets.Spacer`, which keeps empty room that follows the text size
 - Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes
 - Added the `common.timer` module, which runs a function after some ticks or every few ticks, counted while the level runs or on every tick
+- Added `trx.ui.Screen.MENU` and `trx.ui.MenuContext`, so a script draws the menu the game opens over the play and on the title screen
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks, after a delay if asked, and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the pause screen, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the pause screen, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from. A script can also open one of these screens itself
     - `trx.ui.Screen` and `trx.ui.ScreenContext`, and a context for each kind of screen: `trx.ui.EntryContext`, `trx.ui.PauseContext`, `trx.ui.SaveLoadContext`, `trx.ui.StatsContext` and `trx.ui.GlobeContext`
     - `trx.ui.StatsContext.level`, `trx.ui.StatsContext.is_final` and `trx.ui.StatsContext.is_bare`, which say what the statistics screen shows
     - `background` in `trx.ui.StatsContext` and `trx.ui.GlobeContext`, the picture a screen stands on
@@ -310,9 +311,8 @@
 - Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
-- Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
-- Added `trx.inventory_ring.signals.rest_frame`, which says when the entry the player picked in the inventory ring comes to rest
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
+- Added `trx.inventory.use`, which uses an entry as choosing it in the inventory ring does, and `trx.inventory.actions`, which says whether the ring offers to use, examine or combine it
 - Added fade layers, which the game draws over its interface, below the console or over it, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
 - Added `trx.events.on_screen_change`, `trx.events.on_exit` and the `holds_screen` setting of `trx.ui.layers.fade`, which let a script run the change from one screen to the next and the fade as the game exits
@@ -320,6 +320,7 @@
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
 - Changed `trx.config.declare` so that a value of a declared setting can carry a label of its own
+- Changed the inventory ring to be drawn by the shipped interface scripts, where a script declares the ring's entries through the `common.ui.ring` module
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed the drawing events to belong to the modules that draw
     - `trx.events.on_ui_draw` → `trx.ui.on_reserve`
@@ -339,6 +340,7 @@
 - Removed `trx.ui.widgets.Row`, which was a horizontal `trx.ui.widgets.Stack` of two arrows and a widget
 - Removed `h_bars` from `trx.ui.widgets.Resize`, as a `trx.ui.widgets.Bar` already follows the player's bar scale
 - Removed `trx.signal.Signal:above` in favour of `trx.signal.Signal:map`
+- Removed `trx.overlay.signals.health_bar_forced` in favour of the `health_bar` signal of the shipped `common.ui.ring` module
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.ui.primitive.panel` and `trx.ui.widgets.Frame` drawing a frame a pixel away from where the game draws its own
 - Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes

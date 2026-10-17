@@ -1,0 +1,58 @@
+-- How the shipped ring moves an entry the player turns by hand, as the
+-- examine screen does.
+
+local h = require("harness")
+local test = h.test
+
+local motion = require("common.ui.ring.motion")
+
+-- Where the hand turn stands among the steps of an entry's pose.
+local HAND_STEP = 7
+
+local function new_view()
+  return motion.new({ entries = { {} } })
+end
+
+local function near(a, b)
+  return math.abs(a.x - b.x) <= 8
+    and math.abs(a.y - b.y) <= 8
+    and math.abs(a.z - b.z) <= 8
+end
+
+test("a hand turn moves smoothly between ticks", function()
+  local view = new_view()
+  local hand = view.entries[1].hand
+  view:turn_by_hand(1000, 0)
+  view:tick(motion.Spin.HELD)
+  -- The pose is drawn part way between the last two steps.
+  assert(hand.last.w == 1, "the last step moved")
+  assert(hand.now.w < 1, "the next step did not move")
+end)
+
+test("each hand turn is about the camera's axes", function()
+  local view = new_view()
+  local yaw, pitch = trx.math.DEG_90, 4096
+  view:turn_by_hand(yaw, 0)
+  view:tick(motion.Spin.HELD)
+  view:turn_by_hand(0, pitch)
+  view:tick(motion.Spin.HELD)
+  view:tick(motion.Spin.HELD)
+  local rot = view:pose(1)[HAND_STEP].turn
+  local v = { x = 1000, y = 2000, z = 3000 }
+  local turned = trx.math.rotate(v, { x = 0, y = yaw, z = 0 })
+  local expected = trx.math.rotate(turned, { x = -pitch, y = 0, z = 0 })
+  local got = trx.math.rotate(v, rot)
+  assert(near(got, expected), ("%d %d %d"):format(got.x, got.y, got.z))
+end)
+
+test("an entry turned by hand stops spinning between ticks", function()
+  local view = new_view()
+  local entry = view.entries[1]
+  view:tick(motion.Spin.IDLE)
+  view:turn_by_hand(1000, 0)
+  view:tick(motion.Spin.HELD)
+  local y_rot = entry.y_rot --[[@as table]]
+  assert(y_rot.last == y_rot.now, "the spin went on between ticks")
+end)
+
+return h.report()

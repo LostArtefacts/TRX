@@ -1,6 +1,8 @@
 -- The pages of the passport, and which of them the book offers in each mode
 -- of the inventory ring.
 
+local ring = require("common.ui.ring")
+
 local M = {}
 
 M.Page = {
@@ -44,7 +46,7 @@ end
 -- Returns false when Lara is dead, because the passport is then the only way
 -- on.
 function M.can_back_out()
-  return trx.inventory_ring.mode() ~= trx.inventory_ring.Mode.DEATH
+  return ring.mode() ~= trx.ui.MenuMode.DEATH
 end
 
 -- Returns whether a page opens only after the player confirms it. TR1 does
@@ -52,9 +54,9 @@ end
 function M.browses_first(mode)
   return trx.game.tr_version == 1
     and (
-      mode == trx.inventory_ring.Mode.TITLE
-      or mode == trx.inventory_ring.Mode.GAME
-      or mode == trx.inventory_ring.Mode.DEATH
+      mode == trx.ui.MenuMode.TITLE
+      or mode == trx.ui.MenuMode.GAME
+      or mode == trx.ui.MenuMode.DEATH
     )
 end
 
@@ -133,7 +135,7 @@ local function ensure_way_out(pages, mode)
     return
   end
   pages[3] = {
-    role = mode == trx.inventory_ring.Mode.TITLE and Page.EXIT_GAME
+    role = mode == trx.ui.MenuMode.TITLE and Page.EXIT_GAME
       or Page.EXIT_TO_TITLE,
     available = true,
   }
@@ -149,11 +151,11 @@ function M.determine_pages(mode)
   local saves = has_saves() and M.saving_enabled()
   local can_restart = trx.game.can_restart_level()
 
-  if mode == trx.inventory_ring.Mode.TITLE then
+  if mode == trx.ui.MenuMode.TITLE then
     set(1, Page.LOAD_GAME, saves)
     set(2, Page.NEW_GAME, true)
     set(3, Page.EXIT_GAME, true)
-  elseif mode == trx.inventory_ring.Mode.GAME then
+  elseif mode == trx.ui.MenuMode.GAME then
     if not M.saving_enabled() then
       set(2, Page.RESTART_LEVEL, can_restart)
     else
@@ -161,7 +163,7 @@ function M.determine_pages(mode)
       set(2, Page.SAVE_GAME, true)
     end
     set(3, Page.EXIT_TO_TITLE, true)
-  elseif mode == trx.inventory_ring.Mode.LOAD then
+  elseif mode == trx.ui.MenuMode.LOAD then
     if not M.saving_enabled() then
       set(2, Page.RESTART_LEVEL, can_restart)
     elseif saves then
@@ -170,15 +172,14 @@ function M.determine_pages(mode)
       set(2, Page.SAVE_GAME, true)
     end
   elseif
-    mode == trx.inventory_ring.Mode.SAVE
-    or mode == trx.inventory_ring.Mode.SAVE_CRYSTAL
+    mode == trx.ui.MenuMode.SAVE or mode == trx.ui.MenuMode.SAVE_CRYSTAL
   then
     if not M.saving_enabled() then
       set(2, Page.RESTART_LEVEL, can_restart)
     else
       set(2, Page.SAVE_GAME, true)
     end
-  elseif mode == trx.inventory_ring.Mode.DEATH then
+  elseif mode == trx.ui.MenuMode.DEATH then
     set(1, Page.LOAD_GAME, saves)
     set(2, Page.RESTART_LEVEL, can_restart)
     set(3, Page.EXIT_TO_TITLE, true)
@@ -192,7 +193,7 @@ function M.determine_pages(mode)
         page.role = Page.NEW_GAME
       elseif
         not trx.savegame.manual_allowed
-        and mode ~= trx.inventory_ring.Mode.SAVE_CRYSTAL
+        and mode ~= trx.ui.MenuMode.SAVE_CRYSTAL
       then
         if can_restart then
           page.role = Page.RESTART_LEVEL

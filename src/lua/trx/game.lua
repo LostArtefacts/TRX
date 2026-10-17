@@ -13,7 +13,7 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---@trx.module 11
 ---@class (exact) trx.game
 ---@trx.readonly current_level, cutscene_frame, cutscenes, demos, fmvs, gym,
----  is_loaded, is_ngplus, is_photo_mode, is_playable, is_playing,
+---  is_leaving, is_loaded, is_ngplus, is_photo_mode, is_playable, is_playing,
 ---  is_suspended, levels, measured_fps, photo_mode_target, real_time, sim_time,
 ---  tr_version, version
 ---@field levels trx.game.Level[] The levels of the game, in order, counted from one.
@@ -34,6 +34,7 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---@field real_time number Seconds of wall-clock time since the game started, which keeps running while the game is held still. Use it to time something against the player's clock rather than against the frames the game has run.
 ---@field sim_time number Seconds the game's own clock has counted, which runs faster or slower with the game's speed. The game times its fades by it.
 ---@field tr_version integer Which Tomb Raider the level being played belongs to: `1` through `4`. The games differ in what they draw and in what the player expects, so a script that dresses more than one reads this to tell them apart. Zero before a level is loaded.
+---@field is_leaving boolean Whether the game has been told what to play next once the screens on show end, such as a level, a demo or a movie, or to exit. A menu fades to black rather than back to the game while it is true.
 ---@field is_suspended boolean Whether a loaded level is held still: the pause screen, photo mode, or the inventory ring. Lara and the creatures do not move while it is true. It is false outside a level, which is what tells it apart from the opposite of `trx.game.is_playing`.
 ---@field is_photo_mode boolean Whether the player is in photo mode, where the camera is theirs to move and the game is held still.
 ---@field photo_mode_target trx.game.PhotoModeTarget What photo mode is steering. Outside photo mode, this is always the camera, which is where every session starts.
@@ -301,6 +302,7 @@ h.properties(M, "game", {
   sim_time = { get = raw.sim_time },
   tr_version = { get = raw.tr_version },
   is_suspended = { get = raw.is_suspended },
+  is_leaving = { get = raw.is_leaving },
   is_photo_mode = { get = raw.is_photo_mode },
   photo_mode_target = { get = raw.photo_mode_target },
   is_ngplus = { get = raw.is_ngplus },

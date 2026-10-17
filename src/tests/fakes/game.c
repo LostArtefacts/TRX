@@ -10,8 +10,6 @@
 #include <trx/game/game/enum.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow/common.h>
-#include <trx/game/inventory_ring/control.h>
-#include <trx/game/inventory_ring/types.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
@@ -45,40 +43,32 @@ static bool m_IsPlaying = true;
 static bool m_InPhotoMode;
 static PHOTO_MODE m_PhotoModeTarget;
 
-// The open ring, holding the one entry that the player has picked out of it.
-static bool m_RingOpen;
-static INV_RING m_Ring;
-static INVENTORY_ITEM m_RingItem;
-static INVENTORY_ITEM *m_RingList[1] = { &m_RingItem };
-
 // Whether a script holds an engine screen, which makes the play_* verbs wait.
 static bool m_ScreenHeld;
-
-// What the ring shows where its button hints go, as a script last set it.
-static char m_RingHint[256];
 
 // What the held entry combines with.
 static OBJECT_ID m_Partners[8];
 static int32_t m_PartnerCount;
-// The last two things a script combined, and what the ring was asked to rest
-// on.
+// The last two things a script combined.
 static OBJECT_ID m_Combined[2];
-static OBJECT_ID m_RequestedObject;
+// Whether every entry can be examined.
+static bool m_Examinable;
 
 // The areas of the globe a test gives the game flow.
 static GF_GLOBE_ENTRY m_Globe[8];
 static int32_t m_GlobeCount;
 
+// The last command the play_* verbs queued, which the game leaves for.
+static GF_COMMAND m_Override = { .action = GF_NOOP };
+
 static void M_Reset(void)
 {
-    m_RingHint[0] = '\0';
+    m_Override = (GF_COMMAND) { .action = GF_NOOP };
     m_PartnerCount = 0;
     m_Combined[0] = NO_OBJECT;
     m_Combined[1] = NO_OBJECT;
-    m_RequestedObject = NO_OBJECT;
     m_GlobeCount = 0;
     m_CompletedLevels = 0;
-    m_RingOpen = false;
     m_ScreenHeld = false;
     g_TRVersion = 1;
     m_InPhotoMode = false;
@@ -207,47 +197,17 @@ static int M_L_SetNGPlus(lua_State *const L)
     return 0;
 }
 
-// fake.open_ring(mode, object_id, open_frame, frame_count) - a ring opened for
-// the mode, resting on an entry that the player has picked.
-static int M_L_OpenRing(lua_State *const L)
-{
-    m_Ring = (INV_RING) {
-        .mode = (INVENTORY_MODE)luaL_checkinteger(L, 1),
-        .list = m_RingList,
-        .number_of_objects = 1,
-        .current_object = 0,
-    };
-    m_RingItem = (INVENTORY_ITEM) {
-        .object_id = (OBJECT_ID)luaL_checkinteger(L, 2),
-        .open_frame = (int16_t)luaL_checkinteger(L, 3),
-        .frames_total = (int16_t)luaL_checkinteger(L, 4),
-    };
-    m_RingItem.current_frame = m_RingItem.open_frame;
-    m_RingItem.goal_frame = m_RingItem.open_frame;
-    m_RingOpen = true;
-    return 0;
-}
-
-// fake.close_ring()
-static int M_L_CloseRing(lua_State *const L)
-{
-    m_RingOpen = false;
-    return 0;
-}
-
-// fake.settle_ring() -> frame - the picked entry runs to the frame that a
-// script asked for, as the ring animates it over the next few ticks.
-static int M_L_SettleRing(lua_State *const L)
-{
-    m_RingItem.current_frame = m_RingItem.goal_frame;
-    lua_pushinteger(L, m_RingItem.current_frame);
-    return 1;
-}
-
 // fake.set_tr_version(n) - which game the session plays.
 static int M_L_SetTRVersion(lua_State *const L)
 {
     g_TRVersion = (int32_t)luaL_checkinteger(L, 1);
+    return 0;
+}
+
+// fake.set_examinable(bool) - whether every entry can be examined.
+static int M_L_SetExaminable(lua_State *const L)
+{
+    m_Examinable = lua_toboolean(L, 1);
     return 0;
 }
 
@@ -327,16 +287,6 @@ static int M_L_SetCompleted(lua_State *const L)
     return 0;
 }
 
-// fake.requested_object() -> object? - what the ring was asked to rest on.
-static int M_L_RequestedObject(lua_State *const L)
-{
-    if (m_RequestedObject == NO_OBJECT) {
-        return 0;
-    }
-    lua_pushinteger(L, m_RequestedObject);
-    return 1;
-}
-
 // fake.combined() -> object?, partner? - what a script last combined.
 static int M_L_Combined(lua_State *const L)
 {
@@ -346,13 +296,6 @@ static int M_L_Combined(lua_State *const L)
     lua_pushinteger(L, m_Combined[0]);
     lua_pushinteger(L, m_Combined[1]);
     return 2;
-}
-
-// fake.ring_hint() -> string - empty where the ring shows no hint.
-static int M_L_RingHint(lua_State *const L)
-{
-    lua_pushstring(L, m_RingHint);
-    return 1;
 }
 
 // fake.set_screen_held(bool) - whether a script holds an engine screen.
@@ -516,11 +459,6 @@ bool SG_Manager_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
     return slot.index >= 0;
 }
 
-INV_RING *InvRing_GetActiveRing(void)
-{
-    return m_RingOpen ? &m_Ring : nullptr;
-}
-
 // The game flow's level and the game's are not the same one. The title screen
 // is a level the flow is on and the game is not, which is where a caller that
 // reads the game's and guards on the flow's comes apart.
@@ -587,8 +525,19 @@ GF_LEVEL *GF_GetLevelByOrdinalNumber(
 
 // The gameflow command the play_* verbs queue, and the savegame bookkeeping
 // they do on the way. Recorded, not performed.
+GF_COMMAND GF_GetOverrideCommand(void)
+{
+    return m_Override;
+}
+
+bool Shell_IsExiting(void)
+{
+    return false;
+}
+
 void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
 {
+    m_Override = command;
     const int32_t num = command.param;
     switch (command.action) {
     case GF_START_GAME:
@@ -721,46 +670,9 @@ void FakeGame_SetGymPresent(const bool present)
     m_HasGym = present;
 }
 
-int32_t FakeGame_GetRingRestFrame(void)
-{
-    if (m_RingOpen && m_RingItem.current_frame == m_RingItem.goal_frame) {
-        return m_RingItem.current_frame;
-    }
-    return -1;
-}
-
 void FakeGame_SetCurrentLevel(const int32_t idx)
 {
     m_CurrentLevel = idx < 0 ? nullptr : &m_Levels[idx];
-}
-
-void InvRing_SetButtonHintParts(
-    const char *const *const parts, const int32_t count)
-{
-    m_RingHint[0] = '\0';
-    for (int32_t i = 0; i < count; i++) {
-        const size_t used = strlen(m_RingHint);
-        snprintf(
-            m_RingHint + used, sizeof(m_RingHint) - used, "%s%s",
-            i > 0 ? " | " : "", parts[i]);
-    }
-}
-
-// No ring is open here, so the ring shows no hint and no count.
-int32_t InvRing_GetButtonHint(const char *const **const out_parts)
-{
-    *out_parts = nullptr;
-    return 0;
-}
-
-int32_t InvRing_GetButtonHintRevision(void)
-{
-    return -1;
-}
-
-const char *InvRing_GetItemQuantity(void)
-{
-    return nullptr;
 }
 
 // Combines anything with a partner the held entry has, into the first
@@ -777,9 +689,19 @@ OBJECT_ID Inv_Combine(const OBJECT_ID obj_id, const OBJECT_ID partner_id)
     return NO_OBJECT;
 }
 
-void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)
+void Lara_UseItem(const OBJECT_ID object_id)
 {
-    m_RequestedObject = obj_id;
+    FAKE_RECORD("use_item", FV(object_id));
+}
+
+// An entry combines where it has partners, and is used otherwise.
+INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
+{
+    return (INV_ITEM_ACTIONS) {
+        .can_use = m_PartnerCount == 0,
+        .can_examine = m_Examinable,
+        .can_combine = m_PartnerCount > 0,
+    };
 }
 
 int32_t Inv_GetCombinePartners(
@@ -796,24 +718,16 @@ void FakeGame_PushLua(lua_State *const L)
 {
     lua_pushcfunction(L, M_L_AdvanceSimTime);
     lua_setfield(L, -2, "advance_sim_time");
-    lua_pushcfunction(L, M_L_RingHint);
-    lua_setfield(L, -2, "ring_hint");
     lua_pushcfunction(L, M_L_SetCompleted);
     lua_setfield(L, -2, "set_completed");
     lua_pushcfunction(L, M_L_SetGlobe);
     lua_setfield(L, -2, "set_globe");
-    lua_pushcfunction(L, M_L_RequestedObject);
-    lua_setfield(L, -2, "requested_object");
     lua_pushcfunction(L, M_L_Combined);
     lua_setfield(L, -2, "combined");
     lua_pushcfunction(L, M_L_SetCombinePartners);
     lua_setfield(L, -2, "set_combine_partners");
-    lua_pushcfunction(L, M_L_OpenRing);
-    lua_setfield(L, -2, "open_ring");
-    lua_pushcfunction(L, M_L_CloseRing);
-    lua_setfield(L, -2, "close_ring");
-    lua_pushcfunction(L, M_L_SettleRing);
-    lua_setfield(L, -2, "settle_ring");
+    lua_pushcfunction(L, M_L_SetExaminable);
+    lua_setfield(L, -2, "set_examinable");
     lua_pushcfunction(L, M_L_SetTRVersion);
     lua_setfield(L, -2, "set_tr_version");
     lua_pushcfunction(L, M_L_SetScreenHeld);

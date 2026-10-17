@@ -4,7 +4,9 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/anims/types.h>
+#include <trx/game/camera.h>
 #include <trx/game/const.h>
+#include <trx/game/game.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/const.h>
@@ -100,6 +102,13 @@ typedef struct {
     M_DRAW_OP base;
     float opacity;
 } M_DRAW_OP_DARKEN;
+
+typedef struct {
+    M_DRAW_OP base;
+    BACKGROUND_TYPE style;
+    float progress;
+    const char *path;
+} M_DRAW_OP_BACKDROP;
 
 typedef struct {
     M_DRAW_OP base;
@@ -493,6 +502,14 @@ static void M_DrawOp_Background(const M_DRAW_OP *const base)
     M_EndScene();
 }
 
+static void M_DrawOp_Backdrop(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_BACKDROP *const op = (const M_DRAW_OP_BACKDROP *)base;
+    M_BeginScene();
+    Output_Overlay_DrawBackground(op->style, op->progress, op->path);
+    M_EndScene();
+}
+
 // Allocate a new deferred draw operation in the arena.
 static inline void *M_ArenaAlloc(const size_t sz)
 {
@@ -551,6 +568,19 @@ static OUTPUT_UI_MESH_LIGHT M_CopyLight(const UI_MODEL_LIGHT *const light)
         memcpy(mesh_light.colors, light->colors, sizeof(mesh_light.colors));
     }
     return mesh_light;
+}
+
+static OUTPUT_UI_MESH_STEP M_ToMeshStep(const UI_MODEL_STEP kind)
+{
+    switch (kind) {
+    case UI_MODEL_STEP_TURN:
+        return OUTPUT_UI_MESH_STEP_TURN;
+    case UI_MODEL_STEP_SCALE:
+        return OUTPUT_UI_MESH_STEP_SCALE;
+    case UI_MODEL_STEP_MOVE:
+        break;
+    }
+    return OUTPUT_UI_MESH_STEP_MOVE;
 }
 
 void UI_ScheduleDrawTextBackground(
@@ -766,10 +796,20 @@ void UI_ScheduleDrawModelInWorld(
         .camera_target = world->camera_target,
         .fov = world->fov,
         .step_count = world->step_count,
+        .frame = world->frame,
+        .next_frame = world->next_frame,
+        .blend = world->blend,
+        .bone_count = world->bone_count,
+        .at_pivot = world->at_pivot,
     };
     for (int32_t i = 0; i < world->step_count; i++) {
-        mesh_world.steps[i].turn = world->steps[i].turn;
+        mesh_world.steps[i].kind = M_ToMeshStep(world->steps[i].kind);
         mesh_world.steps[i].vec = world->steps[i].vec;
+    }
+    for (int32_t i = 0; i < world->bone_count; i++) {
+        mesh_world.bones[i].bone = world->bones[i].bone;
+        mesh_world.bones[i].axes = world->bones[i].axes;
+        mesh_world.bones[i].rot = world->bones[i].rot;
     }
     M_SCHEDULE_OP(
         M_DrawOp_Model,
@@ -798,6 +838,24 @@ void UI_ScheduleDrawBackground(
             .path = owned_path,
             .mono = mono,
             .dim = dim,
+        }));
+}
+
+void UI_ScheduleDrawBackdrop(
+    const BACKGROUND_TYPE style, const float progress, const char *const path)
+{
+    char *owned_path = nullptr;
+    if (path != nullptr) {
+        const size_t size = strlen(path) + 1;
+        owned_path = M_ArenaAlloc(size);
+        memcpy(owned_path, path, size);
+    }
+    M_SCHEDULE_OP(
+        M_DrawOp_Backdrop,
+        ((M_DRAW_OP_BACKDROP) {
+            .style = style,
+            .progress = progress,
+            .path = owned_path,
         }));
 }
 
@@ -854,5 +912,12 @@ void UI_Draw(void)
             const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(ops, i);
             op->draw(op);
         }
+    }
+}
+
+void UI_DrawBinocularMask(void)
+{
+    if (Game_IsPlaying() && Camera_Binoculars_IsActive()) {
+        OutputSource_UI_StageBinocularMask();
     }
 }

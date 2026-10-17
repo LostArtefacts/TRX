@@ -8,7 +8,6 @@
 #include <trx/game/gun/types.h>
 #include <trx/game/gym.h>
 #include <trx/game/input/enum.h>
-#include <trx/game/inventory_ring/enum.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/items/enum.h>
 #include <trx/game/lara/enum.h>
@@ -24,7 +23,6 @@
 #include <trx/game/objects/ids.h>
 #include <trx/game/objects/traps/scaled_spikes.h>
 #include <trx/game/output/types.h>
-#include <trx/game/overlay.h>
 #include <trx/game/paths.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/rooms/enum.h>
@@ -34,6 +32,7 @@
 #include <trx/game/sound/ids.h>
 #include <trx/game/sparks/enum.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/menu.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/takeover.h>
 #include <trx/game/ui/tween.h>
@@ -176,16 +175,8 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_EXIT, "ui_paint_exit");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_EXIT, "exit");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_STARTUP, "startup");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_RING_REST, "ring_rest");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_LAYOUT, "ui_layout");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCREEN_CHANGE, "screen_change");
-
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TL, "top_left");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TR, "top_right");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BL, "bottom_left");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BR, "bottom_right");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BCL, "caption_left");
-    ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BCR, "caption_right");
 
     ENUM_MAP(INVENTORY_MODE, INV_GAME_MODE, "game");
     ENUM_MAP(INVENTORY_MODE, INV_TITLE_MODE, "title");
@@ -209,6 +200,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_GLOBE_SELECT, "globe_select");
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_LEVEL_VIEW, "level_view");
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_PICTURE, "picture");
+    ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_MENU, "menu");
 
     ENUM_MAP(UI_TAKEOVER_CHOICE, UI_TAKEOVER_CHOICE_CANCEL, "cancel");
     ENUM_MAP(UI_TAKEOVER_CHOICE, UI_TAKEOVER_CHOICE_CONFIRM, "confirm");

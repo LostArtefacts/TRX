@@ -1,6 +1,8 @@
 -- Sets how the inventory ring draws a level's puzzle, key, pickup, and examine
 -- items. TR4 sets these items per level.
 
+local ring = require("common.ui.ring")
+
 local M = {}
 
 -- The original game holds an inventory object at a distance and stores that
@@ -25,10 +27,10 @@ local FACING = 180
 -- selection. A setup stays active until another level sets its own setup.
 function M.apply(items)
   for object, item in pairs(items) do
-    local icon = trx.inventory_ring.icon_of(trx.catalog.objects[object])
+    local icon = trx.inventory.icon_of(trx.catalog.objects[object])
     if icon ~= nil then
-      trx.inventory_ring.declare_item({
-        object_id = trx.catalog.key(trx.catalog.Context.OBJECTS, icon),
+      ring.declare_item({
+        object_id = trx.catalog.key(trx.catalog.Context.OBJECTS, icon) --[[@as string]],
         scale = REFERENCE_DISTANCE / item.scale,
         y_offset = math.floor(
           (item.offset_y or 0) * REFERENCE_DISTANCE / OG_FOCAL + 0.5

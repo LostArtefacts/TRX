@@ -49,7 +49,7 @@ test("an object the engine does not know is refused", function()
     end)
   end
   raises(function()
-    trx.inventory_ring.icon_of(999999)
+    trx.inventory.icon_of(999999)
   end)
 end)
 
@@ -119,10 +119,10 @@ test("anything that is not a weapon is refused", function()
 end)
 
 test("icon_of names the icon, not the entry", function()
-  local icon = trx.inventory_ring.icon_of(KEY)
+  local icon = trx.inventory.icon_of(KEY)
   assert(icon == KEY, "a pickup with an icon of its own stands for itself")
   assert(
-    trx.inventory_ring.icon_of(KEY) == icon,
+    trx.inventory.icon_of(KEY) == icon,
     "and answers whether or not she is carrying any"
   )
 end)
@@ -177,54 +177,20 @@ test("a count cannot be set below zero", function()
   trx.inventory.set_count(KEY, 0)
 end)
 
--------------------------------------------------------------------------------
--- The open ring
--------------------------------------------------------------------------------
-
-local Mode = trx.inventory_ring.Mode
-local PASSPORT = trx.catalog.objects.PASSPORT_OPTION
-
-test("no ring reports no mode and no entry", function()
-  fake.close_ring()
-  assert(trx.inventory_ring.mode() == nil)
-  assert(trx.inventory_ring.selection_anim() == nil)
+test("using an entry uses it as choosing it in the ring does", function()
+  trx.inventory.use(KEY)
+  local call = fake.calls().use_item
+  assert(call.count == 1, "it was not used")
+  assert(call.object_id == KEY, "the wrong entry was used")
 end)
 
-test("an open ring reports what it was opened for", function()
-  fake.open_ring(Mode.DEATH, PASSPORT, 10, 30)
-  assert(trx.inventory_ring.mode() == Mode.DEATH)
-  fake.close_ring()
-end)
-
-test("the picked entry reports where its animation is", function()
-  fake.open_ring(Mode.TITLE, PASSPORT, 10, 30)
-  local anim = trx.inventory_ring.selection_anim()
-  assert(anim.frame == 10)
-  assert(anim.goal_frame == 10)
-  assert(anim.open_frame == 10)
-  assert(anim.frame_count == 30)
-  fake.close_ring()
-end)
-
-test("the picked entry runs to the frame a script asks for", function()
-  fake.open_ring(Mode.TITLE, PASSPORT, 10, 30)
-  trx.inventory_ring.animate_selection(15, 1)
-  local anim = trx.inventory_ring.selection_anim()
-  assert(anim.goal_frame == 15)
-  assert(anim.direction == 1)
-  fake.settle_ring()
-  assert(trx.inventory_ring.selection_anim().frame == 15)
-  trx.inventory_ring.animate_selection(0, -5)
-  assert(trx.inventory_ring.selection_anim().direction == -1)
-  fake.close_ring()
-end)
-
-test("the picked entry has only the frames it holds", function()
-  fake.open_ring(Mode.TITLE, PASSPORT, 10, 30)
-  h.raises(function()
-    trx.inventory_ring.animate_selection(30, 1)
-  end, "the entry has no such frame")
-  fake.close_ring()
+test("an entry combines rather than uses where it has a partner", function()
+  assert(trx.inventory.actions(KEY).use)
+  assert(not trx.inventory.actions(KEY).combine)
+  fake.set_combine_partners({ KEY + 1 })
+  local actions = trx.inventory.actions(KEY)
+  fake.set_combine_partners({})
+  assert(actions.combine and not actions.use)
 end)
 
 return h.report()

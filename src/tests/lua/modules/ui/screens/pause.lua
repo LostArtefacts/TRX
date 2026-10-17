@@ -32,8 +32,7 @@ local function ticks(count)
 end
 
 local function caption()
-  local call = fake.calls().set_caption
-  return call ~= nil and call.caption or nil
+  return trx.overlay.signals.caption:get()
 end
 
 -- Pauses the game, and waits for the backdrop to come in.

@@ -31,13 +31,12 @@ order: 3
    - `item:shatter(5, 254)` becomes
      `item:shatter({ damage = 5, flame_variant = 254 })`
 
-4. **The inventory ring has its own module**
-   `trx.inventory` now holds only what Lara carries. Ring data moved to
-   `trx.inventory_ring`:
+4. **The inventory ring moved to the shipped interface**
+   `trx.inventory` now holds only what Lara carries. The ring is drawn by
+   the shipped `common.ui.ring` module, which holds its entries:
    - `trx.inventory.declare_ring_item` becomes
-     `trx.inventory_ring.declare_item`
-   - `trx.inventory.ring_item` becomes `trx.inventory_ring.item`
-   - `trx.inventory.icon_of` becomes `trx.inventory_ring.icon_of`
+     `require("common.ui.ring").declare_item`
+   - `trx.inventory.ring_item` becomes `require("common.ui.ring").item`
 
 5. **`trx.savegame.load` raises an error for an empty slot**
    A script that can name an empty slot must check it with
@@ -131,6 +130,12 @@ order: 3
     A widget that keeps its room but draws nothing goes in a
     `trx.ui.widgets.Blank`: `Label({ text = t, hidden = h })` becomes
     `Blank({ when = h, child = Label({ text = t }) })`.
+
+20. **`trx.overlay.signals.health_bar_forced` is gone**
+    The inventory ring says when it asks for Lara's health bar through the
+    signals of the shipped `common.ui.ring` module:
+    - `trx.overlay.signals.health_bar_forced` →
+      `require("common.ui.ring").signals.health_bar`
 
 ### Version 1.10 to 1.11
 
