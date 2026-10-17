@@ -354,8 +354,10 @@ INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
     OBJECT_ID partner;
     const bool can_combine = Inv_GetCombinePartners(entry_id, &partner, 1) > 0;
-    const bool leads_nowhere =
-        ObjectFamily_Has(entry_id, OBJ_FAMILY_GENERIC_INV_OPTION)
+    // The binoculars are a generic entry that Lara uses by herself rather
+    // than on a lock or a vehicle.
+    const bool leads_nowhere = entry_id != O_BINOCULARS_OPTION
+        && ObjectFamily_Has(entry_id, OBJ_FAMILY_GENERIC_INV_OPTION)
         && ObjectLink_Get(entry_id, OBJ_LINK_KEY_TO_RECEPTACLE) == NO_OBJECT
         && ObjectLink_Get(entry_id, OBJ_LINK_KEY_TO_VEHICLE) == NO_OBJECT;
     return (INV_ITEM_ACTIONS) {
