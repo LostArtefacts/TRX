@@ -424,6 +424,9 @@ bool PhaseExecutor_BeginExit(void)
 {
     if (!m_Exiting) {
         m_Exiting = true;
+        // Nothing reads the devices while the game fades out, so the presses
+        // of the last update would otherwise read again on every tick.
+        Input_Reset();
         LUA_FireEvent(LUA_EVENT_EXIT);
     }
     return LUA_UI_IsHoldingScreen();
