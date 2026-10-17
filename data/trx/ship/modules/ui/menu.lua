@@ -2,6 +2,9 @@
 -- ring, or the flat menu of the original TR4. The flat menu leaves to the
 -- ring what it does not draw. The quick save and load screens follow
 -- the same pick: the passport's page, or the flat menu's list of slots.
+-- The flat menu system draws no frames anywhere, as the original draws none.
+-- A change of the pick waits until no menu is open, so that a menu keeps the
+-- system it opened with, as a change of the inventory background does.
 --
 -- Usage:
 --   require("common.ui.menu").setup()
@@ -26,8 +29,34 @@ trx.locale.declare({
   ["settings/ui.menu_system/values/flat"] = "Flat",
 })
 
+-- The system the menus draw with, as last applied, and how many menus are
+-- open.
+local system = nil
+local open_count = 0
+
+-- Applies the picked system, unless a menu is open.
+local function follow()
+  if open_count > 0 then
+    return
+  end
+  system = trx.config.get(SETTING)
+  trx.ui.frames_shown = system ~= "flat"
+end
+
+-- Applies the picked system as a menu opens, and again once it closes.
+-- Returns whether the menu draws with the flat system.
+local function begin(ctx)
+  follow()
+  open_count = open_count + 1
+  ctx:on_end(function()
+    open_count = open_count - 1
+    follow()
+  end)
+  return system == "flat"
+end
+
 local function open(ctx)
-  if trx.config.get(SETTING) == "flat" then
+  if begin(ctx) then
     local layer = flat_menu.open(ctx)
     if layer ~= nil then
       return layer
@@ -37,7 +66,7 @@ local function open(ctx)
 end
 
 local function open_save_load(ctx)
-  if trx.config.get(SETTING) == "flat" then
+  if begin(ctx) then
     return flat_menu.open_save_load(ctx)
   end
   return passport.open_save_load(ctx)
@@ -53,6 +82,8 @@ function M.setup()
     default = trx.game.version == 4 and "flat" or "ring",
     ui = { tab = "graphic_ui", after = "ui.menu_style" },
   })
+  follow()
+  trx.signal.config(SETTING):on(follow)
   ring_screen.setup()
   flat_menu.setup()
   trx.ui.screens.define(trx.ui.Screen.MENU, open)
