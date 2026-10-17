@@ -43,14 +43,14 @@ end
 
 -- The heading strip.
 ---@param title any The text, or a signal carrying it.
----@param pad_x? number The room on each side of the text. `metrics.TITLE_PAD_X` by default.
+---@param pad_x? number The room on each side of the text. `metrics.title_pad_x()` by default.
 ---@return trx.ui.Widget
 function M.heading(title, pad_x)
   return trx.ui.widgets.Frame({
     style = trx.ui.FrameStyle.HEADING,
     z = 160,
     child = trx.ui.widgets.Pad({
-      x = pad_x or metrics.TITLE_PAD_X,
+      x = pad_x or metrics.title_pad_x(),
       y = metrics.title_pad_y(),
       child = trx.ui.widgets.Stack({
         align = trx.ui.HAlign.CENTER,
@@ -90,7 +90,7 @@ end
 ---@field title? any The heading, or a signal carrying it. None by default.
 ---@field heavy? boolean Whether to draw the frame solid.
 ---@field title_spacing? number The gap under the heading. `3` by default.
----@field title_pad_x? number The room on each side of the heading's text. `metrics.TITLE_PAD_X` by default.
+---@field title_pad_x? number The room on each side of the heading's text. `metrics.title_pad_x()` by default.
 ---@field header? trx.ui.Widget A widget above the content, inside the frame.
 ---@field footer? trx.ui.Widget A widget under the content, inside the frame.
 ---@field scroll? common.ui.Scroll|common.ui.ScrollHints The list the content scrolls through, for the arrows.
@@ -130,7 +130,7 @@ function M.new(settings)
   end
   children[#children + 1] = trx.ui.widgets.Pad({
     x = metrics.body_pad_x(),
-    y = metrics.BODY_PAD_Y,
+    y = metrics.body_pad_y(),
     child = trx.ui.widgets.Stack({
       align = trx.ui.HAlign.SPAN,
       children = body,

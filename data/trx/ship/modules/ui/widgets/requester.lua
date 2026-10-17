@@ -150,7 +150,7 @@ function M.new(settings)
   local title = settings.title ~= nil and trx.signal.new(settings.title) or nil
   local frame = window.new({
     title = title,
-    title_pad_x = metrics.TITLE_PAD_X + metrics.body_pad_x(),
+    title_pad_x = metrics.title_pad_x() + metrics.body_pad_x(),
     content = list,
   })
 
