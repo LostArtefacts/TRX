@@ -1,6 +1,11 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "inventory_ring": {
+            "object_name_fmt": "\\{color 8}%s",
+        }
+    },
     "objects": {
         "flare_item": {
             "name": "Flares",
