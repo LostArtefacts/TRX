@@ -354,9 +354,9 @@ static void M_RenderWorldPasses(const M_PRIV *const p)
     Output_MeshShader_UploadAlphaDiscard(shader, false);
     glDepthMask(GL_FALSE);
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_TRANSPARENT);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+    SceneCompositor_SetSubtractiveBlend();
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_SUB);
+    glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_ADD);
     glDepthMask(GL_TRUE);

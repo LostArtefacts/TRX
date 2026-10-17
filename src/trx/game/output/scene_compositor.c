@@ -166,8 +166,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         M_RenderSourcePass(p, SCENE_PASS_TRANSPARENT);
-        glBlendEquation(GL_FUNC_ADD);
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+        SceneCompositor_SetSubtractiveBlend();
         M_RenderSourcePass(p, SCENE_PASS_BLEND_SUB);
         glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -291,4 +290,15 @@ void SceneCompositor_SetSamplerFilter(const TEXTURE_FILTER filter)
 {
     M_PRIV *const p = &m_Priv;
     M_SetSamplerFilter(p->sampler_id, filter);
+}
+
+void SceneCompositor_SetSubtractiveBlend(void)
+{
+    if (g_Config.rendering.enable_ps1_blending) {
+        glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+        glBlendFunc(GL_ONE, GL_ONE);
+    } else {
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+    }
 }

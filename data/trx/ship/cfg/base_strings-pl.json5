@@ -1625,6 +1625,10 @@
             "title": "\\{review}Kwantyzacja palety",
             "description": "\\{review}Dopasowuje każdy renderowany kolor do najbliższego koloru z palety poziomu. Przy włączonym ditheringu paleta cieniuje między swoimi kolorami.",
         },
+        "rendering.enable_ps1_blending": {
+            "title": "\\{review}Mieszanie z PlayStation",
+            "description": "\\{review}Miesza dym, cienie, ślady stóp i krew ze sceną tak, jak robiła to PlayStation. Dym, cienie i ślady stóp odejmują swój kolor od sceny, przyciemniając każdy kanał koloru o tę samą wartość, więc wynik jest bardziej nasycony. W TR3 krew jest również mieszana ze sceną po połowie. Po wyłączeniu scena pod dymem, cieniami i śladami stóp jest przyciemniana o część własnego koloru, a krew w TR3 jest rysowana pełnym kolorem, jak na PC.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Mgła z PlayStation",
             "description": "\\{review}Zlewa odległą geometrię z kolorem mgły tak, jak robiło to wygaszanie głębi na PlayStation: wzdłuż 1/odległości zamiast odległości i liczone na wierzchołek, więc przejście pasmuje na dużych powierzchniach.",

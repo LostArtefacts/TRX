@@ -154,9 +154,11 @@ static void M_Draw(void)
         return;
     }
 
-    // TR3 subtracts a footprint four times as strongly as its color says.
-    // The TR4 PlayStation version subtracts it once.
-    const int32_t passes = g_TRVersion >= 4 ? 1 : 4;
+    // TR3 darkens a footprint four times over to make up for multiplying the
+    // scene rather than subtracting from it. TR4 and the PlayStation blending
+    // subtract it once, as the PlayStation versions do.
+    const int32_t passes =
+        g_TRVersion >= 4 || g_Config.rendering.enable_ps1_blending ? 1 : 4;
 
     const XYZ_32 corners[3] = {
         { .x = 0, .y = 0, .z = -64 },

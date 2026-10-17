@@ -319,6 +319,7 @@ local TABS = {
     "rendering.borders",
     "rendering.vertex_snap_mode",
     "rendering.enable_ps1_fog",
+    "rendering.enable_ps1_blending",
     "rendering.enable_affine_mapping",
     "rendering.dither_mode",
     "rendering.enable_palette_quantize",

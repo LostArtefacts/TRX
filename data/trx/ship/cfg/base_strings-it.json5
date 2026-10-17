@@ -1625,6 +1625,10 @@
             "title": "Quantizzazione tavolozza",
             "description": "Adatta ogni colore renderizzato al colore più vicino della tavolozza del livello. Con la retinatura abilitata, i colori vengono adattati in base alla tavolozza disponibile.",
         },
+        "rendering.enable_ps1_blending": {
+            "title": "\\{review}Fusione PlayStation",
+            "description": "\\{review}Fonde fumo, ombre, impronte e sangue con la scena come faceva la PlayStation. Fumo, ombre e impronte sottraggono il proprio colore dalla scena, scurendo ogni canale di colore della stessa quantità e rendendo il risultato più saturo. In TR3 anche il sangue viene mescolato a metà con la scena. Se disattivata, la scena sotto fumo, ombre e impronte viene scurita di una parte del proprio colore e il sangue di TR3 è disegnato pieno, come su PC.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "Nebbia PlayStation",
             "description": "Fonde la geometria distante con il colore della nebbia seguendo la stessa logica degli indici di profondità della versione PlayStation: basandosi sul reciproco della distanza (1/distanza) anziché sulla distanza stessa, con il calcolo eseguito per singolo vertice, il che genera bande di sfumatura sulle superfici estese.",
