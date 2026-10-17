@@ -397,6 +397,14 @@ void Inv_State_SetCount(
 {
     const OBJECT_ID object_id = Inv_GetItemOption(raw_object_id);
     INVENTORY_ENTRY *const entry = M_StateEntry(state, object_id);
+    if (entry != nullptr && qty <= 0) {
+        state->count--;
+        for (INVENTORY_ENTRY *it = entry; it < &state->entries[state->count];
+             it++) {
+            *it = *(it + 1);
+        }
+        return;
+    }
     if (entry != nullptr) {
         entry->qty = qty;
         return;
