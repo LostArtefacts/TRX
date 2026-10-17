@@ -32,6 +32,8 @@ typedef struct M_SLOT {
 typedef struct {
     char *key;
     M_SLOT *slot;
+    bool is_overridden;
+    const char *base_value;
     UT_hash_handle hh;
 } M_STRING_ENTRY;
 
@@ -78,6 +80,20 @@ static bool M_FollowParentRef(const char *const key, char *const out)
     return false;
 }
 
+static M_STRING_ENTRY *M_FindOrAdd(const char *const key)
+{
+    M_STRING_ENTRY *entry;
+    HASH_FIND_STR(m_StringTable, key, entry);
+    if (entry == nullptr) {
+        entry = Memory_Alloc(sizeof(*entry));
+        entry->key = Memory_DupStr(key);
+        entry->slot = Memory_Alloc(sizeof(*entry->slot));
+        HASH_ADD_KEYPTR(
+            hh, m_StringTable, entry->key, strlen(entry->key), entry);
+    }
+    return entry;
+}
+
 void GameString_RestoreDefaults(void)
 {
 #include <trx/game/game_strings/entries.def>
@@ -91,26 +107,42 @@ void GameString_Reset(void)
 
 void GameString_Define(const char *const key, const char *value)
 {
-    M_STRING_ENTRY *entry;
-
-    HASH_FIND_STR(m_StringTable, key, entry);
-    if (entry == nullptr) {
-        entry = Memory_Alloc(sizeof(*entry));
-        entry->key = Memory_DupStr(key);
-        entry->slot = Memory_Alloc(sizeof(*entry->slot));
-        entry->slot->value = nullptr;
-        HASH_ADD_KEYPTR(
-            hh, m_StringTable, entry->key, strlen(entry->key), entry);
-    }
+    M_STRING_ENTRY *const entry = M_FindOrAdd(key);
     Memory_Free((void *)entry->slot->value);
     entry->slot->value = Memory_DupStr(value);
+}
+
+void GameString_Override(const char *const key, const char *const value)
+{
+    M_STRING_ENTRY *const entry = M_FindOrAdd(key);
+    if (!entry->is_overridden) {
+        entry->is_overridden = true;
+        entry->base_value = entry->slot->value;
+        entry->slot->value = nullptr;
+    }
+    GameString_Define(key, value);
+}
+
+void GameString_RevertOverrides(void)
+{
+    M_STRING_ENTRY *entry, *tmp;
+    HASH_ITER(hh, m_StringTable, entry, tmp)
+    {
+        if (!entry->is_overridden) {
+            continue;
+        }
+        Memory_Free((void *)entry->slot->value);
+        entry->slot->value = entry->base_value;
+        entry->base_value = nullptr;
+        entry->is_overridden = false;
+    }
 }
 
 bool GameString_IsKnown(const char *const key)
 {
     M_STRING_ENTRY *entry;
     HASH_FIND_STR(m_StringTable, key, entry);
-    return entry != nullptr;
+    return entry != nullptr && entry->slot->value != nullptr;
 }
 
 const char *GameString_Get(const char *const key)
@@ -152,6 +184,7 @@ void GameString_Clear(void)
         HASH_DEL(m_StringTable, entry);
         Memory_Free(entry->key);
         Memory_Free((void *)entry->slot->value);
+        Memory_Free((void *)entry->base_value);
         Memory_Free(entry->slot);
         Memory_Free(entry);
     }

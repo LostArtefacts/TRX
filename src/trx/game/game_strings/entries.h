@@ -30,6 +30,18 @@ void GameString_RestoreDefaults(void);
 // @param value Text to associate with the identifier.
 void GameString_Define(const char *key, const char *value);
 
+// Define a game string mapping that GameString_RevertOverrides() takes back.
+// The value the identifier had before its first override is kept, so a key
+// that had no value becomes unknown again. A later GameString_Define() of the
+// same identifier changes the overriding value only.
+// @param key   Identifier for the string.
+// @param value Text to associate with the identifier.
+void GameString_Override(const char *key, const char *value);
+
+// Restore every identifier given to GameString_Override() to the value it had
+// before its first override.
+void GameString_RevertOverrides(void);
+
 // Check whether a game string identifier has been defined.
 // @param key   Identifier to test.
 // @return      true if the identifier is known, false otherwise.
