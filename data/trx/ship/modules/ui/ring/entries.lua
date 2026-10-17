@@ -43,6 +43,7 @@ local DEFAULTS = {
   base_rot_y = 0,
   base_rot_z = 0,
   draws_at_pivot = false,
+  is_used_at_once = false,
   meshes_sel = -1,
   meshes_drawn = -1,
   inv_pos = 0,
@@ -70,6 +71,7 @@ local declared = {}
 ---@field base_rot_y? integer Which way it faces wherever the ring puts it.
 ---@field base_rot_z? integer How far it rolls wherever the ring puts it.
 ---@field draws_at_pivot? boolean Whether it is drawn about its pivot, for a model whose frame stands it far from where the ring puts it.
+---@field is_used_at_once? boolean Whether picking it uses it, rather than opening it for a second press to use.
 ---@field meshes_sel? integer Which of its meshes show, one bit each.
 ---@field meshes_drawn? integer Which of its meshes show at first, one bit each.
 ---@field inv_pos? integer Where it sits: the main ring from 0, the keys from 100, and the menu from 200.

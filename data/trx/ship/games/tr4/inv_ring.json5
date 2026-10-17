@@ -42,6 +42,7 @@
         "meshes_drawn": -1,
         "inv_pos": 12,
         "base_rot_y": -16384,
+        "is_used_at_once": true,
     },
 
     {

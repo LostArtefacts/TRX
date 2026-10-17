@@ -188,6 +188,7 @@
 - Fixed the uzis and revolver not showing in Lara's holsters (OG bug) (TRX485)
 - Fixed the title screen camera flying through the void before a cutscene starts (TRX1770, regression from 1.11)
 - Fixed the Amulet of Horus not showing in the pickup display when Lara takes it in the Burial Chambers cutscene (OG bug) (TRX1570)
+- Fixed flares needing a second press in the inventory before Lara takes one out, unlike the original game (TRX1775)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
