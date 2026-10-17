@@ -46,6 +46,7 @@
             "empty_slot_fmt": "- SLOT FALAMH -",
             "exit": "Dùin",
             "hold_fmt": "Cùm %s",
+            "loading": "\\{review}Luchdadh",
             "off": "Dheth",
             "on": "Air",
             "pagination_nav": "%d / %d",

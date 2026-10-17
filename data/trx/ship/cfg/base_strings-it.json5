@@ -46,6 +46,7 @@
             "empty_slot_fmt": "- SLOT VUOTO -",
             "exit": "Esci",
             "hold_fmt": "Tieni premuto %s",
+            "loading": "\\{review}Caricamento",
             "off": "Disabilitato",
             "on": "Abilitato",
             "pagination_nav": "%d / %d",

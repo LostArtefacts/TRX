@@ -11,8 +11,12 @@ local M = {}
 -- How long the screen stays black after the view has faded out.
 local HOLD_TICKS = 3
 
--- The loading bar spans most of the canvas width and stands at its foot.
-local BAR = { width = 0.94, height = 14, y = 0.936 }
+-- The loading bar spans most of the canvas width and stands at its foot. The
+-- PS1 release draws it narrower, with a caption above it.
+local BAR = {
+  pc = { width = 0.94, height = 14, y = 0.936 },
+  ps1 = { width = 0.764, height = 18, y = 0.942 },
+}
 
 ---@param ctx trx.ui.TimedContext
 local function open(ctx)
@@ -24,16 +28,12 @@ local function open(ctx)
       fades:leave({ ticks = ctx.fade_out_ticks, hold = HOLD_TICKS })
     end,
   })
-  local bar = loading_bar.new({
+  return loading_bar.push(ctx, {
     progress = show.progress,
     visible = trx.signal.config("ui.show_loading_bar"),
-    width = BAR.width,
-    height = BAR.height,
-    y = BAR.y,
-  })
-  return ctx:push({
-    root = bar.widget,
-    place = bar.place,
+    pc = BAR.pc,
+    ps1 = BAR.ps1,
+    caption = true,
     on_input = function(_, keys)
       show:control(keys)
     end,

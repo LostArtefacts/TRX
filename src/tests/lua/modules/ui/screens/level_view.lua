@@ -122,6 +122,30 @@ test("the loading bar follows its setting", function()
   finish()
 end)
 
+test("a PS1 loading bar carries a caption above it", function()
+  local function caption()
+    for _, op in ipairs(fake.scene()) do
+      if op:match("^text .- text=LOADING$") then
+        return true
+      end
+    end
+    return false
+  end
+
+  trx.config.set("ui.show_loading_bar", true)
+  trx.config.set("ui.bar_look", "ps1")
+  open()
+  ticks(FADE_IN + 2)
+  assert(caption(), "no caption on a PS1 bar")
+  finish()
+
+  trx.config.set("ui.bar_look", "pc")
+  open()
+  ticks(FADE_IN + 2)
+  assert(not caption(), "a caption on a PC bar")
+  finish()
+end)
+
 test("with fade effects off the view comes in and goes at once", function()
   trx.config.set("visuals.enable_fade_effects", false)
   open()

@@ -40,6 +40,7 @@
 - Added an option to choose how a level comes in: a cross-fade from the loading screen, a fade through black, or none. TR4 fades through black by default, as in the original (Graphics → UI → Level start transition) (TRX1375)
 - Improved the position of the passport dialogs, which now line up on every page
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
+- Changed the PS1 loading bars to match the size and position of the PS1 releases, with a "Loading" caption in TR4 (TRX1619)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
 - Changed the default controller layout to follow the PS1 releases: TR3 and TR4 sprint with R2, crouch with L2 and have no side steps, and TR2 to TR4 light a flare with R1 and Select together (#6019 / TRX864)

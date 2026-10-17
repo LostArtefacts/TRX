@@ -46,6 +46,7 @@
             "empty_slot_fmt": "- EMPLACEMENT VIDE %d -",
             "exit": "Sortie",
             "hold_fmt": "\\{review}Tenir %s",
+            "loading": "\\{review}Chargement",
             "off": "\\{review}Non",
             "on": "\\{review}Oui",
             "pagination_nav": "%d / %d",

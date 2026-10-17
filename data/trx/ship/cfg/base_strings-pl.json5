@@ -46,6 +46,7 @@
             "empty_slot_fmt": "- PUSTY SLOT -",
             "exit": "Wyjście",
             "hold_fmt": "%s",
+            "loading": "\\{review}Wczytywanie",
             "off": "\\{review}Wył.",
             "on": "\\{review}Wł.",
             "pagination_nav": "%d / %d",
