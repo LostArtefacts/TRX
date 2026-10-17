@@ -65,9 +65,6 @@ M.Motion = {
   -- The entry the ring rests on comes forward, and goes back.
   SELECT = "select",
   DESELECT = "deselect",
-  -- The ring holds still, as it does while an entry that opens a ring of its
-  -- own is picked.
-  HOLD = "hold",
 }
 
 -- How the entry the ring rests on turns about its own axis on a tick. The
@@ -198,12 +195,6 @@ M.MOTIONS = {
       entry.x_rot:to(entry.spec.x_rot_nosel or 0, ticks)
       entry.y_trans:to(0, ticks)
       entry.z_trans:to(0, ticks)
-    end,
-  },
-  [M.Motion.HOLD] = {
-    ticks = 8,
-    run = function(view, ticks)
-      view.rot:to(view:nearest_rest_angle(), ticks)
     end,
   },
 }
