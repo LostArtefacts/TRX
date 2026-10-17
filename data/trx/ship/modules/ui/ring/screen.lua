@@ -945,8 +945,11 @@ end
 
 -- The entries that do what they are for at once when no script draws them:
 -- a weapon or a medipack is used, and anything else the player carries a
--- number of is used as well.
+-- number of is used as well, as is an entry declared to be.
 local function is_used_at_once(content)
+  if content.spec.is_used_at_once then
+    return true
+  end
   local weapon, is_ammo = weapon_of(content.object)
   if weapon ~= nil then
     return not is_ammo
