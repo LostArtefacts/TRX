@@ -597,6 +597,12 @@ void CutSeq_Request(const int32_t num, const bool fade_out)
         m_State.lara_return.pos = Lara_GetItem()->pos;
         m_State.lara_return.rot = Lara_GetItem()->rot.y;
     }
+    // A flyby that asks for a scene would otherwise run on behind the fade, and
+    // one that has run out flies back to Lara through the void. Stopping it
+    // holds the camera still while the screen fades out.
+    if (FlybyMode_IsActive()) {
+        FlybyMode_Stop();
+    }
     m_State.pending_num = num;
     m_State.phase = M_PHASE_FADE_OUT;
     m_State.holster_timeout = M_HOLSTER_TIMEOUT;
