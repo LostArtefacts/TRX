@@ -810,13 +810,7 @@ local function pick(state, examine)
   end
   anim.direction = 1
   state.offered = false
-  -- An entry that opens a ring of its own stays where it is, so that the ring
-  -- keeps its shape behind that one.
-  set_status(
-    state,
-    Status.SELECTING,
-    state.action == Action.COMBINE and Motion.HOLD or Motion.SELECT
-  )
+  set_status(state, Status.SELECTING, Motion.SELECT)
   local sound = pick_sound(content.object)
   if sound ~= nil then
     trx.sound.play(sound)
@@ -1104,17 +1098,9 @@ local function run(state)
       if state.close_to == Status.DESELECTING then
         refresh(state)
         trx.sound.play(samples.MENU_SPINOUT)
-        set_status(
-          state,
-          Status.DESELECTING,
-          state.action == Action.COMBINE and Motion.HOLD or Motion.DESELECT
-        )
+        set_status(state, Status.DESELECTING, Motion.DESELECT)
       else
-        set_status(
-          state,
-          Status.EXITING,
-          state.action == Action.COMBINE and Motion.HOLD or Motion.DESELECT
-        )
+        set_status(state, Status.EXITING, Motion.DESELECT)
       end
     end
   elseif status == Status.EXITING and not view:is_moving() then
