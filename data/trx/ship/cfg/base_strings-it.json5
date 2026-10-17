@@ -1993,6 +1993,10 @@
             "title": "Gocce di pioggia PS1",
             "description": "Le gocce di pioggia verranno aggiunte alla scena anziché fondersi con essa, così appariranno chiare come su PS1.",
         },
+        "visuals.enable_rain_splashes": {
+            "title": "\\{review}Schizzi di pioggia",
+            "description": "\\{review}Le gocce di pioggia schizzeranno dove colpiscono il terreno o l'acqua.",
+        },
         "visuals.enable_reflections": {
             "title": "Riflessi",
             "description": "Abilita i riflessi su alcuni oggetti.",

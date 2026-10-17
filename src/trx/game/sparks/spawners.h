@@ -11,6 +11,8 @@ void Sparks_TriggerBubble(
 void Sparks_TriggerWaterfallMist(int32_t x, int32_t y, int32_t z, int32_t ang);
 
 void Sparks_TriggerSmallSplash(XYZ_32 pos, int32_t count);
+// Throws up a few tiny drops where rain hits the ground or the water.
+void Sparks_TriggerRainSplash(XYZ_32 pos);
 
 void Sparks_TriggerBreath(XYZ_32 pos, XYZ_32 vel, int16_t room_num);
 

@@ -11,29 +11,45 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
+#include <trx/game/output.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sparks.h>
 #include <trx/game/viewport.h>
+#include <trx/version.h>
 
+#include <math.h>
 #include <string.h>
 
 #define M_BASE_WEATHER 256
 #define M_BASE_WEATHER_ALIVE 16
 #define M_MAX_WEATHER (M_BASE_WEATHER * WEATHER_SEVERITY_MAX)
+#define M_MAX_RAIN (M_MAX_WEATHER * 4)
 
 #define M_RAIN_MAX_DISTANCE 6000
+#define M_RAIN_NEAR 4096
+#define M_RAIN_MAX_REACH (32 * WALL_L)
+#define M_RAIN_TURN_MARGIN (DEG_45 / 2)
+#define M_RAIN_FALL_SPAN (4 * WALL_L)
 #define M_RAIN_BASE_Y_OFF (-WALL_L)
 #define M_RAIN_BASE_YV 16
 #define M_RAIN_YV_RND_MASK 7
-#define M_RAIN_SPAWN_DIST_MASK 0xFFF
-#define M_RAIN_SPAWN_ANGLE_MASK 0x1FFE
 #define M_RAIN_Y_RND_MASK 0x7FF
 #define M_RAIN_LIFE_BASE 88
 
+#define M_MAX_SPLASHES 1024
+#define M_BASE_SPLASHES 8
+#define M_SPLASH_SCALE 0.3f
+#define M_MAX_SPARK_SPLASHES 50
+#define M_SPARK_SPLASH_REACH (8 * WALL_L)
+
+#define M_SNOW_SPAWN_DIST_MASK 0xFFF
+#define M_SNOW_SPAWN_ANGLE_MASK 0x1FFE
 #define M_SNOW_LIFE_BASE 96
 #define M_SNOW_YV_MIN 8
 #define M_SNOW_YV_RANGE 24
@@ -43,8 +59,16 @@ typedef struct {
     XYZ_32 prev_pos;
     int32_t prev_yv;
     XYZ_32 vel;
+    int32_t land_y;
     uint8_t life;
 } M_RAINDROP;
+
+typedef struct {
+    XYZ_32 pos;
+    int16_t room_num;
+    int16_t frame_num;
+    bool on;
+} M_SPLASH;
 
 typedef struct {
     XYZ_32 pos;
@@ -57,8 +81,10 @@ typedef struct {
 } M_SNOWFLAKE;
 
 // A zero pos.x marks a free slot.
-static M_RAINDROP m_Raindrops[M_MAX_WEATHER];
+static M_RAINDROP m_Raindrops[M_MAX_RAIN];
 static M_SNOWFLAKE m_Snowflakes[M_MAX_WEATHER];
+static M_SPLASH m_Splashes[M_MAX_SPLASHES];
+static int32_t m_NextSplash = 0;
 static WEATHER_TYPE m_WeatherType = WEATHER_NONE;
 static float m_Severity = 1.0f;
 
@@ -66,6 +92,7 @@ static void M_ClearWeather(void)
 {
     memset(m_Raindrops, 0, sizeof(m_Raindrops));
     memset(m_Snowflakes, 0, sizeof(m_Snowflakes));
+    memset(m_Splashes, 0, sizeof(m_Splashes));
 }
 
 // A slot past the count is left alone rather than emptied, so lowering the
@@ -80,6 +107,38 @@ static int32_t M_GetSpawnCount(void)
     return (int32_t)(M_BASE_WEATHER_ALIVE * m_Severity);
 }
 
+// Returns how far the rain reaches: to the fog end, where it fades out with
+// everything else.
+static int32_t M_GetRainReach(void)
+{
+    int32_t reach = Output_GetFogEnd();
+    CLAMP(reach, M_RAIN_NEAR, M_RAIN_MAX_REACH);
+    return reach;
+}
+
+// Returns half the angle of the wedge in front of the camera that rain fills
+// beyond the circle near Lara: half the horizontal field of view, with a
+// margin for the camera to turn into.
+static int32_t M_GetRainWedge(void)
+{
+    int32_t half_fov = DEG_45;
+    if (g_PhdPersp > 0) {
+        half_fov = Math_Atan(g_PhdPersp, Viewport_GetWidth(VIEWPORT_GAME) / 2);
+    }
+    int32_t wedge = half_fov + M_RAIN_TURN_MARGIN;
+    CLAMP(wedge, DEG_45, DEG_180);
+    return wedge;
+}
+
+// Returns how many times more drops the rain takes than the circle near Lara
+// alone. Within that circle the drops fall evenly. Beyond it they fall only in
+// the wedge, and thin out with distance from the same density at its edge.
+static float M_GetRainSpread(const int32_t reach, const int32_t wedge)
+{
+    return 1.0f
+        + 2.0f * (reach - M_RAIN_NEAR) / M_RAIN_NEAR * (2 * wedge) / DEG_360;
+}
+
 static int64_t M_GetViewDepth(const XYZ_32 pos)
 {
     // clang-format off
@@ -91,7 +150,9 @@ static int64_t M_GetViewDepth(const XYZ_32 pos)
     // clang-format on
 }
 
-static bool M_SpawnParticle(XYZ_32 *const pos)
+// Returns the position that weather spawns around: the camera where it is fixed
+// or flies, and a block above Lara otherwise.
+static bool M_GetBasePos(XYZ_32 *const out_pos)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item == nullptr) {
@@ -110,9 +171,39 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
         }
         base_pos.y += M_RAIN_BASE_Y_OFF;
     }
+    *out_pos = base_pos;
+    return true;
+}
 
-    const int32_t dist = Random_GetDraw() & M_RAIN_SPAWN_DIST_MASK;
-    const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) * 8;
+// Returns a random point of the rain, spread as M_GetRainSpread describes.
+static XYZ_32 M_GetSpreadPos(
+    const XYZ_32 base_pos, const int32_t reach, const int32_t wedge)
+{
+    const float spread = M_GetRainSpread(reach, wedge);
+    if (Random_GetDraw() * spread < 32768.0f) {
+        const float t = Random_GetDraw() / 32768.0f;
+        const int32_t dist = (int32_t)(M_RAIN_NEAR * sqrtf(t));
+        return XYZ_32_OffsetYaw(
+            base_pos, (int16_t)(Random_GetDraw() * 2), dist);
+    }
+
+    const int32_t dist =
+        M_RAIN_NEAR + ((Random_GetDraw() * (reach - M_RAIN_NEAR)) >> 15);
+    const int32_t yaw = Math_Atan(
+        g_Camera.target.z - g_Camera.pos.z, g_Camera.target.x - g_Camera.pos.x);
+    const int32_t angle = yaw - wedge + ((Random_GetDraw() * 2 * wedge) >> 15);
+    return XYZ_32_OffsetYaw(base_pos, (int16_t)angle, dist);
+}
+
+static bool M_SpawnParticle(XYZ_32 *const pos)
+{
+    XYZ_32 base_pos;
+    if (!M_GetBasePos(&base_pos)) {
+        return false;
+    }
+
+    const int32_t dist = Random_GetDraw() & M_SNOW_SPAWN_DIST_MASK;
+    const int32_t angle = (Random_GetDraw() & M_SNOW_SPAWN_ANGLE_MASK) * 8;
     *pos = XYZ_32_OffsetYaw(base_pos, angle, dist);
     pos->y -= (Random_GetDraw() & M_RAIN_Y_RND_MASK);
 
@@ -125,11 +216,63 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
     return true;
 }
 
-static void M_SpawnRainDrop(M_RAINDROP *const drop)
+// Finds where rain falling through a point lands: the floor below it, or the
+// water surface where the floor is under water. Reports failure where the
+// landing is not in an outside room.
+static bool M_FindLanding(
+    const XYZ_32 pos, int32_t *const out_ceiling, XYZ_32 *const out_pos,
+    int16_t *const out_room_num)
 {
-    if (!M_SpawnParticle(&drop->pos)) {
+    int32_t ceiling;
+    int32_t floor;
+    if (!Room_GetOutsideColumn(pos.x, pos.z, &ceiling, &floor)) {
+        return false;
+    }
+
+    int16_t room_num = NO_ROOM;
+    const XYZ_32 above = { pos.x, floor - 1, pos.z };
+    if (Room_GetOutsideStatus(above, &room_num, nullptr) != 1) {
+        return false;
+    }
+    int32_t height = floor;
+    if (Room_Get(room_num)->flags.underwater) {
+        height = Room_GetWaterHeight(above, room_num);
+        if (height == NO_HEIGHT) {
+            return false;
+        }
+    }
+    *out_ceiling = ceiling;
+    *out_pos = (XYZ_32) { pos.x, height, pos.z };
+    *out_room_num = room_num;
+    return true;
+}
+
+// Starts a drop over a random spot of open sky, up to a few blocks above
+// where it lands, so that it lands within its life wherever the floor stands.
+// The drop keeps the height it lands at rather than testing the rooms as it
+// falls.
+static void M_SpawnRainDrop(
+    M_RAINDROP *const drop, const int32_t reach, const int32_t wedge)
+{
+    XYZ_32 base_pos;
+    if (!M_GetBasePos(&base_pos)) {
         return;
     }
+
+    XYZ_32 pos = M_GetSpreadPos(base_pos, reach, wedge);
+    int32_t ceiling;
+    XYZ_32 landing;
+    int16_t room_num;
+    if (!M_FindLanding(pos, &ceiling, &landing, &room_num)) {
+        return;
+    }
+    const int32_t span = MIN(landing.y - ceiling - 1, M_RAIN_FALL_SPAN);
+    if (span <= 0 || pos.x == 0) {
+        return;
+    }
+    pos.y = landing.y - 1 - ((Random_GetDraw() * span) >> 15);
+    drop->pos = pos;
+    drop->land_y = landing.y;
 
     drop->vel.y =
         (uint8_t)((Random_GetDraw() & M_RAIN_YV_RND_MASK) + M_RAIN_BASE_YV);
@@ -140,19 +283,120 @@ static void M_SpawnRainDrop(M_RAINDROP *const drop)
     drop->prev_yv = drop->vel.y;
 }
 
+static void M_AddSplash(const XYZ_32 pos, const int16_t room_num)
+{
+    for (int32_t i = 0; i < M_MAX_SPLASHES; i++) {
+        M_SPLASH *const splash = &m_Splashes[m_NextSplash];
+        m_NextSplash = (m_NextSplash + 1) % M_MAX_SPLASHES;
+        if (!splash->on) {
+            splash->pos = pos;
+            splash->room_num = room_num;
+            splash->frame_num = 0;
+            splash->on = true;
+            return;
+        }
+    }
+}
+
+// Starts splashes at random spots on the floor that the rain reaches, spread
+// as the drops are. They are not made where the drops land, so that a drop
+// costs no floor test.
+// Where the game has no splash sprites, the splash is a few tiny sparks. They
+// share the pool with every other spark, so they come only near enough to be
+// seen, and only a few at a time.
+static void M_SpawnSplashes(int32_t reach, int32_t wedge)
+{
+    if (!g_Config.visuals.enable_rain_splashes) {
+        return;
+    }
+
+    XYZ_32 base_pos;
+    if (!M_GetBasePos(&base_pos)) {
+        return;
+    }
+
+    const bool has_sprites = Object_Get(O_SPLASH_1)->loaded;
+    if (!has_sprites) {
+        reach = MIN(reach, M_SPARK_SPLASH_REACH);
+    }
+    const int32_t count =
+        (int32_t)(M_BASE_SPLASHES * m_Severity * M_GetRainSpread(reach, wedge));
+    int32_t num_sparks = 0;
+    for (int32_t i = 0; i < count; i++) {
+        const XYZ_32 pos = M_GetSpreadPos(base_pos, reach, wedge);
+
+        int32_t ceiling;
+        XYZ_32 landing;
+        int16_t room_num;
+        if (!M_FindLanding(pos, &ceiling, &landing, &room_num)) {
+            continue;
+        }
+        if (has_sprites) {
+            M_AddSplash(landing, room_num);
+        } else if (num_sparks < M_MAX_SPARK_SPLASHES) {
+            Sparks_TriggerRainSplash(landing);
+            num_sparks++;
+        }
+    }
+}
+
+static void M_UpdateSplashes(void)
+{
+    for (int32_t i = 0; i < M_MAX_SPLASHES; i++) {
+        M_SPLASH *const splash = &m_Splashes[i];
+        if (!splash->on) {
+            continue;
+        }
+        splash->frame_num--;
+        if (splash->frame_num <= Object_Get(O_SPLASH_1)->mesh_count) {
+            splash->on = false;
+        }
+    }
+}
+
+static void M_DrawSplashes(void)
+{
+    const OBJECT *const obj = Object_Get(O_SPLASH_1);
+    if (!obj->loaded) {
+        return;
+    }
+
+    const RGBA_F tint = ObjectFamily_Has(O_SPLASH_1, OBJ_FAMILY_WATER_SPRITE)
+        ? COLOR_RGBA_F_WHITE
+        : Output_GetTint();
+    for (int32_t i = 0; i < M_MAX_SPLASHES; i++) {
+        const M_SPLASH *const splash = &m_Splashes[i];
+        if (!splash->on) {
+            continue;
+        }
+        Output_CalculateLight(splash->pos, splash->room_num);
+        Output_DrawSprite(
+            splash->pos.x, splash->pos.y, splash->pos.z,
+            obj->mesh_idx - splash->frame_num, Output_GetLightAdder(), tint,
+            DRAW_BLEND, M_SPLASH_SCALE);
+    }
+}
+
 static void M_UpdateRain(void)
 {
     const XZ_32 wind = Sparks_GetSmokeWind();
-    const int32_t count = M_GetParticleCount();
-    const int32_t spawn_count = M_GetSpawnCount();
+    const int32_t reach = M_GetRainReach();
+    const int32_t wedge = M_GetRainWedge();
+    const float spread = M_GetRainSpread(reach, wedge);
+    const int32_t count =
+        MIN((int32_t)(M_GetParticleCount() * spread), M_MAX_RAIN);
+    const int32_t spawn_count = (int32_t)(M_GetSpawnCount() * spread);
+    const int32_t max_distance = reach + WALL_L;
+
+    M_SpawnSplashes(reach, wedge);
 
     int32_t num_alive = 0;
-    for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
+    for (int32_t i = 0; i < M_MAX_RAIN; i++) {
         M_RAINDROP *const drop = &m_Raindrops[i];
 
         if (drop->pos.x == 0 && i < count && num_alive < spawn_count) {
             num_alive++;
-            M_SpawnRainDrop(drop);
+            M_SpawnRainDrop(drop, reach, wedge);
         }
 
         if (drop->pos.x == 0) {
@@ -162,14 +406,9 @@ static void M_UpdateRain(void)
         drop->prev_pos = drop->pos;
         drop->prev_yv = drop->vel.y;
 
-        int16_t room_num = NO_ROOM;
-        const int32_t outside =
-            Room_GetOutsideStatus(drop->pos, &room_num, nullptr);
-        if (outside == -2
-            || (room_num != NO_ROOM && Room_Get(room_num)->flags.underwater)
-            || drop->life > 240
-            || ABS(g_Camera.pos.x - drop->pos.x) > M_RAIN_MAX_DISTANCE
-            || ABS(g_Camera.pos.z - drop->pos.z) > M_RAIN_MAX_DISTANCE) {
+        if (drop->pos.y >= drop->land_y || drop->life > 240
+            || ABS(g_Camera.pos.x - drop->pos.x) > max_distance
+            || ABS(g_Camera.pos.z - drop->pos.z) > max_distance) {
             drop->pos.x = 0;
             continue;
         }
@@ -221,7 +460,7 @@ static void M_DrawRain(void)
                                    : (RGBA_8888) { 0x30, 0x40, 0x60, 0x80 };
     const DRAW_TYPE draw_type = ps1 ? DRAW_BLEND_ADD : DRAW_BLEND;
 
-    for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
+    for (int32_t i = 0; i < M_MAX_RAIN; i++) {
         const M_RAINDROP *const drop = &m_Raindrops[i];
         if (drop->pos.x == 0) {
             continue;
@@ -443,7 +682,7 @@ static void M_DrawSnow(void)
 static void M_SaveRain(JSON_WRITE_IO *const io)
 {
     JSONW_PUSH_ARRAY(io);
-    for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
+    for (int32_t i = 0; i < M_MAX_RAIN; i++) {
         const M_RAINDROP *const drop = &m_Raindrops[i];
         if (drop->pos.x == 0) {
             continue;
@@ -504,7 +743,7 @@ static RESULT M_LoadRain(JSON_READ_IO *const io)
 {
     const int32_t count = JSON_ARRAY_LEN(io);
     for (int32_t i = 0; i < count; i++) {
-        if (i >= M_MAX_WEATHER) {
+        if (i >= M_MAX_RAIN) {
             LOG_WARNING(
                 "Malformed save: too many raindrops. Extra raindrops will be "
                 "ignored.");
@@ -519,6 +758,14 @@ static RESULT M_LoadRain(JSON_READ_IO *const io)
         MUST(JSON_POP(io));
         drop->prev_pos = drop->pos;
         drop->prev_yv = drop->vel.y;
+        int32_t ceiling;
+        XYZ_32 landing;
+        int16_t room_num;
+        if (M_FindLanding(drop->pos, &ceiling, &landing, &room_num)) {
+            drop->land_y = landing.y;
+        } else {
+            drop->pos.x = 0;
+        }
     }
     return OK;
 }
@@ -572,6 +819,7 @@ static void M_Control(void)
     if (!g_Config.visuals.enable_weather) {
         return;
     }
+    M_UpdateSplashes();
     const WEATHER_TYPE weather_type = m_WeatherType;
     if (weather_type == WEATHER_RAIN) {
         M_UpdateRain();
@@ -585,6 +833,7 @@ static void M_Draw(void)
     if (!g_Config.visuals.enable_weather) {
         return;
     }
+    M_DrawSplashes();
     switch (m_WeatherType) {
     case WEATHER_RAIN:
         M_DrawRain();
