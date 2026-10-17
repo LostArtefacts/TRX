@@ -26,6 +26,8 @@
 #include <trx/game/sparks.h>
 #include <trx/version.h>
 
+#define M_CUT_DISTANCE (WALL_L / 2)
+
 typedef struct {
     bool is_valid;
     LARA_SKIN_TYPE skin_type;
@@ -44,6 +46,8 @@ static bool m_DrawLeftGunFlash = false;
 static bool m_DrawRightGunFlash = false;
 
 static M_LARA_CUTSCENE_STATE m_LaraCutsceneState = {};
+static XYZ_32 m_LaraHips = {};
+static bool m_IsLaraHipsKnown = false;
 
 static LARA_GUN_TYPE M_GetGunEquipmentType(const LARA_MESH mesh)
 {
@@ -264,6 +268,23 @@ static void M_DrawGunFlash(const LARA_MESH hand_mesh)
     Matrix_Pop();
 }
 
+// Reports whether Lara moved more than half a sector since the last tick,
+// which a cutscene does only at a cut.
+static bool M_IsLaraCut(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item == nullptr) {
+        return false;
+    }
+    XYZ_32 hips = {};
+    Collide_GetJointAbsPosition(lara_item, &hips, LM_HIPS);
+    const bool is_cut = m_IsLaraHipsKnown
+        && XYZ_32_GetDistance(m_LaraHips, hips) > M_CUT_DISTANCE;
+    m_LaraHips = hips;
+    m_IsLaraHipsKnown = true;
+    return is_cut;
+}
+
 static void M_Control(void)
 {
     Game_TickBeginFrame();
@@ -272,7 +293,15 @@ static void M_Control(void)
     Game_TickWorld();
     FX_Control();
     Game_TickEndFrame();
+
+    const bool is_lara_cut = M_IsLaraCut();
+    if (is_lara_cut) {
+        Lara_Hair_Initialise();
+    }
     Lara_Hair_Control(true);
+    if (is_lara_cut) {
+        Interpolation_CommitBraid();
+    }
 }
 
 static void M_ReplayActors(
@@ -375,6 +404,7 @@ bool Cutscene_Start(const int32_t level_num)
     m_DrawLeftGunFlash = false;
     m_DrawRightGunFlash = false;
     M_InitialisePlayer(Item_GetIndex(Lara_GetItem()));
+    m_IsLaraHipsKnown = false;
     M_CaptureLaraCutsceneState();
     M_CaptureObjectMeshesState();
     Camera_GetCineData()->frame_idx = 0;
