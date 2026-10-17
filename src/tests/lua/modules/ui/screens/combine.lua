@@ -175,4 +175,29 @@ test("nothing is drawn once the entry is put away", function()
   assert(#models() == 0, "a model outlived the screen")
 end)
 
+test("the frame stays where it first shows", function()
+  require("common.ui.captions").setup()
+  require("common.ui.ring_hints").setup()
+  trx.config.set("ui.text_scale", 100)
+  fake.set_combine_partners(PARTNERS)
+  h.open_ring(trx.ui.MenuMode.GAME, OBJECT, 0, 10)
+  trx.overlay.set_caption("caption")
+  assert(fake.offer(COMBINE, { object = OBJECT }), "the entry was not taken")
+
+  local name = trx.objects[PARTNERS[1]].name
+  local first = nil
+  for _ = 1, 6 do
+    fake.tick()
+    for _, op in ipairs(fake.scene()) do
+      local y, text = op:match("^text x=%-?%d+ y=(%-?%d+) .- text=(.*)$")
+      if text == name then
+        first = first or y
+        assert(y == first, ("the frame moved from %s to %s"):format(first, y))
+      end
+    end
+  end
+  assert(first ~= nil, "the frame never showed")
+  finish()
+end)
+
 return h.report()
