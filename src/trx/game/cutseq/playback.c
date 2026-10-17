@@ -339,8 +339,10 @@ static bool M_Begin(const int32_t num)
         for (int32_t j = 0; j < CUTSEQ_MAX_MESHES; j++) {
             actor->overrides[j].obj_id = NO_OBJECT;
         }
+        // Lights every actor as Lara, as the original does, rather than as a
+        // prop with its brighter light.
         actor->dummy_item = (ITEM) {
-            .object_id = actor_info->obj_id,
+            .object_id = O_LARA,
             .room_num = Lara_GetItem()->room_num,
             .pos = info->origin,
         };
