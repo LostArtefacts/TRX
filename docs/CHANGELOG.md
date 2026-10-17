@@ -178,6 +178,7 @@
 - Fixed Lara embedding into walls when crouched and picking up flares (Gameplay → Fixes → Fix pickup embed glitch)
 - Fixed Lara descending to the floor immediately if she is crawl-turning and the floor below her gives way (OG bug) (Gameplay → Fixes → Fix descending glitch)
 - Fixed the uzis and revolver not showing in Lara's holsters (OG bug) (TRX485)
+- Fixed the title screen camera flying through the void before a cutscene starts (TRX1770, regression from 1.11)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
