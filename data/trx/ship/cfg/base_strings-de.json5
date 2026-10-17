@@ -46,6 +46,7 @@
             "empty_slot_fmt": "- LEERER SLOT -",
             "exit": "Beenden",
             "hold_fmt": "\\{review}Halten %s",
+            "loading": "\\{review}Laden",
             "off": "Aus",
             "on": "Ein",
             "pagination_nav": "%d / %d",

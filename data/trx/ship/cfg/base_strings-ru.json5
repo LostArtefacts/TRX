@@ -46,6 +46,7 @@
             "empty_slot_fmt": "- ПУСТОЙ СЛОТ %d -",
             "exit": "Выход",
             "hold_fmt": "удерж. %s",
+            "loading": "\\{review}Загрузка",
             "off": "Выкл",
             "on": "Вкл",
             "pagination_nav": "%d / %d",

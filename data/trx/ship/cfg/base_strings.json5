@@ -46,6 +46,7 @@
             "empty_slot_fmt": "- EMPTY SLOT -",
             "exit": "Exit",
             "hold_fmt": "Hold %s",
+            "loading": "Loading",
             "off": "Off",
             "on": "On",
             "pagination_nav": "%d / %d",

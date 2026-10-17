@@ -5,5 +5,6 @@
 
 int main(void)
 {
-    return ScreenModule_Run("modules/ui/screens/level_view");
+    static const char *const deps[] = { "strings", nullptr };
+    return ScreenModule_RunWith("modules/ui/screens/level_view", deps);
 }

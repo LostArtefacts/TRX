@@ -12,7 +12,10 @@ local timer = require("common.timer")
 local M = {}
 
 -- The loading bar of a loading picture, narrower than the level views' one.
-local BAR = { width = 0.76, height = 12, y = 0.941 }
+local BAR = {
+  pc = { width = 0.76, height = 12, y = 0.941 },
+  ps1 = { width = 0.76, height = 18, y = 0.943 },
+}
 
 -- How long the screen stays black after the picture has faded out.
 local HOLD_TICKS = 3
@@ -74,14 +77,12 @@ local function open(ctx)
     end,
   })
   if ctx.is_loading then
-    local bar = loading_bar.new({
+    loading_bar.push(ctx, {
       progress = show.progress,
       visible = trx.signal.config("ui.show_loading_bar"),
-      width = BAR.width,
-      height = BAR.height,
-      y = BAR.y,
+      pc = BAR.pc,
+      ps1 = BAR.ps1,
     })
-    ctx:push({ root = bar.widget, place = bar.place })
   end
   return main
 end
