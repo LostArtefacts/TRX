@@ -979,7 +979,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         M_RingActive();
     }
 
-    Interpolation_Remember();
+    // A live scene remembers its world as each tick starts. Remembering it
+    // again here would leave nothing to interpolate.
+    if (!ring->live_scene) {
+        Interpolation_Remember();
+    }
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
