@@ -615,13 +615,13 @@
         },
         "enums": {
             "bar_look": {
-                "loading": "\\{review}Laden",
-                "same": "\\{review}Automatisch",
                 "tr1_pc": "TR1",
                 "tr2_pc": "\\{review}TR2 PC",
                 "tr2_ps1": "\\{review}TR2 PS1",
                 "tr3_pc": "\\{review}TR3 PC",
                 "tr3_ps1": "TR3 PS1",
+                "tr4_pc": "\\{review}TR4 PC",
+                "tr4_ps1": "\\{review}TR4 PS1",
             },
             "lara_outfit": {
                 "default": "\\{review}Standard",
@@ -1720,6 +1720,10 @@
             "title": "\\{review}Leisten blinken",
             "description": "\\{review}Lässt Laras Gesundheits- und Sauerstoffanzeigen blinken, wenn eine der Ressourcen knapp wird.",
         },
+        "ui.enable_bar_side_borders": {
+            "title": "\\{review}Seitenränder",
+            "description": "\\{review}Zeichnet den zusätzlichen Rand an den Seiten der PS1-Leisten.",
+        },
         "ui.enable_smooth_bars": {
             "title": "Leisten-Farbverläufe",
             "description": "Sorgt bei Gesundheitsleisten, Sauerstoffleisten und Gesundheitsleisten von Feinden für einen fließenden Farbübergang.",
@@ -1819,10 +1823,6 @@
         "ui.progressbar_color_ps1": {
             "title": "\\{review}Ladebalken-Farbe",
             "description": "\\{review}Farbe des Ladebalkens.",
-        },
-        "ui.progressbar_look": {
-            "title": "\\{review}Aussehen des Ladebalkens",
-            "description": "\\{review}Wählt den Rahmen, mit dem der Ladebalken gezeichnet wird. Die Wahl bestimmt außerdem, welche Ladebalkenfarbe weiter unten gilt.",
         },
         "ui.show_bars": {
             "title": "\\{review}Leisten anzeigen",

@@ -12,7 +12,7 @@ local M = {}
 local HOLD_TICKS = 3
 
 -- The loading bar spans most of the canvas width and stands at its foot.
-local BAR = { width = 0.94, height = 14, y = 0.953 }
+local BAR = { width = 0.94, height = 14, y = 0.936 }
 
 ---@param ctx trx.ui.TimedContext
 local function open(ctx)

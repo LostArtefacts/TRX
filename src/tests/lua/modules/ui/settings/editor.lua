@@ -62,7 +62,7 @@ end)
 
 test("a row goes and comes back with the setting that hides it", function()
   trx.config.set("ui.show_loading_bar", true)
-  local tab = make({ "ui.show_loading_bar", "ui.progressbar_look" })
+  local tab = make({ "ui.show_loading_bar", "ui.progressbar_color" })
   assert(#tab.shown:get() == 2)
   trx.config.set("ui.show_loading_bar", false)
   assert(#tab.shown:get() == 1)

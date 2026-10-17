@@ -615,13 +615,13 @@
         },
         "enums": {
             "bar_look": {
-                "loading": "\\{review}Luchdadh",
-                "same": "\\{review}Fèin-obrachail",
                 "tr1_pc": "TR1",
                 "tr2_pc": "TR2 PC",
                 "tr2_ps1": "TR2 PS1",
                 "tr3_pc": "TR3 PC",
                 "tr3_ps1": "TR3 PS1",
+                "tr4_pc": "\\{review}TR4 PC",
+                "tr4_ps1": "\\{review}TR4 PS1",
             },
             "lara_outfit": {
                 "default": "Bunaiteach",
@@ -1720,6 +1720,10 @@
             "title": "Bàraichean deàrrsail",
             "description": "Cuiridh seo an àite bàraichean slàinte agus ocsaidean Lara deàrrsail nuair a tha i a' ruith ìosal air na goireasan seo.",
         },
+        "ui.enable_bar_side_borders": {
+            "title": "\\{review}Oirean-taoibh",
+            "description": "\\{review}Tarraingidh seo an oir a bharrachd air taobhan nam bàraichean PS1.",
+        },
         "ui.enable_smooth_bars": {
             "title": "Bàraichean rèidh",
             "description": "Cuiridh seo dath le gluasad rèidh air na bàraichean slàinte, èadhair is nàmhaid.",
@@ -1819,10 +1823,6 @@
         "ui.progressbar_color_ps1": {
             "title": "\\{review}Dath bàr-luchdaidh",
             "description": "\\{review}Dath a' bhàr-luchdaidh.",
-        },
-        "ui.progressbar_look": {
-            "title": "\\{review}Coltas a' bhàir luchdaidh",
-            "description": "\\{review}Taghaidh seo am frèam a thèid a chleachdadh airson a' bhàir luchdaidh. Co-dhùnaidh an taghadh cuideachd dè an roghainn datha gu h-ìosal a bhios an sàs.",
         },
         "ui.show_bars": {
             "title": "Cleachd bàraichean",
