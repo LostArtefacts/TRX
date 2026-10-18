@@ -271,7 +271,10 @@ bool Shell_ProcessEvent(const SDL_Event *const event)
             M_HandleWindowMoved(event->window.data1, event->window.data2);
             break;
 
-        case SDL_WINDOWEVENT_RESIZED:
+        // Sent for every change of size, including those the game asks for
+        // itself, such as going fullscreen. A resize from outside the game
+        // sends SDL_WINDOWEVENT_RESIZED as well, which adds nothing.
+        case SDL_WINDOWEVENT_SIZE_CHANGED:
             M_HandleWindowResized(event->window.data1, event->window.data2);
             break;
         }

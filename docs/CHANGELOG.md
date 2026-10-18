@@ -34,6 +34,7 @@
 - Fixed static objects keeping the underwater tint and lighting after their room drains (TRX1630, regression from 1.11)
 - Fixed dynamic lights, such as a flare in Lara's hand, not lighting the room once more than 32 were active, for example in the Temple of Horus (OG bug) (TRX1533)
 - Fixed the level behind the TR4 title menu moving unevenly at 60 FPS
+- Fixed the title screen picture looking squashed after switching to fullscreen from a maximized window (#6914)
 
 **UI**
 - Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)
