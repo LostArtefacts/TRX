@@ -56,7 +56,7 @@ function M.hand_over(ctx)
   end
   drop_level()
   local mode = transition()
-  local drops = { "title", "unload", "cutscene", "demo" }
+  local drops = { "title", "unload", "cutscene" }
   if mode == "cross-fade" then
     level.held = fade.across({ layer = { snapshot = true }, drop_on = drops })
     level.held_ticks = ctx.fade_out_ticks
@@ -99,13 +99,7 @@ end
 
 local function on_game_start()
   local current = trx.game.current_level
-  if
-    current ~= nil
-    and (
-      current.type == trx.game.LevelType.CUTSCENE
-      or current.type == trx.game.LevelType.DEMO
-    )
-  then
+  if current ~= nil and current.type == trx.game.LevelType.CUTSCENE then
     drop_level()
     return
   end
