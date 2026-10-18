@@ -12,3 +12,7 @@ trx.events.on_game_start(function(is_save)
     trx.music.tracks[5]:play()
   end
 end)
+
+trx.events.on_flip_effect(200, function(item, timer)
+  trx.music.tracks[36]:play({ mode = trx.music.PlayMode.OVERLAY })
+end)
