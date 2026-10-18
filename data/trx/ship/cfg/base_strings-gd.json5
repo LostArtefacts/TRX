@@ -1426,8 +1426,8 @@
             "description": "Ceartaichidh seo duilgheadasan far nach bi Lara a' bualadh air lioftan a tha a' gluasad. Dh'fhaodadh sin a fàgail glaiste no toirt oirre dol troimhe.",
         },
         "gameplay.fix_m16_accuracy": {
-            "title": "Càraich cruinneas M16/MP5",
-            "description": "Càradh cruinneas M16/MP5 fhad 's a tha Lara a' ruith.",
+            "title": "\\{review}Càraich cruinneas M16/MP5 a' ruith",
+            "description": "\\{review}Càraichidh seo buga sa gheama thùsail far nach d' fhuair losgadh leis an M16/MP5 's Lara a' ruith am peanas cruinneis aige. Leis a' chàradh, tha losgadh 's i a' ruith nas neo-chruinne agus nì e nas lugha de dhochann.",
         },
         "gameplay.fix_monkey_pickup_priority": {
             "title": "\\{review}Càraich togail muncaidh",
@@ -1503,7 +1503,7 @@
         },
         "gameplay.m16_aim_mode": {
             "title": "\\{review}Roghainnean cuimse an M16/MP5",
-            "description": "\\{review}Stiùiridh seo cuin a chuireas Lara an M16/MP5 ri a gualainn an àite a bhith a' losgadh bhon chruachann.\n\n- Tùsail: togaidh Lara an gunna ri a gualainn gach turas a stadas i.\n- Leasaichte: cumaidh Lara a' losgadh bhon chruachann fhad 's a tha am putan Gnìomh ga chumail sìos, agus cha tog i an gunna ri a gualainn ach ma thòisicheas i a' losgadh 's i na seasamh. Leis a' chàradh pongalachd air, tha losgadh bhon chruachann nas neo-phongail agus nì e nas lugha de dhochann gach urchair.",
+            "description": "\\{review}Stiùiridh seo cuin a chuireas Lara an M16/MP5 ri a gualainn an àite a bhith a' losgadh bhon chruachann.\n\n- Tùsail: togaidh Lara an gunna ri a gualainn gach turas a stadas i.\n- Leasaichte: cumaidh Lara a' losgadh bhon chruachann fhad 's a tha am putan Gnìomh ga chumail sìos, agus cha tog i an gunna ri a gualainn ach ma thòisicheas i a' losgadh 's i na seasamh. Leis a' chàradh cruinneis ruith air, tha losgadh bhon chruachann nas neo-phongail agus nì e nas lugha de dhochann gach urchair.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Àireamh nan slotan sàbhalaidh luath",

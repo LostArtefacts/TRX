@@ -1426,8 +1426,8 @@
             "description": "Fixes Lara not colliding correctly with moving lifts, which can cause her to become stuck or pass through them.",
         },
         "gameplay.fix_m16_accuracy": {
-            "title": "Fix M16/MP5 accuracy",
-            "description": "Fixes the accuracy of the M16/MP5 while Lara is running.",
+            "title": "Fix M16/MP5 running accuracy",
+            "description": "Fixes a bug in the original game where firing the M16/MP5 while running skipped its accuracy penalty. With the fix, running fire is less accurate and does less damage.",
         },
         "gameplay.fix_monkey_pickup_priority": {
             "title": "Fix monkey pickup priority",
@@ -1503,7 +1503,7 @@
         },
         "gameplay.m16_aim_mode": {
             "title": "M16/MP5 aiming variants",
-            "description": "Controls when Lara aims the M16/MP5 from her shoulder rather than from her hip.\n\n- Original: Lara raises the gun to her shoulder whenever she stops moving.\n- Enhanced: Lara keeps firing from her hip while the Action button is held, and only shoulders the gun when she starts firing while standing still. With the accuracy fix enabled, hip fire is less accurate and does less damage per shot.",
+            "description": "Controls when Lara aims the M16/MP5 from her shoulder rather than from her hip.\n\n- Original: Lara raises the gun to her shoulder whenever she stops moving.\n- Enhanced: Lara keeps firing from her hip while the Action button is held, and only shoulders the gun when she starts firing while standing still. With the running accuracy fix enabled, hip fire is less accurate and does less damage per shot.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Number of quick save slots",

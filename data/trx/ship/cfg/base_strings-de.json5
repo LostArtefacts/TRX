@@ -1426,8 +1426,8 @@
             "description": "\\{review}Behebt Fehler bei der Kollision mit beweglichen Aufzügen, durch die Lara stecken bleiben oder hindurchfallen kann.",
         },
         "gameplay.fix_m16_accuracy": {
-            "title": "\\{review}Fix: M16/MP5-Genauigkeit",
-            "description": "\\{review}Fixt die Genauigkeit des M16/MP5, während Lara rennt.",
+            "title": "\\{review}Fix: M16/MP5-Genauigkeit im Laufen",
+            "description": "\\{review}Behebt einen Fehler im Originalspiel, durch den das M16/MP5 beim Schießen im Laufen keinen Genauigkeitsabzug bekam. Mit dem Fix ist Feuer im Laufen ungenauer und richtet weniger Schaden an.",
         },
         "gameplay.fix_monkey_pickup_priority": {
             "title": "\\{review}Fix: Aufheben beim Hangeln",
@@ -1503,7 +1503,7 @@
         },
         "gameplay.m16_aim_mode": {
             "title": "\\{review}M16/MP5-Zielvarianten",
-            "description": "\\{review}Steuert, wann Lara die M16/MP5 von der Schulter statt aus der Hüfte anlegt.\n\n- Original: Lara nimmt die Waffe an die Schulter, sobald sie stehen bleibt.\n- Erweitert: Lara schießt weiter aus der Hüfte, solange die Aktionstaste gehalten wird, und nimmt die Waffe nur an die Schulter, wenn sie im Stehen zu schießen beginnt. Mit aktivierter Genauigkeitskorrektur ist der Hüftschuss ungenauer und richtet pro Schuss weniger Schaden an.",
+            "description": "\\{review}Steuert, wann Lara die M16/MP5 von der Schulter statt aus der Hüfte anlegt.\n\n- Original: Lara nimmt die Waffe an die Schulter, sobald sie stehen bleibt.\n- Erweitert: Lara schießt weiter aus der Hüfte, solange die Aktionstaste gehalten wird, und nimmt die Waffe nur an die Schulter, wenn sie im Stehen zu schießen beginnt. Mit aktivierter Korrektur der Laufgenauigkeit ist der Hüftschuss ungenauer und richtet pro Schuss weniger Schaden an.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "\\{review}Anzahl der Schnellspeicherplätze",
