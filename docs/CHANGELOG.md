@@ -120,6 +120,7 @@
 
 **TR2**
 - Added the ability to embed into walls when collecting underwater flares, similar to the PS1 release (Gameplay → Fixes → Fix pickup embed glitch)
+- Changed the Venice Violins music in Lara's Home to play as an overlay track, so that Lara doesn't interrupt it while navigating the level (#6862 / TRX1750)
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 - Fixed Lara not colliding with the submarine in Diving Area room 70 when soft static collision is enabled (TRX1703, regression from 1.1)
 - Fixed the appearance of Lara's holstered Uzis not matching those in her hands (OG bug) (TRX1776)
