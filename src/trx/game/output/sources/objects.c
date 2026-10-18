@@ -110,7 +110,7 @@ static SCENE_PASS M_GetScenePass(
     const M_POLICY_SET *const policies)
 {
     // Half-opacity faces draw depth-sorted, like the PSX half blend mode.
-    if (face->semi_transparent) {
+    if (Output_IsFaceSemiTransparent(face)) {
         return SCENE_PASS_TRANSPARENT;
     }
     if ((flags & VERT_FLAT_SHADED) != 0) {
@@ -188,7 +188,7 @@ static void M_AddObjectFace(
         flags |= VERT_USE_OBJECT_LIGHT;
     }
 
-    if (face->semi_transparent) {
+    if (Output_IsFaceSemiTransparent(face)) {
         // The transparent pass blends premultiplied alpha; the shader only
         // premultiplies flat colors, so textured faces additionally need the
         // color scaled here for the face to render at half opacity.
@@ -253,7 +253,7 @@ static void M_AddObjectFace(
     // effects drawn at the same spot (e.g. the gun flash glow).
     MeshBuilder_AddFan(
         builder, M_GetScenePass(face, flags, policies), face->double_sided,
-        !face->semi_transparent);
+        !Output_IsFaceSemiTransparent(face));
 }
 
 // Build one mesh and store the result.

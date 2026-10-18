@@ -165,26 +165,6 @@ static void M_DrawGunGlow(
         weapon->glow.scale);
 }
 
-void Gun_ApplyFlashSemiTransparency(void)
-{
-    // TR3+ level data already flags the flash faces as semi-transparent;
-    // never touch it there.
-    if (g_TRVersion >= 3) {
-        return;
-    }
-    // The PS1 versions drew the muzzle flashes and the flare fire
-    // semi-transparent; the PC data has them as plain opaque meshes.
-    static const OBJECT_ID flash_objects[] = {
-        O_GUN_FLASH,
-        O_M16_FLASH,
-        O_FLARE_FIRE,
-    };
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(flash_objects); i++) {
-        Object_SetSemiTransparent(
-            flash_objects[i], g_Config.visuals.enable_gun_glow);
-    }
-}
-
 void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
 {
     const ANIM_FRAME *const frame = Item_GetBestFrame(item);

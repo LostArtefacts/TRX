@@ -24,6 +24,9 @@ static M_PRIV m_Priv = {};
 
 static SCENE_PASS M_GetScenePass(const FACE *const face)
 {
+    if (Output_IsFaceSemiTransparent(face)) {
+        return SCENE_PASS_TRANSPARENT;
+    }
     return Output_Textures_GetObjectTextureScenePass(face->texture_idx);
 }
 
@@ -109,6 +112,8 @@ static void M_AddRoomFace(
     const XYZ_F *const vertex_normals)
 {
     OUTPUT_MESH_VERTEX vertices[4];
+    const SCENE_PASS pass = M_GetScenePass(face);
+    const bool semi_transparent = Output_IsFaceSemiTransparent(face);
 
     ASSERT(face->vertex_count <= 4);
 
@@ -129,8 +134,7 @@ static void M_AddRoomFace(
         if (room_vert->flags.glow) {
             flags |= VERT_GLOW;
         }
-        if (Output_Textures_GetObjectTextureScenePass(face->texture_idx)
-            == SCENE_PASS_OPAQUE) {
+        if (pass == SCENE_PASS_OPAQUE) {
             flags |= VERT_NO_ALPHA_DISCARD;
         }
         flags |= VERT_USE_DYNAMIC_LIGHT;
@@ -149,6 +153,16 @@ static void M_AddRoomFace(
             normal.z *= 1 << 14;
         }
 
+        // The transparent pass blends premultiplied alpha, so the color is
+        // halved along with the alpha.
+        RGBA_8888 color = room_vert->color;
+        if (semi_transparent) {
+            color.r >>= 1;
+            color.g >>= 1;
+            color.b >>= 1;
+            color.a = 128;
+        }
+
         const XYZ_16 *const pos = &room_vert->pos;
         vertices[i] = (OUTPUT_MESH_VERTEX) {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
@@ -158,7 +172,7 @@ static void M_AddRoomFace(
             .reflectivity = 1.0f,
             .shade = room_vert->light_base,
             .light_table_idx = room_vert->light_table_value,
-            .color = room_vert->color,
+            .color = color,
             .trapezoid_ratio = {
                 [0] = face->texture_zw[i].z,
                 [1] = face->texture_zw[i].w,
@@ -166,7 +180,7 @@ static void M_AddRoomFace(
         };
     }
     MeshBuilder_AddVertices(builder, vertices, face->vertex_count);
-    MeshBuilder_AddFan(builder, M_GetScenePass(face), face->double_sided, true);
+    MeshBuilder_AddFan(builder, pass, face->double_sided, !semi_transparent);
 }
 
 static int32_t M_GetWaterEffect(const ROOM *const room)
@@ -257,6 +271,11 @@ void OutputSource_Rooms_ObserveLevelUnload(void)
 {
     M_PRIV *const p = &m_Priv;
     M_FreeMeshes(p);
+}
+
+bool OutputSource_Rooms_HasMeshes(void)
+{
+    return m_Priv.meshes != nullptr;
 }
 
 void OutputSource_Rooms_ObserveRoomFlip(const ROOM *const room)

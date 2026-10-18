@@ -50,7 +50,7 @@
             "description": "Maps every rendered colour to the nearest colour in the level palette. With dithering on, the palette shades between its colours.",
         },
         "rendering.enable_ps1_blending": {
-            "description": "Blends smoke, shadows, footprints and blood with the scene as the PlayStation did. Smoke, shadows and footprints subtract their colour from the scene, which darkens each colour channel by the same amount and gives a more saturated result. In TR3, blood is also mixed half and half with the scene. When disabled, the scene under smoke, shadows and footprints is darkened by a share of its own colour, and TR3 blood is drawn solid, as on the PC.",
+            "description": "Blends some effects and faces with the scene as the PlayStation did. Smoke, shadows and footprints subtract their colour from the scene, which darkens each colour channel by the same amount and gives a more saturated result. In TR1 and TR2, faces such as water surfaces, glass and gun flashes are mixed half and half with the scene. In TR3, blood is also mixed half and half with the scene. When disabled, all of these are drawn as on the PC.",
         },
         "rendering.enable_ps1_fog": {
             "description": "Blends distant geometry toward the fog colour the way the PlayStation depth cue did: along 1/distance rather than distance, and worked out per vertex, so the ramp bands across large surfaces.",

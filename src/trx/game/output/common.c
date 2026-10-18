@@ -245,6 +245,20 @@ void Output_RefreshObjectMeshes(void)
     MeshBatcher_Seal(m_Batcher);
 }
 
+void Output_RefreshRoomMeshes(void)
+{
+    if (!OutputSource_Rooms_HasMeshes()) {
+        return;
+    }
+    OutputSource_Rooms_ObserveLevelLoad();
+    MeshBatcher_Seal(m_Batcher);
+}
+
+bool Output_IsFaceSemiTransparent(const FACE *const face)
+{
+    return face->ps1_semi_transparent && g_Config.rendering.enable_ps1_blending;
+}
+
 void Output_DispatchRoomFlip(const ROOM *room)
 {
     OutputSource_Rooms_ObserveRoomFlip(room);

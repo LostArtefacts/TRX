@@ -342,6 +342,19 @@ static void M_SetFaceDoubleSided(const INJECTION *const injection)
     }
 }
 
+static void M_SetFacePS1SemiTransparent(const INJECTION *const injection)
+{
+    const int16_t room_num = File_ReadS16(injection->fp);
+    const FACE_TYPE face_type = File_ReadS32(injection->fp);
+    const int16_t face_index = File_ReadS16(injection->fp);
+    const bool semi_transparent = File_ReadU8(injection->fp) == 1;
+
+    FACE *const face = M_GetFace(room_num, face_type, face_index);
+    if (face != nullptr) {
+        face->ps1_semi_transparent = semi_transparent;
+    }
+}
+
 static void M_RoomMeshEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
@@ -381,6 +394,9 @@ static void M_RoomMeshEdits(
             break;
         case RMET_DOUBLE_SIDED:
             M_SetFaceDoubleSided(injection);
+            break;
+        case RMET_PS1_SEMI_TRANSPARENT:
+            M_SetFacePS1SemiTransparent(injection);
             break;
         default:
             LOG_WARNING("Unrecognised room mesh edit type: %d", type);

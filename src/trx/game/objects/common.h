@@ -101,11 +101,6 @@ void Object_SetMeshReflective(OBJECT_ID obj_id, int32_t mesh_idx, bool enabled);
 void Object_SetMeshReflectionsSuppressed(
     OBJECT_ID obj_id, int32_t mesh_idx, bool suppressed);
 
-// Marks every face of the object's meshes to draw at half opacity, like the
-// PSX half blend mode. Face scene passes are baked at level load; when
-// changing this mid-game, follow up with Output_RefreshObjectMeshes().
-void Object_SetSemiTransparent(OBJECT_ID obj_id, bool enabled);
-
 bool Object_CanInterpolate(const ITEM *item, int32_t frame_a, int32_t frame_b);
 
 // Returns whether the item can be exploded.

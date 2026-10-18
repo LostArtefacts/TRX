@@ -54,7 +54,6 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->effect_control_func = M_Control;
     obj->effect_draw_func = M_Draw;
-    Gun_ApplyFlashSemiTransparency();
 }
 
 REGISTER_OBJECT(O_GUN_FLASH, M_Setup)

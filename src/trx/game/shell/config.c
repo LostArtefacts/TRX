@@ -183,9 +183,9 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
         Output_ApplyLevelSettings();
     }
 
-    if (L_CHANGED(visuals.enable_gun_glow)) {
-        Gun_ApplyFlashSemiTransparency();
+    if (L_CHANGED(rendering.enable_ps1_blending)) {
         Output_RefreshObjectMeshes();
+        Output_RefreshRoomMeshes();
     }
 
     if (L_CHANGED(visuals.braid_status) || L_CHANGED(visuals.sunglasses_mode)

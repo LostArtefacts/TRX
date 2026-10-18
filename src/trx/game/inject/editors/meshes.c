@@ -226,6 +226,10 @@ static void M_ApplyMeshEdit(const M_MESH_EDIT *const edit)
             continue;
         }
 
+        if ((effects_edit->effects & FACE_EFFECT_PS1_SEMI_TRANSPARENT) != 0) {
+            face->ps1_semi_transparent = true;
+            continue;
+        }
         face->effects = effects_edit->effects;
         face->enable_reflections = effects_edit->reflective;
     }
