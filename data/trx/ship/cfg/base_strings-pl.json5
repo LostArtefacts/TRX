@@ -1426,8 +1426,8 @@
             "description": "\\{review}Naprawia problemy z kolizją ruchomych wind, które mogą spowodować zablokowanie Lary lub przenikanie przez nie.",
         },
         "gameplay.fix_m16_accuracy": {
-            "title": "Napraw celność M16/MP5",
-            "description": "Naprawia celność M16/MP5 podczas biegania.",
+            "title": "\\{review}Napraw celność M16/MP5 w biegu",
+            "description": "\\{review}Naprawia błąd oryginalnej gry, przez który strzelanie z M16/MP5 w biegu omijało karę do celności. Z poprawką strzały w biegu są mniej celne i zadają mniejsze obrażenia.",
         },
         "gameplay.fix_monkey_pickup_priority": {
             "title": "Priorytet ataku u małp",
@@ -1503,7 +1503,7 @@
         },
         "gameplay.m16_aim_mode": {
             "title": "\\{review}Warianty celowania M16/MP5",
-            "description": "\\{review}Określa, kiedy Lara celuje z M16/MP5 z ramienia zamiast z biodra.\n\n- Klasyczny: Lara unosi broń do ramienia za każdym razem, gdy się zatrzyma.\n- Rozszerzony: Lara strzela dalej z biodra, dopóki przycisk Akcji jest wciśnięty, i unosi broń do ramienia tylko wtedy, gdy zaczyna strzelać w bezruchu. Przy włączonej poprawce celności strzał z biodra jest mniej celny i zadaje mniejsze obrażenia.",
+            "description": "\\{review}Określa, kiedy Lara celuje z M16/MP5 z ramienia zamiast z biodra.\n\n- Klasyczny: Lara unosi broń do ramienia za każdym razem, gdy się zatrzyma.\n- Rozszerzony: Lara strzela dalej z biodra, dopóki przycisk Akcji jest wciśnięty, i unosi broń do ramienia tylko wtedy, gdy zaczyna strzelać w bezruchu. Przy włączonej poprawce celności w biegu strzał z biodra jest mniej celny i zadaje mniejsze obrażenia.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Liczba slotów szybkiego zapisu",

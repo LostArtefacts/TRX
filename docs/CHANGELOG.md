@@ -76,6 +76,7 @@
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Added options to scale the health enemies start with and the damage Lara takes (Gameplay → Mods → Enemy health / Damage taken by Lara) (#6789 / TRX1690)
 - Improved how quickly enemies find a new route to Lara when she moves (Gameplay → Fixes → Fix enemy route delay)
+- Changed the name and description of the M16/MP5 accuracy fix to say that it makes firing while running less accurate, as the original game intended (Gameplay → Fixes → Fix M16/MP5 running accuracy) (TRX1739)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
 - Fixed Lara not getting a crystal when starting a game with the crystal mode set to Saving (pickups) (Gameplay → General → Crystal mode)
 - Fixed enemies in New Game+ losing their doubled health in some levels, such as Diving Area in TR2 (TRX1702, regression from 1.10)

@@ -1426,8 +1426,8 @@
             "description": "\\{review}Corrige les problèmes de collision avec les plateformes mobiles pouvant coincer Lara ou lui permettre de passer à travers.",
         },
         "gameplay.fix_m16_accuracy": {
-            "title": "\\{review}Corriger la précision du M16/MP5",
-            "description": "\\{review}Corrige la précision du M16/MP5 pendant que Lara court.",
+            "title": "\\{review}Corriger la précision du M16/MP5 en course",
+            "description": "\\{review}Corrige un bug du jeu original où tirer au M16/MP5 en courant échappait à la pénalité de précision. Avec la correction, le tir en course est moins précis et inflige moins de dégâts.",
         },
         "gameplay.fix_monkey_pickup_priority": {
             "title": "\\{review}Priorité de ramassage",
@@ -1503,7 +1503,7 @@
         },
         "gameplay.m16_aim_mode": {
             "title": "\\{review}Variantes de visée du M16/MP5",
-            "description": "\\{review}Détermine quand Lara épaule le M16/MP5 au lieu de tirer à la hanche.\n\n- Original : Lara épaule l'arme dès qu'elle s'arrête.\n- Amélioré : Lara continue de tirer à la hanche tant que la touche Action est maintenue et n'épaule l'arme que si elle commence à tirer à l'arrêt. Avec la correction de précision activée, le tir à la hanche est moins précis et inflige moins de dégâts par balle.",
+            "description": "\\{review}Détermine quand Lara épaule le M16/MP5 au lieu de tirer à la hanche.\n\n- Original : Lara épaule l'arme dès qu'elle s'arrête.\n- Amélioré : Lara continue de tirer à la hanche tant que la touche Action est maintenue et n'épaule l'arme que si elle commence à tirer à l'arrêt. Avec la correction de précision en course activée, le tir à la hanche est moins précis et inflige moins de dégâts par balle.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "\\{review}Emplacements de sauvegarde rapide",
