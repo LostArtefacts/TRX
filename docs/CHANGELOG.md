@@ -205,6 +205,7 @@
 - Fixed the Amulet of Horus not showing in the pickup display when Lara takes it in the Burial Chambers cutscene (OG bug) (TRX1570)
 - Fixed flares needing a second press in the inventory before Lara takes one out, unlike the original game (TRX1775)
 - Fixed ricochets from missed enemy shots appearing far from the ground while Lara drives the jeep (OG bug) (TRX1673)
+- Fixed the camera being thrown aggressively into pits when a jeep tips into one briefly (OG bug) (TRX1719)
 - Fixed z-fighting between pickups 21 and 22 in Valley of the Kings (OG bug, TRX1571)
 - Fixed the compass needle staying solid when Lara faces true north, unlike the original game (TRX1784)
 - Fixed the compass facing away in the inventory ring, and added the opening and closing of its lid, as in TR1 (TRX1802)

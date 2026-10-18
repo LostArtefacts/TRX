@@ -1550,6 +1550,11 @@ void Jeep_Control(void)
     item->rot.z += (tilt.z - item->rot.z) >> 2;
 
     if ((p->flags & 0x80) == 0) {
+        // Prevent the jeep tipping into the room below too eagerly, which can
+        // throw the camera too early.
+        const XYZ_32 room_pos = { item->pos.x, item->pos.y - STEP_L / 4,
+                                  item->pos.z };
+        Room_GetSector(room_pos, &room_num);
         Item_UpdateRoom(Item_GetIndex(item), room_num);
         Item_UpdateRoom(Item_GetIndex(lara_item), room_num);
 
