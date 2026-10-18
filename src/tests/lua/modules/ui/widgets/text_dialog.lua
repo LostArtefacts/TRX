@@ -29,6 +29,18 @@ test("a long text runs to several pages", function()
   assert(#dialog.pages:get() == 3, #dialog.pages:get())
 end)
 
+test("each page keeps the colour the text sets", function()
+  local dialog = text_dialog.new()
+  dialog:set_text("T", "\\{color 5}" .. LONG, 1000, 2)
+  local pages = dialog.pages:get()
+  for i, page in ipairs(pages) do
+    assert(
+      page:find("\\{color 5}", 1, true) == 1,
+      "page " .. i .. ": " .. page
+    )
+  end
+end)
+
 test("left and right turn the pages and stop at the ends", function()
   local dialog = text_dialog.new({ heavy = true })
   dialog:set_text("T", LONG, 1000, 2)

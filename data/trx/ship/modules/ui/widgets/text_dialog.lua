@@ -27,6 +27,28 @@ local FOOTER_SPACING = 5
 local TextDialog = {}
 TextDialog.__index = TextDialog
 
+-- Returns the last colour marker a text sets, or nil where it sets none.
+local function last_color(text)
+  local last = nil
+  for marker in text:gmatch("\\{/?color[^}]*}") do
+    last = marker
+  end
+  return last
+end
+
+-- Starts each page in the colour the page before it ends in, as a colour
+-- marker reaches only the text after it on the same page.
+local function carry_colors(pages)
+  local color = nil
+  for i, page in ipairs(pages) do
+    if color ~= nil and color ~= "\\{/color}" then
+      pages[i] = color .. page
+    end
+    color = last_color(pages[i]) or color
+  end
+  return pages
+end
+
 -- Wraps a text to a width and cuts it into pages. The dialog stays on the page
 -- that it showed where the text is the one it already holds.
 ---@param title string
@@ -36,7 +58,7 @@ TextDialog.__index = TextDialog
 function TextDialog:set_text(title, text, width, max_lines)
   self.title:set(trx.strings.upper(title))
   local wrapped = trx.ui.primitive.wrap_text(text, math.floor(width))
-  local pages = trx.strings.paginate(wrapped, max_lines)
+  local pages = carry_colors(trx.strings.paginate(wrapped, max_lines))
   local lines = 0
   for _, page in ipairs(pages) do
     local _, breaks = page:gsub("\n", "")
