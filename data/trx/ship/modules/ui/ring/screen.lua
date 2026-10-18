@@ -311,6 +311,21 @@ local function light_of(shade)
   }
 end
 
+-- The opacity the TR4 compass draws its needle with while Lara faces true
+-- north, as the original does, and how near north she has to face.
+local NORTH_NEEDLE_OPACITY = 192 / 255
+local NORTH_REACH = 48
+
+-- Returns whether Lara faces true north, as near as the TR4 compass shows it.
+local function faces_north()
+  local lara = trx.lara ~= nil and trx.lara.item or nil
+  if lara == nil then
+    return false
+  end
+  local yaw = wrap(lara.rot.y)
+  return yaw > -NORTH_REACH and yaw <= NORTH_REACH
+end
+
 -- The needle of the compass swings towards north as Lara faces, and settles.
 local function swing_needle(state, entry)
   local lara = trx.lara ~= nil and trx.lara.item or nil
@@ -376,6 +391,9 @@ local function paint_entry(state, index)
   end
   if object == objects.COMPASS_OPTION then
     opts.bones = { { bone = 0, y = state.needle } }
+    if trx.game.version == 4 and faces_north() then
+      opts.mesh_opacity = { [1] = NORTH_NEEDLE_OPACITY }
+    end
   elseif object == objects.STOPWATCH_OPTION then
     opts.bones = stopwatch_bones()
   end

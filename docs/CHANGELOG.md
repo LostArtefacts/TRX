@@ -206,6 +206,7 @@
 - Fixed flares needing a second press in the inventory before Lara takes one out, unlike the original game (TRX1775)
 - Fixed ricochets from missed enemy shots appearing far from the ground while Lara drives the jeep (OG bug) (TRX1673)
 - Fixed z-fighting between pickups 21 and 22 in Valley of the Kings (OG bug, TRX1571)
+- Fixed the compass needle staying solid when Lara faces true north, unlike the original game (TRX1784)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
