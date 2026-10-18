@@ -22,6 +22,7 @@ local bars = require("common.ui.hud.overlay.bars")
 local photo_mode = require("common.ui.hud.overlay.photo_mode")
 local pickups = require("common.ui.hud.overlay.pickups")
 local readouts = require("common.ui.hud.overlay.readouts")
+local speedometer = require("common.ui.hud.overlay.speedometer")
 
 local M = {}
 
@@ -51,6 +52,7 @@ function M.setup()
   bars.setup(state)
   ammo.setup(state)
   readouts.setup(state)
+  speedometer.setup(state)
 end
 
 return M
