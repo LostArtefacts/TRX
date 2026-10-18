@@ -1,5 +1,6 @@
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 
+#include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output/mesh_batcher/mesh.h>
@@ -70,11 +71,14 @@ static void M_FillFanIndices(
     const size_t index_count = tri_count * 3 * (double_sided ? 2 : 1);
     int32_t *const out = Vector_Expand(indices, index_count);
     if (vertex_count == 4) {
-        static const int32_t strip[6] = { 0, 3, 1, 3, 2, 1 };
+        static const int32_t ps1_strip[6] = { 0, 3, 1, 3, 2, 1 };
+        static const int32_t pc_fan[6] = { 0, 2, 1, 0, 3, 2 };
+        const int32_t *const quad =
+            g_Config.rendering.enable_affine_mapping ? ps1_strip : pc_fan;
         for (size_t j = 0; j < 6; j++) {
-            out[j] = strip[j];
+            out[j] = quad[j];
             if (double_sided) {
-                out[6 + j] = strip[5 - j];
+                out[6 + j] = quad[5 - j];
             }
         }
         return;

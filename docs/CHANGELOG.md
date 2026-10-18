@@ -133,6 +133,7 @@
 - Fixed Lara not taking the full water tint in TR3 when the camera is underwater with the Responsive water tint (TRX1949, regression from 1.11)
 - Fixed dynamic lights, such as a flare in Lara's hand, not lighting the room once more than 32 were active, for example in the Temple of Horus (OG bug) (TRX1533)
 - Fixed the level behind the TR4 title menu, and Lara in its cutscenes, moving unevenly at 60 FPS (TRX1913)
+- Fixed visible seams and uneven shading on some surfaces (regression from 1.11)
 - Fixed the title screen picture looking squashed after switching to fullscreen from a maximized window (#6914)
 - Fixed wrong lighting on objects in TR4 rooms that change during the game, such as visible seams in the blood streams in Burial Chambers (TRX1798)
 - Fixed water splashes, ripples and underwater particles in TR4 looking too bright (TRX1799)

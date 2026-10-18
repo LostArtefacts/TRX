@@ -35,10 +35,12 @@ void MeshBuilder_AddFace(
 // ring vertices.If double_sided is true, generates mirrored winding
 // for backfaces as well.
 // Joins the pending vertices into a triangle fan and adds it as one face. A
-// face of four vertices is wound as the PlayStation wound it, so that the edge
-// its two triangles share is the edge a flat texture mapping folds along. The
-// order the corners come in is part of that: it decides which corner a face
-// subdivides from, and so where the folds land.
+// face of four vertices splits along the edge from the second to the fourth
+// vertex while affine mapping is on, as the PlayStation did, and along the
+// edge from the first to the third vertex otherwise, as the PC did. The split
+// decides how colors blend across the face, and with affine mapping, where
+// the texture folds. The order the corners come in decides which corner a
+// face subdivides from, and so where the folds land.
 void MeshBuilder_AddFan(
     MESH_BUILDER *builder, SCENE_PASS pass, bool double_sided,
     bool depth_write);

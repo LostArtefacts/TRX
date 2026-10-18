@@ -214,6 +214,7 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
     }
 
     if (L_CHANGED(rendering.enable_ps1_blending)
+        || L_CHANGED(rendering.enable_affine_mapping)
         || L_CHANGED(rendering.texture_filter)) {
         Output_RefreshObjectMeshes();
         Output_RefreshRoomMeshes();
