@@ -1382,6 +1382,12 @@ local function open(ctx)
   ctx:on_end(function()
     ticking:cancel()
     exiting:detach()
+    -- The engine ends the ring before it is done where something else, such
+    -- as a console command, starts a level at once. The ring has had no time
+    -- to fade out, so it fades to black as it goes.
+    if state.status ~= Status.DONE and fade.enabled() then
+      fade.leave_to_black({ ticks = BLACK_TICKS, hold = BLACK_HOLD_TICKS })
+    end
     if state.screen ~= nil then
       local screen = state.screen
       state.screen = nil

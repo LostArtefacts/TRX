@@ -379,6 +379,13 @@ local function fade_to_black(ticks, hold)
   })
 end
 
+-- Fades the frame on show to black at once, over `ticks`, and rests black for
+-- `hold`, holding the next screen until then. Unlike `hand_over`, it runs
+-- whatever the next screen is, for a screen that ends before it can fade out.
+function M.leave_to_black(options)
+  fade_to_black(options.ticks or 0, options.hold or 0)
+end
+
 -- The game fades to black over the console as it exits, over a third of a
 -- second, and holds the black for a tenth before it closes.
 local EXIT_TICKS = math.floor(trx.game.LOGIC_FPS / 3 + 0.5)
