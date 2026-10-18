@@ -2,6 +2,7 @@
 
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/fx/common.h>
@@ -18,9 +19,11 @@
 #define M_MAX_FIRES 32
 #define M_MAX_DRAW_DIST (20 * WALL_L)
 #define M_FADE_DRAW_DIST (12 * WALL_L)
+#define M_MAX_TRACK_DIST WALL_L
 
 typedef struct {
     XYZ_32 pos;
+    XYZ_32 prev_pos;
     uint8_t size;
     uint8_t on; // 0 = free slot, otherwise the dim value (1 = full)
     int16_t room_num;
@@ -28,6 +31,7 @@ typedef struct {
 
 static SPARK m_Sparks[M_MAX_SPARKS];
 static M_FIRE m_Fires[M_MAX_FIRES];
+static M_FIRE m_PrevFires[M_MAX_FIRES];
 static int32_t m_NextSpark = 1;
 
 // Slots 1..19 form a shared pool; slot 0 is reserved for the static flame base.
@@ -288,9 +292,9 @@ static void M_DrawFire(const M_FIRE *const fire)
         spark.pos.x = fire->pos.x + (src->pos.x >> shift);
         spark.pos.y = fire->pos.y + (src->pos.y >> shift);
         spark.pos.z = fire->pos.z + (src->pos.z >> shift);
-        spark.prev_pos.x = fire->pos.x + (src->prev_pos.x >> shift);
-        spark.prev_pos.y = fire->pos.y + (src->prev_pos.y >> shift);
-        spark.prev_pos.z = fire->pos.z + (src->prev_pos.z >> shift);
+        spark.prev_pos.x = fire->prev_pos.x + (src->prev_pos.x >> shift);
+        spark.prev_pos.y = fire->prev_pos.y + (src->prev_pos.y >> shift);
+        spark.prev_pos.z = fire->prev_pos.z + (src->prev_pos.z >> shift);
         spark.prev_world_pos = spark.prev_pos;
 
         const int32_t depth = M_GetViewDepth(spark.pos);
@@ -332,11 +336,13 @@ static void M_Reset(void)
 {
     memset(m_Sparks, 0, sizeof(m_Sparks));
     memset(m_Fires, 0, sizeof(m_Fires));
+    memset(m_PrevFires, 0, sizeof(m_PrevFires));
     m_NextSpark = 1;
 }
 
 static void M_NewFrame(void)
 {
+    memcpy(m_PrevFires, m_Fires, sizeof(m_Fires));
     for (int32_t i = 0; i < M_MAX_FIRES; i++) {
         m_Fires[i].on = 0;
     }
@@ -425,6 +431,33 @@ static RESULT M_Load(JSON_READ_IO *const io)
     return OK;
 }
 
+// Returns the position of the closest fire of the same size from the previous
+// frame, so that a moving fire interpolates between frames. Each previous fire
+// matches only once. A fire with no match nearby starts at its own position.
+static XYZ_32 M_ClaimPrevPos(const XYZ_32 pos, const int32_t size)
+{
+    M_FIRE *best = nullptr;
+    int64_t best_dist = (int64_t)M_MAX_TRACK_DIST * M_MAX_TRACK_DIST;
+    for (int32_t i = 0; i < M_MAX_FIRES; i++) {
+        M_FIRE *const prev = &m_PrevFires[i];
+        if (prev->on == 0 || prev->size != size) {
+            continue;
+        }
+        const XYZ_32 delta = XYZ_32_Subtract(prev->pos, pos);
+        const int64_t dist = XYZ_32_GetLength2_64(delta);
+        if (dist <= best_dist) {
+            best = prev;
+            best_dist = dist;
+        }
+    }
+
+    if (best == nullptr) {
+        return pos;
+    }
+    best->on = 0;
+    return best->pos;
+}
+
 void FX_Fire_Add(
     const XYZ_32 pos, const int32_t size, const int16_t room_num,
     const int32_t fade)
@@ -439,6 +472,7 @@ void FX_Fire_Add(
             on = 1;
         }
         fire->pos = pos;
+        fire->prev_pos = M_ClaimPrevPos(pos, size);
         fire->size = size;
         fire->room_num = room_num;
         fire->on = on;
