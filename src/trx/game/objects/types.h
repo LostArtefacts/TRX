@@ -55,6 +55,15 @@ typedef struct {
     bool ignore_rot;
 } OBJECT_BOUNDS;
 
+// What a vehicle shows on its dashboard: how fast it goes, the speed its
+// dial marks red from, the most its dial shows, and whether it is in reverse.
+typedef struct {
+    int32_t speed;
+    int32_t top_speed;
+    int32_t turbo_speed;
+    bool reverse;
+} VEHICLE_DASHBOARD;
+
 typedef struct JSON_READ_IO JSON_READ_IO;
 typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
@@ -129,6 +138,8 @@ typedef struct OBJECT {
     bool (*can_be_projectile_target_func)(const ITEM *item);
     bool (*can_be_exploded_func)(const ITEM *item);
     int32_t (*get_mesh_index_func)(const ITEM *item, int32_t mesh_idx);
+    // Reads the dashboard of a vehicle that has one.
+    void (*dashboard_func)(const ITEM *item, VEHICLE_DASHBOARD *out);
 
     int16_t anim_idx;
     int16_t anim_count;

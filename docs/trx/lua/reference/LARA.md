@@ -32,6 +32,7 @@ other and they live on it, as [`trx.lara.item`](#lara.item).
   dresses her in that outfit's face rather than leaving the one she had.
 - <a id="lara.is_flying" name="lara.is_flying"></a>**`trx.lara.is_flying`** (boolean). Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
 - <a id="lara.is_wet" name="lara.is_wet"></a>**`trx.lara.is_wet`** (boolean). Whether Lara is still shedding droplets after a swim. [`trx.lara.dry`](#lara.dry) clears it. *(read-only)*
+- <a id="lara.vehicle_dashboard" name="lara.vehicle_dashboard"></a>**`trx.lara.vehicle_dashboard`** (table). What the dashboard of Lara's vehicle shows, read afresh each time. `nil` where she is riding nothing, or riding a vehicle without a dashboard. *(read-only)*
 - <a id="lara.vehicle_gun" name="lara.vehicle_gun"></a>**`trx.lara.vehicle_gun`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). The weapon the vehicle Lara is riding carries. Her own weapons are put away while she rides, so this is what her ammunition counter shows. `nil` where she is riding nothing, or riding something unarmed. *(read-only)*
 - <a id="lara.has_pistol_weapon" name="lara.has_pistol_weapon"></a>**`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
 - <a id="lara.signals.exists" name="lara.signals.exists"></a>**`trx.lara.signals.exists`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara enters the world, and when she leaves it. *(read-only)*

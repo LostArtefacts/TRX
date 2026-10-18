@@ -15,7 +15,8 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---@trx.module 3
 ---@class (exact) trx.lara: trx.lara.Lara
 ---@trx.readonly animation_object, can_pose, has_pistol_weapon,
----  is_controllable, is_wet, item, target, vehicle, vehicle_gun
+---  is_controllable, is_wet, item, target, vehicle, vehicle_dashboard,
+---  vehicle_gun
 ---@field can_pose boolean Whether poses are available for Lara to cycle through in photo mode. This is false when no poses are defined or during cutscenes.
 ---@field animation_object trx.catalog.objects The object Lara's animations are coming from. It is normally Lara herself, and something else while a vehicle or a scripted sequence drives her.
 ---@field item trx.items.Item? Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there.
@@ -30,9 +31,18 @@ local lasting_polled = require("trx.signal").lasting_polled
 ---  dresses her in that outfit's face rather than leaving the one she had.
 ---@field is_flying boolean Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
 ---@field is_wet boolean Whether Lara is still shedding droplets after a swim. `trx.lara.dry` clears it.
+---@field vehicle_dashboard trx.lara.Dashboard? What the dashboard of Lara's vehicle shows, read afresh each time. `nil` where she is riding nothing, or riding a vehicle without a dashboard.
 ---@field vehicle_gun trx.catalog.weapons? The weapon the vehicle Lara is riding carries. Her own weapons are put away while she rides, so this is what her ammunition counter shows. `nil` where she is riding nothing, or riding something unarmed.
 ---@field has_pistol_weapon boolean Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all.
 local M = h.module("lara")
+
+---What the dashboard of a vehicle shows. The speeds are in the vehicle's own
+---units.
+---@class (exact) trx.lara.Dashboard
+---@field speed integer How fast the vehicle goes. It goes below `0` in reverse.
+---@field top_speed integer The speed that the vehicle's dial marks red from.
+---@field turbo_speed integer The most that the vehicle's dial shows.
+---@field reverse boolean Whether the vehicle is in reverse gear.
 
 ---One of the fifteen meshes Lara is built from.
 ---@enum trx.lara.Mesh
@@ -438,6 +448,20 @@ h.properties(M, "lara", {
   },
   is_flying = { get = raw.is_flying, set = raw.set_flying },
   is_wet = { get = raw.is_wet },
+  vehicle_dashboard = {
+    get = function()
+      local speed, top_speed, turbo_speed, reverse = raw.vehicle_dashboard()
+      if speed == nil then
+        return nil
+      end
+      return {
+        speed = speed,
+        top_speed = top_speed,
+        turbo_speed = turbo_speed,
+        reverse = reverse,
+      }
+    end,
+  },
   vehicle_gun = { get = raw.vehicle_gun },
   has_pistol_weapon = { get = raw.has_pistol_weapon },
 })
