@@ -332,7 +332,8 @@ local function swing_needle(state, entry)
   if lara == nil then
     return
   end
-  local delta = wrap(-entry.y_rot:get() - lara.rot.y - state.needle)
+  local facing = entry.y_rot:get() + (entry.spec.base_rot.y or 0)
+  local delta = wrap(-facing - lara.rot.y - state.needle)
   state.needle_speed = trx.math.idiv(state.needle_speed * 19, 20)
     + trx.math.idiv(delta, 50)
   state.needle = wrap(state.needle + state.needle_speed)

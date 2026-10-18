@@ -552,19 +552,18 @@
 
     {
         "object_id": "compass_option",
-        "frames_total": 1,
+        "frames_total": 25,
+        "open_frame": 10,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 4352,
         "x_rot_sel": 8192,
-        "y_rot_sel": -32768,
-        "y_trans_sel": -128,
-        "z_trans_sel": 256,
-        "scale": 1.33,
+        "z_trans_sel": 240,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        // The original game poses the compass with "base_rot_x": 14000 and
-        // "base_rot_y": -32768. The ring keeps its own pose here.
+        "base_rot_y": -32768,
+        // The original game also pitches the compass with "base_rot_x": 14000.
+        // The ring keeps its own pitch here.
     },
 
     {
