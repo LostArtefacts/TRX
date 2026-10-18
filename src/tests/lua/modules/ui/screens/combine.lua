@@ -132,6 +132,22 @@ local function plays()
   return play ~= nil and play.count or 0
 end
 
+test("the ring goes dark only while the frame shows", function()
+  local ring = require("common.ui.ring")
+  trx.config.set("ui.text_scale", 100)
+  fake.set_combine_partners(PARTNERS)
+  h.open_ring(trx.ui.MenuMode.GAME, OBJECT, 0, 10)
+  assert(fake.offer(COMBINE, { object = OBJECT }), "the entry was not taken")
+  assert(not ring.signals.darkened:get(), "the ring went dark too early")
+  fake.tick()
+  fake.tick()
+  assert(shows_name(PARTNERS[1]), "the frame did not show")
+  assert(ring.signals.darkened:get(), "the ring did not go dark")
+  press(Role.MENU_BACK)
+  assert(not ring.signals.darkened:get(), "the ring stayed dark")
+  finish()
+end)
+
 test("back puts the entry away", function()
   open(PARTNERS)
   local before = plays()

@@ -90,6 +90,7 @@ local function begin(ctx, state)
     return
   end
   state.shown:set(true)
+  ring.set_darkened(true)
   -- The frame names the entry in the middle, so the ring names nothing. The
   -- caption goes before the frame first shows, or the frame would move once
   -- the caption gave up its room.
@@ -145,6 +146,9 @@ local function open(ctx)
     selected = trx.signal.new(1),
     shown = trx.signal.new(false),
   }
+  ctx:on_end(function()
+    ring.set_darkened(false)
+  end)
   -- Nothing shows until the entry comes to rest and the row opens.
   return ctx:push({
     root = dialog(state),

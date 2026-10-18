@@ -194,6 +194,34 @@ test("turning the ring rests it on another entry", function()
   finish()
 end)
 
+test("the ring goes dark behind combining only with the frame", function()
+  require("common.ui.screens.combine").setup()
+  local partner = objects.LARGE_MEDIPACK_OPTION
+  -- The frame draws the partner as a model of its own, apart from the ring.
+  local partner_model = ("^model obj=%d "):format(partner)
+  fake.set_combine_partners({ partner })
+  carry()
+  open(MenuMode.GAME, objects.SMALL_MEDIPACK_OPTION)
+  press(Role.MENU_CONFIRM)
+  local framed = false
+  for _ = 1, SETTLE_TICKS do
+    local dark = false
+    local named = false
+    for _, op in ipairs(fake.scene()) do
+      dark = dark or op:match("^darken ") ~= nil
+      named = named or op:match(partner_model) ~= nil
+    end
+    assert(not dark or named, "the ring went dark before the frame showed")
+    framed = framed or (dark and named)
+    fake.tick()
+  end
+  assert(framed, "the frame never showed")
+  fake.set_combine_partners({})
+  press(Role.MENU_BACK)
+  ticks(SETTLE_TICKS)
+  finish()
+end)
+
 test("the keys ring opens on the entry asked for", function()
   trx.inventory.give(objects.KEY_OPTION_1)
   trx.inventory.give(objects.KEY_OPTION_2)
