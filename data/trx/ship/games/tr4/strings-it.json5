@@ -180,7 +180,7 @@
                 },
                 "examine_item_2": {
                     "name": "Regole del Senet",
-                    "description": "\\{color grey}Per vincere la partita, togli tutti i tuoi pezzi dalla scacchiera, facendoli arrivare sul riquadro ankh finale. Al tuo turno, fai girare i bastoncini. Il tuo lancio corrisponde al numero di facce bianche visibili.\n\nSe non vedi alcuna faccia bianca, il tuo lancio è un sei. In questo caso, o se finisci su una casella ankh, ottieni un turno extra. Se ti sposti su un pezzo avversario, quest'ultimo verrà riposto nella sua posizione iniziale.",
+                    "description": "\\{color 5}Per vincere la partita, togli tutti i tuoi pezzi dalla scacchiera, facendoli arrivare sul riquadro ankh finale. Al tuo turno, fai girare i bastoncini. Il tuo lancio corrisponde al numero di facce bianche visibili.\n\nSe non vedi alcuna faccia bianca, il tuo lancio è un sei. In questo caso, o se finisci su una casella ankh, ottieni un turno extra. Se ti sposti su un pezzo avversario, quest'ultimo verrà riposto nella sua posizione iniziale.",
                 }
             }
         },
@@ -521,7 +521,7 @@
                 },
                 "examine_item_3": {
                     "name": "Pergamena del Cerchio di Fuoco",
-                    "description": "\\{color yellow}Perché i serpenti possano vivere, prima tutti devono essere placati. Provocali uno alla volta e il cerchio sarà completo.",
+                    "description": "\\{color 8}Perché i serpenti possano vivere, prima tutti devono essere placati. Provocali uno alla volta e il cerchio sarà completo.",
                 }
             }
         },
