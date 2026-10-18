@@ -30,6 +30,9 @@ trx.events.on_game_start(function(is_save)
   if not is_save then
     local guide = trx.items[13]
     guide.pos = { x = guide.pos.x, y = guide.pos.y + 128, z = guide.pos.z }
+
+    -- Fix z-fighting between pickups 21 and 22
+    trx.items[21].rot = { x = 0, y = 0, z = 0 }
   end
 end)
 
