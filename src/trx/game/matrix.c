@@ -104,9 +104,8 @@ static void M_Double3x3FromMatrix(const MATRIX *const m, double e[3][3])
     e[2][2] = m->_22 / s;
 }
 
-// Remove uniform scale if present (estimate from row lengths).
-// Use average row length to reduce noise.
-static void M_Double3x3RemoveScale(double e[3][3])
+// Estimate uniform scale from the average row length, to reduce noise.
+static double M_Double3x3Scale(const double e[3][3])
 {
     const double rl0 =
         sqrt(e[0][0] * e[0][0] + e[0][1] * e[0][1] + e[0][2] * e[0][2]);
@@ -114,7 +113,13 @@ static void M_Double3x3RemoveScale(double e[3][3])
         sqrt(e[1][0] * e[1][0] + e[1][1] * e[1][1] + e[1][2] * e[1][2]);
     const double rl2 =
         sqrt(e[2][0] * e[2][0] + e[2][1] * e[2][1] + e[2][2] * e[2][2]);
-    const double scale = (rl0 + rl1 + rl2) / 3.0;
+    return (rl0 + rl1 + rl2) / 3.0;
+}
+
+// Remove uniform scale if present.
+static void M_Double3x3RemoveScale(double e[3][3])
+{
+    const double scale = M_Double3x3Scale(e);
     if (scale <= 0.0) {
         return;
     }
@@ -434,11 +439,27 @@ static void M_Interpolate(
     double rate = (m_IMRate != 0) ? ((double)m_IMFrac / (double)m_IMRate) : 0.0;
     CLAMP(rate, 0.0, 1.0);
 
+    // The quaternions carry the rotation alone, so the scale is blended apart
+    // from them and applied to the result again.
+    double e1[3][3];
+    double e2[3][3];
+    M_Double3x3FromMatrix(m1, e1);
+    M_Double3x3FromMatrix(m2, e2);
+    const double scale_1 = M_Double3x3Scale(e1);
+    const double scale_2 = M_Double3x3Scale(e2);
+    const int32_t scale = (int32_t)llround(
+        (scale_1 + (scale_2 - scale_1) * rate) * (1 << W2V_SHIFT));
+
     QUATERNION q1, q2, q;
     M_MatrixToQuaternion(m1, &q1);
     M_MatrixToQuaternion(m2, &q2);
     M_QuaternionSlerp(&q1, &q2, rate, &q);
     M_MatrixFromQuaternion(&q, result);
+    if (scale != (1 << W2V_SHIFT)) {
+        M_ScaleX(result, scale);
+        M_ScaleY(result, scale);
+        M_ScaleZ(result, scale);
+    }
 
     result->_03 = (int32_t)llround(m1->_03 + (m2->_03 - m1->_03) * rate);
     result->_13 = (int32_t)llround(m1->_13 + (m2->_13 - m1->_13) * rate);

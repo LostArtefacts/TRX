@@ -5,6 +5,8 @@
 #include <trx/core/utils.h>
 #include <trx/game/matrix.h>
 
+#include <math.h>
+
 // Rotations reach the renderer as three angles, and the tempting way to meet
 // two of them in the middle is to meet each angle in the middle. That is not
 // the same rotation: the TR4 cutscene tracks quantize to ten bits per axis, and
@@ -138,4 +140,23 @@ TEST(the_view_matrix_undoes_the_rotation_the_camera_stands_at)
     CHECK(ABS(seen.x) < 8);
     CHECK(ABS(seen.y) < 8);
     CHECK(seen.z > 4096 - 8 && seen.z < 4096 + 8);
+}
+
+TEST(interpolating_keeps_the_scale_of_a_matrix)
+{
+    // A model drawn at a scale between two frames has to keep that scale,
+    // because the blend between the frames carries the rotation alone.
+    const int32_t scale = (1 << W2V_SHIFT) * 4 / 3;
+    Matrix_ResetStack();
+    *g_MatrixPtr = g_IDMatrix;
+    *g_WMatrixPtr = g_IDMatrix;
+    Matrix_Scale(scale);
+    Matrix_RotY(DEG_45);
+    Matrix_InitInterpolate(512, 1024);
+    Matrix_Interpolate();
+
+    const XYZ_32 far = Matrix_MulVec32_M(g_MatrixPtr, (XYZ_32) { .z = 4096 });
+    const double reach = sqrt(
+        (double)far.x * far.x + (double)far.y * far.y + (double)far.z * far.z);
+    CHECK(reach > 4096 * 4 / 3 - 8 && reach < 4096 * 4 / 3 + 8);
 }
