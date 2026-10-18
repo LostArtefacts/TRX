@@ -13,6 +13,7 @@
 #include <trx/game/output/func.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
+#include <trx/game/output/state.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/renderer.h>
@@ -335,12 +336,34 @@ static void M_DrawWorldFrame(const OUTPUT_UI_MESH *const mesh)
     const int32_t rate = 1024;
     int32_t frac = (int32_t)(world->blend * rate + 0.5f);
     CLAMP(frac, 0, rate);
-    if (world->at_pivot) {
-        Object_DrawInterpolatedObjectAtPivot(
-            obj, mesh->mesh_mask, extra_rotation, frame1, frame2, frac, rate);
-    } else {
-        Object_DrawInterpolatedObject(
-            obj, mesh->mesh_mask, extra_rotation, frame1, frame2, frac, rate);
+
+    // A mesh drawn see-through is drawn again on its own, so that the tint
+    // that carries how solid it is reaches that mesh alone.
+    const uint32_t faded_mask = world->faded_mask & mesh->mesh_mask;
+    for (int32_t i = -1; i < 32; i++) {
+        uint32_t mask = mesh->mesh_mask & ~faded_mask;
+        if (i >= 0) {
+            mask = 1u << i;
+            if ((faded_mask & mask) == 0) {
+                continue;
+            }
+            Output_PushTintOverride((RGBA_F) {
+                .r = 1.0f,
+                .g = 1.0f,
+                .b = 1.0f,
+                .a = world->mesh_opacity[i],
+            });
+        }
+        if (world->at_pivot) {
+            Object_DrawInterpolatedObjectAtPivot(
+                obj, mask, extra_rotation, frame1, frame2, frac, rate);
+        } else {
+            Object_DrawInterpolatedObject(
+                obj, mask, extra_rotation, frame1, frame2, frac, rate);
+        }
+        if (i >= 0) {
+            Output_PopTintOverride();
+        }
     }
 }
 

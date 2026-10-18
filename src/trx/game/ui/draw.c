@@ -877,7 +877,11 @@ void UI_ScheduleDrawModelInWorld(
         .blend = world->blend,
         .bone_count = world->bone_count,
         .at_pivot = world->at_pivot,
+        .faded_mask = world->faded_mask,
     };
+    memcpy(
+        mesh_world.mesh_opacity, world->mesh_opacity,
+        sizeof(mesh_world.mesh_opacity));
     for (int32_t i = 0; i < world->step_count; i++) {
         mesh_world.steps[i].kind = M_ToMeshStep(world->steps[i].kind);
         mesh_world.steps[i].vec = world->steps[i].vec;

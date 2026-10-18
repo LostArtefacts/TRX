@@ -389,6 +389,7 @@ end
 ---@field bones? trx.ui.BoneTurn[] Turns that bones take on top of the frame, up to eight.
 ---@field at_pivot? boolean Whether to draw the model about its pivot, without the offset its frame stands it at. `false` by default.
 ---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
+---@field mesh_opacity? table<integer, number> How solid to draw some of its meshes, from `0` to `1`, keyed by the mesh counted from 0. A mesh not named is solid.
 ---@field light? trx.ui.ModelLight The light to draw it in, with its directions in the model's world. A plain white light by default.
 
 ---Draws an object's model where it stands in a world of its own, as that

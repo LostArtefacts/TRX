@@ -489,6 +489,25 @@ static int M_L_UIDrawWorldModel(lua_State *const L)
     }
     lua_pop(L, 1);
 
+    lua_getfield(L, 2, "mesh_opacity");
+    if (!lua_isnil(L, -1)) {
+        luaL_checktype(L, -1, LUA_TTABLE);
+        const int faded = lua_absindex(L, -1);
+        lua_pushnil(L);
+        while (lua_next(L, faded) != 0) {
+            const lua_Integer mesh = luaL_checkinteger(L, -2);
+            luaL_argcheck(
+                L, mesh >= 0 && mesh < 32, 2,
+                "a mesh to fade is counted from 0 to 31");
+            float opacity = (float)luaL_checknumber(L, -1);
+            CLAMP(opacity, 0.0f, 1.0f);
+            world.faded_mask |= 1u << mesh;
+            world.mesh_opacity[mesh] = opacity;
+            lua_pop(L, 1);
+        }
+    }
+    lua_pop(L, 1);
+
     lua_getfield(L, 2, "mesh_mask");
     const uint32_t mesh_mask =
         (uint32_t)luaL_optinteger(L, -1, (lua_Integer)UINT32_MAX);

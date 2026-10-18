@@ -58,6 +58,10 @@ typedef struct {
     } bones[OUTPUT_UI_MESH_BONES];
     // Whether the model is drawn about its pivot, without its frame offset.
     bool at_pivot;
+    // The meshes drawn see-through, one bit each, and how solid each one is,
+    // from 0 to 1.
+    uint32_t faded_mask;
+    float mesh_opacity[32];
 } OUTPUT_UI_MESH_WORLD;
 
 // An object drawn as a model in a box on the canvas. The box says where it
