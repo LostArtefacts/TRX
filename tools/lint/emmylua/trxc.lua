@@ -567,6 +567,7 @@ trxc = {}
 ---@field sprite fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, color: trx.math.Color|table)
 ---@field sprite_bounds fun(object: trx.catalog.objects, sprite_num: integer): number, number, number, number
 ---@field sprite_count fun(object: trx.catalog.objects): integer
+---@field sprite_rect fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, w: number, h: number, color: trx.math.Color|table)
 ---@field to_canvas fun(pixels: number): number
 ---@field to_screen fun(length: number): number
 ---@field wrap_text fun(text: string, width: number, scale?: number): string

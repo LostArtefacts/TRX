@@ -79,6 +79,13 @@ typedef struct {
 
 typedef struct {
     M_DRAW_OP base;
+    int32_t sprite_idx;
+    int32_t x0, y0, x1, y1, z;
+    RGBA_F color;
+} M_DRAW_OP_SPRITE_RECT;
+
+typedef struct {
+    M_DRAW_OP base;
     const char *path;
     int32_t x0, y0, x1, y1;
     float opacity;
@@ -406,6 +413,20 @@ static void M_DrawOp_Circle(const M_DRAW_OP *const base)
         .r_outer = op->r_outer,
         .z = OUTPUT_UI_NEAR_Z + op->z,
         .color = op->color,
+    });
+}
+
+static void M_DrawOp_SpriteRect(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_SPRITE_RECT *const op = (const M_DRAW_OP_SPRITE_RECT *)base;
+    OutputSource_UI_StageSprite((OUTPUT_UI_SPRITE) {
+        .sprite_idx = op->sprite_idx,
+        .x0 = op->x0,
+        .y0 = op->y0,
+        .x1 = op->x1,
+        .y1 = op->y1,
+        .z = OUTPUT_UI_NEAR_Z + op->z,
+        .color = { op->color, op->color, op->color, op->color },
     });
 }
 
@@ -781,6 +802,23 @@ void UI_ScheduleDrawScreenCircle(
             .cy = cy,
             .r_inner = r_inner,
             .r_outer = r_outer,
+            .z = z,
+            .color = color,
+        }));
+}
+
+void UI_ScheduleDrawScreenSpriteRect(
+    const int32_t sprite_idx, const int32_t x0, const int32_t y0,
+    const int32_t x1, const int32_t y1, const int32_t z, const RGBA_F color)
+{
+    M_SCHEDULE_OP(
+        M_DrawOp_SpriteRect,
+        ((M_DRAW_OP_SPRITE_RECT) {
+            .sprite_idx = sprite_idx,
+            .x0 = x0,
+            .y0 = y0,
+            .x1 = x1,
+            .y1 = y1,
             .z = z,
             .color = color,
         }));

@@ -102,6 +102,15 @@ void UI_ScheduleDrawScreenSprite(
         M_COLOR_F(colors[1]), M_COLOR_F(colors[2]), M_COLOR_F(colors[3])));
 }
 
+void UI_ScheduleDrawScreenSpriteRect(
+    const int32_t sprite_idx, const int32_t x0, const int32_t y0,
+    const int32_t x1, const int32_t y1, const int32_t z, const RGBA_F color)
+{
+    FakeUIDraw_Record(String_FormatStatic(
+        "sprite_rect idx=%d x0=%d y0=%d x1=%d y1=%d z=%d color=%s", sprite_idx,
+        x0, y0, x1, y1, z, M_COLOR_F(color)));
+}
+
 void UI_ScheduleDrawScreenLine(
     const float x0, const float y0, const float x1, const float y1,
     const float width, const int32_t z, const RGBA_8888 color)
