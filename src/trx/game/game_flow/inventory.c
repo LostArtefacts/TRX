@@ -315,8 +315,9 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 
     const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
     const OBJECT_ID default_gun_object = Gun_GetGunObject(default_gun);
-    const bool default_gun_given =
-        !Inv_State_Has(&resume->inv, default_gun_object)
+    // A game can name no default weapon, and then Lara is given none.
+    const bool default_gun_given = default_gun_object != NO_OBJECT
+        && !Inv_State_Has(&resume->inv, default_gun_object)
         && *M_Add2InvItem(default_gun_object) != 0;
     if (default_gun_given) {
         Inv_State_SetCount(&resume->inv, default_gun_object, 1);
@@ -383,8 +384,10 @@ void GF_InventoryModifier_Apply(
 
     if (type == GF_INV_SECRET) {
         const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
-        if (*M_Add2InvItem(Gun_GetGunObject(default_gun))) {
-            Inv_AddItem(Gun_GetGunObject(default_gun));
+        const OBJECT_ID default_gun_object = Gun_GetGunObject(default_gun);
+        if (default_gun_object != NO_OBJECT
+            && *M_Add2InvItem(default_gun_object)) {
+            Inv_AddItem(default_gun_object);
             if (resume->equipped_gun_type == LGT_UNARMED) {
                 resume->equipped_gun_type = default_gun;
             }
