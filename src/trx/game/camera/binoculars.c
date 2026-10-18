@@ -33,6 +33,9 @@ static bool m_Active = false;
 static bool m_Pending = false;
 static bool m_JustEntered = false;
 static bool m_TorchActive = false;
+// Holds the torch off while the action key that was held as the binoculars
+// came up stays held, such as the key that chose them in the inventory.
+static bool m_TorchHeldOff = false;
 #define M_DECLARE_SUPPRESS_FLAG(name, field)                                   \
     static bool m_Suppress##name = false;
 M_FOR_EACH_EXIT_INPUT(M_DECLARE_SUPPRESS_FLAG)
@@ -61,6 +64,7 @@ static void M_Enter(void)
     m_OriginalFOVMode = Viewport_GetFOVMode();
     m_Range = M_MIN_RANGE;
     m_TorchActive = false;
+    m_TorchHeldOff = g_Input.action;
     m_JustEntered = true;
     m_Active = true;
     lara_info->gun_status = LGS_HANDS_BUSY;
@@ -217,6 +221,7 @@ void Camera_Binoculars_Reset(void)
     m_Active = false;
     m_Pending = false;
     m_TorchActive = false;
+    m_TorchHeldOff = false;
 #define M_RESET_SUPPRESS_FLAG(name, field) m_Suppress##name = false;
     M_FOR_EACH_EXIT_INPUT(M_RESET_SUPPRESS_FLAG)
 #undef M_RESET_SUPPRESS_FLAG
@@ -255,7 +260,10 @@ void Camera_Binoculars_Control(void)
     g_Camera.type = CAM_BINOCULARS;
     M_HandleLookInput();
     M_HandleZoomInput();
-    m_TorchActive = g_Input.action;
+    if (!g_Input.action) {
+        m_TorchHeldOff = false;
+    }
+    m_TorchActive = g_Input.action && !m_TorchHeldOff;
 
     g_Input = (INPUT_STATE) {};
     g_InputDB = (INPUT_STATE) {};
@@ -330,6 +338,7 @@ void Camera_Binoculars_Exit(void)
     m_Active = false;
     m_Pending = false;
     m_TorchActive = false;
+    m_TorchHeldOff = false;
     lara_item->mesh_bits = 0xFFFFFFFF;
     lara_info->gun_status = LGS_ARMLESS;
     lara_info->head_rot.x = 0;
