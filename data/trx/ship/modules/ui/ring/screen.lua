@@ -34,8 +34,9 @@ local FADE_TICKS = 16
 local BLACK_TICKS = 8
 local BLACK_HOLD_TICKS = 1
 
--- How dark the ring goes behind the screen that combines an entry.
-local COMBINE_DARKEN = 0.75
+-- How dark the ring goes behind the screen of the picked entry, where that
+-- screen asks for it.
+local DARKEN = 0.75
 
 -- How far the title's camera tilts down onto its ring.
 local TITLE_PITCH = 1024
@@ -385,8 +386,8 @@ local function paint(state)
   for _, index in ipairs(back_to_front(state)) do
     paint_entry(state, index)
   end
-  if state.screen ~= nil and state.action == Action.COMBINE then
-    trx.ui.primitive.darken(COMBINE_DARKEN)
+  if state.screen ~= nil and ring.signals.darkened:get() then
+    trx.ui.primitive.darken(DARKEN)
   end
 end
 

@@ -30,6 +30,9 @@ M.signals = {
   -- The frame the picked entry rests open on, or nil while it moves or no
   -- entry is picked.
   rest_frame = trx.signal.new(nil),
+  -- Whether the ring goes dark behind the screen of the picked entry, as it
+  -- does while the frame that combines it shows.
+  darkened = trx.signal.new(false),
 }
 
 -- The ring that is open, or nil.
@@ -163,6 +166,12 @@ function M.show_count(count)
     )
   else
     M.set_count(nil)
+  end
+end
+
+function M.set_darkened(darkened)
+  if M.signals.darkened:get() ~= darkened then
+    M.signals.darkened:set(darkened)
   end
 end
 
