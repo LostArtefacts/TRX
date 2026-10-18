@@ -255,6 +255,30 @@ test("the ring goes dark behind combining only with the frame", function()
   finish()
 end)
 
+test("Lara's Home fades the title to black before the gym loads", function()
+  declare(objects.PHOTO_OPTION, 205)
+  fake.set_gym_present(true)
+  open(MenuMode.TITLE, objects.PHOTO_OPTION)
+  -- The fade draws as a black quad over the whole screen.
+  local darkest = 0
+  for _ = 1, SETTLE_TICKS * 2 do
+    if fake.calls().play_gym.count > 0 then
+      break
+    end
+    for _, op in ipairs(fake.scene()) do
+      local alpha = op:match("^quad x=0 y=0 .* color=000000(%x%x)$")
+      if alpha ~= nil then
+        darkest = math.max(darkest, tonumber(alpha, 16))
+      end
+    end
+    press(Role.MENU_CONFIRM)
+  end
+  assert(fake.calls().play_gym.count == 1, "the gym was not asked for")
+  assert(darkest >= 0xC0, "the title did not fade to black before the gym")
+  fake.set_gym_present(false)
+  finish()
+end)
+
 test("the keys ring opens on the entry asked for", function()
   trx.inventory.give(objects.KEY_OPTION_1)
   trx.inventory.give(objects.KEY_OPTION_2)

@@ -760,10 +760,18 @@ local function leaves_after_save(mode)
     or mode == MenuMode.LOAD
 end
 
+-- Returns whether the game leaves once the ring closes. Lara's Home is
+-- started only as the ring finishes, so the game is not leaving for it yet.
+local function leaves_game(state)
+  return trx.game.is_leaving
+    or state.demo_needed
+    or (state.chosen == objects.PHOTO_OPTION and trx.game.gym ~= nil)
+end
+
 -- Closes the ring, to black where the game leaves, and back to the game
 -- otherwise, its backdrop going with it.
 local function close(state)
-  if trx.game.is_leaving or state.demo_needed then
+  if leaves_game(state) then
     set_status(state, Status.CLOSING, Motion.CLOSE)
     state.after_close = Status.FADING_OUT
   else
