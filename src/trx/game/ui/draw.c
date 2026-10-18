@@ -72,6 +72,13 @@ typedef struct {
 
 typedef struct {
     M_DRAW_OP base;
+    float x0, y0, x1, y1, width;
+    int32_t z;
+    RGBA_8888 color;
+} M_DRAW_OP_LINE;
+
+typedef struct {
+    M_DRAW_OP base;
     const char *path;
     int32_t x0, y0, x1, y1;
     float opacity;
@@ -397,6 +404,20 @@ static void M_DrawOp_Circle(const M_DRAW_OP *const base)
         .cy = op->cy,
         .r_inner = op->r_inner,
         .r_outer = op->r_outer,
+        .z = OUTPUT_UI_NEAR_Z + op->z,
+        .color = op->color,
+    });
+}
+
+static void M_DrawOp_Line(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_LINE *const op = (const M_DRAW_OP_LINE *)base;
+    OutputSource_UI_StageLine((OUTPUT_UI_LINE) {
+        .x0 = op->x0,
+        .y0 = op->y0,
+        .x1 = op->x1,
+        .y1 = op->y1,
+        .width = op->width,
         .z = OUTPUT_UI_NEAR_Z + op->z,
         .color = op->color,
     });
@@ -760,6 +781,23 @@ void UI_ScheduleDrawScreenCircle(
             .cy = cy,
             .r_inner = r_inner,
             .r_outer = r_outer,
+            .z = z,
+            .color = color,
+        }));
+}
+
+void UI_ScheduleDrawScreenLine(
+    const float x0, const float y0, const float x1, const float y1,
+    const float width, const int32_t z, const RGBA_8888 color)
+{
+    M_SCHEDULE_OP(
+        M_DrawOp_Line,
+        ((M_DRAW_OP_LINE) {
+            .x0 = x0,
+            .y0 = y0,
+            .x1 = x1,
+            .y1 = y1,
+            .width = width,
             .z = z,
             .color = color,
         }));

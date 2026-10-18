@@ -101,6 +101,15 @@ typedef struct {
     RGBA_8888 color;
 } OUTPUT_UI_CIRCLE;
 
+// A straight line between two points of the screen, with smooth edges.
+typedef struct {
+    float x0, y0;
+    float x1, y1;
+    float width;
+    int32_t z;
+    RGBA_8888 color;
+} OUTPUT_UI_LINE;
+
 void OutputSource_UI_Init(void);
 void OutputSource_UI_Shutdown(void);
 
@@ -111,3 +120,4 @@ void OutputSource_UI_StageQuad(OUTPUT_UI_QUAD quad);
 // Reports whether anything staged waits for the next flush.
 bool OutputSource_UI_HasStaged(void);
 void OutputSource_UI_StageCircle(OUTPUT_UI_CIRCLE circle);
+void OutputSource_UI_StageLine(OUTPUT_UI_LINE line);

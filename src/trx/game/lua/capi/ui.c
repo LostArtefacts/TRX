@@ -787,6 +787,20 @@ static int M_L_UIFlatQuad(lua_State *const L)
     return 0;
 }
 
+// trxc.ui.line(x0: number, y0: number, x1: number, y1: number, z?: integer, width: number, color: trx.math.Color|table)
+static int M_L_UILine(lua_State *const L)
+{
+    M_CheckPainting(L);
+    UI_ScheduleDrawScreenLine(
+        UI_ScaleX((float)luaL_checknumber(L, 1)),
+        UI_ScaleY((float)luaL_checknumber(L, 2)),
+        UI_ScaleX((float)luaL_checknumber(L, 3)),
+        UI_ScaleY((float)luaL_checknumber(L, 4)),
+        UI_ScaleY((float)luaL_checknumber(L, 6)), M_OptZ(L, 5),
+        M_CheckColor(L, 7));
+    return 0;
+}
+
 // trxc.ui.gradient_quad(x: number, y: number, z?: integer, w: number, h: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 static int M_L_UIGradientQuad(lua_State *const L)
 {
@@ -900,6 +914,7 @@ static const luaL_Reg m_Module[] = {
     { "wrap_text", M_L_UIWrapText },
     { "draw_text", M_L_UIDrawText },
     { "flat_quad", M_L_UIFlatQuad },
+    { "line", M_L_UILine },
     { "horizontal_line", M_L_UIHorizontalLine },
     { "panel", M_L_UIPanel },
     { "push_text_scale", M_L_UIPushTextScale },

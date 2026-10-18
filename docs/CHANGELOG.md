@@ -237,6 +237,7 @@
 - Added `trx.ui.primitive.world_model`, which draws a model in a world of its own as a camera there sees it, placed step by step as the engine places one and posed in any frame of its animation, so a script can show a model as the game shows it
 - Added `trx.ui.primitive.darken`, which darkens the screen behind the interface, as the game does behind a menu and to fade to black
 - Added `trx.ui.primitive.mesh_bounds`, the box a model occupies
+- Added `trx.ui.primitive.line`, which draws a straight line between two points with smooth edges
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.fx.Spark.context` and `trx.fx.SparkContext`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)

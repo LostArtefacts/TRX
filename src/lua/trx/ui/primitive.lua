@@ -157,6 +157,17 @@ end
 ---@type fun(x: number, y: number, z: integer, w: number, h: number, color: trx.math.Color|table)
 primitive.quad = raw.flat_quad
 
+---Draws a straight line of one color between two points, with smooth edges.
+---@param x0 number Where the line starts across.
+---@param y0 number Where the line starts down.
+---@param x1 number Where the line ends across.
+---@param y1 number Where the line ends down.
+---@param z integer The draw order.
+---@param width number How thick the line is.
+---@param color trx.math.Color|table What color to draw it in, in either form that `trx.ui.primitive.quad` takes.
+---@type fun(x0: number, y0: number, x1: number, y1: number, z: integer, width: number, color: trx.math.Color|table)
+primitive.line = raw.line
+
 ---Draws a rectangle whose corners each carry a color.
 ---@param x number The left edge.
 ---@param y number The top edge.
