@@ -166,6 +166,13 @@ static int M_L_SetCurrentCutscene(lua_State *const L)
     return 0;
 }
 
+// fake.set_current_demo() - the first demo.
+static int M_L_SetCurrentDemo(lua_State *const L)
+{
+    m_CurrentLevel = &m_Demos[0];
+    return 0;
+}
+
 // fake.set_in_cutscene(bool) - a level is loaded, but the game takes no input.
 static int M_L_SetInCutscene(lua_State *const L)
 {
@@ -740,6 +747,8 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "set_current_title");
     lua_pushcfunction(L, M_L_SetCurrentCutscene);
     lua_setfield(L, -2, "set_current_cutscene");
+    lua_pushcfunction(L, M_L_SetCurrentDemo);
+    lua_setfield(L, -2, "set_current_demo");
     lua_pushcfunction(L, M_L_SetInCutscene);
     lua_setfield(L, -2, "set_in_cutscene");
     lua_pushcfunction(L, M_L_SetGymPresent);
