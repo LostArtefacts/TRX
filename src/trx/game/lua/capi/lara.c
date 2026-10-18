@@ -21,6 +21,7 @@
 #include <trx/game/lua/utils/args.h>
 #include <trx/game/lua/utils/module.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/rooms.h>
 
 #include <lauxlib.h>
@@ -378,6 +379,28 @@ static int M_L_LaraTeleport(lua_State *const L)
     return 1;
 }
 
+// trxc.lara.vehicle_dashboard(): integer?, integer, integer, boolean
+// The returns are the speed, the top speed, the turbo speed and whether the
+// vehicle is in reverse.
+static int M_L_LaraVehicleDashboard(lua_State *const L)
+{
+    const ITEM *const item = Lara_Vehicle_GetItem();
+    const OBJECT *const obj =
+        item != nullptr ? Object_Get(item->object_id) : nullptr;
+    if (obj == nullptr || obj->dashboard_func == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    VEHICLE_DASHBOARD dashboard;
+    obj->dashboard_func(item, &dashboard);
+    lua_pushinteger(L, dashboard.speed);
+    lua_pushinteger(L, dashboard.top_speed);
+    lua_pushinteger(L, dashboard.turbo_speed);
+    lua_pushboolean(L, dashboard.reverse);
+    return 4;
+}
+
 // trxc.lara.vehicle_gun(): trx.catalog.weapons?
 //
 // Returns the weapon mounted on Lara's vehicle.
@@ -402,6 +425,7 @@ static int M_L_LaraCanPose(lua_State *const L)
 static const luaL_Reg m_Module[] = {
     { "can_pose", M_L_LaraCanPose },
     { "vehicle_gun", M_L_LaraVehicleGun },
+    { "vehicle_dashboard", M_L_LaraVehicleDashboard },
     { "get_item", M_L_LaraGetItem },
     { "get_target", M_L_LaraGetTarget },
     { "get_vehicle", M_L_LaraGetVehicle },

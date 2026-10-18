@@ -37,6 +37,7 @@
 #define M_LOW_ACCEL      (M_HIGH_SPEED + WALL_L * 2) // = 18432
 #define M_MID_ACCEL      (M_MAX_SPEED - WALL_L * 4) // = 28672
 #define M_HIGH_ACCEL     (M_MAX_SPEED - WALL_L * 2) // = 30720
+#define M_DIAL_TOP_SPEED (M_MAX_SPEED * 3 / 4) // = 24576
 #define M_MAX_DECEL      (STEP_L * 3) // = 768
 #define M_MIN_DECEL      STEP_L
 #define M_MIN_PITCH      (-0x8000)
@@ -1410,6 +1411,17 @@ static bool M_Draw(const ITEM *const item)
     return drawn;
 }
 
+static void M_GetDashboard(const ITEM *const item, VEHICLE_DASHBOARD *const out)
+{
+    const M_PRIV *const p = item->priv;
+    *out = (VEHICLE_DASHBOARD) {
+        .speed = p->velocity,
+        .top_speed = M_DIAL_TOP_SPEED,
+        .turbo_speed = M_MAX_SPEED,
+        .reverse = p->gear == 1,
+    };
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
@@ -1421,6 +1433,7 @@ static void M_Setup(OBJECT *const obj)
     obj->is_usable_func = M_IsUsable;
     obj->event_func = Vehicle_HandleEvent;
     obj->draw_func = M_Draw;
+    obj->dashboard_func = M_GetDashboard;
 
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;

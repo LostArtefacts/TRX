@@ -363,6 +363,7 @@ trxc = {}
 ---@field set_speech_face fun(index?: integer)
 ---@field state fun(): trx.lara.Lara
 ---@field teleport fun(pos: trx.math.Vec3, room_num?: trx.rooms.Num): boolean
+---@field vehicle_dashboard fun(): integer?, integer, integer, boolean
 ---@field vehicle_gun fun(): trx.catalog.weapons?
 
 ---@class (exact) trxc.locale
