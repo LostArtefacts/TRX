@@ -162,6 +162,7 @@
 - Added a skybox to the title screen (TRX1394)
 - Added all TR4 gun meshes into the outfit system (TRX1756)
 - Added the original PC and PS1 bars, with the PC bars used by default (Graphics → Bars → Bars appearance) (TRX488)
+- Added the speedometer while Lara drives the jeep (TRX1658)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement

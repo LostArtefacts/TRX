@@ -1393,7 +1393,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── photo_mode.lua
 │   │   │   │   ├── pickups.lua
 │   │   │   │   ├── place.lua
-│   │   │   │   └── readouts.lua
+│   │   │   │   ├── readouts.lua
+│   │   │   │   └── speedometer.lua
 │   │   │   ├── assault.lua
 │   │   │   └── legend.lua
 │   │   ├── ring
@@ -2882,7 +2883,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── photo_mode.lua
     │   │   │   │   │   ├── pickups.lua
     │   │   │   │   │   ├── place.lua
-    │   │   │   │   │   └── readouts.lua
+    │   │   │   │   │   ├── readouts.lua
+    │   │   │   │   │   └── speedometer.lua
     │   │   │   │   ├── assault.lua
     │   │   │   │   └── legend.lua
     │   │   │   ├── ring
