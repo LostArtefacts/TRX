@@ -399,6 +399,22 @@ test("a handler that raises is reported through the console", function()
   assert(fake.console_shows() > before, "the console was told nothing")
 end)
 
+test("a handler that raises logs where it failed", function()
+  local listener = trx.events.before_control(function()
+    error("boom")
+  end)
+  fake.fire("before_control")
+  listener:detach()
+
+  local log = fake.calls().log
+  assert(log ~= nil and log.count > 0, "nothing was logged")
+  assert(log.message:find("boom", 1, true), log.message)
+  assert(
+    log.message:find("stack traceback", 1, true),
+    "the log carries no traceback"
+  )
+end)
+
 test("composed text reaches a handler as a string", function()
   local seen = {}
   trx.events.on_text_input(function(text)

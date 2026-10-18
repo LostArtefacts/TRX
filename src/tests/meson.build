@@ -2543,8 +2543,9 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/trx/events',
   'bundles': [b_lua_surface],
-  'src': ['fakes/rooms.c'],
+  'src': ['fakes/log.c', 'fakes/rooms.c'],
   'engine': ['game/lua/capi/events.c', 'game/lua/events/manager.c'],
+  'stubs': false,
 }
 
 unit_tests += {
