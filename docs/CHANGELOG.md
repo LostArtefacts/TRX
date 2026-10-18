@@ -360,7 +360,6 @@
 - Changed `trx.savegame.load` to raise an error for an empty slot
 - Changed the functions of `trx.inventory` and `trx.stats` to plain functions, called with a dot rather than a colon
 - Removed `trx.ui.Widget:wakes_on`, as a widget follows every signal it reads while it measures, however it reads it
-- Removed `trx.ui.mesh_slot` and `trx.ui.MeshSlot` in favour of `trx.ui.primitive.model` and `trx.ui.widgets.Model`
 - Removed `trx.ui.regions.fallback`, as nothing drew a fallback
 - Removed `trx.ui.widgets.Row`, which was a horizontal `trx.ui.widgets.Stack` of two arrows and a widget
 - Removed `h_bars` from `trx.ui.widgets.Resize`, as a `trx.ui.widgets.Bar` already follows the player's bar scale
@@ -729,10 +728,6 @@ Showcase: https://youtu.be/dHuBHppj_fo
 - Fixed the game stuttering while it writes its log
 
 **Lua**
-- Added `trx.ui.mesh_slot()`, so a script can draw and move a model on the canvas
-- Added `trx.ui.primitive.mesh_bounds()`, so a script can fit a model into its own box
-- Added `trx.inventory.ring_item()`, so a script can read how the ring draws an object
-- Added `trx.events.on_show_pickup()`, so a script can draw pickup announcements
 - Added `trx.rooms.flip_groups()`, so a level script can move some flip pairs while the rest stay where they are
 - Added `trx.lara.signals`, `trx.game.signals` and `trx.cutscenes.signals`, so a script hears when Lara's state, the game's or a cutscene's changes rather than asking after it
 - Added `trx.lara.is_controllable`, `trx.lara.vehicle`, `trx.lara.MAX_AIR`, `trx.lara.MAX_SPRINT`, what her arms and the flare in them are doing, and what she is lining herself up with, so a script can report what the overlay reports
@@ -781,7 +776,6 @@ Showcase: https://youtu.be/dHuBHppj_fo
 - Added more world effects to `trx.fx`: explosions, fires, splashes, ripples, footprints, underwater blood and blast rings
 - Added `trx.fx.sparks`, so a script can throw the particles the games use for smoke, flames, sparks and splashes, and read or change every live particle
 - Added `trx.inventory.declare_ring_item()`, so a script can add a custom object to the inventory ring
-- Changed `trx.inventory.icon_of()` to a plain function because it is not tied to an inventory
 - Changed `require()` to also look for `<module>/init.lua`, so modules can grow into multiple files without changing how callers require them
 - Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build
 - Changed the inventory ring to be declared by a script, so its contents can be changed without a build

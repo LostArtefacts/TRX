@@ -36,7 +36,6 @@ order: 3
    the shipped `common.ui.ring` module, which holds its entries:
    - `trx.inventory.declare_ring_item` becomes
      `require("common.ui.ring").declare_item`
-   - `trx.inventory.ring_item` becomes `require("common.ui.ring").item`
 
 5. **`trx.savegame.load` raises an error for an empty slot**
    A script that can name an empty slot must check it with
@@ -55,6 +54,7 @@ order: 3
    Their functions are plain functions, not methods of the inventory Lara
    carries or of the level being played:
    - `trx.inventory:give(object)` becomes `trx.inventory.give(object)`
+   - `trx.inventory:icon_of(object)` becomes `trx.inventory.icon_of(object)`
    - `trx.stats:give_secret(1)` becomes `trx.stats.give_secret(1)`
 
    A `trx.inventory.Inventory` or `trx.stats.Stats` reached through
@@ -83,55 +83,48 @@ order: 3
     The screens are set up by one startup script, `scripts/ui.lua`, in place
     of a script each.
 
-11. **Models are painted, not kept in slots**
-    `trx.ui.mesh_slot` and `trx.ui.MeshSlot` are gone. Draw a model where the
-    interface is painted instead: `trx.ui.primitive.model` from a paint
-    handler, or a `trx.ui.widgets.Model` in a widget tree. Move a model by
-    painting it somewhere else on the next frame; read `trx.ui.Tween` or
-    `trx.ui.interpolation_rate` for movement that glides between ticks.
-
-12. **A released widget cannot be used again**
+11. **A released widget cannot be used again**
     `trx.ui.Widget:release` ends the widget and every widget under it, and
     returns nothing. A released widget cannot go in a region, a layer or
     another widget, so build a new one instead. A layer that closes releases
     its widgets in the same way. Releasing a widget that another widget or a
     layer holds is an error: release the holder.
 
-13. **`trx.ui.Widget:wakes_on` is gone**
+12. **`trx.ui.Widget:wakes_on` is gone**
     A widget follows every signal that it reads while it measures, however it
     reads it. Remove the calls.
 
-14. **`trx.ui.regions.fallback` is gone**
+13. **`trx.ui.regions.fallback` is gone**
     A region draws nothing while no widget in it is visible. A script that
     drew something in that case gives that widget a `visible` signal of its
     own, such as `~bar_visible`, and places it in the region.
 
-15. **`trx.ui.widgets.Row` is gone**
+14. **`trx.ui.widgets.Row` is gone**
     Build the row as a horizontal `trx.ui.widgets.Stack`: a `Label` of
     `\{button left}`, the widget, and a `Label` of `\{button right}`, each
     arrow in a `trx.ui.widgets.Blank` that blanks it when `left` or `right`
     did not take it.
 
-16. **`h_bars` of `trx.ui.widgets.Resize` is gone**
+15. **`h_bars` of `trx.ui.widgets.Resize` is gone**
     A `trx.ui.widgets.Bar` follows the player's bar scale on its own. Give
     `h` a plain height for any other widget.
 
-17. **`trx.signal.Signal:above` is gone**
+16. **`trx.signal.Signal:above` is gone**
     Use `trx.signal.Signal:map`: `poison:above(0)` becomes
     `poison:map(function(value) return type(value) == "number" and value > 0 end)`.
 
-18. **`shown` is now `visible`**
+17. **`shown` is now `visible`**
     Every widget takes `visible` in place of `shown`, with the same meaning: a
     widget that is not visible keeps no room and leaves no gap.
     - `shown` → `visible`
     - `trx.ui.Widget:is_shown` → `trx.ui.Widget:is_visible`
 
-19. **`hidden` is gone**
+18. **`hidden` is gone**
     A widget that keeps its room but draws nothing goes in a
     `trx.ui.widgets.Blank`: `Label({ text = t, hidden = h })` becomes
     `Blank({ when = h, child = Label({ text = t }) })`.
 
-20. **`trx.overlay.signals.health_bar_forced` is gone**
+19. **`trx.overlay.signals.health_bar_forced` is gone**
     The inventory ring says when it asks for Lara's health bar through the
     signals of the shipped `common.ui.ring` module:
     - `trx.overlay.signals.health_bar_forced` →
@@ -508,11 +501,7 @@ order: 3
 
    The game reports a value with the wrong type and stops reading the file.
 
-16. **`trx.inventory.icon_of()` is a plain function**
-   The result is not tied to an inventory, so the function no longer takes one:
-   - `trx.inventory:icon_of(object)` becomes `trx.inventory.icon_of(object)`
-
-17. **End-level trigger parameters now have meaning**
+16. **End-level trigger parameters now have meaning**
    In OG TR1-3, assigning a parameter to end-level triggers served no purpose;
    the gameflow always dictated the level sequencing. 1.11 introduces basic
    support for hubs, allowing triggers to dictate which level comes next. Legacy
