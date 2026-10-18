@@ -217,6 +217,9 @@ static RESULT M_Play(const char *const file_name)
     bool paused = false;
     bool exiting = false;
 
+    // A skip key held down from before the film skips nothing, and does not
+    // repeat into a skip, until it is pressed again.
+    Input_HoldOffSkip(INPUT_SKIP_TO_SCREEN);
     g_OldInputDB = g_Input;
     Video_Start(video);
 
