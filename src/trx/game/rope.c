@@ -22,14 +22,11 @@
 #define M_HALF_WIDTH 24.0f
 
 // OG's DrawRope modulates the rope sprite by a flat 0xFF7F7F7F, i.e. half
-// brightness. The TR4 shader path reads an unlit vertex color as a prelit
-// value on the "128 = neutral" scale and doubles it, so OG's 0x7F modulate
-// has to be halved here to survive that doubling: 0x40/255 * 255/128 = 0.5.
-// Storing 0x7F instead leaves the rope at full bright, ignoring the room.
+// brightness, regardless of the room.
 static const RGBA_8888 m_RopeColor = {
-    .r = 0x40,
-    .g = 0x40,
-    .b = 0x40,
+    .r = 0x7F,
+    .g = 0x7F,
+    .b = 0x7F,
     .a = 0xFF,
 };
 

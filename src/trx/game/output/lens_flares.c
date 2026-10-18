@@ -16,6 +16,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sparks/enum.h>
 #include <trx/game/viewport.h>
+#include <trx/version.h>
 
 #include <math.h>
 
@@ -173,9 +174,13 @@ static void M_StageGhost(
         { h, -h },
     };
     const RGBA_8888 colors[4] = { color, color, color, color };
+    // The OG TR4 draws flare sprites on the 128-neutral scale
+    // (DrawSprite runs the color through CalcColorSplit).
+    const uint16_t scale_flags = g_TRVersion == 4 ? VERT_OVERBRIGHT : 0;
     OutputSource_PolyFX_StageQuadExtDepth(
         sprite_idx, world_pos, disp, colors,
-        VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_BILLBOARD | VERT_ABS_SPRITE,
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_BILLBOARD | VERT_ABS_SPRITE
+            | scale_flags,
         depth_test ? 0.0f : -(float)view_dist, DRAW_BLEND_ADD);
 }
 

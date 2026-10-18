@@ -38,6 +38,7 @@
 - Fixed the level behind the TR4 title menu moving unevenly at 60 FPS
 - Fixed the title screen picture looking squashed after switching to fullscreen from a maximized window (#6914)
 - Fixed wrong lighting on objects in TR4 rooms that change during the game, such as visible seams in the blood streams in Burial Chambers (TRX1798)
+- Fixed water splashes, ripples and underwater particles in TR4 looking too bright (TRX1799)
 
 **UI**
 - Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)

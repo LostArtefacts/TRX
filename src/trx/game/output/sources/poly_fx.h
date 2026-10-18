@@ -27,7 +27,7 @@ void OutputSource_PolyFX_StageSpriteTriWorld(
 
 void OutputSource_PolyFX_StageSpriteTriWorldDepth(
     int32_t sprite_idx, const XYZ_32 world_pos[3], const RGBA_8888 color[3],
-    float z_depth_adjust, DRAW_TYPE draw_type);
+    uint16_t flags, float z_depth_adjust, DRAW_TYPE draw_type);
 
 void OutputSource_PolyFX_StageSpriteTriWorldLight(
     int32_t sprite_idx, const XYZ_32 world_pos[3], const RGBA_8888 color[3],
