@@ -50,6 +50,7 @@
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
 - Fixed the FPS counter briefly showing an incorrect value after switching mods (TRX1631)
 - Fixed the game not fading to black when it was exited during an FMV (TRX1616)
+- Fixed an FMV that follows a level sometimes being skipped by a key held down at the end of the level, such as the jeep's accelerate (TRX1681)
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 - Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
 - Fixed being unable to unbind the second key of a movement, jump, action or draw weapon binding while the first key stays bound
