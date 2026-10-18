@@ -10,6 +10,7 @@
 void Output_Lights_Init(void);
 void Output_Lights_Shutdown(void);
 void Output_Lights_ObserveLevelLoad(void);
+void Output_Lights_ObserveRoomFlip(const ROOM *room);
 
 void Output_CalculateLight(XYZ_32 pos, int16_t room_num);
 void Output_CalculateStaticLight(int16_t adder);

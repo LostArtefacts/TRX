@@ -329,6 +329,14 @@ void Output_Lights_ObserveLevelLoad(void)
     }
 }
 
+void Output_Lights_ObserveRoomFlip(const ROOM *const room)
+{
+    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
+    if (model->observe_room_flip != nullptr) {
+        model->observe_room_flip(room);
+    }
+}
+
 void Output_Lights_BeginScene(void)
 {
     const LIGHTING_MODEL *const model = Output_Lights_GetModel();
