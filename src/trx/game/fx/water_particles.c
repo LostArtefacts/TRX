@@ -214,13 +214,12 @@ static void M_Draw(void)
 
         uint32_t c;
         if ((particle->vel.y & 7) < 7) {
-            c = (uint32_t)(particle->vel.y & 7);
+            c = (uint32_t)(particle->vel.y & 7) << (g_TRVersion == 4 ? 3 : 2);
         } else if (particle->life > 18) {
-            c = 15;
+            c = g_TRVersion == 4 ? 64 : 60;
         } else {
-            c = particle->life;
+            c = particle->life << 2;
         }
-        c <<= 2;
         CLAMPG(c, 255);
 
         const RGBA_8888 color = { c, c, c, 255 };

@@ -159,6 +159,8 @@ static void M_Draw(void)
     // subtract it once, as the PlayStation versions do.
     const int32_t passes =
         g_TRVersion >= 4 || g_Config.rendering.enable_ps1_blending ? 1 : 4;
+    // TR4 footprints are tuned as light on the 128-neutral scale.
+    const uint16_t scale_flags = g_TRVersion == 4 ? VERT_OVERBRIGHT : 0;
 
     const XYZ_32 corners[3] = {
         { .x = 0, .y = 0, .z = -64 },
@@ -186,8 +188,8 @@ static void M_Draw(void)
 
         for (int32_t j = 0; j < passes; j++) {
             OutputSource_PolyFX_StageSpriteTriWorldDepth(
-                sprite_idx, world, tri_color, M_FOOTPRINT_Z_DEPTH_ADJUST,
-                DRAW_BLEND_SUB);
+                sprite_idx, world, tri_color, scale_flags,
+                M_FOOTPRINT_Z_DEPTH_ADJUST, DRAW_BLEND_SUB);
         }
     }
 }

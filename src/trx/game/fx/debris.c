@@ -17,6 +17,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rules.h>
+#include <trx/version.h>
 
 #define M_MAX_DEBRIS 256
 #define M_MAX_VERTICES 256
@@ -398,9 +399,11 @@ static void M_DrawDebris(const M_DEBRIS *const debris, const double ratio)
     const DRAW_TYPE draw_type = (debris->flags & 1) != 0
         ? DRAW_BLEND_ADD
         : Output_GetObjectTexture(debris->texture_idx)->draw_type;
+    // The OG TR4 lights debris on the 128-neutral scale (CalcColorSplit).
+    const uint16_t scale_flags = g_TRVersion == 4 ? VERT_OVERBRIGHT : 0;
     OutputSource_PolyFX_StageTriExtUV(
         world, uvw, texture_size, nullptr, color,
-        VERT_NO_LIGHTING | VERT_NO_WIBBLE, draw_type);
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE | scale_flags, draw_type);
 }
 
 static void M_Draw(void)

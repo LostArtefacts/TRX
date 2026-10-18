@@ -461,8 +461,9 @@ static void M_StageFacet(
         };
         OutputSource_PolyFX_StageTriExtUVDepth(
             tri_pos, tri_uvw, atlas_size, nullptr, color,
-            VERT_NO_LIGHTING | VERT_NO_WIBBLE, M_SHADOW_Z_DEPTH_ADJUST,
-            DRAW_BLEND_SUB);
+            VERT_NO_LIGHTING | VERT_NO_WIBBLE
+                | (g_TRVersion == 4 ? VERT_OVERBRIGHT : 0),
+            M_SHADOW_Z_DEPTH_ADJUST, DRAW_BLEND_SUB);
     }
 }
 

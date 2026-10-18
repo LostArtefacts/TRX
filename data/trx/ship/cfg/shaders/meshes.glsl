@@ -93,8 +93,15 @@ vec3 shadeTR4(
 {
     bool overbright = uLightingCurve == LIGHTING_CURVE_OVERBRIGHT;
     bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
-    vec3 L =
-        lightIn * (overbright || saturate ? 255.0 / 128.0 : 1.0) + lightAdd;
+    // An unlit color is a plain color that modulates the texture, as the OG
+    // draws its effects, unless VERT_OVERBRIGHT marks it as light on the
+    // 128-neutral scale.
+    bool neutral_scale = uLightingEnabled == 0
+        || (flags & VERT_NO_LIGHTING) == 0u
+        || (flags & (VERT_FLAT_SHADED | VERT_OVERBRIGHT)) != 0u;
+    vec3 L = lightIn
+            * ((overbright || saturate) && neutral_scale ? 255.0 / 128.0 : 1.0)
+        + lightAdd;
     addOut = overbright ? max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0)
                         : vec3(0.0);
     // The OG draws additive polys with specular disabled (HWR_DrawSortList

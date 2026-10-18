@@ -694,20 +694,20 @@ void OutputSource_PolyFX_StageSpriteTriWorld(
     const RGBA_8888 color[3], const DRAW_TYPE draw_type)
 {
     OutputSource_PolyFX_StageSpriteTriWorldDepth(
-        sprite_idx, world_pos, color, 0.0f, draw_type);
+        sprite_idx, world_pos, color, 0, 0.0f, draw_type);
 }
 
 void OutputSource_PolyFX_StageSpriteTriWorldDepth(
     const int32_t sprite_idx, const XYZ_32 world_pos[3],
-    const RGBA_8888 color[3], const float z_depth_adjust,
+    const RGBA_8888 color[3], const uint16_t flags, const float z_depth_adjust,
     const DRAW_TYPE draw_type)
 {
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
     M_StagePrim(
         sprite_idx, 3, &world_pos[0], nullptr, &color[0],
-        VERT_NO_LIGHTING | VERT_NO_WIBBLE, z_depth_adjust, (float)SHADE_NEUTRAL,
-        nullptr, target);
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE | flags, z_depth_adjust,
+        (float)SHADE_NEUTRAL, nullptr, target);
 }
 
 void OutputSource_PolyFX_StageSpriteTriWorldLight(
@@ -1001,16 +1001,6 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     };
 
     RGBA_8888 color = { render_color.r, render_color.g, render_color.b, 255 };
-
-    // The OG TR4 submits spark colors raw with specular disabled, skipping
-    // CalcColorSplit; the TR4 shader lights sprite verts in the 128-neutral
-    // scale, so halve to compensate. Flat sparks modulate without the
-    // doubling and stay raw.
-    if (g_TRVersion == 4 && (spark->flags & SPARK_F_SPRITE) != 0U) {
-        color.r >>= 1;
-        color.g >>= 1;
-        color.b >>= 1;
-    }
 
     if ((spark->flags & SPARK_F_ROTATE) != 0U) {
         const int32_t rot_angle = use_current_state
