@@ -282,7 +282,11 @@ bool Lara_Cheat_ExitFlyMode(void)
         lara_info->torso_rot.y = 0;
     }
 
-    if (lara_info->gun_item_num != NO_ITEM) {
+    // A flare being put away keeps going, so that it finishes leaving her
+    // hand rather than leaving her holding nothing in its place.
+    const bool is_flare_undrawing = lara_info->gun_status == LGS_UNDRAW
+        && lara_info->gun_type == Gun_GetFlareType();
+    if (lara_info->gun_item_num != NO_ITEM || is_flare_undrawing) {
         lara_info->gun_status = LGS_UNDRAW;
     } else {
         lara_info->gun_status = LGS_ARMLESS;
