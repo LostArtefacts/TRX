@@ -768,6 +768,13 @@ local function leaves_game(state)
     or (state.chosen == objects.PHOTO_OPTION and trx.game.gym ~= nil)
 end
 
+-- How long the backdrop takes to come in or go. The inventory fade effects
+-- setting governs only the backdrop; the fades to and from black follow the
+-- fade effects setting alone.
+local function backdrop_ticks()
+  return fade.enabled("ui.inventory_fade_effects") and FADE_TICKS or 0
+end
+
 -- Closes the ring, to black where the game leaves, and back to the game
 -- otherwise, its backdrop going with it.
 local function close(state)
@@ -779,7 +786,7 @@ local function close(state)
     state.after_close = Status.DONE
     -- Without a fade the backdrop stays until the ring has closed, and goes
     -- with the screen.
-    local ticks = state.fades:ticks(FADE_TICKS)
+    local ticks = backdrop_ticks()
     if ticks > 0 then
       state.backdrop:to(0, ticks)
     end
@@ -1337,11 +1344,7 @@ local function open(ctx)
   rest_on_request(state)
   ring.attach(state)
 
-  state.fades = fade.screen(ctx, {
-    enabled = function()
-      return fade.enabled("ui.inventory_fade_effects")
-    end,
-  })
+  state.fades = fade.screen(ctx)
 
   local function spin_in()
     state.waiting = false
@@ -1350,7 +1353,7 @@ local function open(ctx)
   end
 
   state.style = trx.config.get("ui.inventory_background_style")
-  state.backdrop = trx.ui.tween(0):to(1, state.fades:ticks(FADE_TICKS))
+  state.backdrop = trx.ui.tween(0):to(1, backdrop_ticks())
 
   if ctx.mode == MenuMode.TITLE then
     trx.overlay.show_version(true)

@@ -474,6 +474,30 @@ test("a keys ring opened at a keyhole loses the used up key", function()
   end)
 end)
 
+test("the title fades in with the inventory fade effects off", function()
+  declare(objects.PHOTO_OPTION, 205)
+  fake.set_gym_present(true)
+  trx.config.set("ui.inventory_fade_effects", false)
+  trx.config.set("ui.text_scale", 1)
+  assert(fake.offer(MENU, { mode = MenuMode.TITLE }), "no ring opened")
+  -- The fade draws as a black quad over the whole screen.
+  local partial = false
+  for _ = 1, SETTLE_TICKS do
+    fake.tick()
+    for _, op in ipairs(fake.scene()) do
+      local alpha = op:match("^quad x=0 y=0 .* color=000000(%x%x)$")
+      if alpha ~= nil then
+        local value = tonumber(alpha, 16)
+        partial = partial or (value > 0x10 and value < 0xF0)
+      end
+    end
+  end
+  assert(partial, "the title cut in rather than fading in")
+  trx.config.set("ui.inventory_fade_effects", true)
+  fake.set_gym_present(false)
+  finish()
+end)
+
 test("a keys ring with nothing on it does not open", function()
   assert(not fake.offer(MENU, { mode = MenuMode.KEYS }), "it opened")
   assert(fake.take_choice(MENU) == CHOICE_NONE)
