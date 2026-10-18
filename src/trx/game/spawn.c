@@ -370,12 +370,23 @@ int16_t Spawn_GunMiss(
     const int16_t y_rot, const int16_t room_num)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    const GAME_VECTOR pos = {
+    GAME_VECTOR pos = {
         .x = lara_item->pos.x + ((Random_GetDraw() - 0x4000) * 512) / 0x7FFF,
         .y = lara_item->floor,
         .z = lara_item->pos.z + ((Random_GetDraw() - 0x4000) * 512) / 0x7FFF,
         .room_num = lara_item->room_num,
     };
+
+    // Lara's floor is not updated while a vehicle carries her, so the
+    // ricochet lands on the floor under its own spot.
+    const XYZ_32 probe = { pos.x, lara_item->pos.y - STEP_L, pos.z };
+    int16_t floor_room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(probe, &floor_room_num);
+    const int32_t floor = Room_GetHeight(sector, probe);
+    if (floor != NO_HEIGHT) {
+        pos.y = floor;
+        pos.room_num = floor_room_num;
+    }
     Spawn_Ricochet(pos, false);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
