@@ -87,6 +87,7 @@
                 "shimmy_sfx.bin",
                 "inv_background.bin",
                 "binoculars.bin",
+                "gym_ps1_blend.bin",
             ],
         },
 
@@ -126,6 +127,7 @@
                 "vilcabamba_door_sfx.bin",
                 "vilcabamba_itemrots.bin",
                 "vilcabamba_textures.bin",
+                "vilcabamba_ps1_blend.bin",
             ],
         },
 
@@ -145,6 +147,7 @@
                 "valley_itemrots.bin",
                 "valley_skybox.bin",
                 "valley_textures.bin",
+                "valley_ps1_blend.bin",
             ],
         },
 
@@ -165,6 +168,7 @@
                 "qualopec_fd.bin",
                 "qualopec_itemrots.bin",
                 "qualopec_textures.bin",
+                "qualopec_ps1_blend.bin",
             ],
         },
 
@@ -186,6 +190,7 @@
                 "folly_itemrots.bin",
                 "folly_pickup_meshes.bin",
                 "folly_textures.bin",
+                "folly_ps1_blend.bin",
             ],
         },
 
@@ -206,6 +211,7 @@
                 "colosseum_skybox.bin",
                 "colosseum_textures.bin",
                 "door58_frames.bin",
+                "colosseum_ps1_blend.bin",
             ],
         },
 
@@ -223,6 +229,7 @@
             "injections": [
                 "midas_itemrots.bin",
                 "midas_textures.bin",
+                "midas_ps1_blend.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -244,6 +251,7 @@
                 "cistern_plants.bin",
                 "cistern_skybox.bin",
                 "cistern_textures.bin",
+                "cistern_ps1_blend.bin",
             ],
         },
 
@@ -267,6 +275,7 @@
                 "tihocan_itemrots.bin",
                 "tihocan_textures.bin",
                 "scion_alignment.bin",
+                "tihocan_ps1_blend.bin",
             ],
             "item_drops": [
                 {"enemy_num": 82, "object_ids": [86, 144, 129]},
@@ -292,6 +301,7 @@
                 "khamoon_mummy.bin",
                 "khamoon_textures.bin",
                 "panther_sfx.bin",
+                "khamoon_ps1_blend.bin",
             ],
         },
 
@@ -313,6 +323,7 @@
                 "obelisk_skybox.bin",
                 "obelisk_textures.bin",
                 "panther_sfx.bin",
+                "obelisk_ps1_blend.bin",
             ],
         },
 
@@ -335,6 +346,7 @@
                 "sanctuary_scion.bin",
                 "sanctuary_textures.bin",
                 "sanctuary_meshfixes.bin",
+                "sanctuary_ps1_blend.bin",
             ],
         },
 
@@ -363,6 +375,7 @@
                 "mines_textures.bin",
                 "skate_kid_sfx.bin",
                 "wall_switch_sfx.bin",
+                "mines_ps1_blend.bin",
             ],
             "item_drops": [
                 {"enemy_num": 17, "object_ids": [86]},
@@ -392,6 +405,7 @@
                 "atlantis_itemrots.bin",
                 "atlantis_textures.bin",
                 "uw_switch_sfx.bin",
+                "atlantis_ps1_blend.bin",
             ],
             "unobtainable_pickups": 3,
         },
@@ -420,6 +434,7 @@
                 "pyramid_itemrots.bin",
                 "pyramid_textures.bin",
                 "scion_collision.bin",
+                "pyramid_ps1_blend.bin",
             ],
         },
 
@@ -500,6 +515,7 @@
                 "lara_outfits.bin",
                 "misc_sprites.bin",
                 "inv_background.bin",
+                "cut1_ps1_blend.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -541,6 +557,7 @@
                 "lara_outfits.bin",
                 "misc_sprites.bin",
                 "inv_background.bin",
+                "cut3_ps1_blend.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -564,6 +581,7 @@
                 "lara_outfits.bin",
                 "misc_sprites.bin",
                 "inv_background.bin",
+                "cut4_ps1_blend.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},

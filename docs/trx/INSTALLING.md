@@ -154,6 +154,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── atlantis_door_sfx.bin
 │   │   │   ├── atlantis_fd.bin
 │   │   │   ├── atlantis_itemrots.bin
+│   │   │   ├── atlantis_ps1_blend.bin
 │   │   │   ├── atlantis_textures.bin
 │   │   │   ├── binoculars.bin
 │   │   │   ├── bubbles.bin
@@ -169,18 +170,23 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cistern_fd.bin
 │   │   │   ├── cistern_itemrots.bin
 │   │   │   ├── cistern_plants.bin
+│   │   │   ├── cistern_ps1_blend.bin
 │   │   │   ├── cistern_skybox.bin
 │   │   │   ├── cistern_textures.bin
 │   │   │   ├── colosseum_fd.bin
 │   │   │   ├── colosseum_itemrots.bin
+│   │   │   ├── colosseum_ps1_blend.bin
 │   │   │   ├── colosseum_skybox.bin
 │   │   │   ├── colosseum_textures.bin
 │   │   │   ├── crystal.bin
+│   │   │   ├── cut1_ps1_blend.bin
 │   │   │   ├── cut1_setup.bin
 │   │   │   ├── cut1_textures.bin
 │   │   │   ├── cut2_setup.bin
+│   │   │   ├── cut3_ps1_blend.bin
 │   │   │   ├── cut3_setup.bin
 │   │   │   ├── cut3_textures.bin
+│   │   │   ├── cut4_ps1_blend.bin
 │   │   │   ├── cut4_setup.bin
 │   │   │   ├── cut4_textures.bin
 │   │   │   ├── door58_frames.bin
@@ -198,9 +204,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── folly_fd.bin
 │   │   │   ├── folly_itemrots.bin
 │   │   │   ├── folly_pickup_meshes.bin
+│   │   │   ├── folly_ps1_blend.bin
 │   │   │   ├── folly_textures.bin
 │   │   │   ├── font.bin
 │   │   │   ├── gun_glow.bin
+│   │   │   ├── gym_ps1_blend.bin
 │   │   │   ├── gym_textures.bin
 │   │   │   ├── hive_crystals.bin
 │   │   │   ├── hive_fd.bin
@@ -212,6 +220,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── khamoon_itemrots.bin
 │   │   │   ├── khamoon_meshfixes.bin
 │   │   │   ├── khamoon_mummy.bin
+│   │   │   ├── khamoon_ps1_blend.bin
 │   │   │   ├── khamoon_textures.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_extra.bin
@@ -220,18 +229,21 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_gym_guns.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── midas_itemrots.bin
+│   │   │   ├── midas_ps1_blend.bin
 │   │   │   ├── midas_textures.bin
 │   │   │   ├── mines_cameras.bin
 │   │   │   ├── mines_door_sfx.bin
 │   │   │   ├── mines_fd.bin
 │   │   │   ├── mines_itemrots.bin
 │   │   │   ├── mines_meshfixes.bin
+│   │   │   ├── mines_ps1_blend.bin
 │   │   │   ├── mines_pushblocks.bin
 │   │   │   ├── mines_textures.bin
 │   │   │   ├── misc_sprites.bin
 │   │   │   ├── obelisk_fd.bin
 │   │   │   ├── obelisk_itemrots.bin
 │   │   │   ├── obelisk_meshfixes.bin
+│   │   │   ├── obelisk_ps1_blend.bin
 │   │   │   ├── obelisk_skybox.bin
 │   │   │   ├── obelisk_textures.bin
 │   │   │   ├── panther_sfx.bin
@@ -240,14 +252,17 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── pickup_aid.bin
 │   │   │   ├── pyramid_fd.bin
 │   │   │   ├── pyramid_itemrots.bin
+│   │   │   ├── pyramid_ps1_blend.bin
 │   │   │   ├── pyramid_textures.bin
 │   │   │   ├── qualopec_door_sfx.bin
 │   │   │   ├── qualopec_fd.bin
 │   │   │   ├── qualopec_itemrots.bin
+│   │   │   ├── qualopec_ps1_blend.bin
 │   │   │   ├── qualopec_textures.bin
 │   │   │   ├── sanctuary_fd.bin
 │   │   │   ├── sanctuary_itemrots.bin
 │   │   │   ├── sanctuary_meshfixes.bin
+│   │   │   ├── sanctuary_ps1_blend.bin
 │   │   │   ├── sanctuary_scion.bin
 │   │   │   ├── sanctuary_textures.bin
 │   │   │   ├── scion_alignment.bin
@@ -262,6 +277,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── stronghold_textures.bin
 │   │   │   ├── tihocan_fd.bin
 │   │   │   ├── tihocan_itemrots.bin
+│   │   │   ├── tihocan_ps1_blend.bin
 │   │   │   ├── tihocan_skybox.bin
 │   │   │   ├── tihocan_textures.bin
 │   │   │   ├── title_textures.bin
@@ -269,10 +285,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── uzi_sfx.bin
 │   │   │   ├── valley_fd.bin
 │   │   │   ├── valley_itemrots.bin
+│   │   │   ├── valley_ps1_blend.bin
 │   │   │   ├── valley_skybox.bin
 │   │   │   ├── valley_textures.bin
 │   │   │   ├── vilcabamba_door_sfx.bin
 │   │   │   ├── vilcabamba_itemrots.bin
+│   │   │   ├── vilcabamba_ps1_blend.bin
 │   │   │   ├── vilcabamba_textures.bin
 │   │   │   ├── wall_switch_sfx.bin
 │   │   │   └── winston_model.bin
@@ -516,10 +534,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── barkhang_itemrots.bin
 │   │   │   ├── barkhang_music_tracks.bin
 │   │   │   ├── barkhang_pickup_meshes.bin
+│   │   │   ├── barkhang_ps1_blend.bin
 │   │   │   ├── barkhang_sfx.bin
 │   │   │   ├── barkhang_textures.bin
 │   │   │   ├── bartoli_crystals.bin
 │   │   │   ├── bartoli_music_tracks.bin
+│   │   │   ├── bartoli_ps1_blend.bin
 │   │   │   ├── bartoli_secret_fd.bin
 │   │   │   ├── bartoli_textures.bin
 │   │   │   ├── binoculars.bin
@@ -530,6 +550,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── catacombs_fd.bin
 │   │   │   ├── catacombs_itemrots.bin
 │   │   │   ├── catacombs_music_tracks.bin
+│   │   │   ├── catacombs_ps1_blend.bin
 │   │   │   ├── catacombs_textures.bin
 │   │   │   ├── coldwar_crystals.bin
 │   │   │   ├── coldwar_fd.bin
@@ -543,8 +564,10 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut2_setup.bin
 │   │   │   ├── cut2_textures.bin
 │   │   │   ├── cut3_gunflash.bin
+│   │   │   ├── cut3_ps1_blend.bin
 │   │   │   ├── cut3_setup.bin
 │   │   │   ├── cut3_textures.bin
+│   │   │   ├── cut4_ps1_blend.bin
 │   │   │   ├── cut4_setup.bin
 │   │   │   ├── cut4_textures.bin
 │   │   │   ├── dagger_sprite.bin
@@ -555,6 +578,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── deck_music_tracks.bin
 │   │   │   ├── deck_pickup_meshes.bin
 │   │   │   ├── deck_plants.bin
+│   │   │   ├── deck_ps1_blend.bin
 │   │   │   ├── deck_secret_fd.bin
 │   │   │   ├── deck_textures.bin
 │   │   │   ├── detonator_lights.bin
@@ -563,6 +587,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── diving_itemrots.bin
 │   │   │   ├── diving_music_tracks.bin
 │   │   │   ├── diving_pickup_meshes.bin
+│   │   │   ├── diving_ps1_blend.bin
 │   │   │   ├── diving_sfx.bin
 │   │   │   ├── diving_textures.bin
 │   │   │   ├── door106_sfx.bin
@@ -576,6 +601,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── fathoms_itemrots.bin
 │   │   │   ├── fathoms_music_tracks.bin
 │   │   │   ├── fathoms_plants.bin
+│   │   │   ├── fathoms_ps1_blend.bin
 │   │   │   ├── fathoms_secret_fd.bin
 │   │   │   ├── fathoms_textures.bin
 │   │   │   ├── floating_crystals.bin
@@ -584,6 +610,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── floating_itemrots.bin
 │   │   │   ├── floating_music_tracks.bin
 │   │   │   ├── floating_pickup_meshes.bin
+│   │   │   ├── floating_ps1_blend.bin
 │   │   │   ├── floating_textures.bin
 │   │   │   ├── font.bin
 │   │   │   ├── fools_crystals.bin
@@ -600,10 +627,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── guardian_death_commands.bin
 │   │   │   ├── gym_fd.bin
 │   │   │   ├── gym_music_tracks.bin
+│   │   │   ├── gym_ps1_blend.bin
 │   │   │   ├── gym_sfx.bin
 │   │   │   ├── gym_textures.bin
 │   │   │   ├── house_itemrots.bin
 │   │   │   ├── house_music_tracks.bin
+│   │   │   ├── house_ps1_blend.bin
 │   │   │   ├── house_sfx.bin
 │   │   │   ├── house_shower_frames.bin
 │   │   │   ├── house_textures.bin
@@ -617,6 +646,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lair_crystals.bin
 │   │   │   ├── lair_item_sprites.bin
 │   │   │   ├── lair_music_tracks.bin
+│   │   │   ├── lair_ps1_blend.bin
 │   │   │   ├── lair_textures.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_extra.bin
@@ -632,6 +662,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── living_itemrots.bin
 │   │   │   ├── living_music_tracks.bin
 │   │   │   ├── living_pickup_meshes.bin
+│   │   │   ├── living_ps1_blend.bin
 │   │   │   ├── living_secret_fd.bin
 │   │   │   ├── living_sfx.bin
 │   │   │   ├── living_textures.bin
@@ -641,12 +672,14 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── opera_fd.bin
 │   │   │   ├── opera_itemrots.bin
 │   │   │   ├── opera_music_tracks.bin
+│   │   │   ├── opera_ps1_blend.bin
 │   │   │   ├── opera_sfx.bin
 │   │   │   ├── opera_textures.bin
 │   │   │   ├── palace_crystals.bin
 │   │   │   ├── palace_fd.bin
 │   │   │   ├── palace_itemrots.bin
 │   │   │   ├── palace_music_tracks.bin
+│   │   │   ├── palace_ps1_blend.bin
 │   │   │   ├── palace_secret_fd.bin
 │   │   │   ├── palace_textures.bin
 │   │   │   ├── pda_model.bin
@@ -657,6 +690,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── rig_itemrots.bin
 │   │   │   ├── rig_music_tracks.bin
 │   │   │   ├── rig_pickup_meshes.bin
+│   │   │   ├── rig_ps1_blend.bin
 │   │   │   ├── rig_textures.bin
 │   │   │   ├── scuba_sfx.bin
 │   │   │   ├── seaweed_collision.bin
@@ -668,7 +702,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tibet_fd.bin
 │   │   │   ├── tibet_itemrots.bin
 │   │   │   ├── tibet_music_tracks.bin
+│   │   │   ├── tibet_ps1_blend.bin
 │   │   │   ├── tibet_textures.bin
+│   │   │   ├── title_ps1_blend.bin
 │   │   │   ├── title_textures.bin
 │   │   │   ├── vegas_crystals.bin
 │   │   │   ├── vegas_fd.bin
@@ -679,11 +715,13 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── venice_fd.bin
 │   │   │   ├── venice_itemrots.bin
 │   │   │   ├── venice_music_tracks.bin
+│   │   │   ├── venice_ps1_blend.bin
 │   │   │   ├── venice_textures.bin
 │   │   │   ├── wall_cameras.bin
 │   │   │   ├── wall_crystals.bin
 │   │   │   ├── wall_itemrots.bin
 │   │   │   ├── wall_music_tracks.bin
+│   │   │   ├── wall_ps1_blend.bin
 │   │   │   ├── wall_switch_sfx.bin
 │   │   │   ├── wall_textures.bin
 │   │   │   ├── winston_model.bin
@@ -695,6 +733,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── wreck_music_tracks.bin
 │   │   │   ├── wreck_pickup_meshes.bin
 │   │   │   ├── wreck_plants.bin
+│   │   │   ├── wreck_ps1_blend.bin
 │   │   │   ├── wreck_secret_fd.bin
 │   │   │   ├── wreck_textures.bin
 │   │   │   ├── xian_crystals.bin
@@ -702,6 +741,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── xian_itemrots.bin
 │   │   │   ├── xian_music_tracks.bin
 │   │   │   ├── xian_pickup_meshes.bin
+│   │   │   ├── xian_ps1_blend.bin
 │   │   │   ├── xian_sfx.bin
 │   │   │   └── xian_textures.bin
 │   │   ├── levels
@@ -1644,6 +1684,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── atlantis_door_sfx.bin
     │   │   │   │   ├── atlantis_fd.bin
     │   │   │   │   ├── atlantis_itemrots.bin
+    │   │   │   │   ├── atlantis_ps1_blend.bin
     │   │   │   │   ├── atlantis_textures.bin
     │   │   │   │   ├── binoculars.bin
     │   │   │   │   ├── bubbles.bin
@@ -1659,18 +1700,23 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cistern_fd.bin
     │   │   │   │   ├── cistern_itemrots.bin
     │   │   │   │   ├── cistern_plants.bin
+    │   │   │   │   ├── cistern_ps1_blend.bin
     │   │   │   │   ├── cistern_skybox.bin
     │   │   │   │   ├── cistern_textures.bin
     │   │   │   │   ├── colosseum_fd.bin
     │   │   │   │   ├── colosseum_itemrots.bin
+    │   │   │   │   ├── colosseum_ps1_blend.bin
     │   │   │   │   ├── colosseum_skybox.bin
     │   │   │   │   ├── colosseum_textures.bin
     │   │   │   │   ├── crystal.bin
+    │   │   │   │   ├── cut1_ps1_blend.bin
     │   │   │   │   ├── cut1_setup.bin
     │   │   │   │   ├── cut1_textures.bin
     │   │   │   │   ├── cut2_setup.bin
+    │   │   │   │   ├── cut3_ps1_blend.bin
     │   │   │   │   ├── cut3_setup.bin
     │   │   │   │   ├── cut3_textures.bin
+    │   │   │   │   ├── cut4_ps1_blend.bin
     │   │   │   │   ├── cut4_setup.bin
     │   │   │   │   ├── cut4_textures.bin
     │   │   │   │   ├── door58_frames.bin
@@ -1688,9 +1734,11 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── folly_fd.bin
     │   │   │   │   ├── folly_itemrots.bin
     │   │   │   │   ├── folly_pickup_meshes.bin
+    │   │   │   │   ├── folly_ps1_blend.bin
     │   │   │   │   ├── folly_textures.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── gun_glow.bin
+    │   │   │   │   ├── gym_ps1_blend.bin
     │   │   │   │   ├── gym_textures.bin
     │   │   │   │   ├── hive_crystals.bin
     │   │   │   │   ├── hive_fd.bin
@@ -1702,6 +1750,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── khamoon_itemrots.bin
     │   │   │   │   ├── khamoon_meshfixes.bin
     │   │   │   │   ├── khamoon_mummy.bin
+    │   │   │   │   ├── khamoon_ps1_blend.bin
     │   │   │   │   ├── khamoon_textures.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_extra.bin
@@ -1710,18 +1759,21 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lara_gym_guns.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   ├── midas_itemrots.bin
+    │   │   │   │   ├── midas_ps1_blend.bin
     │   │   │   │   ├── midas_textures.bin
     │   │   │   │   ├── mines_cameras.bin
     │   │   │   │   ├── mines_door_sfx.bin
     │   │   │   │   ├── mines_fd.bin
     │   │   │   │   ├── mines_itemrots.bin
     │   │   │   │   ├── mines_meshfixes.bin
+    │   │   │   │   ├── mines_ps1_blend.bin
     │   │   │   │   ├── mines_pushblocks.bin
     │   │   │   │   ├── mines_textures.bin
     │   │   │   │   ├── misc_sprites.bin
     │   │   │   │   ├── obelisk_fd.bin
     │   │   │   │   ├── obelisk_itemrots.bin
     │   │   │   │   ├── obelisk_meshfixes.bin
+    │   │   │   │   ├── obelisk_ps1_blend.bin
     │   │   │   │   ├── obelisk_skybox.bin
     │   │   │   │   ├── obelisk_textures.bin
     │   │   │   │   ├── panther_sfx.bin
@@ -1730,14 +1782,17 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── pickup_aid.bin
     │   │   │   │   ├── pyramid_fd.bin
     │   │   │   │   ├── pyramid_itemrots.bin
+    │   │   │   │   ├── pyramid_ps1_blend.bin
     │   │   │   │   ├── pyramid_textures.bin
     │   │   │   │   ├── qualopec_door_sfx.bin
     │   │   │   │   ├── qualopec_fd.bin
     │   │   │   │   ├── qualopec_itemrots.bin
+    │   │   │   │   ├── qualopec_ps1_blend.bin
     │   │   │   │   ├── qualopec_textures.bin
     │   │   │   │   ├── sanctuary_fd.bin
     │   │   │   │   ├── sanctuary_itemrots.bin
     │   │   │   │   ├── sanctuary_meshfixes.bin
+    │   │   │   │   ├── sanctuary_ps1_blend.bin
     │   │   │   │   ├── sanctuary_scion.bin
     │   │   │   │   ├── sanctuary_textures.bin
     │   │   │   │   ├── scion_alignment.bin
@@ -1752,6 +1807,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── stronghold_textures.bin
     │   │   │   │   ├── tihocan_fd.bin
     │   │   │   │   ├── tihocan_itemrots.bin
+    │   │   │   │   ├── tihocan_ps1_blend.bin
     │   │   │   │   ├── tihocan_skybox.bin
     │   │   │   │   ├── tihocan_textures.bin
     │   │   │   │   ├── title_textures.bin
@@ -1759,10 +1815,12 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── uzi_sfx.bin
     │   │   │   │   ├── valley_fd.bin
     │   │   │   │   ├── valley_itemrots.bin
+    │   │   │   │   ├── valley_ps1_blend.bin
     │   │   │   │   ├── valley_skybox.bin
     │   │   │   │   ├── valley_textures.bin
     │   │   │   │   ├── vilcabamba_door_sfx.bin
     │   │   │   │   ├── vilcabamba_itemrots.bin
+    │   │   │   │   ├── vilcabamba_ps1_blend.bin
     │   │   │   │   ├── vilcabamba_textures.bin
     │   │   │   │   ├── wall_switch_sfx.bin
     │   │   │   │   └── winston_model.bin
@@ -2006,10 +2064,12 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── barkhang_itemrots.bin
     │   │   │   │   ├── barkhang_music_tracks.bin
     │   │   │   │   ├── barkhang_pickup_meshes.bin
+    │   │   │   │   ├── barkhang_ps1_blend.bin
     │   │   │   │   ├── barkhang_sfx.bin
     │   │   │   │   ├── barkhang_textures.bin
     │   │   │   │   ├── bartoli_crystals.bin
     │   │   │   │   ├── bartoli_music_tracks.bin
+    │   │   │   │   ├── bartoli_ps1_blend.bin
     │   │   │   │   ├── bartoli_secret_fd.bin
     │   │   │   │   ├── bartoli_textures.bin
     │   │   │   │   ├── binoculars.bin
@@ -2020,6 +2080,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── catacombs_fd.bin
     │   │   │   │   ├── catacombs_itemrots.bin
     │   │   │   │   ├── catacombs_music_tracks.bin
+    │   │   │   │   ├── catacombs_ps1_blend.bin
     │   │   │   │   ├── catacombs_textures.bin
     │   │   │   │   ├── coldwar_crystals.bin
     │   │   │   │   ├── coldwar_fd.bin
@@ -2033,8 +2094,10 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cut2_setup.bin
     │   │   │   │   ├── cut2_textures.bin
     │   │   │   │   ├── cut3_gunflash.bin
+    │   │   │   │   ├── cut3_ps1_blend.bin
     │   │   │   │   ├── cut3_setup.bin
     │   │   │   │   ├── cut3_textures.bin
+    │   │   │   │   ├── cut4_ps1_blend.bin
     │   │   │   │   ├── cut4_setup.bin
     │   │   │   │   ├── cut4_textures.bin
     │   │   │   │   ├── dagger_sprite.bin
@@ -2045,6 +2108,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── deck_music_tracks.bin
     │   │   │   │   ├── deck_pickup_meshes.bin
     │   │   │   │   ├── deck_plants.bin
+    │   │   │   │   ├── deck_ps1_blend.bin
     │   │   │   │   ├── deck_secret_fd.bin
     │   │   │   │   ├── deck_textures.bin
     │   │   │   │   ├── detonator_lights.bin
@@ -2053,6 +2117,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── diving_itemrots.bin
     │   │   │   │   ├── diving_music_tracks.bin
     │   │   │   │   ├── diving_pickup_meshes.bin
+    │   │   │   │   ├── diving_ps1_blend.bin
     │   │   │   │   ├── diving_sfx.bin
     │   │   │   │   ├── diving_textures.bin
     │   │   │   │   ├── door106_sfx.bin
@@ -2066,6 +2131,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── fathoms_itemrots.bin
     │   │   │   │   ├── fathoms_music_tracks.bin
     │   │   │   │   ├── fathoms_plants.bin
+    │   │   │   │   ├── fathoms_ps1_blend.bin
     │   │   │   │   ├── fathoms_secret_fd.bin
     │   │   │   │   ├── fathoms_textures.bin
     │   │   │   │   ├── floating_crystals.bin
@@ -2074,6 +2140,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── floating_itemrots.bin
     │   │   │   │   ├── floating_music_tracks.bin
     │   │   │   │   ├── floating_pickup_meshes.bin
+    │   │   │   │   ├── floating_ps1_blend.bin
     │   │   │   │   ├── floating_textures.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── fools_crystals.bin
@@ -2090,10 +2157,12 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── guardian_death_commands.bin
     │   │   │   │   ├── gym_fd.bin
     │   │   │   │   ├── gym_music_tracks.bin
+    │   │   │   │   ├── gym_ps1_blend.bin
     │   │   │   │   ├── gym_sfx.bin
     │   │   │   │   ├── gym_textures.bin
     │   │   │   │   ├── house_itemrots.bin
     │   │   │   │   ├── house_music_tracks.bin
+    │   │   │   │   ├── house_ps1_blend.bin
     │   │   │   │   ├── house_sfx.bin
     │   │   │   │   ├── house_shower_frames.bin
     │   │   │   │   ├── house_textures.bin
@@ -2107,6 +2176,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lair_crystals.bin
     │   │   │   │   ├── lair_item_sprites.bin
     │   │   │   │   ├── lair_music_tracks.bin
+    │   │   │   │   ├── lair_ps1_blend.bin
     │   │   │   │   ├── lair_textures.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_extra.bin
@@ -2122,6 +2192,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── living_itemrots.bin
     │   │   │   │   ├── living_music_tracks.bin
     │   │   │   │   ├── living_pickup_meshes.bin
+    │   │   │   │   ├── living_ps1_blend.bin
     │   │   │   │   ├── living_secret_fd.bin
     │   │   │   │   ├── living_sfx.bin
     │   │   │   │   ├── living_textures.bin
@@ -2131,12 +2202,14 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── opera_fd.bin
     │   │   │   │   ├── opera_itemrots.bin
     │   │   │   │   ├── opera_music_tracks.bin
+    │   │   │   │   ├── opera_ps1_blend.bin
     │   │   │   │   ├── opera_sfx.bin
     │   │   │   │   ├── opera_textures.bin
     │   │   │   │   ├── palace_crystals.bin
     │   │   │   │   ├── palace_fd.bin
     │   │   │   │   ├── palace_itemrots.bin
     │   │   │   │   ├── palace_music_tracks.bin
+    │   │   │   │   ├── palace_ps1_blend.bin
     │   │   │   │   ├── palace_secret_fd.bin
     │   │   │   │   ├── palace_textures.bin
     │   │   │   │   ├── pda_model.bin
@@ -2147,6 +2220,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── rig_itemrots.bin
     │   │   │   │   ├── rig_music_tracks.bin
     │   │   │   │   ├── rig_pickup_meshes.bin
+    │   │   │   │   ├── rig_ps1_blend.bin
     │   │   │   │   ├── rig_textures.bin
     │   │   │   │   ├── scuba_sfx.bin
     │   │   │   │   ├── seaweed_collision.bin
@@ -2158,7 +2232,9 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tibet_fd.bin
     │   │   │   │   ├── tibet_itemrots.bin
     │   │   │   │   ├── tibet_music_tracks.bin
+    │   │   │   │   ├── tibet_ps1_blend.bin
     │   │   │   │   ├── tibet_textures.bin
+    │   │   │   │   ├── title_ps1_blend.bin
     │   │   │   │   ├── title_textures.bin
     │   │   │   │   ├── vegas_crystals.bin
     │   │   │   │   ├── vegas_fd.bin
@@ -2169,11 +2245,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── venice_fd.bin
     │   │   │   │   ├── venice_itemrots.bin
     │   │   │   │   ├── venice_music_tracks.bin
+    │   │   │   │   ├── venice_ps1_blend.bin
     │   │   │   │   ├── venice_textures.bin
     │   │   │   │   ├── wall_cameras.bin
     │   │   │   │   ├── wall_crystals.bin
     │   │   │   │   ├── wall_itemrots.bin
     │   │   │   │   ├── wall_music_tracks.bin
+    │   │   │   │   ├── wall_ps1_blend.bin
     │   │   │   │   ├── wall_switch_sfx.bin
     │   │   │   │   ├── wall_textures.bin
     │   │   │   │   ├── winston_model.bin
@@ -2185,6 +2263,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── wreck_music_tracks.bin
     │   │   │   │   ├── wreck_pickup_meshes.bin
     │   │   │   │   ├── wreck_plants.bin
+    │   │   │   │   ├── wreck_ps1_blend.bin
     │   │   │   │   ├── wreck_secret_fd.bin
     │   │   │   │   ├── wreck_textures.bin
     │   │   │   │   ├── xian_crystals.bin
@@ -2192,6 +2271,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── xian_itemrots.bin
     │   │   │   │   ├── xian_music_tracks.bin
     │   │   │   │   ├── xian_pickup_meshes.bin
+    │   │   │   │   ├── xian_ps1_blend.bin
     │   │   │   │   ├── xian_sfx.bin
     │   │   │   │   └── xian_textures.bin
     │   │   │   ├── levels
