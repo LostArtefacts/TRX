@@ -1152,6 +1152,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.primitive.world_model.opts.bones" name="ui.primitive.world_model.opts.bones"></a>**`bones`** (a list of table, optional). Turns that bones take on top of the frame, up to eight.
     - <a id="ui.primitive.world_model.opts.at_pivot" name="ui.primitive.world_model.opts.at_pivot"></a>**`at_pivot`** (boolean, optional). Whether to draw the model about its pivot, without the offset its frame stands it at. `false` by default.
     - <a id="ui.primitive.world_model.opts.mesh_mask" name="ui.primitive.world_model.opts.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+    - <a id="ui.primitive.world_model.opts.mesh_opacity" name="ui.primitive.world_model.opts.mesh_opacity"></a>**`mesh_opacity`** (table, optional). How solid to draw some of its meshes, from `0` to `1`, keyed by the mesh counted from 0. A mesh not named is solid.
     - <a id="ui.primitive.world_model.opts.light" name="ui.primitive.world_model.opts.light"></a>**`light`** (table, optional). The light to draw it in, with its directions in the model's world. A plain white light by default.
 
 - <a id="ui.primitive.darken" name="ui.primitive.darken"></a>[lua]`trx.ui.primitive.darken(opacity)`  
