@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+"""Lists the faces that the PlayStation release of TR1 or TR2 draws
+semi-transparent, as the faces of the PC levels they belong to.
+
+The PlayStation flags each such face through its object texture, with
+attribute 2. The PC levels hold the same geometry, so every face is paired
+with its PC counterpart by its vertices, in order, which keeps faces that
+share their vertices but face the other way apart.
+"""
+
+import argparse
+import json
+from collections import defaultdict
+from pathlib import Path
+
+from shared.levels.psx_disc import Disc
+from shared.levels.tr12 import read_level
+from shared.levels.types import Face, Format, Level
+
+PSX_SEMI_TRANSPARENT = 2
+
+GAMES = {
+    "tr1": (Format.TR1_PC, Format.TR1_PSX, "PSXDATA/", ".phd"),
+    "tr2": (Format.TR2_PC, Format.TR2_PSX, "DATA/", ".tr2"),
+}
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("game", choices=GAMES)
+    parser.add_argument("disc", type=Path, help="PlayStation disc image (.bin)")
+    parser.add_argument("levels", type=Path, help="directory of the PC levels")
+    parser.add_argument("output", type=Path, help="directory for the JSON lists")
+    return parser.parse_args()
+
+
+def match_faces(
+    pc_faces: list[Face], psx_faces: list[Face], psx: Level
+) -> tuple[list[Face], int]:
+    by_loop = defaultdict(list)
+    for face in pc_faces:
+        by_loop[face.loop].append(face)
+    matched = []
+    unmatched = 0
+    for face in psx_faces:
+        if psx.texture_attributes[face.texture] != PSX_SEMI_TRANSPARENT:
+            continue
+        twins = by_loop.get(face.loop)
+        if twins:
+            matched.extend(twins)
+        else:
+            unmatched += 1
+    return matched, unmatched
+
+
+def group(faces: list[Face]) -> dict[str, list[int]]:
+    result = defaultdict(list)
+    for face in faces:
+        result[face.type.name.lower()].append(face.index)
+    return {name: sorted(indices) for name, indices in sorted(result.items())}
+
+
+def find_owner(pc: Level, mesh_ptr: int) -> tuple[str, int, int]:
+    for model in pc.models:
+        if model.mesh_start <= mesh_ptr < model.mesh_start + model.mesh_count:
+            return "object", model.object_id, mesh_ptr - model.mesh_start
+    for static in pc.statics:
+        if static.mesh_idx == mesh_ptr:
+            return "static", static.static_id, 0
+    return "mesh", mesh_ptr, 0
+
+
+def compare(pc: Level, psx: Level) -> tuple[dict, int]:
+    result = {"rooms": {}, "objects": {}, "statics": {}}
+    unmatched = 0
+    for room_idx, (pc_faces, psx_faces) in enumerate(
+        zip(pc.room_faces, psx.room_faces)
+    ):
+        faces, missed = match_faces(pc_faces, psx_faces, psx)
+        unmatched += missed
+        if faces:
+            result["rooms"][str(room_idx)] = group(faces)
+    for mesh_ptr, (pc_faces, psx_faces) in enumerate(
+        zip(pc.mesh_faces, psx.mesh_faces)
+    ):
+        faces, missed = match_faces(pc_faces, psx_faces, psx)
+        unmatched += missed
+        if not faces:
+            continue
+        kind, owner_id, mesh_idx = find_owner(pc, mesh_ptr)
+        if kind == "object":
+            meshes = result["objects"].setdefault(str(owner_id), {})
+            meshes[str(mesh_idx)] = group(faces)
+        elif kind == "static":
+            result["statics"][str(owner_id)] = group(faces)
+    return result, unmatched
+
+
+def main() -> None:
+    args = parse_args()
+    pc_format, psx_format, psx_dir, pc_ext = GAMES[args.game]
+    disc = Disc(args.disc)
+    args.output.mkdir(parents=True, exist_ok=True)
+
+    for path in sorted(disc.files()):
+        if not path.startswith(psx_dir) or not path.endswith(".PSX"):
+            continue
+        name = Path(path).stem.lower()
+        pc_path = args.levels / f"{name}{pc_ext}"
+        if not pc_path.exists():
+            print(f"{name}: no PC level")
+            continue
+        is_cutscene = name.startswith("cut")
+        pc = read_level(pc_path.read_bytes(), pc_format)
+        psx = read_level(disc.read(path), psx_format, is_cutscene)
+        if len(pc.room_faces) != len(psx.room_faces) or len(
+            pc.mesh_faces
+        ) != len(psx.mesh_faces):
+            print(f"{name}: room or mesh counts differ, skipped")
+            continue
+        result, unmatched = compare(pc, psx)
+        out_path = args.output / f"{name}.json"
+        out_path.write_text(json.dumps(result, indent=2) + "\n")
+        count = sum(
+            len(indices)
+            for owner in (
+                list(result["rooms"].values())
+                + [m for o in result["objects"].values() for m in o.values()]
+                + list(result["statics"].values())
+            )
+            for indices in owner.values()
+        )
+        print(f"{name}: {count} faces, {unmatched} unmatched")
+
+
+if __name__ == "__main__":
+    main()
