@@ -172,6 +172,18 @@ static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
     }
 }
 
+// Logs where a handler failed, with the stack as it stood at the error, and
+// returns the error unchanged for the screen.
+static int M_LogTraceback(lua_State *const L)
+{
+    const char *const message = lua_tostring(L, 1);
+    luaL_traceback(
+        L, L, message != nullptr ? message : "(error is not a string)", 1);
+    LOG_ERROR("%s", lua_tostring(L, -1));
+    lua_pop(L, 1);
+    return 1;
+}
+
 static int M_CallListener(lua_State *const L)
 {
     M_DISPATCH *const dispatch = lua_touserdata(L, 1);
@@ -291,10 +303,10 @@ static bool M_FireEvent(
         return false;
     }
 
-    // Room for the protected call and its argument. Taken before the depth goes
-    // up: from here to the matching decrement nothing may raise, or the
-    // listeners would never be compacted again.
-    if (lua_checkstack(L, 2) == 0) {
+    // Room for the message handler, the protected call and its argument. Taken
+    // before the depth goes up: from here to the matching decrement nothing may
+    // raise, or the listeners would never be compacted again.
+    if (lua_checkstack(L, 3) == 0) {
         Console_ShowError(
             "Lua stack exhausted; event %d not dispatched", (int32_t)ev);
         return false;
@@ -324,13 +336,16 @@ static bool M_FireEvent(
         // with the level rather than outliving it.
         LUA_SetScriptContext(
             lst->level_scoped ? LUA_CONTEXT_LEVEL : LUA_CONTEXT_GLOBAL);
+        lua_pushcfunction(L, M_LogTraceback);
+        const int32_t handler = lua_gettop(L);
         lua_pushcfunction(L, M_CallListener);
         lua_pushlightuserdata(L, &dispatch);
-        if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
+        if (lua_pcall(L, 1, 0, handler) != LUA_OK) {
             Console_ShowError(
                 "Lua event handler error: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
         }
+        lua_pop(L, 1);
         LUA_SetScriptContext(outer_context);
         answered = answered || dispatch.answered;
     }
