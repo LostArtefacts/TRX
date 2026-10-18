@@ -52,6 +52,15 @@ static void M_Init(void)
     LUA_SetTickHook(M_Tick);
 }
 
+// Lets go of the screen with the scripts, so that a fade still holding it when
+// the game switches mods does not go on holding it in the next one.
+static void M_Shutdown(void)
+{
+    m_HoldingScreen = false;
+    m_HideNextFrame = false;
+    m_IsFrameHidden = false;
+}
+
 // Lets scripts draw one layer of the scene.
 static void M_Paint(const UI_LAYER layer)
 {
@@ -125,4 +134,4 @@ void LUA_UI_ReserveRegions(void)
     LUA_UI_SetReserving(false);
 }
 
-REGISTER_SUBSYSTEM(.init = M_Init)
+REGISTER_SUBSYSTEM(.init = M_Init, .shutdown = M_Shutdown)
