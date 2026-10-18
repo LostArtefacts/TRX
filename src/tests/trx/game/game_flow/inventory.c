@@ -36,6 +36,8 @@ static INVENTORY_STATE m_Inv;
 static RESUME_INFO m_Resume;
 static int32_t m_PickupCount;
 static int32_t m_Ammo[MAX_WEAPONS];
+// The weapon the game names as the one Lara starts with, if any.
+static LARA_GUN_TYPE m_DefaultGun;
 
 // The gun types the engine has registered, which the code under test
 // walks instead of counting weapon slots.
@@ -88,6 +90,7 @@ static GF_LEVEL m_NextLevel = {
 static void M_SetUp(void)
 {
     g_ConfigStorage = (CONFIG) {};
+    m_DefaultGun = LGT_PISTOLS;
     m_Inv = (INVENTORY_STATE) {};
     m_Resume = (RESUME_INFO) {};
     m_PickupCount = 0;
@@ -143,7 +146,7 @@ const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
 
 LARA_GUN_TYPE Gun_GetDefaultType(void)
 {
-    return LGT_PISTOLS;
+    return m_DefaultGun;
 }
 
 OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
@@ -392,4 +395,31 @@ TEST(a_level_without_a_hub_reset_takes_nothing_away)
     GF_InventoryModifier_ApplyHubReset(&m_Level, &m_NextLevel);
 
     CHECK(Inv_State_Has(&m_Resume.inv, O_KEY_ITEM_1));
+}
+
+// A game can name no weapon as the default. Starting the next level then gives
+// Lara none, rather than looking up a weapon that does not exist.
+TEST(a_game_without_a_default_weapon_starts_a_level_with_none)
+{
+    M_SetUp();
+    m_DefaultGun = LGT_UNARMED;
+
+    GF_InventoryModifier_Scan(&m_NextLevel);
+    GF_InventoryModifier_ApplyToResumeInfo(&m_NextLevel);
+
+    CHECK(!Inv_State_Has(&m_Resume.inv, O_PISTOLS_ITEM));
+    CHECK_EQ_INT(m_Resume.equipped_gun_type, LGT_UNARMED);
+}
+
+// The secret reward hands Lara the default weapon too, and none where there is
+// none.
+TEST(a_secret_reward_without_a_default_weapon_gives_none)
+{
+    M_SetUp();
+    m_DefaultGun = LGT_UNARMED;
+
+    GF_InventoryModifier_Scan(&m_Level);
+    GF_InventoryModifier_Apply(&m_Level, GF_INV_SECRET);
+
+    CHECK(!Inv_HasItem(O_PISTOLS_ITEM));
 }
