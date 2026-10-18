@@ -1219,6 +1219,21 @@ arrow, and `\{button left}` draws the button the player has bound.
     trx.math.color("ffffff"))
   ```
 
+- <a id="ui.primitive.sprite_rect" name="ui.primitive.sprite_rect"></a>[lua]`trx.ui.primitive.sprite_rect(object, sprite_num, x, y, z, w, h, color)`  
+  Draws one sprite of an object stretched over a box. Unlike
+  [`sprite`](#ui.primitive.sprite), it ignores the edges the sprite declares, which
+  suits sprites that carry none, as the TR4 interface sprites do.
+
+  Parameters:
+  - <a id="ui.primitive.sprite_rect.object" name="ui.primitive.sprite_rect.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to draw from.
+  - <a id="ui.primitive.sprite_rect.sprite_num" name="ui.primitive.sprite_rect.sprite_num"></a>**`sprite_num`** (integer). Which sprite of the object to draw, counted from 0.
+  - <a id="ui.primitive.sprite_rect.x" name="ui.primitive.sprite_rect.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.sprite_rect.y" name="ui.primitive.sprite_rect.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.sprite_rect.z" name="ui.primitive.sprite_rect.z"></a>**`z`** (integer). The draw order.
+  - <a id="ui.primitive.sprite_rect.w" name="ui.primitive.sprite_rect.w"></a>**`w`** (number). The width.
+  - <a id="ui.primitive.sprite_rect.h" name="ui.primitive.sprite_rect.h"></a>**`h`** (number). The height.
+  - <a id="ui.primitive.sprite_rect.color" name="ui.primitive.sprite_rect.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color) or table). What color to tint it with, in either form that [`quad`](#ui.primitive.quad) takes.
+
 - <a id="ui.primitive.gradient_sprite" name="ui.primitive.gradient_sprite"></a>[lua]`trx.ui.primitive.gradient_sprite(object, sprite_num, x, y, z, scale, tl, tr, bl, br)`  
   Draws one sprite of an object, with a color at each corner.
 

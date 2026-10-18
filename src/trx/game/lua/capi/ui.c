@@ -262,6 +262,23 @@ static int M_L_UISprite(lua_State *const L)
     return 0;
 }
 
+// trxc.ui.sprite_rect(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, w: number, h: number, color: trx.math.Color|table)
+static int M_L_UISpriteRect(lua_State *const L)
+{
+    M_CheckPainting(L);
+    const int32_t sprite_idx = M_CheckSpriteIdx(L);
+    const float x = (float)luaL_checknumber(L, 3);
+    const float y = (float)luaL_checknumber(L, 4);
+    const int32_t z = M_OptZ(L, 5);
+    const float w = (float)luaL_checknumber(L, 6);
+    const float h = (float)luaL_checknumber(L, 7);
+    UI_ScheduleDrawScreenSpriteRect(
+        sprite_idx, lroundf(UI_ScaleX(x)), lroundf(UI_ScaleY(y)),
+        lroundf(UI_ScaleX(x + w)), lroundf(UI_ScaleY(y + h)), z,
+        M_CheckColorF(L, 8));
+    return 0;
+}
+
 // The light a script gives a model: an ambient colour and a colour for each
 // mesh it names, counted from 0.
 // Reads a number field of a table, or the fallback where it is absent.
@@ -922,6 +939,7 @@ static const luaL_Reg m_Module[] = {
     { "gradient_quad", M_L_UIGradientQuad },
     { "image", M_L_UIImage },
     { "sprite", M_L_UISprite },
+    { "sprite_rect", M_L_UISpriteRect },
     { "sprite_bounds", M_L_UISpriteBounds },
     { "sprite_count", M_L_UISpriteCount },
     { "interpolation_rate", M_L_UIInterpolationRate },

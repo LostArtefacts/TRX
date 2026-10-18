@@ -461,6 +461,20 @@ primitive.background = raw.draw_background
 ---@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, scale: number, color: trx.math.Color|table)
 primitive.sprite = raw.sprite
 
+---Draws one sprite of an object stretched over a box. Unlike
+---`trx.ui.primitive.sprite`, it ignores the edges the sprite declares, which
+---suits sprites that carry none, as the TR4 interface sprites do.
+---@param object trx.catalog.objects The sprite object to draw from.
+---@param sprite_num integer Which sprite of the object to draw, counted from 0.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param z integer The draw order.
+---@param w number The width.
+---@param h number The height.
+---@param color trx.math.Color|table What color to tint it with, in either form that `trx.ui.primitive.quad` takes.
+---@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, w: number, h: number, color: trx.math.Color|table)
+primitive.sprite_rect = raw.sprite_rect
+
 ---Draws one sprite of an object, with a color at each corner.
 ---
 ---Raises where the level did not load the object, so check

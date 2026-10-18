@@ -75,6 +75,10 @@ void UI_ScheduleDrawHorizontalLine(
 void UI_ScheduleDrawScreenCircle(
     int32_t cx, int32_t cy, int32_t r_inner, int32_t r_outer, int32_t z,
     RGBA_8888 color);
+// Draws a sprite stretched over a box, ignoring the edges the sprite declares.
+void UI_ScheduleDrawScreenSpriteRect(
+    int32_t sprite_idx, int32_t x0, int32_t y0, int32_t x1, int32_t y1,
+    int32_t z, RGBA_F color);
 void UI_ScheduleDrawScreenLine(
     float x0, float y0, float x1, float y1, float width, int32_t z,
     RGBA_8888 color);
