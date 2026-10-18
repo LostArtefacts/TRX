@@ -73,7 +73,7 @@ static RESULT M_ReadFace(
     face->double_sided = (texture_idx & 0x8000) != 0;
     face->effects = 0;
     face->enable_reflections = false;
-    face->semi_transparent = false;
+    face->ps1_semi_transparent = false;
     return OK;
 }
 

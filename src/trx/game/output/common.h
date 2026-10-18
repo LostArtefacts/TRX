@@ -34,6 +34,11 @@ void Output_DispatchLevelUnload(void);
 // Rebakes the object meshes so that face data changes (e.g. semi-transparency
 // flags) take effect without a level reload.
 void Output_RefreshObjectMeshes(void);
+// Rebakes the room meshes so that face data changes take effect without a
+// level reload.
+void Output_RefreshRoomMeshes(void);
+// Returns whether a face is mixed half and half with the scene.
+bool Output_IsFaceSemiTransparent(const FACE *face);
 void Output_DispatchRoomFlip(const ROOM *room);
 void Output_DispatchObjectMeshUpdate(int32_t mesh_idx);
 // Uploads new vertex positions for the mesh into the GPU buffer, for meshes

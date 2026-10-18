@@ -7,6 +7,7 @@ void OutputSource_Rooms_Init(MESH_BATCHER *batcher);
 void OutputSource_Rooms_Shutdown(void);
 void OutputSource_Rooms_ObserveLevelLoad(void);
 void OutputSource_Rooms_ObserveLevelUnload(void);
+bool OutputSource_Rooms_HasMeshes(void);
 void OutputSource_Rooms_ObserveRoomFlip(const ROOM *room);
 
 void OutputSource_Rooms_StageRoom(const ROOM *room);

@@ -1627,7 +1627,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "\\{review}PlayStation-Überblendung",
-            "description": "\\{review}Blendet Rauch, Schatten, Fußspuren und Blut wie auf der PlayStation mit der Szene. Rauch, Schatten und Fußspuren ziehen ihre Farbe von der Szene ab, wodurch jeder Farbkanal um denselben Betrag abgedunkelt wird und das Ergebnis gesättigter wirkt. In TR3 wird außerdem Blut zur Hälfte mit der Szene gemischt. Deaktiviert wird die Szene unter Rauch, Schatten und Fußspuren um einen Anteil ihrer eigenen Farbe abgedunkelt und Blut in TR3 deckend gezeichnet, wie auf dem PC.",
+            "description": "\\{review}Blendet einige Effekte und Flächen wie auf der PlayStation mit der Szene. Rauch, Schatten und Fußspuren ziehen ihre Farbe von der Szene ab, wodurch jeder Farbkanal um denselben Betrag abgedunkelt wird und das Ergebnis gesättigter wirkt. In TR1 und TR2 werden Flächen wie Wasseroberflächen, Glas und Mündungsfeuer zur Hälfte mit der Szene gemischt. In TR3 wird außerdem Blut zur Hälfte mit der Szene gemischt. Deaktiviert wird all dies wie auf dem PC gezeichnet.",
         },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}PlayStation-Nebel",
@@ -1971,7 +1971,7 @@
         },
         "visuals.enable_gun_glow": {
             "title": "\\{review}Waffenleuchten",
-            "description": "\\{review}Macht Waffen- und Fackelblitze halbtransparent und fügt einen Leuchteffekt um sie herum hinzu, wie in der TR2 PS1-Version zu sehen.",
+            "description": "\\{review}Fügt um Mündungsfeuer und Fackelblitze einen Glanzeffekt hinzu, wie in der PS1-Version von TR2.",
         },
         "visuals.enable_gun_lighting": {
             "title": "Dynamisches Licht für Waffen",

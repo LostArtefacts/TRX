@@ -1627,7 +1627,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "\\{review}Measgachadh PlayStation",
-            "description": "\\{review}Measgaichidh seo ceò, faileasan, lorgan-coise is fuil leis an t-sealladh mar a rinn am PlayStation. Bheir ceò, faileasan is lorgan-coise an dath aca fhèin air falbh on t-sealladh, a nì gach seanail dath nas dorcha leis an aon uiread, mar sin bidh an toradh nas sàithichte. Ann an TR3, thèid fuil cuideachd a mheasgachadh leth air leth leis an t-sealladh. Nuair a bhios e dheth, thèid an sealladh fo cheò, faileasan is lorgan-coise a dhèanamh dorcha le cuibhreann den dath aige fhèin, agus thèid fuil ann an TR3 a tharraing gu teann, mar air a’ PC.",
+            "description": "\\{review}Measgaichidh seo cuid de dh’èifeachdan is uachdaran leis an t-sealladh mar a rinn am PlayStation. Bheir ceò, faileasan is lorgan-coise an dath aca fhèin air falbh on t-sealladh, a nì gach seanail dath nas dorcha leis an aon uiread, mar sin bidh an toradh nas sàithichte. Ann an TR1 is TR2, thèid uachdaran mar uachdar an uisge, glainne is lasraichean ghunnaichean a mheasgachadh leth air leth leis an t-sealladh. Ann an TR3, thèid fuil cuideachd a mheasgachadh leth air leth leis an t-sealladh. Nuair a bhios e dheth, thèid seo uile a tharraing mar air a’ PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Ceò PlayStation",
@@ -1971,7 +1971,7 @@
         },
         "visuals.enable_gun_glow": {
             "title": "Soillseachadh gunna",
-            "description": "Cuiridh seo gàir mun cuairt air losgadh gunna agus lòchran gu leth-truailleach, mar a chìthear anns an dreach TR2 PS1.",
+            "description": "\\{review}Cuiridh seo deàrrsadh timcheall air lasraichean ghunnaichean is lasair-sholais, mar a chithear san tionndadh PS1 de TR2.",
         },
         "visuals.enable_gun_lighting": {
             "title": "Solais armachd",

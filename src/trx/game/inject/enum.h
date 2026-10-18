@@ -34,7 +34,8 @@ typedef enum {
     IFT_ALTER_ANIM_SPRITE = 8,
     IFT_SKYBOX            = 9,
     IFT_PS1_CRYSTAL       = 10,
-    IFT_NUMBER_OF         = 11,
+    IFT_PS1_BLEND         = 11,
+    IFT_NUMBER_OF         = 12,
 } INJECTION_FILE_TYPE;
 
 typedef enum {
@@ -109,6 +110,10 @@ typedef enum {
     IDT_NUMBER_OF          = 45,
 } INJECTION_DATA_TYPE;
 
+// A face effect that TRX keeps for itself, apart from the TR4 bits: it marks a
+// face that the PlayStation mixed half and half with the scene.
+#define FACE_EFFECT_PS1_SEMI_TRANSPARENT 0x8000
+
 typedef enum {
     FT_TEXTURED_QUAD     = 0,
     FT_TEXTURED_TRIANGLE = 1,
@@ -137,17 +142,18 @@ typedef enum {
 } FLOOR_EDIT_TYPE;
 
 typedef enum {
-    RMET_TEXTURE_FACE   = 0,
-    RMET_MOVE_FACE      = 1,
-    RMET_ALTER_VERTEX   = 2,
-    RMET_ROTATE_FACE    = 3,
-    RMET_ADD_FACE       = 4,
-    RMET_ADD_VERTEX     = 5,
-    RMET_ADD_STATIC_2D  = 6,
-    RMET_ADD_STATIC_3D  = 7,
-    RMET_EDIT_STATIC_3D = 8,
-    RMET_VERTEX_FLAGS   = 9,
-    RMET_DOUBLE_SIDED   = 10,
+    RMET_TEXTURE_FACE         = 0,
+    RMET_MOVE_FACE            = 1,
+    RMET_ALTER_VERTEX         = 2,
+    RMET_ROTATE_FACE          = 3,
+    RMET_ADD_FACE             = 4,
+    RMET_ADD_VERTEX           = 5,
+    RMET_ADD_STATIC_2D        = 6,
+    RMET_ADD_STATIC_3D        = 7,
+    RMET_EDIT_STATIC_3D       = 8,
+    RMET_VERTEX_FLAGS         = 9,
+    RMET_DOUBLE_SIDED         = 10,
+    RMET_PS1_SEMI_TRANSPARENT = 11,
 } ROOM_MESH_EDIT_TYPE;
 // clang-format on
 

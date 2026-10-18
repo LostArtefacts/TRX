@@ -88,6 +88,7 @@ static bool M_IsRelevant(
     case IFT_LARA_ANIMS:
     case IFT_BRAID:
     case IFT_SKYBOX:
+    case IFT_PS1_BLEND:
         return true;
 
     case IFT_FLOOR_DATA:

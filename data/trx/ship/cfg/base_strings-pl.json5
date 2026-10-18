@@ -1627,7 +1627,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "\\{review}Mieszanie z PlayStation",
-            "description": "\\{review}Miesza dym, cienie, ślady stóp i krew ze sceną tak, jak robiła to PlayStation. Dym, cienie i ślady stóp odejmują swój kolor od sceny, przyciemniając każdy kanał koloru o tę samą wartość, więc wynik jest bardziej nasycony. W TR3 krew jest również mieszana ze sceną po połowie. Po wyłączeniu scena pod dymem, cieniami i śladami stóp jest przyciemniana o część własnego koloru, a krew w TR3 jest rysowana pełnym kolorem, jak na PC.",
+            "description": "\\{review}Miesza niektóre efekty i powierzchnie ze sceną tak, jak robiła to PlayStation. Dym, cienie i ślady stóp odejmują swój kolor od sceny, przyciemniając każdy kanał koloru o tę samą wartość, więc wynik jest bardziej nasycony. W TR1 i TR2 powierzchnie takie jak woda, szkło i błyski z broni są mieszane ze sceną po połowie. W TR3 krew jest również mieszana ze sceną po połowie. Po wyłączeniu wszystko to jest rysowane jak na PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Mgła z PlayStation",
@@ -1971,7 +1971,7 @@
         },
         "visuals.enable_gun_glow": {
             "title": "\\{review}Poświata broni",
-            "description": "\\{review}Renderuje błyski broni i flar półprzezroczyste oraz dodaje wokół nich efekt rozbłysku, jak w wersji TR2 na PS1.",
+            "description": "\\{review}Dodaje poświatę wokół błysków z broni i flar, jak w wersji TR2 na PS1.",
         },
         "visuals.enable_gun_lighting": {
             "title": "Efekty świetlne broni",

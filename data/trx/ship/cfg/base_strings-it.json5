@@ -1627,7 +1627,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "\\{review}Fusione PlayStation",
-            "description": "\\{review}Fonde fumo, ombre, impronte e sangue con la scena come faceva la PlayStation. Fumo, ombre e impronte sottraggono il proprio colore dalla scena, scurendo ogni canale di colore della stessa quantità e rendendo il risultato più saturo. In TR3 anche il sangue viene mescolato a metà con la scena. Se disattivata, la scena sotto fumo, ombre e impronte viene scurita di una parte del proprio colore e il sangue di TR3 è disegnato pieno, come su PC.",
+            "description": "\\{review}Fonde alcuni effetti e superfici con la scena come faceva la PlayStation. Fumo, ombre e impronte sottraggono il proprio colore dalla scena, scurendo ogni canale di colore della stessa quantità e rendendo il risultato più saturo. In TR1 e TR2, superfici come l'acqua, il vetro e i lampi delle armi vengono mescolate a metà con la scena. In TR3 anche il sangue viene mescolato a metà con la scena. Se disattivata, tutto questo viene disegnato come su PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "Nebbia PlayStation",
@@ -1971,7 +1971,7 @@
         },
         "visuals.enable_gun_glow": {
             "title": "Bagliore armi",
-            "description": "Rende i lampi degli spari e la luce dei razzi di segnalazione semitrasparenti e aggiunge un leggero bagliore intorno ad essi, come nella versione PS1 di TR2.",
+            "description": "\\{review}Aggiunge un bagliore attorno ai lampi delle armi e dei bengala, come nella versione PS1 di TR2.",
         },
         "visuals.enable_gun_lighting": {
             "title": "Illuminazione spari",
