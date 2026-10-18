@@ -75,6 +75,9 @@ void UI_ScheduleDrawHorizontalLine(
 void UI_ScheduleDrawScreenCircle(
     int32_t cx, int32_t cy, int32_t r_inner, int32_t r_outer, int32_t z,
     RGBA_8888 color);
+void UI_ScheduleDrawScreenLine(
+    float x0, float y0, float x1, float y1, float width, int32_t z,
+    RGBA_8888 color);
 
 // The light a model is drawn in: an ambient light, up to three lights shining
 // from a direction in a colour of their own, and a colour some of the meshes,

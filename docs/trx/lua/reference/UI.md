@@ -993,6 +993,18 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.quad.h" name="ui.primitive.quad.h"></a>**`h`** (number). The height.
   - <a id="ui.primitive.quad.color" name="ui.primitive.quad.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color) or table). What color to fill it with: a [`trx.math.Color`](MATH.md#math.Color), or a table of `r`, `g`, `b` and `a` channels from 0 to 255. The color is opaque where `a` is absent.
 
+- <a id="ui.primitive.line" name="ui.primitive.line"></a>[lua]`trx.ui.primitive.line(x0, y0, x1, y1, z, width, color)`  
+  Draws a straight line of one color between two points, with smooth edges.
+
+  Parameters:
+  - <a id="ui.primitive.line.x0" name="ui.primitive.line.x0"></a>**`x0`** (number). Where the line starts across.
+  - <a id="ui.primitive.line.y0" name="ui.primitive.line.y0"></a>**`y0`** (number). Where the line starts down.
+  - <a id="ui.primitive.line.x1" name="ui.primitive.line.x1"></a>**`x1`** (number). Where the line ends across.
+  - <a id="ui.primitive.line.y1" name="ui.primitive.line.y1"></a>**`y1`** (number). Where the line ends down.
+  - <a id="ui.primitive.line.z" name="ui.primitive.line.z"></a>**`z`** (integer). The draw order.
+  - <a id="ui.primitive.line.width" name="ui.primitive.line.width"></a>**`width`** (number). How thick the line is.
+  - <a id="ui.primitive.line.color" name="ui.primitive.line.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color) or table). What color to draw it in, in either form that [`quad`](#ui.primitive.quad) takes.
+
 - <a id="ui.primitive.gradient_quad" name="ui.primitive.gradient_quad"></a>[lua]`trx.ui.primitive.gradient_quad(x, y, z, w, h, tl, tr, bl, br)`  
   Draws a rectangle whose corners each carry a color.
 

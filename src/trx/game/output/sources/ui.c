@@ -619,6 +619,33 @@ static void M_StageRingBand(
     }
 }
 
+// Stages the band of a line between two distances from its middle, measured
+// along the normal, shaded from one color at the first to the other at the
+// second.
+static void M_StageLineBand(
+    M_PRIV *const p, const OUTPUT_UI_LINE *const line, const float nx,
+    const float ny, const float d0, const float d1, const RGBA_F color_0,
+    const RGBA_F color_1)
+{
+    const float z = (float)line->z;
+    M_VERTEX v[4] = {};
+    v[0].pos = (XYZW_F) { line->x0 + nx * d0, line->y0 + ny * d0, z, 0.0f };
+    v[1].pos = (XYZW_F) { line->x1 + nx * d0, line->y1 + ny * d0, z, 0.0f };
+    v[2].pos = (XYZW_F) { line->x0 + nx * d1, line->y0 + ny * d1, z, 0.0f };
+    v[3].pos = (XYZW_F) { line->x1 + nx * d1, line->y1 + ny * d1, z, 0.0f };
+    for (int32_t i = 0; i < 4; i++) {
+        v[i].flags = VERT_FLAT_SHADED;
+        v[i].color = i < 2 ? color_0 : color_1;
+    }
+
+    Vector_Add(p->vertices, &v[0]);
+    Vector_Add(p->vertices, &v[1]);
+    Vector_Add(p->vertices, &v[2]);
+    Vector_Add(p->vertices, &v[2]);
+    Vector_Add(p->vertices, &v[1]);
+    Vector_Add(p->vertices, &v[3]);
+}
+
 void OutputSource_UI_Init(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -803,4 +830,27 @@ void OutputSource_UI_StageCircle(const OUTPUT_UI_CIRCLE circle)
 
     // Outer feather: ro-fw → ro, solid→transparent
     M_StageRingBand(p, cx, cy, ro - fw, ro, z, col, col_0);
+}
+
+void OutputSource_UI_StageLine(const OUTPUT_UI_LINE line)
+{
+    M_PRIV *const p = &m_Priv;
+    const float dx = line.x1 - line.x0;
+    const float dy = line.y1 - line.y0;
+    const float length = sqrtf(dx * dx + dy * dy);
+    if (length <= 0.0f || line.width <= 0.0f) {
+        return;
+    }
+
+    const float nx = -dy / length;
+    const float ny = dx / length;
+    const RGBA_F col = M_ToRGBA_F(line.color);
+    const RGBA_F col_0 = { .r = col.r, .g = col.g, .b = col.b, .a = 0.0f };
+
+    // A one pixel feather on either side keeps a thin slanted line smooth.
+    const float half_w = line.width * 0.5f;
+    const float feather = 1.0f;
+    M_StageLineBand(p, &line, nx, ny, -half_w, half_w, col, col);
+    M_StageLineBand(p, &line, nx, ny, half_w, half_w + feather, col, col_0);
+    M_StageLineBand(p, &line, nx, ny, -half_w, -half_w - feather, col, col_0);
 }
