@@ -42,6 +42,7 @@ typedef struct {
     void (*init)(void);
     void (*shutdown)(void);
     void (*observe_level_load)(void);
+    void (*observe_room_flip)(const ROOM *room); // nullable
 
     void (*calculate_light)(XYZ_32 pos, int16_t room_num);
     void (*calculate_object_lighting_at)(

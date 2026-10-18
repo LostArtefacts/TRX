@@ -896,6 +896,17 @@ static void M_ObserveLevelLoad(void)
     }
 }
 
+static void M_ObserveRoomFlip(const ROOM *const room)
+{
+    if (m_RoomBake == nullptr || room->flip_status != RFS_UNFLIPPED
+        || room->flipped_room == NO_ROOM) {
+        return;
+    }
+    const int16_t room_1 = Room_GetIndex(room);
+    const int16_t room_2 = room->flipped_room;
+    SWAP(m_RoomBake[room_1], m_RoomBake[room_2]);
+}
+
 static void M_BeginScene(void)
 {
     if (m_StagedPool != nullptr) {
@@ -913,6 +924,7 @@ const LIGHTING_MODEL g_LightingModelTR4 = {
     .init = M_Init,
     .shutdown = M_Shutdown,
     .observe_level_load = M_ObserveLevelLoad,
+    .observe_room_flip = M_ObserveRoomFlip,
     .calculate_light = M_CalculateLight,
     .calculate_object_lighting_at = M_CalculateObjectLightingAt,
     .calculate_static_light = M_CalculateStaticLight,

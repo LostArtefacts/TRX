@@ -263,6 +263,7 @@ void Output_DispatchRoomFlip(const ROOM *room)
 {
     OutputSource_Rooms_ObserveRoomFlip(room);
     OutputSource_RoomsDebug_ObserveRoomFlip(room);
+    Output_Lights_ObserveRoomFlip(room);
 }
 
 void Output_DispatchObjectMeshSwap(
