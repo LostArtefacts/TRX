@@ -157,7 +157,7 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     MUST(JSON_READ(io, "ammo", &p->ammo));
     MUST(JSON_READ(io, "swap_bits", &p->swap_bits));
     MUST(JSON_READ(io, "x_shift", &p->x_shift));
-    MUST(JSON_READ(io, "ocb", &p->ocb));
+    MUST(JSON_READ_OPT(io, "ocb", &p->ocb));
     return OK;
 }
 
