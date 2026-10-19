@@ -204,7 +204,8 @@ static void M_DumpStartup(TRX_FILE *const fp)
     }
     if (args->startup.save_to_load >= 0) {
         File_WriteString(
-            fp, "startup save %d\n", args->startup.save_to_load + 1);
+            fp, "startup save %s%d\n", args->startup.save_is_quick ? "q" : "",
+            args->startup.save_to_load + 1);
     }
 }
 

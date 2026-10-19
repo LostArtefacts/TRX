@@ -972,8 +972,11 @@ static bool M_ParseStartup(const char *const line, M_PARSE_CTX *const ctx)
         Memory_FreePointer(&ctx->startup.settings.level_request.path);
         ctx->startup.settings.level_request.path =
             Memory_DupStr(String_FormatStatic("%.*s", (int)str_len, str));
-    } else if (sscanf(line, "startup save %d", &int_val) == 1) {
-        ctx->startup.settings.save_to_load = int_val - 1;
+    } else if (strncmp(line, "startup save ", strlen("startup save ")) == 0) {
+        if (!Shell_ParseSaveSlot(
+                line + strlen("startup save "), &ctx->startup.settings)) {
+            return false;
+        }
     } else {
         return false;
     }

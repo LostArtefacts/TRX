@@ -142,10 +142,13 @@ RESULT GF_DoFrontendSequence(GF_COMMAND *const out_cmd)
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args != nullptr) {
         if (args->startup.save_to_load >= 0) {
+            const int32_t index = args->startup.save_to_load;
             *out_cmd = (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
                 .param = SG_Manager_SlotToParam(
-                    SG_Manager_NormalSlot(args->startup.save_to_load)),
+                    args->startup.save_is_quick
+                        ? SG_Manager_QuickFromVisualIndex(index)
+                        : SG_Manager_NormalSlot(index)),
             };
             return OK;
         }
