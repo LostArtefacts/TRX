@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/input.h>
@@ -500,7 +501,8 @@ static void M_Control(const int16_t item_num)
         if (Item_TestFrameEqual(lara_item, -2)) {
             const bool can_continue = pulling ? M_TestPull(item, WALL_L, dir)
                                               : M_TestPush(item, WALL_L, dir);
-            if (lara_item->hit_points <= 0 || !g_Input.action
+            if (!g_Config.gameplay.enable_continuous_pushblocks
+                || lara_item->hit_points <= 0 || !g_Input.action
                 || !can_continue) {
                 lara_item->goal_anim_state = LS(LS_STOP);
             } else {
