@@ -5,6 +5,7 @@
 #include <trx/core/vector.h>
 #include <trx/game/console/common.h>
 #include <trx/game/items/actions.h>
+#include <trx/game/lua/api.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 
@@ -173,7 +174,9 @@ static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
 }
 
 // Logs where a handler failed, with the stack as it stood at the error, and
-// returns the error unchanged for the screen.
+// returns the error message alone for the screen. An error that Lua caught and
+// raised again already carries the stack from where it first happened, which
+// is logged ahead of the stack of the handler.
 static int M_LogTraceback(lua_State *const L)
 {
     const char *const message = lua_tostring(L, 1);
@@ -181,6 +184,11 @@ static int M_LogTraceback(lua_State *const L)
         L, L, message != nullptr ? message : "(error is not a string)", 1);
     LOG_ERROR("%s", lua_tostring(L, -1));
     lua_pop(L, 1);
+    const char *const marker =
+        message != nullptr ? strstr(message, LUA_TRACEBACK_MARKER) : nullptr;
+    if (marker != nullptr) {
+        lua_pushlstring(L, message, (size_t)(marker - message));
+    }
     return 1;
 }
 

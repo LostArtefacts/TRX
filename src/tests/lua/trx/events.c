@@ -16,11 +16,14 @@
 #include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 // What the console was told to show. A handler that raises reports through the
 // console, so the count is how the tests see that it did.
 static int32_t m_ConsoleShows = 0;
+static char m_ConsoleLast[1024] = "";
 
 // fake.fire(name, ...) - mirrors the engine's own fire sites, argument for
 // argument.
@@ -111,6 +114,13 @@ static int M_FakeConsoleShows(lua_State *const L)
     return 1;
 }
 
+// fake.console_last() -> string
+static int M_FakeConsoleLast(lua_State *const L)
+{
+    lua_pushstring(L, m_ConsoleLast);
+    return 1;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeFire);
@@ -121,6 +131,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "end_level");
     lua_pushcfunction(L, M_FakeConsoleShows);
     lua_setfield(L, -2, "console_shows");
+    lua_pushcfunction(L, M_FakeConsoleLast);
+    lua_setfield(L, -2, "console_last");
 }
 
 void Console_LogImpl(
@@ -134,6 +146,10 @@ void Console_ShowImpl(
     const char *const func, const char *const fmt, ...)
 {
     m_ConsoleShows++;
+    va_list va;
+    va_start(va, fmt);
+    vsnprintf(m_ConsoleLast, sizeof(m_ConsoleLast), fmt, va);
+    va_end(va);
 }
 
 int main(void)

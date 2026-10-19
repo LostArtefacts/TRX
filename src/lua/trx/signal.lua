@@ -241,7 +241,7 @@ end
 local function track(callback, fn, ...)
   local outer = tracker
   tracker = callback
-  local results = table.pack(pcall(fn, ...))
+  local results = table.pack(xpcall(fn, h.traceback, ...))
   tracker = outer
   if not results[1] then
     error(results[2], 0)

@@ -515,7 +515,7 @@ local function start(screen, args, report)
 
   local ctx = new_context(screen, args)
   ctx._report = report
-  local ok, result = pcall(definition.open, ctx)
+  local ok, result = xpcall(definition.open, h.traceback, ctx)
   if not ok then
     finish(ctx, nil)
     error(result, 0)

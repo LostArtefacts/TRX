@@ -549,7 +549,7 @@ M.listen = raw.listen
 function M.with_listen(fn)
   local was_listening = raw.is_listening()
   raw.listen(true)
-  local result = table.pack(pcall(fn))
+  local result = table.pack(xpcall(fn, h.traceback))
   raw.listen(was_listening)
   if not result[1] then
     error(result[2], 0)
