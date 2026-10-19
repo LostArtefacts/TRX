@@ -1,8 +1,13 @@
 #include <trx/game/gun/smashing.h>
 
 #include <trx/game/collision/los.h>
+#include <trx/game/fx/debris.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/rooms.h>
+#include <trx/game/sound.h>
+
+#define M_STATIC_DEBRIS_FACES 128
 
 // TODO: meh
 extern void Smashable_Smash(int16_t item_num);
@@ -48,6 +53,13 @@ void Gun_SmashItem(const int16_t item_num)
     default:
         break;
     }
+}
+
+void Gun_ShatterStatic(const STATIC_MESH *const mesh, const GAME_VECTOR hit_pos)
+{
+    FX_Debris_ShatterStatic(mesh, M_STATIC_DEBRIS_FACES, hit_pos.room_num, 0);
+    Sound_Effect(SFX_HIT_ROCK, &mesh->pos, SPM_NORMAL);
+    Room_ShatterStatic(mesh);
 }
 
 PROJECTILE_HIT Gun_SmashItems(

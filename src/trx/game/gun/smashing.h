@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/items.h>
+#include <trx/game/rooms/types.h>
 
 typedef enum {
     PROJECTILE_HIT_NONE,
@@ -18,6 +19,7 @@ typedef enum {
 GUN_SMASH_POLICY Gun_GetSmashPolicy(const ITEM *item);
 
 void Gun_SmashItem(int16_t item_num);
+void Gun_ShatterStatic(const STATIC_MESH *mesh, GAME_VECTOR hit_pos);
 
 PROJECTILE_HIT Gun_SmashItems(
     GAME_VECTOR start, GAME_VECTOR target, XYZ_32 *out_hit_pos,
