@@ -38,11 +38,19 @@ local function prepare(state)
   )
 end
 
--- Offers to turn the entry where the ring shows its hints, while the
--- description is out of the way.
-local function offer_turning(offer)
-  ring.set_hint(offer and {
-    {
+-- Offers, where the ring shows its hints, to hide the description while it
+-- shows and to turn the entry once it is out of the way, so that the two
+-- hints take turns in one place.
+local function offer(what)
+  ---@type table[]
+  local hints = {}
+  if what == "hide" then
+    hints[1] = {
+      input = trx.input.Role.MENU_SHOW_INFO,
+      text = trx.locale.get("general/actions/hide_dialog"),
+    }
+  elseif what == "turn" then
+    hints[1] = {
       input = {
         trx.input.Role.FORWARD,
         trx.input.Role.BACK,
@@ -50,8 +58,9 @@ local function offer_turning(offer)
         trx.input.Role.RIGHT,
       },
       text = trx.locale.get("general/actions/rotate"),
-    },
-  } or nil)
+    }
+  end
+  ring.set_hint(hints)
 end
 
 local function control(ctx, state, keys)
@@ -101,8 +110,8 @@ local function open(ctx)
     hidden = hidden,
     shown = has_text and resting & ~hidden or trx.signal.new(false),
   }
-  -- The hints offer turning the entry once it rests with the description out
-  -- of the way, and take the offer back while the description shows.
+  -- The hints offer hiding the description while it shows, and turning the
+  -- entry once it rests with the description out of the way.
   local offers = trx.signal.combine(
     resting,
     state.shown,
@@ -110,13 +119,13 @@ local function open(ctx)
       if not rests then
         return nil
       end
-      return not shown
+      return shown and "hide" or "turn"
     end
   )
   if offers:get() ~= nil then
-    offer_turning(offers:get())
+    offer(offers:get())
   end
-  local listeners = { offers:on(offer_turning) }
+  local listeners = { offers:on(offer) }
   ctx:on_end(function()
     for _, listener in ipairs(listeners) do
       listener:detach()
@@ -132,18 +141,9 @@ local function open(ctx)
   if not has_text then
     return ctx:push({ root = trx.ui.widgets.Spacer(), on_input = on_input })
   end
-  state.dialog = text_dialog.new({
-    visible = state.shown,
-    footer = trx.ui.widgets.Stack({
-      align = trx.ui.HAlign.CENTER,
-      children = {
-        trx.ui.widgets.InputHint({
-          input = trx.input.Role.MENU_SHOW_INFO,
-          text = trx.locale.get("general/actions/hide_dialog"),
-        }),
-      },
-    }),
-  })
+  -- The name of the entry shows elsewhere, at the foot of the ring, so the
+  -- dialog leaves it out.
+  state.dialog = text_dialog.new({ titled = false, visible = state.shown })
   prepare(state)
   -- The pages follow the room, which changes as the window does.
   listeners[#listeners + 1] = trx.ui.signals.layout:on(function()

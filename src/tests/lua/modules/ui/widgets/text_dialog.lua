@@ -23,6 +23,23 @@ test("a dialog shows its title in capitals", function()
   assert(#dialog.pages:get() == 1)
 end)
 
+test("a dialog without a title draws none", function()
+  local function draws_title(settings)
+    local dialog = text_dialog.new(settings)
+    dialog:set_text("Title", "text", 1000, 4)
+    local layer = trx.ui.layers.push({ root = dialog.widget })
+    fake.tick()
+    local found = false
+    for _, op in ipairs(fake.scene()) do
+      found = found or op:find("text=TITLE", 1, true) ~= nil
+    end
+    layer:close()
+    return found
+  end
+  assert(draws_title({}), "a titled dialog drew no title")
+  assert(not draws_title({ titled = false }), "the title showed")
+end)
+
 test("a long text runs to several pages", function()
   local dialog = text_dialog.new()
   dialog:set_text("T", LONG, 1000, 2)
