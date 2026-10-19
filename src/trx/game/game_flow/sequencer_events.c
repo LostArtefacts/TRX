@@ -420,6 +420,18 @@ M_GF_HANDLER(M_HandleLoadingCamera)
     return OK;
 }
 
+static bool M_LeadsToLevel(
+    const GF_SEQUENCE *const sequence, const int32_t event_idx)
+{
+    for (int32_t i = event_idx + 1; i < sequence->length; i++) {
+        const GF_SEQUENCE_EVENT_TYPE type = sequence->events[i].type;
+        if (type == GFS_LEVEL_COMPLETE || type == GFS_GLOBE_SELECT) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void GF_ShowPendingLoadingCamera(void)
 {
     const GF_LOADING_CAMERA_DATA *const data = m_PendingLoadingCamera;
@@ -471,11 +483,15 @@ M_GF_HANDLER(M_HandleLevelStats)
         return OK;
     }
 
+    const bool offers_save = M_LeadsToLevel(sequence, event_idx)
+        && LUA_Hooks_CallBool(LUA_HOOK_SAVE_OFFER, 0, false,
+                              LUA_ARG_LEVEL(level));
     m_IsLevelEnding = true;
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .level_num = -1,
         .show_final_stats = false,
         .use_bare_style = g_Config.ui.stats.style == STATS_STYLE_BARE,
+        .offers_save = offers_save,
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);

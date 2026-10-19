@@ -233,6 +233,9 @@
             "medipacks_used": "Trousses de soin utilisées",
             "none": "\\{review}Aucun",
             "pickups": "Objets ramassés",
+            "save_offer": "\\{review}Voulez-vous sauvegarder maintenant ?",
+            "save_offer_no": "\\{review}Non",
+            "save_offer_yes": "\\{review}Oui",
             "secrets": "Secrets",
             "time_taken": "Temps écoulé",
         }

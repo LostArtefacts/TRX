@@ -233,6 +233,9 @@
             "medipacks_used": "Benötigte Medi-Packs",
             "none": "None",
             "pickups": "Pickups",
+            "save_offer": "\\{review}Möchtest du jetzt speichern?",
+            "save_offer_no": "\\{review}Nein",
+            "save_offer_yes": "\\{review}Ja",
             "secrets": "Gefundene Geheimnisse",
             "time_taken": "Benötigte Zeit",
         }

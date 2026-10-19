@@ -233,6 +233,9 @@
             "medipacks_used": "Использовано аптечек",
             "none": "\\{review}Нет",
             "pickups": "Предметы",
+            "save_offer": "\\{review}Сохранить игру сейчас?",
+            "save_offer_no": "\\{review}Нет",
+            "save_offer_yes": "\\{review}Да",
             "secrets": "Секреты",
             "time_taken": "Время",
         }

@@ -213,6 +213,7 @@
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
+- Added `trx.savegame.set_save_offer`, which lets a script decide whether the game offers a save as a level ends (#6159 / TRX1011)
 - Added `trx.overlay.letterbox`, which sets how deep the cinematic bars are (TRX1426)
 - Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
 - Added `trx.ui.screen`, the whole screen in canvas units, which reaches the edges that `trx.ui.canvas` can stop short of

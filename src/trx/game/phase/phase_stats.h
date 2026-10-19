@@ -6,6 +6,7 @@ typedef struct {
     const char *background_path;
     bool show_final_stats;
     bool use_bare_style;
+    bool offers_save;
     int32_t level_num;
 } PHASE_STATS_ARGS;
 

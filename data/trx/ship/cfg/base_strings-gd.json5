@@ -233,6 +233,9 @@
             "medipacks_used": "Pasganan Cleachdte",
             "none": "Gin sam bith",
             "pickups": "Togailtean",
+            "save_offer": "\\{review}A bheil thu airson sàbhaladh an-dràsta?",
+            "save_offer_no": "\\{review}Chan eil",
+            "save_offer_yes": "\\{review}Tha",
             "secrets": "Dìomhaireachdan",
             "time_taken": "Ùine air a Ghabhail",
         }

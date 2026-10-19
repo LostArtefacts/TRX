@@ -61,6 +61,7 @@ static void M_PushArgs(lua_State *const L, const LUA_HOOK_ARG *const arg)
         }
         M_SetBool(L, "is_final", args->is_final);
         M_SetBool(L, "is_bare", args->is_bare);
+        M_SetBool(L, "offers_save", args->offers_save);
         M_SetBackground(L, args);
         break;
     case UI_TAKEOVER_GLOBE_SELECT:

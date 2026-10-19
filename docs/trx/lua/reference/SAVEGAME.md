@@ -52,6 +52,29 @@ Manage save slots and saved games.
 
 ### Functions
 
+- <a id="savegame.set_save_offer" name="savegame.set_save_offer"></a>[lua]`trx.savegame.set_save_offer([check])`  
+  Decides whether the game offers a save as a level ends. The statistics
+  screen makes the offer before it ends, as [`trx.ui.StatsContext.offers_save`](UI.md#ui.StatsContext.offers_save)
+  tells it, and a save made there resumes after the statistics, so loading it
+  goes on to whatever follows the level. Without a check, the game offers no
+  save.
+
+  The check is asked only where another level follows the statistics. Set it
+  from the game script: it stays set until it is replaced or cleared,
+  whichever level is being played.
+
+  Parameters:
+  - <a id="savegame.set_save_offer.check" name="savegame.set_save_offer.check"></a>**`check`** (function, optional). The function to ask. It is handed the level that ended, and returns whether to offer a save. Omit it to offer none.
+    Called with:
+    - <a id="savegame.set_save_offer.level" name="savegame.set_save_offer.level"></a>**`level`** ([trx.game.Level](GAME.md#game.Level)). The level whose statistics closed.
+
+  Example:
+  ```lua
+  trx.savegame.set_save_offer(function(level)
+    return level.type == trx.game.LevelType.NORMAL
+  end)
+  ```
+
 - <a id="savegame.slot_count" name="savegame.slot_count"></a>[lua]`trx.savegame.slot_count([pool])`  
   Counts the slots in a pool.
 

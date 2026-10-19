@@ -101,8 +101,8 @@ end
 
 -- Shuts the book towards the nearer cover. A confirmed close leaves the ring;
 -- otherwise the entry goes back into the ring. The quick save and load screens
--- have no book to shut, and take only a cancel. The save crystal has no book
--- either, and leaves the ring once it saves.
+-- have no book to shut, and confirm once they save or load. The save crystal
+-- has no book either, and leaves the ring once it saves.
 function Passport:close(confirmed)
   local anim = not self.standalone and ring.selection_anim() or nil
   if anim ~= nil then
@@ -116,7 +116,7 @@ function Passport:close(confirmed)
     trx.overlay.set_caption(nil)
     ring.set_count(nil)
   end
-  if confirmed and (not self.standalone or self.crystal) then
+  if confirmed then
     self.ctx:confirm()
   else
     self.ctx:cancel()
@@ -806,6 +806,12 @@ end
 
 -- Holds one page alone, with no ring and no book behind it. Returns nil when
 -- the page has no list.
+-- Where a dialog of the request goes so that it shares the line every list
+-- of the book rests on.
+function M.place_on_page(req)
+  return requester.on_page_line(req, page_anchor(), DELETE_FOOTER_HEIGHT)
+end
+
 function M.open_alone(ctx, book_pages, index, crystal)
   local self = new(ctx, {
     pages = book_pages,
