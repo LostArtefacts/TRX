@@ -8,6 +8,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/lua/store.h>
+#include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sparks/manager.h>
 #include <trx/version.h>
@@ -140,6 +141,7 @@ static RESULT M_Load(JSON_READ_IO *const io)
     MUST(SG_File_LoadMisc(io));
     MUST(SG_File_LoadInventory(io));
     MUST(SG_File_LoadFlipmaps(io));
+    MUST(Room_LoadShatteredStatics(io));
     MUST(SG_File_LoadCameras(io));
     MUST(SG_File_LoadItems(io));
     MUST(SG_File_LoadEffects(io));
@@ -195,6 +197,7 @@ RESULT SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
     } else {
         SG_File_DumpInventory(io);
         SG_File_DumpFlipmaps(io);
+        Room_SaveShatteredStatics(io);
         SG_File_DumpCameras(io);
         SG_File_DumpItems(io);
         SG_File_DumpEffects(io);
