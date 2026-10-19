@@ -177,6 +177,10 @@ typedef struct {
     int16_t mesh_idx;
     bool collidable;
     bool visible;
+    struct {
+        bool by_impact;
+        bool by_shot;
+    } shatter;
     BOUNDS_16 draw_bounds;
     BOUNDS_16 collision_bounds;
 } STATIC_OBJECT_3D;

@@ -12,6 +12,7 @@
 #include <trx/game/level/finalize.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -19,6 +20,12 @@
 // it. The bounds are turned corner by corner and carry a few units of slop,
 // which any test on a bare touch would read as a reach.
 #define M_MIN_REACH (WALL_L / 16)
+
+// TR4 sets aside static IDs 50-59 for scenery that breaks. A vehicle breaks
+// all ten, and gunfire breaks only the first eight.
+#define M_SHATTER_FIRST 50
+#define M_SHATTER_IMPACT_LAST 59
+#define M_SHATTER_SHOT_LAST 57
 
 // One placed static reaching one room. The placement is what bleeds, and what
 // the level author has to move; the static it is placed from only says what
@@ -334,10 +341,25 @@ static void M_FixStaticsCollision(void)
     }
 }
 
+static void M_MarkShatterableStatics(void)
+{
+    if (g_TRVersion < 4) {
+        return;
+    }
+
+    const int32_t count = Object_GetStaticObjects3DCount();
+    for (int32_t i = M_SHATTER_FIRST; i < count; i++) {
+        STATIC_OBJECT_3D *const obj = Object_Get3DStatic(i);
+        obj->shatter.by_impact = i <= M_SHATTER_IMPACT_LAST;
+        obj->shatter.by_shot = i <= M_SHATTER_SHOT_LAST;
+    }
+}
+
 void Level_Finalize_LoadRooms(LEVEL_CONTEXT *const ctx)
 {
     M_ComputePortalBounds();
     M_FixStaticsCollision();
+    M_MarkShatterableStatics();
     M_FixStaticsVisibility();
     Room_InitialiseOverlapMap();
     Item_InitialiseDrawQueues();
