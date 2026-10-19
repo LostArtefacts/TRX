@@ -34,6 +34,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             .level = level,
             .is_final = p->args.show_final_stats,
             .is_bare = p->args.use_bare_style,
+            .offers_save = p->args.offers_save,
             .background = p->args.background_path,
         });
     if (!p->is_held) {

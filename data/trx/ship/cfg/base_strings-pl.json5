@@ -233,6 +233,9 @@
             "medipacks_used": "Zużyte apteczki",
             "none": "Brak",
             "pickups": "Przedmioty",
+            "save_offer": "\\{review}Czy chcesz teraz zapisać grę?",
+            "save_offer_no": "\\{review}Nie",
+            "save_offer_yes": "\\{review}Tak",
             "secrets": "Odnalezione sekrety",
             "time_taken": "Spędzony czas",
         }

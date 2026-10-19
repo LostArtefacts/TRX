@@ -1,4 +1,5 @@
 local raw = trxc.savegame
+local hooks = trxc.hooks
 local h = require("trx.internal.helpers")
 
 ---@class (partial) trx
@@ -20,6 +21,30 @@ local Pool = {
   QUICK = h.IntegerConstant,
 }
 M.Pool = h.enum("savegame.Pool", "SAVEGAME_SLOT_POOL", Pool)
+
+---Decides whether the game offers a save as a level ends. The statistics
+---screen makes the offer before it ends, as `trx.ui.StatsContext.offers_save`
+---tells it, and a save made there resumes after the statistics, so loading it
+---goes on to whatever follows the level. Without a check, the game offers no
+---save.
+---
+---The check is asked only where another level follows the statistics. Set it
+---from the game script: it stays set until it is replaced or cleared,
+---whichever level is being played.
+---
+---```lua
+---trx.savegame.set_save_offer(function(level)
+---  return level.type == trx.game.LevelType.NORMAL
+---end)
+---```
+---@param check? fun(level: trx.game.Level): boolean? The function to ask. It is handed the level that ended, and returns whether to offer a save. Omit it to offer none.
+---@trx.arg check.level The level whose statistics closed.
+function M.set_save_offer(check)
+  if check ~= nil and type(check) ~= "function" then
+    error("the save offer must be a function", 2)
+  end
+  hooks.set("save_offer", check)
+end
 
 ---Slot number within the pool. For the quick pool this is the on-screen
 ---order.

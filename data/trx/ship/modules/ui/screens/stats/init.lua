@@ -3,10 +3,13 @@
 -- in the inventory ring. In the gym, the stopwatch shows the best times on the
 -- assault course instead, and a held key clears them.
 
+local book = require("common.ui.screens.passport.book")
 local box = require("common.ui.screens.stats.box")
 local counts = require("common.ui.screens.stats.counts")
 local fade = require("common.ui.fade")
 local listing = require("common.ui.screens.stats.rows")
+local metrics = require("common.ui.metrics")
+local requester = require("common.ui.widgets.requester")
 local ring = require("common.ui.ring")
 require("common.ui.scroll")
 
@@ -49,6 +52,9 @@ trx.locale.declare({
   ["general/stats/distance_travelled"] = "Distance Traveled",
   ["general/stats/secrets"] = "Secrets Found",
   ["general/stats/none"] = "None",
+  ["general/stats/save_offer"] = "Do you want to save now?",
+  ["general/stats/save_offer_yes"] = "Yes",
+  ["general/stats/save_offer_no"] = "No",
   ["settings/ui.stats_fade_effects/title"] = "Stats fade effects",
   ["settings/ui.stats_fade_effects/description"] = "Fine-tunes the fade effects to be enabled or disabled in the end of "
     .. "the level statistics screen. Needs the Fade Effects option to be "
@@ -96,8 +102,12 @@ local function count(state, live)
   end
 end
 
--- The box with what it lists now. The ring hides it until the entry is open.
+-- The box with what it lists now. The ring hides it until the entry is open,
+-- and the save offer takes its place.
 local function box_of(state)
+  if state.offering then
+    return trx.ui.widgets.Spacer()
+  end
   state.rows = listing.all_rows(state)
   return box.build(state)
 end
@@ -198,8 +208,65 @@ local function enter_backdrop(ctx)
   })
 end
 
--- The screen between levels and at the end of the game. A skip ends it, and
--- the next screen starts once the screen has faded to black.
+local function leave_level_end(ctx)
+  if fades_run(ctx) then
+    fade.hand_over({ ticks = LEAVE_TICKS, hold = LEAVE_HOLD_TICKS })
+  end
+  ctx:confirm()
+end
+
+-- Asks whether to save before the screen ends, in place of the box. The
+-- player has to answer, so backing out does nothing. Yes opens the passport's
+-- save page, and backing out of the page asks again.
+local function offer_save(ctx, state)
+  state.offering = true
+  state.layer:set_root(box_of(state))
+  local req = requester.new({
+    title = trx.locale.get("general/stats/save_offer"),
+    rows = {
+      { text = trx.locale.get("general/stats/save_offer_yes") },
+      { text = trx.locale.get("general/stats/save_offer_no") },
+    },
+    row_pad = metrics.CHOICE_ROW_PAD,
+    row_spacing = 3.0,
+    arrows = false,
+  })
+  ctx:push({
+    root = req.widget,
+    place = book.place_on_page(req),
+    on_input = function(layer, keys)
+      local picked = req.list:control(keys)
+      if picked == 1 then
+        layer:close()
+        local opened = trx.ui.screens.open(
+          trx.ui.Screen.SAVE_LOAD,
+          { mode = trx.ui.MenuMode.SAVE_CRYSTAL },
+          function(saved)
+            if saved then
+              leave_level_end(ctx)
+            else
+              offer_save(ctx, state)
+            end
+          end
+        )
+        if opened == nil then
+          leave_level_end(ctx)
+          return
+        end
+        -- The page names itself, so the quick save screen's caption at the
+        -- foot of the screen comes down.
+        trx.overlay.set_caption()
+      elseif picked == 2 then
+        layer:close()
+        leave_level_end(ctx)
+      end
+    end,
+  })
+end
+
+-- The screen between levels and at the end of the game. A skip ends it, or
+-- moves on to the save offer first, and the next screen starts once the
+-- screen has faded to black.
 ---@param ctx trx.ui.StatsContext
 local function open_level_end(ctx)
   local mode = ctx.is_final and Mode.FINAL or Mode.LEVEL
@@ -209,14 +276,15 @@ local function open_level_end(ctx)
   end
   enter_backdrop(ctx)
   return push(ctx, state, function(_, keys)
-    if not keys:pressed(trx.input.Role.MENU_SKIP) then
+    if state.offering or not keys:pressed(trx.input.Role.MENU_SKIP) then
       return
     end
     trx.input.hold_off_skip(trx.input.SkipContext.TO_SCREEN)
-    if fades_run(ctx) then
-      fade.hand_over({ ticks = LEAVE_TICKS, hold = LEAVE_HOLD_TICKS })
+    if ctx.offers_save then
+      offer_save(ctx, state)
+    else
+      leave_level_end(ctx)
     end
-    ctx:confirm()
   end)
 end
 

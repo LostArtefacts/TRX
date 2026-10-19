@@ -233,6 +233,9 @@
             "medipacks_used": "Health Packs Used",
             "none": "None",
             "pickups": "Pickups",
+            "save_offer": "Do you want to save now?",
+            "save_offer_no": "No",
+            "save_offer_yes": "Yes",
             "secrets": "Secrets Found",
             "time_taken": "Time Taken",
         }

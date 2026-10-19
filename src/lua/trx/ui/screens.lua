@@ -66,7 +66,9 @@ local Screen = {
   ---resumes or leaves for the title screen. It has a `trx.ui.PauseContext`.
   PAUSE = h.IntegerConstant,
   ---The quick save or load screen, with a `trx.ui.SaveLoadContext`. The save
-  ---and load keys open it when the instant screen setting is on.
+  ---and load keys open it when the instant screen setting is on. The screen
+  ---ends with `trx.ui.ScreenContext:confirm` once the player saves or loads,
+  ---and with `trx.ui.ScreenContext:cancel` otherwise.
   SAVE_LOAD = h.IntegerConstant,
   ---The statistics that the game shows when a level ends, and the totals it
   ---shows when the game ends, with a `trx.ui.StatsContext`. The player skips
@@ -335,10 +337,11 @@ local SaveLoadContext = h.class("ui.SaveLoadContext", {
 
 ---The context of the statistics screen, for `trx.ui.Screen.STATS`.
 ---@class (exact) trx.ui.StatsContext: trx.ui.ScreenContext
----@trx.readonly background, is_bare, is_final, level
+---@trx.readonly background, is_bare, is_final, level, offers_save
 ---@field level trx.game.Level The level whose statistics the screen shows. The totals name the level that ended the game.
 ---@field is_final boolean Whether the screen shows the totals for the whole game rather than one level.
 ---@field is_bare boolean Whether the screen is drawn bare, as plain lines of text without a frame.
+---@field offers_save boolean Whether the screen offers a save before it ends, as `trx.savegame.set_save_offer` decides. A save made while the screen is held resumes after it.
 ---@field background string? The picture the screen stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
 local StatsContext = h.class("ui.StatsContext", {
   extends = "ui.ScreenContext",
@@ -346,6 +349,7 @@ local StatsContext = h.class("ui.StatsContext", {
     level = reported("level"),
     is_final = reported("is_final"),
     is_bare = reported("is_bare"),
+    offers_save = reported("offers_save"),
     background = background,
   },
 })

@@ -36,10 +36,12 @@ typedef struct {
     // What the menu opened for, for UI_TAKEOVER_SAVE_LOAD and UI_TAKEOVER_MENU.
     INVENTORY_MODE mode;
     // The level whose statistics the screen shows, whether it shows the totals
-    // of the whole game, and whether it is drawn bare, for UI_TAKEOVER_STATS.
+    // of the whole game, whether it is drawn bare, and whether it offers a
+    // save before it ends, for UI_TAKEOVER_STATS.
     const GF_LEVEL *level;
     bool is_final;
     bool is_bare;
+    bool offers_save;
     // The picture the screen stands on, or nullptr for none, for
     // UI_TAKEOVER_STATS, UI_TAKEOVER_GLOBE_SELECT, UI_TAKEOVER_PICTURE and
     // UI_TAKEOVER_MENU. The screen owns the path, and keeps it while the owner

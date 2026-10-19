@@ -162,7 +162,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - `trx.ui.Screen.PAUSE`  
         The pause screen, from the moment the game or an FMV pauses until it resumes or leaves for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
     - `trx.ui.Screen.SAVE_LOAD`  
-        The quick save or load screen, with a [`trx.ui.SaveLoadContext`](#ui.SaveLoadContext). The save and load keys open it when the instant screen setting is on.
+        The quick save or load screen, with a [`trx.ui.SaveLoadContext`](#ui.SaveLoadContext). The save and load keys open it when the instant screen setting is on. The screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) once the player saves or loads, and with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) otherwise.
     - `trx.ui.Screen.STATS`  
         The statistics that the game shows when a level ends, and the totals it shows when the game ends, with a [`trx.ui.StatsContext`](#ui.StatsContext). The player skips the screen as they would the engine's, and the screen also ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
     - `trx.ui.Screen.EXAMINE`  
@@ -434,6 +434,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.StatsContext.is_bare" name="ui.StatsContext.is_bare"></a>**`is_bare`**: boolean. Whether the screen is drawn bare, as plain lines of text without a frame. *(read-only)*
     - <a id="ui.StatsContext.is_final" name="ui.StatsContext.is_final"></a>**`is_final`**: boolean. Whether the screen shows the totals for the whole game rather than one level. *(read-only)*
     - <a id="ui.StatsContext.level" name="ui.StatsContext.level"></a>**`level`**: [trx.game.Level](GAME.md#game.Level). The level whose statistics the screen shows. The totals name the level that ended the game. *(read-only)*
+    - <a id="ui.StatsContext.offers_save" name="ui.StatsContext.offers_save"></a>**`offers_save`**: boolean. Whether the screen offers a save before it ends, as [`trx.savegame.set_save_offer`](SAVEGAME.md#savegame.set_save_offer) decides. A save made while the screen is held resumes after it. *(read-only)*
 
 - <a id="ui.GlobeContext" name="ui.GlobeContext"></a>[lua]`trx.ui.GlobeContext`
 

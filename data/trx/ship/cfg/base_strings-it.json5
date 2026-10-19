@@ -233,6 +233,9 @@
             "medipacks_used": "Kit Medici Usati",
             "none": "Nessuno",
             "pickups": "Oggetti",
+            "save_offer": "\\{review}Vuoi salvare adesso?",
+            "save_offer_no": "\\{review}No",
+            "save_offer_yes": "\\{review}Sì",
             "secrets": "Segreti Scoperti",
             "time_taken": "Tempo Impiegato",
         }
