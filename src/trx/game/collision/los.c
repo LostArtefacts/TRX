@@ -387,36 +387,32 @@ static int32_t M_ClipTargetWithSlopes(
 //
 // @param start  World-space ray origin
 // @param target World-space ray end
-// @param item   Item to check
-// @return       Whether the item collides with the segment
-bool LOS_CheckItemIntersectSegment(
+// @param bounds Object-local box to check
+// @param pos    World-space position of the object
+// @param rot_y  Y rotation of the object
+// @return       Whether the box collides with the segment
+static bool M_CheckBoxIntersectSegment(
     const GAME_VECTOR *const start, GAME_VECTOR *const target,
-    const ITEM *const item)
+    const BOUNDS_16 *const bounds, const XYZ_32 pos, const int16_t rot_y)
 {
     const double dx = target->x - start->x;
     const double dy = target->y - start->y;
     const double dz = target->z - start->z;
 
     // Translate into object-local space
-    const double ox = start->x - item->pos.x;
-    const double oy = start->y - item->pos.y;
-    const double oz = start->z - item->pos.z;
+    const double ox = start->x - pos.x;
+    const double oy = start->y - pos.y;
+    const double oz = start->z - pos.z;
 
     // Unrotate by -rot.y around Y axis
-    const float c = cosf(-item->rot.y * M_PI / DEG_180);
-    const float s = sinf(-item->rot.y * M_PI / DEG_180);
+    const float c = cosf(-rot_y * M_PI / DEG_180);
+    const float s = sinf(-rot_y * M_PI / DEG_180);
     const double lx = ox * c + oz * s;
     const double ly = oy;
     const double lz = oz * c - ox * s;
     const double ldx = dx * c + dz * s;
     const double ldy = dy;
     const double ldz = dz * c - dx * s;
-
-    // Local AABB extents from item's bounds
-    const BOUNDS_16 *const orig_bounds = Item_GetBoundsAccurate(item);
-    BOUNDS_16 patched_bounds = *orig_bounds;
-
-    const BOUNDS_16 *const bounds = &patched_bounds;
 
     // Parametric interval [t0..t1] in Q14 fixed-point
     double t0 = 0.0;
@@ -476,6 +472,59 @@ bool LOS_CheckItemIntersectSegment(
     target->z = start->z + t0 * dz;
 
     return true;
+}
+
+bool LOS_CheckItemIntersectSegment(
+    const GAME_VECTOR *const start, GAME_VECTOR *const target,
+    const ITEM *const item)
+{
+    return M_CheckBoxIntersectSegment(
+        start, target, Item_GetBoundsAccurate(item), item->pos, item->rot.y);
+}
+
+const STATIC_MESH *LOS_FindShatterableStatic(
+    const GAME_VECTOR *const start, const GAME_VECTOR *const target,
+    GAME_VECTOR *const out_hit_pos)
+{
+    GAME_VECTOR end = *target;
+    LOS_Check(start, &end, true);
+
+    const STATIC_MESH *best_mesh = nullptr;
+    int64_t best_dist = INT64_MAX;
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        for (int32_t j = 0; j < room->num_static_meshes; j++) {
+            const STATIC_MESH *const mesh = &room->static_meshes[j];
+            const STATIC_OBJECT_3D *const obj =
+                Object_Get3DStatic(mesh->static_num);
+            if (!obj->shatter.by_shot || !obj->collidable
+                || Room_IsStaticShattered(mesh)) {
+                continue;
+            }
+
+            GAME_VECTOR hit_pos = end;
+            if (!M_CheckBoxIntersectSegment(
+                    start, &hit_pos, &obj->collision_bounds, mesh->pos,
+                    mesh->rot.y)) {
+                continue;
+            }
+
+            const int64_t dist = SQUARE((int64_t)(hit_pos.x - start->x))
+                + SQUARE((int64_t)(hit_pos.y - start->y))
+                + SQUARE((int64_t)(hit_pos.z - start->z));
+            if (dist < best_dist) {
+                best_dist = dist;
+                best_mesh = mesh;
+                *out_hit_pos = hit_pos;
+                out_hit_pos->room_num = mesh->room_num;
+            }
+        }
+    }
+
+    if (best_mesh != nullptr) {
+        Room_GetSector(out_hit_pos->pos, &out_hit_pos->room_num);
+    }
+    return best_mesh;
 }
 
 // Smashes all objects along the ray path.
