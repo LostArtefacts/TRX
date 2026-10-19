@@ -36,7 +36,9 @@ static void M_ShowHelp(void)
     puts("   --mod <MOD_ID>: launch a specific game or mod directly.");
     puts("-e/--engine <1|2|3|4>: pick a game engine explicitly.");
     puts("-l/--level <PATH|NUM>: launch a level file or level number.");
-    puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
+    puts(
+        "-s/--save <NUM|q[NUM]>: launch from a specific save slot, or from a "
+        "quick save (starts at 1).");
     puts("   --test-record <PATH>: record gameplay events to file.");
     puts(
         "   --test-replay/--test-play <PATH>: replay gameplay events from "
@@ -92,6 +94,32 @@ static int32_t M_GuessEngineVersionFromLevelPath(const char *const path)
     const int32_t game_version = loader != nullptr ? loader->game_version : 0;
     File_Close(file);
     return game_version;
+}
+
+bool Shell_ParseSaveSlot(
+    const char *const text, STARTUP_SETTINGS *const settings)
+{
+    const char *number = text;
+    bool is_quick = false;
+    if (strncmp(text, "quick", strlen("quick")) == 0) {
+        number = text + strlen("quick");
+        is_quick = true;
+    } else if (text[0] == 'q') {
+        number = text + 1;
+        is_quick = true;
+    }
+
+    int32_t slot_num = 1;
+    if ((!is_quick || *number != '\0')
+        && !String_ParseInteger(number, &slot_num)) {
+        return false;
+    }
+    if (slot_num < 1) {
+        return false;
+    }
+    settings->save_to_load = slot_num - 1;
+    settings->save_is_quick = is_quick;
+    return true;
 }
 
 RESULT Shell_ParseArgs(VECTOR *const args, SHELL_ARGS **const out_args)
@@ -221,9 +249,7 @@ RESULT Shell_ParseArgs(VECTOR *const args, SHELL_ARGS **const out_args)
         }
         if ((!strcmp(arg, "-s") || !strcmp(arg, "--save"))
             && next_arg != nullptr) {
-            if (String_ParseInteger(next_arg, &result->startup.save_to_load)) {
-                result->startup.save_to_load--;
-            }
+            Shell_ParseSaveSlot(next_arg, &result->startup);
             i++;
         }
         if (!strcmp(arg, "--test-record") && next_arg != nullptr) {

@@ -32,9 +32,11 @@ Currently the following command line interface options are available:
   If `<num>` is an integer, plays the level with the given number within the
   main game flow (1-based).
 
-- `-s <num>`, `--save <num>`:  
+- `-s <num|q[num]>`, `--save <num|q[num]>`:  
   Runs the game immediately loading a specific save slot. The first save starts
-  at `num=1`. This option can be combined with `-l`/`--level`.
+  at `num=1`. `q` loads the most recent quick save, and `q2` the second most
+  recent, as the `/load` console command does. This option can be combined
+  with `-l`/`--level`.
 
 - `--test-record <PATH>`:  
   Records gameplay events to an external text file.

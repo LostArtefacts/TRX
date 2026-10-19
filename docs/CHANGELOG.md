@@ -77,6 +77,7 @@
 - Added `/debug zones`, which outlines the zones a mod watches (#6726)
 - Changed the `/give` console command to show the given items in the corner of the screen, except for `/give all`. Use `-q` to hide them.
 - Fixed a bug where console commands such as `/play` were ignored when issued during a loading screen (TRX1623)
+- Fixed the `-s` command line option not loading quick saves, such as `-s q1`
 - Fixed the console being covered by the game's fades, such as the title ring fading in from black
 - Fixed Lara holding an empty hand up as if it held a flare, after leaving fly mode while the flare was leaving her hand (TRX1701, regression from 1.9)
 
