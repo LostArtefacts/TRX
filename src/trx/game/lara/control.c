@@ -307,7 +307,7 @@ static void M_SoftStaticCollision(COLL_INFO *const coll)
             const STATIC_MESH *const mesh = &room->static_meshes[j];
             const STATIC_OBJECT_3D *const obj =
                 Object_Get3DStatic(mesh->static_num);
-            if (!obj->collidable
+            if (!obj->collidable || Room_IsStaticShattered(mesh)
                 || !XYZ_32_IsNearby(
                     lara_item->pos, mesh->pos, M_STATIC_COLL_DIST)) {
                 continue;

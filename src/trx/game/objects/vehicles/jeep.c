@@ -1130,9 +1130,9 @@ static void M_Static3DCollision(const ITEM *const jeep, const int32_t height)
         const ROOM *const room = Room_Get(coll_rooms[i]);
         for (int32_t j = 0; j < room->num_static_meshes; j++) {
             STATIC_MESH *const mesh = &room->static_meshes[j];
-            // TODO: update once shatterable statics are added; base game
-            // contains none in the same levels as the jeep.
-            // If mesh->shattered, continue.
+            if (Room_IsStaticShattered(mesh)) {
+                continue;
+            }
             const STATIC_OBJECT_3D *const obj =
                 Object_Get3DStatic(mesh->static_num);
             if (!obj->shatter.by_impact || !obj->collidable) {
@@ -1176,7 +1176,7 @@ static void M_Static3DCollision(const ITEM *const jeep, const int32_t height)
 
             FX_Debris_ShatterStatic(mesh, -128, coll_rooms[i], 0);
             Sound_Effect(SFX_HIT_ROCK, &jeep->pos, SPM_NORMAL);
-            // TODO: mesh->shattered = true;
+            Room_ShatterStatic(mesh);
         }
     }
 }

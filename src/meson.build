@@ -928,6 +928,7 @@ common_sources = [
   'trx/game/rooms/draw.c',
   'trx/game/rooms/floor_data.c',
   'trx/game/rooms/geometry.c',
+  'trx/game/rooms/statics.c',
   'trx/game/rooms/triggers/camera.c',
   'trx/game/rooms/triggers/cutseq.c',
   'trx/game/rooms/triggers/flip.c',

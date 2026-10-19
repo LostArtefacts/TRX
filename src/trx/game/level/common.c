@@ -58,6 +58,7 @@ void Level_Unload(void)
     Object_Reset();
     Camera_Reset();
     Walkable_Reset();
+    Room_ResetShatteredStatics();
 
     Output_SetTimeInGame(0.0f);
     Output_Overlay_SetLetterbox(0.0f);

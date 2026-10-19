@@ -596,7 +596,7 @@ bool Collide_CollideStaticObjects(
             const STATIC_OBJECT_3D *const obj =
                 Object_Get3DStatic(mesh->static_num);
 
-            if (!obj->collidable) {
+            if (!obj->collidable || Room_IsStaticShattered(mesh)) {
                 continue;
             }
 

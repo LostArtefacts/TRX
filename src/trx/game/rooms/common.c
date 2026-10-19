@@ -62,6 +62,8 @@ static void M_Shutdown(void)
     m_OutsideGridZ = 0;
     m_OutsideOriginCellX = 0;
     m_OutsideOriginCellZ = 0;
+
+    Room_ResetShatteredStatics();
 }
 
 static void M_AddFlipItems(const ROOM *const room)
