@@ -15,6 +15,14 @@
 
 static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
 
+static void M_UnlockBonusGame(void)
+{
+    if (Game_GetBonusFlag() != GBF_NONE) {
+        CONFIG_SET(g_Config.profile.new_game_plus_unlock, true);
+        Config_Update();
+    }
+}
+
 static void M_LoadPreprocess(void)
 {
     SG_Resume_ResetAllEntries();
@@ -39,10 +47,7 @@ static void M_LoadPostprocess(void)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     // The cached mesh positions describe Lara as she stood before the load.
     lara->mesh_pos_matrices_valid = false;
-    if (Game_GetBonusFlag() != GBF_NONE) {
-        CONFIG_SET(g_Config.profile.new_game_plus_unlock, true);
-        Config_Update();
-    }
+    M_UnlockBonusGame();
     if (lara->burn && !g_Config.gameplay.enable_enhanced_saves) {
         lara->burn = false;
         Lara_CatchFire();
@@ -123,7 +128,9 @@ bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
     SG_Manager_BindSlot(slot);
 
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    SG_Resume_StoreGameToEntry(current_level);
+    if (!GF_IsLevelEnding()) {
+        SG_Resume_StoreGameToEntry(current_level);
+    }
     SG_Resume_MirrorCurrentEntry(current_level);
 
     return SG_Manager_WriteSlot(slot);
@@ -157,6 +164,24 @@ RESULT Savegame_Load(const SAVEGAME_SLOT_REF slot)
     return result;
 }
 
+RESULT Savegame_LoadLevelEnd(const SAVEGAME_SLOT_REF slot)
+{
+    const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
+    FAIL_IF(savegame_info == nullptr, "the slot holds no saved game");
+    ASSERT(savegame_info->full_path != nullptr);
+
+    M_LoadPreprocess();
+
+    TRX_FILE *fp = nullptr;
+    MUST(File_OpenPath(savegame_info->full_path, FILE_OPEN_READ, &fp));
+    const RESULT result = SG_File_LoadLevelEndFromFile(fp);
+    File_Close(fp);
+
+    M_UnlockBonusGame();
+    m_InitialVersion = savegame_info->initial_version;
+    return result;
+}
+
 RESULT Savegame_UpdateDeathCounters(
     const SAVEGAME_SLOT_REF slot, const int32_t death_count)
 {
@@ -166,8 +191,8 @@ RESULT Savegame_UpdateDeathCounters(
 
     TRX_FILE *fp = nullptr;
     MUST(File_OpenPath(savegame_info->full_path, FILE_OPEN_READ_WRITE, &fp));
-    const RESULT result = SG_File_UpdateDeathCounters(
-        fp, savegame_info->level_num, death_count, savegame_info->is_quick);
+    const RESULT result =
+        SG_File_UpdateDeathCounters(fp, savegame_info, death_count);
     File_Close(fp);
     return result;
 }

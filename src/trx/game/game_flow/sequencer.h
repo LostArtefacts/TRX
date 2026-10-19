@@ -45,4 +45,8 @@ RESULT GF_DoLevelSequence(
     const GF_LEVEL *start_level, GF_SEQUENCE_CONTEXT seq_ctx,
     GF_COMMAND *out_cmd);
 
+// Returns whether a level has ended and shows its statistics. A save made
+// then holds the playthrough without the level, and resumes after them.
+bool GF_IsLevelEnding(void);
+
 RESULT GF_PlayAvailableStory(SAVEGAME_SLOT_REF slot, GF_COMMAND *out_cmd);

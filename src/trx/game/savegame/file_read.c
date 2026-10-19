@@ -13,6 +13,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/hub.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
@@ -1310,6 +1311,42 @@ static void M_SetInventoryCount(const OBJECT_ID object_id, const int32_t qty)
     Inv_AddItemNTimes(object_id, qty);
 }
 
+static RESULT M_LoadBonusFlag(JSON_READ_IO *const io)
+{
+    int32_t bonus_flag = false;
+    MUST(JSON_READ(io, "bonus_flag", &bonus_flag));
+    // saves made before Japanese mode was retired may carry its bit
+    Game_SetBonusFlag(bonus_flag & GBF_NGPLUS);
+    return OK;
+}
+
+static RESULT M_LoadCutscenesPlayed(JSON_READ_IO *const io)
+{
+    // Introduced in TRX 1.10
+    uint64_t cutscenes_played = 0;
+    if (JSON_ReadIO_HasKey(io, "cutscenes_played")) {
+        MUST(JSON_READ(io, "cutscenes_played", &cutscenes_played));
+        CutSeq_SetPlayedMask(cutscenes_played);
+    }
+    return OK;
+}
+
+static RESULT M_LoadWaypoints(JSON_READ_IO *const io)
+{
+    // Introduced in TRX 1.11
+    int32_t waypoint = WAYPOINT_NONE;
+    if (JSON_ReadIO_HasKey(io, "waypoint")) {
+        MUST(JSON_READ(io, "waypoint", &waypoint));
+        Waypoint_Set(waypoint);
+    }
+    int32_t waypoint_highest = WAYPOINT_NONE;
+    if (JSON_ReadIO_HasKey(io, "waypoint_highest")) {
+        MUST(JSON_READ(io, "waypoint_highest", &waypoint_highest));
+        Waypoint_SetHighest(waypoint_highest);
+    }
+    return OK;
+}
+
 RESULT SG_File_LoadInventory(JSON_READ_IO *const io)
 {
     MUST(JSON_PUSH(io, "inventory"));
@@ -1603,12 +1640,7 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
 {
     MUST(JSON_PUSH(io, "misc"));
 
-    {
-        int32_t bonus_flag = false;
-        MUST(JSON_READ(io, "bonus_flag", &bonus_flag));
-        // saves made before Japanese mode was retired may carry its bit
-        Game_SetBonusFlag(bonus_flag & GBF_NGPLUS);
-    }
+    MUST(M_LoadBonusFlag(io));
 
     {
         bool allies_hostile = false;
@@ -1640,28 +1672,9 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
         }
     }
 
-    {
-        // Introduced in TRX 1.10
-        uint64_t cutscenes_played = 0;
-        if (JSON_ReadIO_HasKey(io, "cutscenes_played")) {
-            MUST(JSON_READ(io, "cutscenes_played", &cutscenes_played));
-            CutSeq_SetPlayedMask(cutscenes_played);
-        }
-    }
+    MUST(M_LoadCutscenesPlayed(io));
 
-    {
-        // Introduced in TRX 1.11
-        int32_t waypoint = WAYPOINT_NONE;
-        if (JSON_ReadIO_HasKey(io, "waypoint")) {
-            MUST(JSON_READ(io, "waypoint", &waypoint));
-            Waypoint_Set(waypoint);
-        }
-        int32_t waypoint_highest = WAYPOINT_NONE;
-        if (JSON_ReadIO_HasKey(io, "waypoint_highest")) {
-            MUST(JSON_READ(io, "waypoint_highest", &waypoint_highest));
-            Waypoint_SetHighest(waypoint_highest);
-        }
-    }
+    MUST(M_LoadWaypoints(io));
 
     {
         // Introduced in TRX 1.11
@@ -1707,6 +1720,25 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
                 &(TRX_VALUE) { .type = TVT_RGB_888, .as_rgb = fog_color }));
         }
     }
+
+    MUST(JSON_POP(io));
+    return OK;
+}
+
+RESULT SG_File_LoadLevelEndMisc(JSON_READ_IO *const io)
+{
+    MUST(JSON_PUSH(io, "misc"));
+    MUST(M_LoadBonusFlag(io));
+    MUST(M_LoadCutscenesPlayed(io));
+    MUST(M_LoadWaypoints(io));
+
+    int32_t hub_next_level = 0;
+    MUST(JSON_READ(io, "hub_next_level", &hub_next_level));
+    Hub_SetNextLevelIndex(hub_next_level);
+
+    int32_t hub_lara_start = 0;
+    MUST(JSON_READ(io, "hub_lara_start", &hub_lara_start));
+    Hub_SetLaraStartIndex(hub_lara_start);
 
     MUST(JSON_POP(io));
     return OK;

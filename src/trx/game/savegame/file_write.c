@@ -10,6 +10,7 @@
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/hub.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/items/carrier.h>
@@ -763,6 +764,27 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
         }
     }
     JSONW_POP_AND_SET_NZ(io, "spent_ai_markers");
+    JSONW_POP_AND_SET(io, "misc");
+
+    JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");
+    JSONW_WRITE(io, "save_counter", SG_Manager_GetCounter());
+    JSONW_WRITE(io, "level_num", level->num);
+}
+
+void SG_File_DumpLevelEndMisc(JSON_WRITE_IO *const io)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
+
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE(io, "game_version", g_TRXVersion);
+    JSONW_WRITE(io, "bonus_flag", Game_GetBonusFlag());
+    JSONW_WRITE(io, "death_count", resume->stats.death_count);
+    JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
+    JSONW_WRITE(io, "waypoint", Waypoint_Get());
+    JSONW_WRITE(io, "waypoint_highest", Waypoint_GetHighest());
+    JSONW_WRITE(io, "hub_next_level", Hub_GetNextLevelIndex());
+    JSONW_WRITE(io, "hub_lara_start", Hub_GetLaraStartIndex());
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");

@@ -70,6 +70,8 @@ X_EVENT_HANDLER_LIST
 #undef X
 
 static const GF_LOADING_CAMERA_DATA *m_PendingLoadingCamera = nullptr;
+static bool m_IsLevelEnding = false;
+static bool m_IsResumingLevelEnd = false;
 
 static GF_SEQUENCE_EVENT_HANDLER m_EventHandlers[GFS_NUMBER_OF] = {
 #define X(id, name) [id] = name,
@@ -91,6 +93,18 @@ static void M_FinishLevelBasic(void)
     if (resume != nullptr) {
         resume->flags.available = true;
         resume->level_completed = true;
+    }
+}
+
+// Hands what Lara carries on to the next level. A level resumed from a save
+// made as it ended was never played, and hands on what the save kept.
+static void M_StoreGameToNextLevel(
+    const GF_LEVEL *const current_level, const GF_LEVEL *const next_level)
+{
+    if (m_IsResumingLevelEnd) {
+        SG_Resume_CarryGameToEntry(current_level, next_level);
+    } else {
+        SG_Resume_StoreGameToEntry(next_level);
     }
 }
 
@@ -124,7 +138,7 @@ M_GF_HANDLER(M_HandleLevelComplete)
         *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
         return OK;
     }
-    SG_Resume_StoreGameToEntry(next_level);
+    M_StoreGameToNextLevel(current_level, next_level);
     GF_InventoryModifier_ApplyHubReset(current_level, next_level);
     RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
     if (next_resume != nullptr) {
@@ -457,6 +471,7 @@ M_GF_HANDLER(M_HandleLevelStats)
         return OK;
     }
 
+    m_IsLevelEnding = true;
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .level_num = -1,
         .show_final_stats = false,
@@ -464,6 +479,7 @@ M_GF_HANDLER(M_HandleLevelStats)
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);
+    m_IsLevelEnding = false;
     *out_cmd = gf_cmd;
     return OK;
 }
@@ -507,7 +523,7 @@ M_GF_HANDLER(M_HandleGlobeSelect)
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
         const GF_LEVEL *const next_level = GF_GetLevel(GFLT_MAIN, gf_cmd.param);
         if (next_level != nullptr) {
-            SG_Resume_StoreGameToEntry(next_level);
+            M_StoreGameToNextLevel(current_level, next_level);
             RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
             if (next_resume != nullptr) {
                 next_resume->prev_level =
@@ -597,6 +613,16 @@ M_GF_HANDLER(M_HandleDisableFloor)
     }
     *out_cmd = gf_cmd;
     return OK;
+}
+
+bool GF_IsLevelEnding(void)
+{
+    return m_IsLevelEnding;
+}
+
+void GF_SetResumingLevelEnd(const bool resuming)
+{
+    m_IsResumingLevelEnd = resuming;
 }
 
 GF_SEQUENCE_EVENT_HANDLER GF_GetSequenceEventHandler(

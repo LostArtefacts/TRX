@@ -210,9 +210,12 @@ RESULT GF_DoLevelSequence(
     const GF_LEVEL_TABLE_TYPE level_table_type =
         GF_GetLevelTableType(current_level->type);
     const int32_t level_count = GF_GetLevelTable(level_table_type)->count;
+    GF_SEQUENCE_CONTEXT level_seq_ctx = seq_ctx;
     while (true) {
         GF_COMMAND gf_cmd;
-        MUST(GF_InterpretSequence(current_level, seq_ctx, nullptr, &gf_cmd));
+        MUST(GF_InterpretSequence(
+            current_level, level_seq_ctx, nullptr, &gf_cmd));
+        level_seq_ctx = GFSC_NORMAL;
 
         if (gf_cmd.action != GF_NOOP && gf_cmd.action != GF_LEVEL_COMPLETE) {
             *out_cmd = gf_cmd;
@@ -398,7 +401,11 @@ RESULT GF_RunUntilExit(GF_COMMAND gf_cmd)
             } else {
                 SG_Manager_BindSlot(slot);
                 const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
-                MUST(GF_DoLevelSequence(level, GFSC_SAVED, &gf_cmd));
+                const SAVEGAME_INFO *const info =
+                    SG_Manager_GetSavegameInfo(slot);
+                MUST(GF_DoLevelSequence(
+                    level, info->is_level_end ? GFSC_LEVEL_END : GFSC_SAVED,
+                    &gf_cmd));
             }
             break;
         }

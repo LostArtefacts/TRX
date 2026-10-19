@@ -28,6 +28,9 @@ bool Savegame_IsSavedItem(int32_t item_num);
 void Savegame_ProcessItemsBeforeLoad(void);
 void Savegame_ProcessItemsBeforeSave(void);
 RESULT Savegame_Load(SAVEGAME_SLOT_REF slot);
+// Loads the playthrough from a save made as a level ended. Leaves the level
+// itself unloaded.
+RESULT Savegame_LoadLevelEnd(SAVEGAME_SLOT_REF slot);
 bool Savegame_Save(SAVEGAME_SLOT_REF slot);
 RESULT Savegame_UpdateDeathCounters(
     SAVEGAME_SLOT_REF slot, int32_t death_count);

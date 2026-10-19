@@ -51,6 +51,18 @@ static bool M_IsPreLoadEvent(const GF_SEQUENCE_EVENT_TYPE type)
     return type == GFS_SETUP_HORIZON || type == GFS_SETUP_UV_ROTATE;
 }
 
+// Returns where a level's sequence resumes from a save made as the level
+// ended: the event after its statistics.
+static int32_t M_GetLevelEndEventIndex(const GF_SEQUENCE *const sequence)
+{
+    for (int32_t i = 0; i < sequence->length; i++) {
+        if (sequence->events[i].type == GFS_LEVEL_STATS) {
+            return i + 1;
+        }
+    }
+    return -1;
+}
+
 static GF_SEQUENCE_CONTEXT M_SwitchSequenceContext(
     const GF_SEQUENCE_EVENT *const event, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
@@ -122,7 +134,7 @@ void GF_ResetLevelSetup(const GF_SEQUENCE_CONTEXT seq_ctx)
     Output_SetUVRotateSpeed(0);
     Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
-    if (seq_ctx == GFSC_SAVED) {
+    if (seq_ctx == GFSC_SAVED || seq_ctx == GFSC_LEVEL_END) {
         Game_SetBonusFlag(GBF_NONE);
     }
 }
@@ -264,6 +276,15 @@ RESULT GF_InterpretSequence(
 
     // load the level
     const GF_SEQUENCE *const sequence = &level->sequence;
+    int32_t first_event = 0;
+    if (seq_ctx == GFSC_LEVEL_END) {
+        first_event = M_GetLevelEndEventIndex(sequence);
+        if (first_event < 0) {
+            LOG_ERROR("level %d has no statistics to resume after", level->num);
+            *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            return OK;
+        }
+    }
     for (int32_t i = 0; i < sequence->length; i++) {
         if (M_IsPreLoadEvent(sequence->events[i].type)) {
             GF_COMMAND pre_cmd;
@@ -276,19 +297,36 @@ RESULT GF_InterpretSequence(
             Level_Initialise(level, seq_ctx), "TRX cannot load the level");
     }
 
-    for (int32_t i = 0; i < sequence->length; i++) {
+    // A level resumed from a save made as it ended is loaded for what follows
+    // its statistics to draw over, such as the globe, and is not played.
+    if (seq_ctx == GFSC_LEVEL_END) {
+        if (!SHOULD(Savegame_LoadLevelEnd(SG_Manager_GetBoundSlot()))) {
+            *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            return OK;
+        }
+        seq_ctx = GFSC_NORMAL;
+        GF_SetResumingLevelEnd(true);
+    }
+
+    RESULT result = OK;
+    for (int32_t i = first_event; i < sequence->length; i++) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[i];
         if (M_IsPreLoadEvent(event->type)) {
             continue;
         }
-        MUST(M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg, &gf_cmd));
-        if (gf_cmd.action != GF_NOOP) {
-            *out_cmd = gf_cmd;
-            return OK;
+        result = M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg, &gf_cmd);
+        if (!IS_OK(result) || gf_cmd.action != GF_NOOP) {
+            break;
         }
 
         // Update sequence context if necessary
         seq_ctx = M_SwitchSequenceContext(event, seq_ctx);
+    }
+    GF_SetResumingLevelEnd(false);
+    MUST(result);
+    if (gf_cmd.action != GF_NOOP) {
+        *out_cmd = gf_cmd;
+        return OK;
     }
 
     LOG_DEBUG(

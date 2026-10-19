@@ -228,6 +228,26 @@ void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
     }
 }
 
+void SG_Resume_CarryGameToEntry(
+    const GF_LEVEL *const src_level, const GF_LEVEL *const dst_level)
+{
+    const RESUME_INFO *const src = SG_Resume_GetEntry(src_level);
+    RESUME_INFO *const dst = SG_Resume_GetEntry(dst_level);
+    if (src == nullptr || dst == nullptr) {
+        return;
+    }
+
+    dst->flags.available = true;
+    dst->lara_hitpoints = src->lara_hitpoints;
+    dst->burning = src->burning;
+    dst->flare_age = src->flare_age;
+    dst->inv = src->inv;
+    dst->equipped_gun_type = src->equipped_gun_type;
+    dst->holsters_gun_type = src->holsters_gun_type;
+    dst->back_gun_type = src->back_gun_type;
+    dst->gun_status = src->gun_status;
+}
+
 void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
 {
     RESUME_INFO *const resume = SG_Resume_GetEntry(level);

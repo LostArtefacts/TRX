@@ -76,7 +76,7 @@ static RESULT M_ReadRaw(
 
 static RESULT M_SaveRaw(
     TRX_FILE *const fp, const JSON_VALUE *const root, const int32_t level_num,
-    const bool is_quick)
+    const bool is_quick, const bool is_level_end)
 {
     size_t uncompressed_size = 0;
     char *uncompressed = nullptr;
@@ -104,6 +104,7 @@ static RESULT M_SaveRaw(
     };
     const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
         .flags = Game_GetBonusFlag() | (is_quick ? SAVEGAME_EXT_FLAG_QUICK : 0)
+            | (is_level_end ? SAVEGAME_EXT_FLAG_LEVEL_END : 0)
             | SAVEGAME_EXT_FLAG_SAVED_AT,
         .counter = JSON_ObjectGetInt(
             root_obj, "save_counter", SG_Manager_GetCounter()),
@@ -121,6 +122,15 @@ static RESULT M_SaveRaw(
 
     Memory_FreePointer(&uncompressed);
     Memory_FreePointer(&compressed);
+    return OK;
+}
+
+static RESULT M_LoadLevelEnd(JSON_READ_IO *const io)
+{
+    MUST(SG_File_LoadResumeInfoList(io));
+    MUST(SG_File_LoadLevelEndMisc(io));
+    MUST(SG_File_LoadRules(io));
+    MUST(LUA_Store_Load(io));
     return OK;
 }
 
@@ -175,25 +185,31 @@ RESULT SG_File_LoadFromFile(TRX_FILE *const fp)
 RESULT SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+    const bool is_level_end = GF_IsLevelEnding();
     JSON_WRITE_IO *const io = JSON_WriteIO_Create();
 
     SG_File_DumpResumeInfoList(io);
-    SG_File_DumpInventory(io);
-    SG_File_DumpFlipmaps(io);
-    SG_File_DumpCameras(io);
-    SG_File_DumpItems(io);
-    SG_File_DumpEffects(io);
-    SG_File_DumpFX(io);
-    Sparks_Save(io);
-    SG_File_DumpLara(io);
-    SG_File_DumpMusic(io);
-    SG_File_DumpRules(io);
-    SG_File_DumpMisc(io);
+    if (is_level_end) {
+        SG_File_DumpRules(io);
+        SG_File_DumpLevelEndMisc(io);
+    } else {
+        SG_File_DumpInventory(io);
+        SG_File_DumpFlipmaps(io);
+        SG_File_DumpCameras(io);
+        SG_File_DumpItems(io);
+        SG_File_DumpEffects(io);
+        SG_File_DumpFX(io);
+        Sparks_Save(io);
+        SG_File_DumpLara(io);
+        SG_File_DumpMusic(io);
+        SG_File_DumpRules(io);
+        SG_File_DumpMisc(io);
+    }
     LUA_Store_Dump(io);
 
     const RESULT result = M_SaveRaw(
         fp, JSON_WriteIO_GetRoot(io), current_level->num,
-        info != nullptr && info->is_quick);
+        info != nullptr && info->is_quick, is_level_end);
     JSON_WriteIO_Destroy(io);
     return result;
 }
@@ -226,6 +242,8 @@ RESULT SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
         info->counter = extra_header.counter;
         info->level_num = extra_header.level_num;
         info->is_quick = (extra_header.flags & SAVEGAME_EXT_FLAG_QUICK) != 0;
+        info->is_level_end =
+            (extra_header.flags & SAVEGAME_EXT_FLAG_LEVEL_END) != 0;
         info->level_title = Memory_Alloc(extra_header.title_size + 1);
         File_ReadData(fp, info->level_title, extra_header.title_size);
         info->saved_at = 0;
@@ -264,6 +282,19 @@ RESULT SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
     return result;
 }
 
+RESULT SG_File_LoadLevelEndFromFile(TRX_FILE *const fp)
+{
+    int32_t sg_version = -1;
+    JSON_VALUE *root = nullptr;
+    MUST(M_ReadRaw(fp, &sg_version, &root));
+    JSON_READ_IO *const io =
+        JSON_ReadIO_Create(root, sg_version, File_GetPath(fp));
+    const RESULT result = M_LoadLevelEnd(io);
+    JSON_ReadIO_Destroy(io);
+    JSON_ValueFree(root);
+    return result;
+}
+
 RESULT SG_File_LoadOnlyResumeInfo(TRX_FILE *const fp)
 {
     int32_t sg_version = -1;
@@ -278,9 +309,10 @@ RESULT SG_File_LoadOnlyResumeInfo(TRX_FILE *const fp)
 }
 
 RESULT SG_File_UpdateDeathCounters(
-    TRX_FILE *const fp, int32_t level_num, const int32_t death_count,
-    const bool is_quick)
+    TRX_FILE *const fp, const SAVEGAME_INFO *const info,
+    const int32_t death_count)
 {
+    const int32_t level_num = info->level_num;
     JSON_VALUE *root = nullptr;
     MUST(M_ReadRaw(fp, nullptr, &root));
 
@@ -320,7 +352,7 @@ RESULT SG_File_UpdateDeathCounters(
     }
 
     File_Seek(fp, 0, FILE_SEEK_SET);
-    result = M_SaveRaw(fp, root, level_num, is_quick);
+    result = M_SaveRaw(fp, root, level_num, info->is_quick, info->is_level_end);
 
 cleanup:
     JSON_ValueFree(root);
