@@ -546,7 +546,9 @@ static int M_L_GameExitToTitle(lua_State *const L)
 // trxc.game.exit_game()
 static int M_L_GameExitGame(lua_State *const L)
 {
-    LUA_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_GAME });
+    // Applies at once, even from a menu. The exit fade covers the menu as it
+    // holds still, so a menu that faded out first would fade twice.
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_GAME }, true);
     return 0;
 }
 

@@ -681,7 +681,7 @@ function Passport:control_book(keys)
       elseif page.role == pages.Page.EXIT_TO_TITLE then
         trx.game.exit_to_title()
       else
-        trx.game.exit_game()
+        ring.exit_game()
       end
       self:close(true)
       return

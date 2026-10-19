@@ -19,7 +19,7 @@ trx.locale.declare({
 local Role = trx.input.Role
 
 -- How long the backdrop takes to come in and to go, and how long the screen
--- rests on it before it leaves for the title screen.
+-- rests black before it leaves for the title screen.
 local FADE_TICKS = 12
 local EXIT_HOLD_TICKS = 3
 
@@ -53,24 +53,37 @@ function M.open(ctx)
     return state.pages[#state.pages]
   end
 
-  local function leave(target, hold, on_done)
+  -- Starts the screen leaving, and returns whether it was not leaving yet.
+  local function start_leaving()
     if state.is_leaving then
-      return
+      return false
     end
     state.is_leaving = true
-    fades:move(backdrop, target, FADE_TICKS, hold, on_done)
+    return true
   end
 
   local function resume()
-    leave(0, 0, function()
+    if not start_leaving() then
+      return
+    end
+    fades:move(backdrop, 0, FADE_TICKS, 0, function()
       ctx:resume()
     end)
   end
 
+  -- Fades to black over the backdrop, as a pattern or a tint does not end in
+  -- black.
   local function exit()
-    leave(1, EXIT_HOLD_TICKS, function()
-      ctx:exit_to_title()
-    end)
+    if not start_leaving() then
+      return
+    end
+    fades:leave({
+      ticks = FADE_TICKS,
+      hold = EXIT_HOLD_TICKS,
+      on_done = function()
+        ctx:exit_to_title()
+      end,
+    })
   end
 
   -- Shows what `push` opens in place of the list, until it closes.

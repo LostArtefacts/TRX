@@ -281,9 +281,9 @@ function M.open(ctx)
   }
   main[#main + 1] = {
     text = trx.locale.get("general/flat_menu/exit"),
+    -- The exit fade covers the menu, so the menu does not fade out itself.
     choose = function()
       trx.game.exit_game()
-      leave()
     end,
   }
   push(list_of(nil, main))
