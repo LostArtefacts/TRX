@@ -55,6 +55,7 @@
 - Changed the TR4 inventory to open on the item it was left on by default, as in the original game (Gameplay → General → Remember inventory position)
 - Changed the names of the items in the TR4 inventory to show in gold, as in the original game
 - Changed the texts of the examined items in TR4 to show in the colours of the original game (TRX484)
+- Changed the examine screen to show its hide dialog prompt where the rotate prompt shows, and to no longer repeat the name of the item over its description
 - Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
 - Changed the passport, compass and other inventory items to show their dialog only once they have finished opening, rather than sometimes while still turning (TRX1779)
 - Changed the default controller layout to follow the PS1 releases: TR3 and TR4 sprint with R2, crouch with L2 and have no side steps, and TR2 to TR4 light a flare with R1 and Select together (#6019 / TRX864)

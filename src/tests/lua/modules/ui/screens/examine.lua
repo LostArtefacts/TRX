@@ -54,7 +54,11 @@ end
 test("the description shows once the entry rests open", function()
   open("An old map of the caves.")
   assert(texts():find("An old map", 1, true), "the description is missing")
-  assert(h.ring_hint() == "", "a hint showed over the description")
+  local hide = trx.ui.input_hint_text(
+    Role.MENU_SHOW_INFO,
+    trx.locale.get("general/actions/hide_dialog")
+  )
+  assert(h.ring_hint() == hide, "hiding the description was not offered")
   finish()
 end)
 

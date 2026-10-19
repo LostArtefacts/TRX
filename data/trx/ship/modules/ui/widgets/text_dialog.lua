@@ -149,7 +149,7 @@ local function page_indicator(self)
 end
 
 ---@class common.ui.TextDialog.frame.settings
----@field title any The title, or a signal carrying it.
+---@field title? any The title, or a signal carrying it. A frame with no title has no title row.
 ---@field body trx.ui.Widget[] What goes under the title, in order.
 ---@field heavy? boolean Whether to draw the frame solid.
 ---@field spacing? number The gap between the parts. `0` by default.
@@ -159,13 +159,14 @@ end
 ---@param settings common.ui.TextDialog.frame.settings
 ---@return trx.ui.Widget
 function M.frame(settings)
-  local children = {
-    trx.ui.widgets.Stack({
+  local children = {}
+  if settings.title ~= nil then
+    children[1] = trx.ui.widgets.Stack({
       align = trx.ui.HAlign.CENTER,
       children = { trx.ui.widgets.Label({ text = settings.title }) },
-    }),
-    trx.ui.widgets.Spacer({ w = TITLE_MARGIN, h = TITLE_MARGIN }),
-  }
+    })
+    children[2] = trx.ui.widgets.Spacer({ w = TITLE_MARGIN, h = TITLE_MARGIN })
+  end
   for _, widget in ipairs(settings.body) do
     children[#children + 1] = widget
   end
@@ -187,6 +188,7 @@ end
 
 ---@class common.ui.TextDialog.settings
 ---@field heavy? boolean Whether to draw the frame solid.
+---@field titled? boolean Whether the dialog shows its title. `true` by default.
 ---@field footer? trx.ui.Widget A widget under the frame.
 ---@field visible? any Whether the dialog is visible, or a signal that holds it.
 
@@ -203,7 +205,7 @@ function M.new(settings)
   }, TextDialog)
 
   local frame = M.frame({
-    title = self.title,
+    title = settings.titled ~= false and self.title or nil,
     heavy = settings.heavy,
     body = { text_widget(self), page_indicator(self) },
   })
