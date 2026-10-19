@@ -783,6 +783,7 @@ end
 -- started only as the ring finishes, so the game is not leaving for it yet.
 local function leaves_game(state)
   return trx.game.is_leaving
+    or state.exits_on_close
     or state.demo_needed
     or (state.chosen == objects.PHOTO_OPTION and trx.game.gym ~= nil)
 end
@@ -1221,7 +1222,15 @@ local function run(state)
         state.stale = stale
         set_status(state, Status.OPENING, Motion.ARRIVE)
       elseif ended == Status.CLOSING then
-        if state.after_close == Status.FADING_OUT then
+        -- As the game exits, the exit fade covers the ring, so the ring rests
+        -- closed and does nothing more. A ring told to exit the game once it
+        -- has closed starts the exit at this point.
+        if state.exiting then
+          state.status = Status.FADING_OUT
+        elseif state.exits_on_close then
+          state.status = Status.FADING_OUT
+          trx.game.exit_game()
+        elseif state.after_close == Status.FADING_OUT then
           state.status = Status.FADING_OUT
           state.fades:leave({
             ticks = BLACK_TICKS,
@@ -1261,6 +1270,9 @@ end
 
 -- Reads the keys the player pressed while the ring is on top.
 local function control(state, keys)
+  if state.exiting then
+    return
+  end
   if state.status == Status.OPEN then
     if is_forced_mode(state.mode) and not state.passport_shown then
       pick(state, false)
@@ -1393,9 +1405,10 @@ local function open(ctx)
   local ticking = timer.every(1, function()
     run(state)
   end, { clock = timer.Clock.UI })
-  -- The ring holds still as the game exits, under the fade to black.
+  -- The ring goes on moving as the game exits, under the fade to black, so
+  -- that an entry part way through closing does not stop open.
   local exiting = trx.events.on_exit(function()
-    ticking:cancel()
+    state.exiting = true
   end)
 
   ctx:on_end(function()
@@ -1403,8 +1416,13 @@ local function open(ctx)
     exiting:detach()
     -- The engine ends the ring before it is done where something else, such
     -- as a console command, starts a level at once. The ring has had no time
-    -- to fade out, so it fades to black as it goes.
-    if state.status ~= Status.DONE and fade.enabled() then
+    -- to fade out, so it fades to black as it goes. As the game exits, the
+    -- exit fade has already covered it.
+    if
+      state.status ~= Status.DONE
+      and not state.exiting
+      and fade.enabled()
+    then
       fade.leave_to_black({ ticks = BLACK_TICKS, hold = BLACK_HOLD_TICKS })
     end
     if state.screen ~= nil then

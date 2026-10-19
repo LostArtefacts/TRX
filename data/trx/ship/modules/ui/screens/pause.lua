@@ -26,7 +26,7 @@ trx.locale.declare({
 local MARGIN = 50.0
 
 -- How long the backdrop takes to come in and to go, and how long the screen
--- rests on it before it leaves for the title screen.
+-- rests black before it leaves for the title screen.
 local FADE_TICKS = 12
 local EXIT_HOLD_TICKS = 3
 
@@ -147,28 +147,40 @@ function M.open(ctx)
     end,
   })
 
-  local function leave(target, hold, on_done)
+  -- Starts the screen leaving, and returns whether it was not leaving yet.
+  local function start_leaving()
     if is_leaving then
-      return
+      return false
     end
     is_leaving = true
     is_waiting = false
-    fades:move(backdrop, target, FADE_TICKS, hold, on_done)
+    return true
   end
 
   local function resume()
     trx.overlay.set_caption()
-    leave(0, 0, function()
+    if not start_leaving() then
+      return
+    end
+    fades:move(backdrop, 0, FADE_TICKS, 0, function()
       ctx:resume()
     end)
   end
 
-  -- The caption stays until the screen ends, because the question stands on
-  -- the room above it and would move down as the caption went.
+  -- Fades to black over the backdrop, as a pattern or a tint does not end in
+  -- black. The caption stays until the screen ends, because the question
+  -- stands on the room above it and would move down as the caption went.
   local function exit()
-    leave(1, EXIT_HOLD_TICKS, function()
-      ctx:exit_to_title()
-    end)
+    if not start_leaving() then
+      return
+    end
+    fades:leave({
+      ticks = FADE_TICKS,
+      hold = EXIT_HOLD_TICKS,
+      on_done = function()
+        ctx:exit_to_title()
+      end,
+    })
   end
 
   ctx:on_end(function()

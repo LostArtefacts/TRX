@@ -46,6 +46,21 @@ local function shows(text)
   return texts():find(text, 1, true) ~= nil
 end
 
+-- The deepest black that filled the screen over some ticks.
+local function darkest(count)
+  local result = 0
+  for _ = 1, count do
+    fake.tick()
+    for _, op in ipairs(fake.scene()) do
+      local alpha = op:match("^quad x=0 y=0 z=0 .* color=000000(%x%x)$")
+      if alpha ~= nil then
+        result = math.max(result, tonumber(alpha, 16))
+      end
+    end
+  end
+  return result
+end
+
 local function pause()
   trx.config.set("ui.text_scale", 1)
   trx.config.set("ui.menu_system", "flat")
@@ -109,6 +124,19 @@ test("exit to title leaves the flat pause screen for the title", function()
   press(Role.MENU_CONFIRM)
   ticks(SETTLE_TICKS)
   assert(fake.take_choice(PAUSE) == CHOICE_EXIT_TO_TITLE, "it did not leave")
+  finish()
+end)
+
+test("exit to title fades to black over a pattern backdrop", function()
+  trx.config.set("ui.pause_fade_effects", true)
+  trx.config.set("ui.pause_background_style", "pattern_wave")
+  pause()
+  press(Role.MENU_DOWN)
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  assert(darkest(SETTLE_TICKS) == 0xFF, "the screen did not go black")
+  assert(fake.take_choice(PAUSE) == CHOICE_EXIT_TO_TITLE, "it did not leave")
+  trx.config.set("ui.pause_background_style", "transparent")
   finish()
 end)
 

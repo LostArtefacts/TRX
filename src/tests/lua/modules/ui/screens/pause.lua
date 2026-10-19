@@ -35,6 +35,21 @@ local function caption()
   return trx.overlay.signals.caption:get()
 end
 
+-- The deepest black that filled the screen over some ticks.
+local function darkest(count)
+  local result = 0
+  for _ = 1, count do
+    fake.tick()
+    for _, op in ipairs(fake.scene()) do
+      local alpha = op:match("^quad x=0 y=0 z=0 .* color=000000(%x%x)$")
+      if alpha ~= nil then
+        result = math.max(result, tonumber(alpha, 16))
+      end
+    end
+  end
+  return result
+end
+
 -- Pauses the game, and waits for the backdrop to come in.
 local function pause()
   trx.config.set("ui.pause_fade_effects", true)
@@ -167,6 +182,17 @@ test("yes leaves for the title screen", function()
   fake.tick()
   press(Role.MENU_CONFIRM)
   assert(left() == CHOICE_EXIT_TO_TITLE)
+  finish()
+end)
+
+test("yes fades to black over the backdrop", function()
+  open()
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  fake.tick()
+  press(Role.MENU_CONFIRM)
+  assert(darkest(20) == 0xFF, "the screen did not go black")
+  assert(fake.take_choice(PAUSE) == CHOICE_EXIT_TO_TITLE)
   finish()
 end)
 

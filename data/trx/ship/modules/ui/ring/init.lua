@@ -67,6 +67,16 @@ function M.take_request()
   return object
 end
 
+-- Exits the game once the open ring has closed, so that the ring closes before
+-- the exit fade covers it. Without an open ring, the game exits at once.
+function M.exit_game()
+  if active == nil then
+    trx.game.exit_game()
+    return
+  end
+  active.exits_on_close = true
+end
+
 -- Returns what the open ring was opened for, a `trx.ui.MenuMode`, or nil
 -- while no ring is open.
 function M.mode()

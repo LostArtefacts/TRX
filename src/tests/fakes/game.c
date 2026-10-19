@@ -574,6 +574,9 @@ void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
     case GF_RESTART_GAME:
         FAKE_RECORD("restart_level", FV(num));
         break;
+    case GF_EXIT_GAME:
+        FAKE_RECORD("exit_game");
+        break;
     case GF_NEW_GAME: {
         const bool ng_plus = command.param == GBF_NGPLUS;
         FAKE_RECORD("new_game", FV(ng_plus), FV(immediate));
