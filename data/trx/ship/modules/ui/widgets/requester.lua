@@ -111,12 +111,19 @@ function M.new(settings)
   local panel = nil
 
   -- How wide the frame is decides which corners it has to keep clear of, and
-  -- so how much room its rows have.
+  -- so how much room its rows have. The frame measures its rows, and they can
+  -- ask for its width again before it has one, so that call takes the last
+  -- width rather than measuring the frame without end.
+  local last_width = settings.min_w
+  local is_measuring = false
   local function frame_width()
-    if panel ~= nil then
-      return (panel:measure())
+    if panel == nil or is_measuring then
+      return last_width
     end
-    return settings.min_w
+    is_measuring = true
+    last_width = panel:measure()
+    is_measuring = false
+    return last_width
   end
 
   -- How many rows fit, which follows the rows and the room the screen leaves.
