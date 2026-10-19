@@ -53,6 +53,7 @@ trxc = {}
 ---@class (exact) trxc.api
 ---@field set_color_ctor fun(fn: fun(r: number, g: number, b: number, owner: any, key: any): trx.math.Color)
 ---@field set_entrypoint fun(name: string, fn: function)
+---@field traceback fun(err: any): any
 
 ---@class (exact) trxc.assault
 ---@field finish fun(track?: trx.assault.Track)

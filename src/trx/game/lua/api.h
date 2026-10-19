@@ -2,6 +2,10 @@
 
 #include <lua.h>
 
+// Separates an error message from the traceback that luaL_traceback appends to
+// it.
+#define LUA_TRACEBACK_MARKER "\nstack traceback:"
+
 // Pushes one of the C entrypoints api.lua hands over, such as "seal". They are
 // not on trx.api, so there is no name to reach them by from a script; see
 // lua/capi/api.c. False if it was never handed over, and nothing is pushed.

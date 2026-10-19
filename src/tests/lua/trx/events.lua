@@ -415,6 +415,28 @@ test("a handler that raises logs where it failed", function()
   )
 end)
 
+test("a handler that raises again logs where the error began", function()
+  local h = require("trx.internal.helpers")
+  local function fail_deep_down()
+    error("deep boom")
+  end
+  local function call_down()
+    fail_deep_down()
+  end
+  local listener = trx.events.before_control(function()
+    error(h.failure(call_down), 0)
+  end)
+  fake.fire("before_control")
+  listener:detach()
+
+  local log = fake.calls().log
+  assert(log ~= nil and log.count > 0, "nothing was logged")
+  assert(log.message:find("fail_deep_down", 1, true), log.message)
+  local shown = fake.console_last()
+  assert(shown:find("deep boom", 1, true), shown)
+  assert(not shown:find("stack traceback", 1, true), "the console shows it")
+end)
+
 test("composed text reaches a handler as a string", function()
   local seen = {}
   trx.events.on_text_input(function(text)

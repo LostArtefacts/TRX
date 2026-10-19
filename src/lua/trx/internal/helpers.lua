@@ -9,6 +9,7 @@
 local struct = trxc.struct
 local enum = trxc.enum
 local catalog = trxc.catalog
+local traceback = trxc.api.traceback
 
 -- The table every module hangs off. C creates it; this declares it for the
 -- annotations.
@@ -315,8 +316,13 @@ function M.handle(path, backing, spec)
   })
 end
 
+-- A message handler for xpcall that adds the stack where an error was raised
+-- to the message. Code that catches an error and raises it again passes it, so
+-- the log shows where the error began.
+M.traceback = traceback
+
 -- Calls fn with the arguments, where there is one, and returns the error it
--- raised, or nil. A module that runs script callbacks as it closes something
+-- raised, with the stack where it was raised, or nil. A module that runs script callbacks as it closes something
 -- finishes the close before it raises the first error.
 ---@param fn function?
 ---@return any
@@ -324,7 +330,7 @@ function M.failure(fn, ...)
   if fn == nil then
     return nil
   end
-  local ok, err = pcall(fn, ...)
+  local ok, err = xpcall(fn, traceback, ...)
   if ok then
     return nil
   end

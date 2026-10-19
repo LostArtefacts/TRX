@@ -187,12 +187,25 @@ end
 
 -- Removes a layer that raised an error. Returns that error, followed by the
 -- error that the close callback raised, if any.
+-- Splits an error into its message and the traceback that h.traceback added to
+-- it, which is empty where it has none.
+local function split_traceback(err)
+  local text = tostring(err)
+  local at = text:find("\nstack traceback:", 1, true)
+  if at == nil then
+    return text, ""
+  end
+  return text:sub(1, at - 1), text:sub(at)
+end
+
 local function remove_failed(layer, err)
   local close_err = remove(layer)
   if close_err == nil then
     return err
   end
-  return tostring(err) .. "\n" .. tostring(close_err)
+  local message, trace = split_traceback(err)
+  local close_message, close_trace = split_traceback(close_err)
+  return message .. "\n" .. close_message .. trace .. close_trace
 end
 
 local function close(layer)
