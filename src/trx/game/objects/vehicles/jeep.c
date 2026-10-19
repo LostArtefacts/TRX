@@ -1133,13 +1133,9 @@ static void M_Static3DCollision(const ITEM *const jeep, const int32_t height)
             // TODO: update once shatterable statics are added; base game
             // contains none in the same levels as the jeep.
             // If mesh->shattered, continue.
-            if (mesh->static_num < 50 || mesh->static_num > 59) {
-                continue;
-            }
-
             const STATIC_OBJECT_3D *const obj =
                 Object_Get3DStatic(mesh->static_num);
-            if (!obj->collidable) {
+            if (!obj->shatter.by_impact || !obj->collidable) {
                 continue;
             }
 
