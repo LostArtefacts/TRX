@@ -406,6 +406,12 @@ void Lara_UseItem(const OBJECT_ID obj_id)
                 == NO_OBJECT
             && ObjectLink_Get(option_id, OBJ_LINK_KEY_TO_VEHICLE)
                 == NO_OBJECT) {
+            // TR4 refuses an item that fits nothing, such as a combo piece,
+            // as it refuses one that fits nothing nearby. A gun is not
+            // refused, as the end of this function draws it.
+            if (g_TRVersion >= 4 && request_gun_type == LGT_UNARMED) {
+                Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
+            }
             break;
         }
 
