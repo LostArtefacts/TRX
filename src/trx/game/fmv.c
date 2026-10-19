@@ -144,6 +144,7 @@ static void M_DrawFrame(const M_RENDER_CONTEXT *const ctx)
     Output_SetTime((float)(Clock_GetRealTime() * LOGIC_FPS));
     UI_BeginScene();
     UI_BeginLayer(UI_LAYER_BACKDROP);
+    Output_ApplyPendingClear();
     Output_Quad_Render(ctx->renderer_2d);
     UI_EndLayer(UI_LAYER_BACKDROP);
 }

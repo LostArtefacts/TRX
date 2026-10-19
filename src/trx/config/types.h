@@ -306,6 +306,7 @@ typedef struct {
         int32_t fps;
         bool enable_trapezoid_filter;
         bool enable_affine_mapping;
+        bool enable_hall_of_mirrors;
         bool enable_lighting;
         bool enable_ps1_blending;
         bool enable_ps1_fog;

@@ -1641,6 +1641,10 @@
             "title": "Mappatura texture affine",
             "description": "Elimina la correzione prospettica delle texture (caratteristica assente su PlayStation) facendo sì che le texture si deformino e ondeggino sulle superfici quando la telecamera si muove.",
         },
+        "rendering.enable_hall_of_mirrors": {
+            "title": "\\{review}Sala degli specchi",
+            "description": "\\{review}Lascia sullo schermo il fotogramma precedente dove non viene disegnato nulla, come nelle versioni PC. Alcuni livelli lo usano per degli effetti, come a Thames Wharf. Le aree all'aperto senza skybox vengono comunque ripulite.",
+        },
         "rendering.enable_palette_quantize": {
             "title": "Quantizzazione tavolozza",
             "description": "Adatta ogni colore renderizzato al colore più vicino della tavolozza del livello. Con la retinatura abilitata, i colori vengono adattati in base alla tavolozza disponibile.",

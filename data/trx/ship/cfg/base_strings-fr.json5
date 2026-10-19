@@ -1641,6 +1641,10 @@
             "title": "\\{review}Placage de textures affine",
             "description": "\\{review}Supprime la correction de perspective du placage de textures, absente sur PlayStation : les textures se déforment et ondulent sur les grandes surfaces quand la caméra bouge.",
         },
+        "rendering.enable_hall_of_mirrors": {
+            "title": "\\{review}Galerie des glaces",
+            "description": "\\{review}Laisse l'image précédente à l'écran là où rien n'est dessiné, comme dans les versions PC. Certains niveaux s'en servent pour des effets, comme à Thames Wharf. Les zones extérieures sans skybox sont toujours effacées.",
+        },
         "rendering.enable_palette_quantize": {
             "title": "\\{review}Quantification de la palette",
             "description": "\\{review}Ramène chaque couleur rendue à la couleur la plus proche de la palette du niveau. Avec le tramage activé, la palette nuance entre ses couleurs.",

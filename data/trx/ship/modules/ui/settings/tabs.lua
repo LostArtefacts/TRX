@@ -322,6 +322,7 @@ local TABS = {
     "rendering.enable_ps1_fog",
     "rendering.enable_ps1_blending",
     "rendering.enable_affine_mapping",
+    "rendering.enable_hall_of_mirrors",
     "rendering.dither_mode",
     "rendering.enable_palette_quantize",
 

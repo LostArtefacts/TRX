@@ -305,6 +305,11 @@ static void M_SetBounds(
     }
 }
 
+static bool M_IsSkyboxDrawn(void)
+{
+    return Output_IsSkyboxEnabled() && Object_Get(O_SKYBOX)->loaded;
+}
+
 static void M_DrawSkybox(void)
 {
     if (!Output_IsSkyboxEnabled()) {
@@ -552,6 +557,10 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     }
 
     M_GetBounds();
+
+    if (!m_Outside || M_IsSkyboxDrawn()) {
+        Output_KeepPreviousFrame();
+    }
 
     if (m_Outside) {
         M_DrawSkybox();
