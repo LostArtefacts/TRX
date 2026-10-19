@@ -1153,8 +1153,8 @@
             "description": "Active la console de développement.",
         },
         "gameplay.enable_continuous_pushblocks": {
-            "title": "\\{review}Blocs déplaçables en continu",
-            "description": "\\{review}Permet à Lara de continuer à pousser ou tirer des blocs tant que le bouton d’action est maintenu, comme dans TR4+. Si désactivé, Lara s’arrête après chaque animation de poussée/traction.",
+            "title": "\\{review}Poussée continue",
+            "description": "\\{review}Permet à Lara de continuer à pousser ou tirer des objets tant que le bouton d’action est maintenu, comme dans TR4+. Si désactivé, Lara s’arrête après chaque animation de poussée/traction.",
         },
         "gameplay.enable_controlled_drops": {
             "title": "\\{review}Chutes contrôlées",

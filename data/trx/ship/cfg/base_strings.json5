@@ -1153,8 +1153,8 @@
             "description": "Enables the developer console.",
         },
         "gameplay.enable_continuous_pushblocks": {
-            "title": "Continuous pushblocks",
-            "description": "Allows Lara to continue pushing or pulling blocks as long as action is held, similar to TR4+. If disabled, Lara will stop after each push/pull animation.",
+            "title": "Continuous pushables",
+            "description": "Allows Lara to continue pushing or pulling objects as long as action is held, as per TR4+. If disabled, Lara will stop after each push/pull animation.",
         },
         "gameplay.enable_controlled_drops": {
             "title": "Controlled drops",
