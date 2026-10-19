@@ -125,7 +125,7 @@ local MenuMode = {
   LOAD = h.IntegerConstant,
   ---Opened because Lara died.
   DEATH = h.IntegerConstant,
-  ---Opened by a save crystal.
+  ---Opened by a save crystal, or to offer a save as a level ends.
   SAVE_CRYSTAL = h.IntegerConstant,
 }
 ui.MenuMode = h.enum("ui.MenuMode", "INVENTORY_MODE", MenuMode)

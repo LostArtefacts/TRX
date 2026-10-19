@@ -12,6 +12,13 @@ function save_crystal.initialise()
       trx.inventory.give(trx.catalog.objects.save_crystal_item)
     end
   end)
+
+  -- The crystal modes lock saving to the crystals, so the game offers a save
+  -- as each level ends, like the PS1 releases.
+  trx.savegame.set_save_offer(function()
+    local mode = trx.config.get("gameplay.save_crystal_mode")
+    return mode == "save" or mode == "save_pickup"
+  end)
 end
 
 return save_crystal
