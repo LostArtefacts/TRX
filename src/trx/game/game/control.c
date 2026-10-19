@@ -76,15 +76,6 @@ void Game_End(void)
 GF_COMMAND Game_Control(const bool demo_mode)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (UI_IsSaveRequested() && !lara->extra_anim) {
-        // ask for a save at the start of a level for the save crystals mode
-        const GF_COMMAND gf_cmd = GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
-        UI_RequestSave(false);
-        if (gf_cmd.action != GF_NOOP) {
-            return gf_cmd;
-        }
-    }
-
     Interpolation_Remember();
     if (!Game_IsInGym() || Gym_TrackManager_IsTimerActive(GYM_TRACK_ASSAULT)
         || Gym_TrackManager_IsTimerActive(GYM_TRACK_QUAD)

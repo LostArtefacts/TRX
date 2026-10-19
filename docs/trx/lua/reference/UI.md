@@ -196,7 +196,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - `trx.ui.MenuMode.DEATH`  
         Opened because Lara died.
     - `trx.ui.MenuMode.SAVE_CRYSTAL`  
-        Opened by a save crystal.
+        Opened by a save crystal, or to offer a save as a level ends.
 
 ### Structures
 
