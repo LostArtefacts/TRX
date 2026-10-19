@@ -32,6 +32,10 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *level);
 
 // Takes the running game into the level's entry.
 void SG_Resume_StoreGameToEntry(const GF_LEVEL *level);
+// Copies what SG_Resume_StoreGameToEntry stores from one level's entry to
+// another's, for a level whose world is not loaded.
+void SG_Resume_CarryGameToEntry(
+    const GF_LEVEL *src_level, const GF_LEVEL *dst_level);
 
 // Mirrors a level's entry into the one the GFL_CURRENT level holds, which is
 // where a save looks for the game it is about to write.

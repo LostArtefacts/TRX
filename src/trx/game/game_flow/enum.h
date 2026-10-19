@@ -30,6 +30,7 @@ typedef enum {
     GFSC_RESTART,
     GFSC_SELECT,
     GFSC_STORY,
+    GFSC_LEVEL_END,
 } GF_SEQUENCE_CONTEXT;
 
 typedef enum {

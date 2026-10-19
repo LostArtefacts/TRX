@@ -58,9 +58,19 @@ const GF_LEVEL *Hub_GetNextLevel(void)
     return level;
 }
 
+int32_t Hub_GetNextLevelIndex(void)
+{
+    return m_NextLevel;
+}
+
 void Hub_SetLaraStartIndex(const int32_t start_idx)
 {
     m_LaraStartPos = start_idx;
+}
+
+int32_t Hub_GetLaraStartIndex(void)
+{
+    return m_LaraStartPos;
 }
 
 void Hub_InitialiseLaraStart(void)
