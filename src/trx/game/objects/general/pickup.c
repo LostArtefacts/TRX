@@ -610,8 +610,8 @@ static const BOUNDS_16 *M_FindPlinthBounds(const ITEM *const item)
         const STATIC_MESH *const mesh = &room->static_meshes[i];
         const STATIC_OBJECT_3D *const obj =
             Object_Get3DStatic(mesh->static_num);
-        if (!obj->visible || mesh->pos.x != item->pos.x
-            || mesh->pos.z != item->pos.z) {
+        if (!obj->visible || Room_IsStaticShattered(mesh)
+            || mesh->pos.x != item->pos.x || mesh->pos.z != item->pos.z) {
             continue;
         }
 

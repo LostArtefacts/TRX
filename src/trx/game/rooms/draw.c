@@ -496,7 +496,8 @@ static void M_DrawSingleRoom(const ROOM *const room)
 
     for (int32_t i = 0; i < room->num_static_meshes; i++) {
         const STATIC_MESH *const mesh = &room->static_meshes[i];
-        if (M_DrawSet_Has(&m_DrawnStatics, mesh->draw_num)) {
+        if (M_DrawSet_Has(&m_DrawnStatics, mesh->draw_num)
+            || Room_IsStaticShattered(mesh)) {
             continue;
         }
         const STATIC_OBJECT_3D *const obj =
