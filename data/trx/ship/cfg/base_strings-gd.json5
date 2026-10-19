@@ -1641,6 +1641,10 @@
             "title": "\\{review}Mapadh inneach afaineach",
             "description": "\\{review}Bheir seo air falbh ceartachadh sealladh-doimhneachd bhon inneach, rud nach robh aig a' PlayStation, agus mar sin bidh na h-inneachan a' cur car dhiubh fhèin air uachdaran mòra nuair a ghluaiseas an camara.",
         },
+        "rendering.enable_hall_of_mirrors": {
+            "title": "\\{review}Talla nan sgàthan",
+            "description": "\\{review}Fàgaidh e am frèam roimhe air an sgrìn far nach eil dad ga tharraing, mar a rinn na tionndaidhean PC. Cleachdaidh cuid a dh'ìrean seo airson èifeachdan, mar ann an Thames Wharf. Thèid raointean a-muigh gun skybox fhalamhachadh fhathast.",
+        },
         "rendering.enable_palette_quantize": {
             "title": "\\{review}Cainnideachadh a' phaileid",
             "description": "\\{review}Gluaisidh e gach dath a chaidh a reandaradh chun an datha as fhaisge ann am paileid na h-ìre. Le dithering air, bheir am paileid sgàilean eadar a dhathan.",

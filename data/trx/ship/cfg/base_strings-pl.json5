@@ -1641,6 +1641,10 @@
             "title": "\\{review}Afiniczne mapowanie tekstur",
             "description": "\\{review}Usuwa korekcję perspektywy przy teksturowaniu, której PlayStation nie miało, więc tekstury falują i pływają po dużych powierzchniach przy ruchu kamery.",
         },
+        "rendering.enable_hall_of_mirrors": {
+            "title": "\\{review}Sala luster",
+            "description": "\\{review}Pozostawia na ekranie poprzednią klatkę tam, gdzie nic nie jest rysowane, jak w wersjach na PC. Niektóre poziomy używają tego do efektów, na przykład Thames Wharf. Obszary na zewnątrz bez skyboksa są nadal czyszczone.",
+        },
         "rendering.enable_palette_quantize": {
             "title": "\\{review}Kwantyzacja palety",
             "description": "\\{review}Dopasowuje każdy renderowany kolor do najbliższego koloru z palety poziomu. Przy włączonym ditheringu paleta cieniuje między swoimi kolorami.",

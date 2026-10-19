@@ -5,6 +5,7 @@
         "rendering.enable_ps1_fog": false,
         "rendering.enable_ps1_blending": false,
         "rendering.lighting_curve": "flat",
+        "rendering.enable_hall_of_mirrors": true,
         "rendering.enable_affine_mapping": false,
         "ui.menu_style": "pc",
         "ui.enable_smooth_bars": false,

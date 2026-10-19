@@ -22,6 +22,15 @@ void Output_FlipScreen(void);
 
 void Output_SwitchViewport(VIEWPORT_SPACE space);
 
+// Keeps the previous frame in the game viewport for this frame instead of
+// clearing it, so that it shows through where nothing is drawn. Has an effect
+// only when the hall of mirrors option is enabled and wireframe mode is off.
+// Call it before anything draws into the game viewport.
+void Output_KeepPreviousFrame(void);
+// Clears the game viewport now if its clear was held back. Call it before
+// drawing into the game viewport outside the scene compositor.
+void Output_ApplyPendingClear(void);
+
 // Suspends or restores supersampling and resizes the framebuffers to match.
 // Call it between frames only.
 void Output_SetSupersamplingEnabled(bool enabled);

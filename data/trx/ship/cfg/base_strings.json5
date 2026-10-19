@@ -1641,6 +1641,10 @@
             "title": "Affine texture mapping",
             "description": "Drops perspective correction from texturing, as the PlayStation had none, so textures warp and swim across large surfaces when the camera moves.",
         },
+        "rendering.enable_hall_of_mirrors": {
+            "title": "Hall of mirrors",
+            "description": "Leaves the previous frame on screen where nothing is drawn, as the PC releases did. Some levels use this for effects, such as in Thames Wharf. Outdoor areas with no skybox are still cleared.",
+        },
         "rendering.enable_palette_quantize": {
             "title": "Palette quantization",
             "description": "Maps every rendered color to the nearest color in the level palette. With dithering on, the palette shades between its colors.",

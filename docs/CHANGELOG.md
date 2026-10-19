@@ -29,6 +29,7 @@
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
 - Added an option to blend smoke, shadows, footprints and blood as the PlayStation did (Graphic Options → Rendering → PlayStation blending)
 - Added splashes where rain hits the ground or the water (Graphic Options → Visuals → Rain splashes) (#6838 / TRX1726)
+- Added an option to leave the previous frame on screen where nothing is drawn, as the PC releases did, which some levels such as Thames Wharf use for effects (Graphic Options → Rendering → Hall of mirrors) (TRX1814)
 - Added the PlayStation blending of faces such as water surfaces, glass and the snowmobile windshield to TR1 and TR2 (Graphic Options → Rendering → PlayStation blending)
 - Improved the frame rate, as the game now draws solid surfaces faster
 - Changed rain to fall as far as the fog reaches, rather than only near Lara

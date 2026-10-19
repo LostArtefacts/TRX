@@ -136,6 +136,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         return;
     }
 
+    Output_ApplyPendingClear();
     TRX_GL_Renderer_InvalidateScene();
     SceneCompositor_BindTextures();
     M_SetupScene(p);

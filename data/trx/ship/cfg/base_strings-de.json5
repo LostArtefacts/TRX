@@ -1641,6 +1641,10 @@
             "title": "\\{review}Affines Textur-Mapping",
             "description": "\\{review}Lässt die perspektivische Korrektur beim Texturieren weg, die der PlayStation fehlte, sodass Texturen auf großen Flächen verzerren und wandern, wenn sich die Kamera bewegt.",
         },
+        "rendering.enable_hall_of_mirrors": {
+            "title": "\\{review}Spiegelsaal",
+            "description": "\\{review}Lässt das vorherige Bild dort auf dem Bildschirm, wo nichts gezeichnet wird, wie in den PC-Versionen. Manche Level nutzen dies für Effekte, etwa in Thames Wharf. Außenbereiche ohne Skybox werden weiterhin geleert.",
+        },
         "rendering.enable_palette_quantize": {
             "title": "\\{review}Paletten-Quantisierung",
             "description": "\\{review}Rastet jede gerenderte Farbe auf die nächstgelegene Farbe der Levelpalette ein. Bei aktiviertem Dithering mischt die Palette zwischen ihren Farben.",

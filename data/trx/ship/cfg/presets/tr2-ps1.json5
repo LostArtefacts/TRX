@@ -4,6 +4,7 @@
         "rendering.dither_mode": "ps1",
         "rendering.enable_ps1_fog": true,
         "rendering.enable_ps1_blending": true,
+        "rendering.enable_hall_of_mirrors": false,
         "rendering.enable_affine_mapping": true,
         "ui.menu_style": "ps1",
         "ui.enable_smooth_bars": false,
