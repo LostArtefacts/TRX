@@ -13,6 +13,10 @@
             "unbind": "Usuń przypisanie",
             "use_item": "Użyj",
         },
+        "ammo": {
+            "count_fmt": "\\{review}%d x %s",
+            "unlimited_fmt": "\\{review}%s bez limitu",
+        },
         "config_presets": {
             "applied": "Ustawienia zastosowane.",
             "confirm_apply": "\\{review}Zastosuj",
@@ -24,6 +28,7 @@
             "title_fmt": "Zastosować ustawienia %s?",
         },
         "flat_menu": {
+            "choose_ammo": "\\{review}WYBIERZ AMUNICJĘ",
             "combine": "\\{review}POŁĄCZ",
             "combine_with": "\\{review}POŁĄCZ Z",
             "count_fmt": "\\{review}%d x %s",

@@ -13,6 +13,10 @@
             "unbind": "Freigeben",
             "use_item": "Benutzen",
         },
+        "ammo": {
+            "count_fmt": "\\{review}%d x %s",
+            "unlimited_fmt": "\\{review}%s unbegrenzt",
+        },
         "config_presets": {
             "applied": "\\{review}Voreinstellung angewendet.",
             "confirm_apply": "\\{review}Anwenden",
@@ -24,6 +28,7 @@
             "title_fmt": "\\{review}Voreinstellung %s anwenden?",
         },
         "flat_menu": {
+            "choose_ammo": "\\{review}MUNITION WÄHLEN",
             "combine": "\\{review}KOMBINIEREN",
             "combine_with": "\\{review}KOMBINIEREN MIT",
             "count_fmt": "\\{review}%d x %s",

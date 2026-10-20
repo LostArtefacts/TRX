@@ -227,6 +227,92 @@ test("using an entry uses it once the menu closes", function()
   finish()
 end)
 
+-- Opens the menu on the shotgun, carrying shots of both its kinds.
+local function open_on_shotgun()
+  local shotgun = trx.weapons.shotgun
+  local normal, wideshot = table.unpack(shotgun.ammo_objects)
+  trx.inventory.give(shotgun.object)
+  trx.inventory.set_ammo_kind(shotgun.id, wideshot)
+  trx.inventory.set_shots(shotgun.id, 5)
+  trx.inventory.set_ammo_kind(shotgun.id, normal)
+  trx.inventory.set_shots(shotgun.id, 3)
+  open(MenuMode.GAME, shotgun.object)
+  return shotgun, normal, wideshot
+end
+
+local function put_shotgun_away(shotgun, normal, wideshot)
+  finish()
+  trx.inventory.set_ammo_kind(shotgun.id, wideshot)
+  trx.inventory.set_shots(shotgun.id, 0)
+  trx.inventory.set_ammo_kind(shotgun.id, normal)
+  trx.inventory.set_shots(shotgun.id, 0)
+  trx.inventory.take(shotgun.object)
+end
+
+local CHOOSE_AMMO = trx.locale.get("general/flat_menu/choose_ammo")
+
+test("the shotgun shows its ammunition and chooses a kind", function()
+  local shotgun, normal, wideshot = open_on_shotgun()
+  assert(text_middle(CHOOSE_AMMO) ~= nil, "no option to choose ammo")
+  assert(text_middle("3 x ") ~= nil, "the normal shells are not counted")
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  assert(text_middle(CHOOSE_AMMO) == nil, "the kinds did not replace it")
+  press(Role.MENU_RIGHT)
+  assert(text_middle("5 x ") ~= nil, "the wideshot shells are not counted")
+  assert(trx.inventory.ammo_kind(shotgun.id) == normal, "chosen too early")
+  press(Role.MENU_CONFIRM)
+  assert(trx.inventory.ammo_kind(shotgun.id) == wideshot, "nothing chosen")
+  assert(text_middle(CHOOSE_AMMO) ~= nil, "the options did not return")
+  assert(fake.take_choice(MENU) == 0, "the menu closed")
+  put_shotgun_away(shotgun, normal, wideshot)
+end)
+
+test("the ammunition stays hidden while the row turns past it", function()
+  local uzis = trx.weapons.uzis
+  trx.inventory.give(uzis.object)
+  local shotgun, normal, wideshot = open_on_shotgun()
+  local boxes = {}
+  for _, weapon in ipairs({ shotgun, uzis }) do
+    for _, kind in ipairs(weapon.ammo_objects) do
+      boxes[#boxes + 1] = trx.inventory.icon_of(kind) or kind
+    end
+  end
+  local function draws_boxes()
+    for _, box in ipairs(boxes) do
+      if draws(box) then
+        return true
+      end
+    end
+    return false
+  end
+  assert(draws_boxes(), "the shotgun showed no ammunition")
+  fake.release_all()
+  fake.press(Role.MENU_RIGHT)
+  ticks(8)
+  local flickered = false
+  for _ = 1, SETTLE_TICKS do
+    fake.tick()
+    flickered = flickered or draws_boxes()
+  end
+  fake.release_all()
+  assert(not flickered, "the ammunition showed while the row turned")
+  trx.inventory.take(uzis.object)
+  put_shotgun_away(shotgun, normal, wideshot)
+end)
+
+test("going back from the kinds keeps the kind the weapon fired", function()
+  local shotgun, normal, wideshot = open_on_shotgun()
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  press(Role.MENU_RIGHT)
+  press(Role.MENU_BACK)
+  assert(trx.inventory.ammo_kind(shotgun.id) == normal, "the kind changed")
+  assert(text_middle("3 x ") ~= nil, "the count did not go back")
+  assert(fake.take_choice(MENU) == 0, "the menu closed")
+  put_shotgun_away(shotgun, normal, wideshot)
+end)
+
 test("the compass is drawn open", function()
   carry()
   trx.inventory.give(objects.COMPASS_OPTION)

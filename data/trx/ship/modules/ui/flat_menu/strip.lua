@@ -89,6 +89,7 @@ end
 ---@field list table[] The entries, each with its `object`, as the inventory reports them.
 ---@field current integer The entry picked, counted from 1.
 ---@field row number Where the row's middle stands, as a share of the screen's height.
+---@field fixed boolean Whether every entry stands in place, centred as a group, rather than sliding past the middle.
 ---@field position table The place the row's middle stands at, stepped each tick, counting entries from 0 without wrapping.
 ---@field target number The place the row slides to.
 ---@field fade trx.ui.Tween How visible the row is as a whole, from 0 to 1.
@@ -97,15 +98,18 @@ end
 local Strip = {}
 Strip.__index = Strip
 
--- Makes a row of entries.
+-- Makes a row of entries. A fixed row stands in place, as the original's row
+-- of ammunition does, and picking an entry spins it where it stands.
 ---@param list table[]
 ---@param row number Where the row stands, as a share of the screen's height.
+---@param opts? { fixed?: boolean }
 ---@return common.ui.flat_menu.Strip
-function M.new(list, row)
+function M.new(list, row, opts)
   local self = setmetatable({
     list = list,
     current = 1,
     row = row,
+    fixed = opts ~= nil and opts.fixed == true,
     position = stepped(0),
     target = 0,
     fade = trx.ui.tween(1),
@@ -130,13 +134,18 @@ function Strip:picked()
   return self.list[self.current]
 end
 
+-- Picks the entry at a place of the list, counted from 1, at once.
+function Strip:pick_at(index)
+  self.current = index
+  self.target = index - 1
+  self.position = stepped(index - 1)
+end
+
 -- Picks the entry that draws an object, where the row holds one, at once.
 function Strip:pick(object)
   for i, entry in ipairs(self.list) do
     if entry.object == object then
-      self.current = i
-      self.target = i - 1
-      self.position = stepped(i - 1)
+      self:pick_at(i)
       return true
     end
   end
@@ -289,6 +298,23 @@ function Strip:paint()
     return
   end
   local w, h = trx.ui.canvas.width, trx.ui.canvas.height
+  if self.fixed then
+    local spacing = M.spacing()
+    for i, entry in ipairs(self.list) do
+      local anim = self.anims[i]
+      M.draw(
+        entry.object,
+        w / 2 + (i - (count + 1) / 2) * spacing,
+        h * self.row,
+        {
+          yrot = read(anim.yrot),
+          bright = read(anim.bright),
+          opacity = fade,
+        }
+      )
+    end
+    return
+  end
   local position = read(self.position)
   local far = reach(count) + 1
   local spacing = M.spacing()
