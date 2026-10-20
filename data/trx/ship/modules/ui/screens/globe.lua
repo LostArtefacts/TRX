@@ -5,6 +5,7 @@
 -- picked.
 
 local fade = require("common.ui.fade")
+local ring_ui = require("common.ui.ring")
 local motion = require("common.ui.ring.motion")
 local timer = require("common.timer")
 
@@ -262,35 +263,25 @@ local function next_open(state, direction)
 end
 
 local function heading()
-  return trx.ui.widgets.Label({
-    text = trx.locale
-      .get("general/inventory_ring/heading_fmt")
-      :format(trx.locale.get("general/inventory_ring/heading_adventure")),
-  })
+  return trx.locale
+    .get("general/inventory_ring/heading_fmt")
+    :format(trx.locale.get("general/inventory_ring/heading_adventure"))
 end
 
 -- Names the area the globe is turned to, over the globe, while it is picked.
 local function show_names(state, shown)
-  if shown == (state.heading ~= nil) then
+  if shown == state.named then
     return
   end
+  state.named = shown
   if shown then
     show_area(state)
     show_arrows(open_count(state) > 1)
-    -- The heading stands over the globe, at the top of the screen, and
-    -- leaves the keys to it.
-    state.heading = state.ctx:push({
-      root = heading(),
-      place = function(w)
-        local safe = trx.ui.safe_area
-        return safe.x + (safe.width - w) / 2, safe.y
-      end,
-    })
+    ring_ui.set_heading(heading())
   else
     trx.overlay.set_caption()
     show_arrows(false)
-    state.heading:close()
-    state.heading = nil
+    ring_ui.set_heading(nil)
   end
 end
 
@@ -406,6 +397,7 @@ local function open(ctx)
     open = open_areas(areas),
     background = ctx.background,
     ctx = ctx,
+    named = false,
     rot = { x = 0, y = 0, z = 0 },
     ring = open_ring(),
     fades = fade.screen(ctx),
@@ -429,6 +421,7 @@ local function open(ctx)
     first:cancel()
     trx.overlay.set_caption()
     show_arrows(false)
+    ring_ui.set_heading(nil)
   end)
   return ctx:push({
     root = trx.ui.widgets.Custom({

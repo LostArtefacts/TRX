@@ -57,6 +57,10 @@ local function last_caption()
   return trx.overlay.signals.caption:get() or ""
 end
 
+local function heading()
+  return require("common.ui.ring").signals.heading:get()
+end
+
 local function arrows_shown()
   local shown = trx.overlay.signals.arrows:get()
   return shown[Arrow.CAPTION_LEFT] == true, shown[Arrow.CAPTION_RIGHT] == true
@@ -86,6 +90,14 @@ test("an area opens once the areas it needs are done", function()
   local left, right = arrows_shown()
   assert(left == false and right == false, "arrows with nowhere else to go")
   finish()
+end)
+
+test("the heading names the screen while an area is picked", function()
+  open({})
+  assert(heading() ~= nil, "no heading over the globe")
+  assert(trx.ui.layers.count() == 1, "the heading took a layer of its own")
+  finish()
+  assert(heading() == nil, "the heading outlived the screen")
 end)
 
 test("a finished area gives way to the next", function()
@@ -125,7 +137,7 @@ test("confirm starts the adventure once the screen goes dark", function()
   press(Role.MENU_CONFIRM)
   assert(fake.calls().play_level.count == 0, "it left before going dark")
   assert(last_caption() == "", "the caption stayed while leaving")
-  assert(trx.ui.layers.count() == 1, "the heading stayed while leaving")
+  assert(heading() == nil, "the heading stayed while leaving")
   -- The globe goes back onto the ring, the ring closes, and the screen goes
   -- dark.
   ticks(30)
