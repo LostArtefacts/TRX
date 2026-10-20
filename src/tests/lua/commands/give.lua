@@ -117,6 +117,15 @@ test("a weapon the level allows comes with its ammunition", function()
   assert(trx.inventory.shots(UZIS) == 2000)
 end)
 
+test("a weapon comes with every kind of its ammunition", function()
+  local SHOTGUN = trx.catalog.weapons.SHOTGUN
+  fake.set_weapon_available(SHOTGUN, true)
+  assert(give("guns") == trx.console.Result.OK)
+  for _, kind in ipairs(trx.weapons[SHOTGUN].ammo_objects) do
+    assert(trx.inventory.shots(SHOTGUN, kind) == 300, "a kind came empty")
+  end
+end)
+
 test("a new game plus run tops every weapon up", function()
   fake.set_ngplus(true)
   fake.set_weapon_available(UZIS, true)
