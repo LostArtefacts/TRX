@@ -190,6 +190,23 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return FakeLara_AmmoObject(gun_type);
 }
 
+// The shotgun takes a second kind, as the TR4 shotgun takes wideshot shells.
+int32_t Gun_GetAmmoKindCount(const LARA_GUN_TYPE gun_type)
+{
+    if (FakeLara_AmmoObject(gun_type) == NO_OBJECT) {
+        return 0;
+    }
+    return gun_type == LGT_SHOTGUN ? 2 : 1;
+}
+
+OBJECT_ID Gun_GetAmmoKind(const LARA_GUN_TYPE gun_type, const int32_t idx)
+{
+    if (idx < 0 || idx >= Gun_GetAmmoKindCount(gun_type)) {
+        return NO_OBJECT;
+    }
+    return idx == 0 ? FakeLara_AmmoObject(gun_type) : O_SHOTGUN_AMMO_2_ITEM;
+}
+
 OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
 {
     return FakeLara_GunObject(gun_type);

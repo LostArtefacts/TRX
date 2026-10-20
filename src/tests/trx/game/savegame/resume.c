@@ -177,6 +177,14 @@ void Inv_State_SetAmmo(
         (INVENTORY_AMMO) { .gun_type = gun_type, .rounds = rounds };
 }
 
+// Every weapon here takes one kind of ammunition.
+void Inv_State_FillAmmo(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
+    const int32_t rounds)
+{
+    Inv_State_SetAmmo(state, gun_type, rounds);
+}
+
 int32_t Inv_State_GetAmmo(
     const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
 {

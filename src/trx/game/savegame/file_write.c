@@ -290,6 +290,26 @@ static void M_WriteAmmo(
     JSONW_POP_AND_SET(io, key);
 }
 
+// Writes every round Lara carries, by weapon and kind, and which kind each
+// weapon fires.
+static void M_WriteAmmoList(
+    JSON_WRITE_IO *const io, const INVENTORY_STATE *const state)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < state->ammo_count; i++) {
+        const INVENTORY_AMMO *const slot = &state->ammo[i];
+        JSONW_PUSH_OBJECT(io);
+        SaveGame_WriteIdentity(
+            io, "gun_type", "gun_key", CATALOG_WEAPONS, slot->gun_type);
+        SaveGame_WriteIdentity(
+            io, "object_id", "object_key", CATALOG_OBJECTS, slot->kind);
+        JSONW_WRITE(io, "rounds", slot->rounds);
+        JSONW_WRITE(io, "selected", slot->is_selected);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "ammo");
+}
+
 static void M_WriteLOT(JSON_WRITE_IO *const io, const LOT_INFO *const lot)
 {
     ASSERT(lot != nullptr);
@@ -330,6 +350,9 @@ static void M_WriteResumeInfo(
         io, "back_gun_type", "back_gun_key", CATALOG_WEAPONS,
         resume->back_gun_type);
 
+    // Define the rounds by names accepted by released builds. The ammunition
+    // list holds every kind.
+    // TODO: remove the rounds after 1.15.
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
         if (info->save_resume_has_key == nullptr) {
@@ -340,8 +363,11 @@ static void M_WriteResumeInfo(
             Inv_State_Has(&resume->inv, Gun_GetGunObject(info->gun_type)));
         JSONW_WRITE(
             io, info->save_resume_ammo_key,
-            Inv_State_GetAmmo(&resume->inv, info->gun_type));
+            Inv_State_GetKindAmmo(
+                &resume->inv, info->gun_type,
+                Gun_GetAmmoKind(info->gun_type, 0)));
     }
+    M_WriteAmmoList(io, &resume->inv);
     JSONW_WRITE(
         io, "has_binoculars", Inv_State_Has(&resume->inv, O_BINOCULARS_ITEM));
 
@@ -653,12 +679,19 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     M_WriteXYZ32(io, "last_pos", lara->last_pos);
     M_WriteArm(io, "left_arm", &lara->left_arm);
     M_WriteArm(io, "right_arm", &lara->right_arm);
+    // Define the rounds by names accepted by released builds. The ammunition
+    // list holds every kind.
+    // TODO: remove after 1.15.
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
         if (info->save_ammo_key != nullptr) {
-            M_WriteAmmo(io, info->save_ammo_key, Inv_GetAmmo(info->gun_type));
+            M_WriteAmmo(
+                io, info->save_ammo_key,
+                Inv_GetKindAmmo(
+                    info->gun_type, Gun_GetAmmoKind(info->gun_type, 0)));
         }
     }
+    M_WriteAmmoList(io, Inv_GetState());
 
     if (lara->gun_item_num != NO_ITEM) {
         JSONW_PUSH_OBJECT(io);

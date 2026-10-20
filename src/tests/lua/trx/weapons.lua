@@ -194,6 +194,14 @@ test("a weapon says which weapon it is, and what it is carried as", function()
   end)
 end)
 
+test("a weapon lists every kind of ammunition it takes", function()
+  local shotgun = trx.weapons.shotgun.ammo_objects
+  assert(#shotgun == 2, "the shotgun takes two kinds")
+  assert(shotgun[1] == trx.weapons.shotgun.ammo_object, "its own comes first")
+  assert(shotgun[2] == trx.catalog.objects.SHOTGUN_AMMO_2_ITEM)
+  assert(#trx.weapons.uzis.ammo_objects == 1)
+end)
+
 test("what a weapon takes and what it is worth", function()
   assert(trx.weapons.object(WEAPONS.SHOTGUN) ~= nil)
   assert(trx.weapons.ammo_object(WEAPONS.SHOTGUN) ~= nil)

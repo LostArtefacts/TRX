@@ -46,7 +46,7 @@ static void M_GiveItems(void)
             continue;
         }
         if (Lara_Cheat_GiveGun(gun_type, false)) {
-            Inv_SetAmmo(gun_type, info->cheat_key_ammo);
+            Inv_FillAmmo(gun_type, info->cheat_key_ammo);
         }
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 50);

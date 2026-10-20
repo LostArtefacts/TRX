@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/core/colors.h>
 #include <trx/debug.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/demo.h>
 #include <trx/game/game.h>
@@ -10,6 +11,7 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
@@ -54,6 +56,30 @@ static bool M_IsGunType(
 static int32_t M_GetRounds(const LARA_GUN_TYPE gun_type, const int32_t box_qty)
 {
     return MAX(1, box_qty) * Gun_GetRoundsPerShot(gun_type);
+}
+
+// Writes the kinds of ammunition a weapon takes, and returns how many.
+static int32_t M_GetAmmoKinds(
+    const LARA_GUN_TYPE gun_type, OBJECT_ID kinds[MAX_AMMO_KINDS])
+{
+    const OBJECT_ID primary = Gun_GetAmmoObject(gun_type);
+    if (primary == NO_OBJECT) {
+        return 0;
+    }
+    int32_t count = 0;
+    kinds[count++] = primary;
+    const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+    const int32_t link_count =
+        ObjectLink_GetCount(gun_object, OBJ_LINK_GUN_TO_AMMO);
+    for (int32_t i = 0; i < link_count && count < MAX_AMMO_KINDS; i++) {
+        const OBJECT_ID kind =
+            ObjectLink_GetAt(gun_object, OBJ_LINK_GUN_TO_AMMO, i);
+        if (kind != primary
+            && Catalog_IDToSlot(CATALOG_OBJECTS, kind, -1) >= 0) {
+            kinds[count++] = kind;
+        }
+    }
+    return count;
 }
 
 void Gun_AddDynamicLight(void)
@@ -125,6 +151,31 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return Gun_Registry_IsValidType(gun_type)
         ? Gun_Registry_Get(gun_type)->ammo_object_id
         : NO_OBJECT;
+}
+
+int32_t Gun_GetAmmoKindCount(const LARA_GUN_TYPE gun_type)
+{
+    OBJECT_ID kinds[MAX_AMMO_KINDS];
+    return M_GetAmmoKinds(gun_type, kinds);
+}
+
+OBJECT_ID Gun_GetAmmoKind(const LARA_GUN_TYPE gun_type, const int32_t idx)
+{
+    OBJECT_ID kinds[MAX_AMMO_KINDS];
+    const int32_t count = M_GetAmmoKinds(gun_type, kinds);
+    return idx >= 0 && idx < count ? kinds[idx] : NO_OBJECT;
+}
+
+bool Gun_IsAmmoKind(const LARA_GUN_TYPE gun_type, const OBJECT_ID obj_id)
+{
+    OBJECT_ID kinds[MAX_AMMO_KINDS];
+    const int32_t count = M_GetAmmoKinds(gun_type, kinds);
+    for (int32_t i = 0; i < count; i++) {
+        if (kinds[i] == obj_id) {
+            return true;
+        }
+    }
+    return false;
 }
 
 int32_t Gun_GetInitialRounds(const LARA_GUN_TYPE gun_type)

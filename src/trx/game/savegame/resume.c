@@ -318,7 +318,7 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
                 continue;
             }
             Inv_State_SetCount(&resume->inv, gun_object, 1);
-            Inv_State_SetAmmo(
+            Inv_State_FillAmmo(
                 &resume->inv, gun_type,
                 Gun_GetDefaultType() == gun_type
                     ? Gun_GetInitialRounds(gun_type)

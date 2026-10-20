@@ -556,11 +556,10 @@ local function weapon_of(object)
     then
       return weapon, false
     end
-    if
-      weapon.ammo_object ~= nil
-      and trx.inventory.icon_of(weapon.ammo_object) == object
-    then
-      return weapon, true
+    for _, ammo in ipairs(weapon.ammo_objects) do
+      if trx.inventory.icon_of(ammo) == object then
+        return weapon, true
+      end
     end
   end
   return nil, false
