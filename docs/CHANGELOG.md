@@ -77,6 +77,7 @@
 - Fixed key combos such as Alt+Enter working from only one of the two Alt keys, and not at all after jump was bound to that Alt (TRX1762)
 - Fixed inventory items staying slightly tilted on the ring after being turned while examined (TRX1732)
 - Fixed item descriptions from one level showing on items in the levels after it (TRX1754)
+- Fixed the TR4 inventory showing a wrong count, or no count, on ammunition (TRX1654)
 
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
