@@ -20,13 +20,13 @@
             "name": "Flares",
         },
         "grenade_ammo_2_item": {
-            "name": "Grenadegun Super Ammo",
+            "name": "Grenade Gun Super Ammo",
         },
         "grenade_ammo_3_item": {
-            "name": "Grenadegun Flash Ammo",
+            "name": "Grenade Gun Flash Ammo",
         },
         "grenade_ammo_item": {
-            "name": "Grenadegun Normal Ammo",
+            "name": "Grenade Gun Normal Ammo",
         },
         "grenade_gun_item": {
             "name": "Grenade Gun",
@@ -45,6 +45,9 @@
         },
         "uzis_ammo_item": {
             "name": "Uzi Ammo",
+        },
+        "uzis_item": {
+            "name": "Uzi",
         }
     },
     "cutscenes": [],
