@@ -10,6 +10,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
@@ -165,6 +166,64 @@ static uint8_t M_GetVertexIntensity(
     return MAX(0, MIN(255, intensity));
 }
 
+static void M_TriggerSmoke(const XYZ_32 pos)
+{
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_SMOKE);
+    if (spark == nullptr) {
+        return;
+    }
+
+    spark->src_color.r = 0;
+    spark->src_color.g = 0;
+    spark->src_color.b = 0;
+    spark->dst_color.r = (Random_GetControl() & 0x1F) + 64;
+    spark->dst_color.g = spark->dst_color.r;
+    spark->dst_color.b = spark->dst_color.r;
+    spark->col_fade_speed = 4;
+    spark->fade_to_black = 24 - (Random_GetControl() & 7);
+    spark->life = (Random_GetControl() & 7) + 16;
+    spark->s_life = spark->life;
+
+    spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+    spark->vel.x = 2 * (Random_GetControl() & 0x1FF) - 512;
+    spark->vel.y = 2 * (Random_GetControl() & 0x1FF) - 512;
+    spark->vel.z = 2 * (Random_GetControl() & 0x1FF) - 512;
+    spark->friction = 7;
+    spark->scalar = 2;
+
+    spark->flags = SPARK_F_SPRITE | SPARK_F_SCALE;
+    if ((Random_GetControl() & 1) != 0) {
+        spark->flags |= SPARK_F_ROTATE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+        if ((Random_GetControl() & 1) != 0) {
+            spark->rot_add = -64 - (Random_GetControl() & 0x3F);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0x3F) + 64;
+        }
+    } else if (Room_Get(Lara_GetItem()->room_num)->flags.wind) {
+        spark->flags |= SPARK_F_OUTSIDE;
+    }
+
+    spark->gravity = -4 - (Random_GetControl() & 3);
+    spark->max_y_vel = -4 - (Random_GetControl() & 3);
+
+    const uint8_t size = (Random_GetControl() & 0x3F) + 64;
+    spark->size.width = size >> 3;
+    spark->src_size.width = size >> 3;
+    spark->dst_size.width = size;
+    spark->size.height = size >> 3;
+    spark->src_size.height = size >> 3;
+    spark->dst_size.height = size;
+
+    Sparks_FinishSetup(spark);
+}
+
 static void M_TriggerDebris(
     const GAME_VECTOR *const pos, const uint16_t texture_idx,
     const uint8_t uv_corners[3], const XYZ_16 offsets[3], XYZ_32 velocities,
@@ -174,6 +233,8 @@ static void M_TriggerDebris(
     // to puff with yet.
     if ((Random_GetControl() & 3) != 0) {
         rgb = ABS(rgb);
+    } else if (rgb >= 0) {
+        M_TriggerSmoke(pos->pos);
     }
 
     M_DEBRIS *const debris = &m_Priv.debris[M_GetFreeDebris()];
