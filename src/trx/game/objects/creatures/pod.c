@@ -1,6 +1,7 @@
 #include <trx/game/objects/creatures/pod.h>
 
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 
@@ -136,7 +137,8 @@ static void M_Setup(OBJECT *const obj)
 OBJECT_ID Pod_GetBugObjectID(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
-    if (p->bug_item_num == NO_ITEM) {
+    SOFT_ASSERT(p != nullptr, "Pod object missing");
+    if (p == nullptr || p->bug_item_num == NO_ITEM) {
         return NO_OBJECT;
     }
     return Item_Get(p->bug_item_num)->object_id;
