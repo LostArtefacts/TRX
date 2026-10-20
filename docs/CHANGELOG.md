@@ -193,6 +193,7 @@
 - Added the speedometer while Lara drives the jeep (TRX1658)
 - Added shatterable scenery, such as vases that break when Lara shoots them or drives the jeep into them (TRX1257)
 - Added underwater bubbles, such as those Lara breathes out while swimming (TRX1831)
+- Added the choice of ammunition for the shotgun, grenade gun and crossbow, with each kind of ammunition kept apart in the inventory, as in the original game (TRX483)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement

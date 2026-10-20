@@ -5,6 +5,7 @@
     "general": {
         "actions": {
             "cancel": "\\{review}Annuler",
+            "choose_ammo": "\\{review}Choisir munitions",
             "combine_item": "\\{review}Combiner",
             "examine_item": "Examiner",
             "hide_dialog": "Masquer le dialogue",

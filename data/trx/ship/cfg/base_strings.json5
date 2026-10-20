@@ -5,6 +5,7 @@
     "general": {
         "actions": {
             "cancel": "Cancel",
+            "choose_ammo": "Choose ammo",
             "combine_item": "Combine",
             "examine_item": "Examine",
             "hide_dialog": "Hide dialog",
