@@ -651,8 +651,8 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
 
     // The boat and the RIB do not set gun_status to LGS_HANDS_BUSY because Lara
     // is able to light flares while riding them.
-    const bool is_on_a_boat = Lara_Vehicle_IsMounted()
-        && (Lara_Vehicle_IsOnType(O_BOAT) || Lara_Vehicle_IsOnType(O_RIB));
+    const bool is_on_a_boat =
+        Lara_Vehicle_IsOnType(O_BOAT) || Lara_Vehicle_IsOnType(O_RIB);
     if (lara_info->gun_status == LGS_HANDS_BUSY || is_on_a_boat) {
         uint8_t smoothing_factor = LARA_TORSO_SMOOTHING;
         // In animations where Lara is grabbing quickly onto something from
