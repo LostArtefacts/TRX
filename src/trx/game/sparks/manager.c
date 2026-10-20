@@ -767,7 +767,7 @@ void Sparks_Control(void)
     }
 }
 
-void Sparks_Draw(void)
+void Sparks_DrawAll(void)
 {
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
         SPARK *const spark = &m_Sparks[i];

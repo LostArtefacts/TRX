@@ -29,7 +29,7 @@ void FX_RegisterModule(const FX_MODULE *module);
 void FX_Reset(void);
 void FX_NewFrame(void);
 void FX_Control(void);
-void FX_Draw(void);
+void FX_DrawAll(void);
 
 // Writes the state of each persistent module, or nothing while the effect
 // saving setting is off.
