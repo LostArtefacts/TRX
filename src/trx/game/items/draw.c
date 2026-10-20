@@ -126,7 +126,11 @@ static bool M_DrawPose(
         });
     while (Anim_Walk_Next(&walk)) {
         const int32_t mesh_idx = walk.joint;
-        if ((desc->mesh_mask & (1u << mesh_idx)) != 0) {
+        const uint32_t bit = 1u << mesh_idx;
+        if ((desc->hide_mask & bit) != 0) {
+            continue;
+        }
+        if ((desc->mesh_mask & bit) != 0) {
             Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, walk.interpolated);
         } else if (desc->mesh_swap != nullptr) {
             Object_DrawMesh(

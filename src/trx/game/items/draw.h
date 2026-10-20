@@ -10,6 +10,8 @@ typedef struct {
     // Draws the joints outside mesh_mask with this object's meshes. Null
     // leaves those joints out.
     const OBJECT *mesh_swap;
+    // Joints left out, whichever object they would be drawn from.
+    uint32_t hide_mask;
 } ITEM_DRAW_DESC;
 
 void Item_ControlDraw(ITEM *item);
