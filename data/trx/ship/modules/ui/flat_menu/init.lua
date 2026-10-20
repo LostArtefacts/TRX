@@ -130,6 +130,19 @@ local function weapon_of(object)
   return nil
 end
 
+-- Returns the weapon whose ammunition an entry is, or nil for any other entry.
+local function ammo_weapon_of(object)
+  for _, weapon in ipairs(trx.weapons.all) do
+    if
+      weapon.ammo_object ~= nil
+      and trx.inventory.icon_of(weapon.ammo_object) == object
+    then
+      return weapon
+    end
+  end
+  return nil
+end
+
 -- The examine items, which offer only to be examined, as in the original.
 local EXAMINE_ONLY = { "EXAMINE_ITEM_1", "EXAMINE_ITEM_2", "EXAMINE_ITEM_3" }
 
@@ -170,15 +183,20 @@ local function options_of(object)
 end
 
 -- The name of an entry, with how many there are, as the original names it.
--- A weapon shows no count, however many times Lara picked it up.
+-- A weapon shows no count, however many times Lara picked it up. Ammunition
+-- always shows the quantity its boxes are labelled with.
 local function name_of(entry)
   local info = trx.objects[entry.object]
   local name = info ~= nil and info.name or ""
-  if (entry.count or 0) > 1 and weapon_of(entry.object) == nil then
-    local fmt = trx.locale.get("general/flat_menu/count_fmt")
-    return fmt:format(entry.count, name)
+  local count = entry.count or 0
+  local ammo_weapon = ammo_weapon_of(entry.object)
+  if ammo_weapon ~= nil and not ammo_weapon.has_infinite_ammo then
+    count = count * ammo_weapon.ammo.box_label_qty
+  elseif count <= 1 or weapon_of(entry.object) ~= nil then
+    return name
   end
-  return name
+  local fmt = trx.locale.get("general/flat_menu/count_fmt")
+  return fmt:format(count, name)
 end
 
 -- The load and save entries the original shows at the end of the row, where

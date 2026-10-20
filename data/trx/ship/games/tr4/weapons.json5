@@ -130,7 +130,7 @@
         "ammo": {
             "initial_shots": 30,
             "box_shots": 30,
-            "box_label_qty": 2,
+            "box_label_qty": 30,
             "icon": "\\{ammo uzis}",
         },
         "aim": {
@@ -220,7 +220,7 @@
         "ammo": {
             "initial_shots": 6,
             "box_shots": 6,
-            "box_label_qty": 2,
+            "box_label_qty": 6,
         },
         "aim": {
             "speed": 10,
@@ -312,7 +312,7 @@
             "rounds_per_shot": 6,
             "initial_shots": 6,
             "box_shots": 6,
-            "box_label_qty": 2,
+            "box_label_qty": 6,
             "icon": "\\{ammo shotgun}",
         },
         "aim": {
@@ -400,7 +400,7 @@
         "ammo": {
             "initial_shots": 10,
             "box_shots": 10,
-            "box_label_qty": 1,
+            "box_label_qty": 10,
         },
         "aim": {
             "speed": 10,
@@ -465,7 +465,7 @@
         "ammo": {
             "initial_shots": 4,
             "box_shots": 4,
-            "box_label_qty": 1,
+            "box_label_qty": 4,
         },
         "aim": {
             "speed": 10,
