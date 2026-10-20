@@ -589,6 +589,7 @@ trxc = {}
 ---@field get fun(weapon: trx.catalog.weapons): trx.weapons.Weapon
 ---@field get_ammo fun(weapon: trx.weapons.Weapon): trx.weapons.Ammo
 ---@field get_ammo_object fun(weapon: trx.catalog.weapons): trx.catalog.objects?
+---@field get_ammo_objects fun(weapon: trx.catalog.weapons): trx.catalog.objects[]
 ---@field get_anim fun(weapon: trx.weapons.Weapon): trx.weapons.Anim
 ---@field get_flash fun(weapon: trx.weapons.Weapon): trx.weapons.Flash
 ---@field get_flash_pos fun(flash: trx.weapons.Flash): trx.weapons.HandPos

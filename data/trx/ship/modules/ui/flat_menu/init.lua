@@ -134,11 +134,10 @@ end
 -- Returns the weapon whose ammunition an entry is, or nil for any other entry.
 local function ammo_weapon_of(object)
   for _, weapon in ipairs(trx.weapons.all) do
-    if
-      weapon.ammo_object ~= nil
-      and trx.inventory.icon_of(weapon.ammo_object) == object
-    then
-      return weapon
+    for _, ammo in ipairs(weapon.ammo_objects) do
+      if trx.inventory.icon_of(ammo) == object then
+        return weapon
+      end
     end
   end
   return nil

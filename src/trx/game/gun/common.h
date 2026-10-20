@@ -25,6 +25,12 @@ LARA_GUN_TYPE Gun_GetTypeForObject(OBJECT_ID obj_id);
 // draws none.
 LARA_GUN_TYPE Gun_GetTypeForInputRole(INPUT_ROLE role);
 OBJECT_ID Gun_GetAmmoObject(LARA_GUN_TYPE gun_type);
+// The kinds of ammunition a weapon takes, each named by the pickup it arrives
+// as. The first kind is the weapon's own ammunition object. The others are
+// the further boxes the weapon links to, where this game has them.
+int32_t Gun_GetAmmoKindCount(LARA_GUN_TYPE gun_type);
+OBJECT_ID Gun_GetAmmoKind(LARA_GUN_TYPE gun_type, int32_t idx);
+bool Gun_IsAmmoKind(LARA_GUN_TYPE gun_type, OBJECT_ID obj_id);
 // Ammunition is counted in rounds, one of which is what a single shot at a
 // target spends. The shotgun fires six of them at once.
 int32_t Gun_GetInitialRounds(LARA_GUN_TYPE gun_type);

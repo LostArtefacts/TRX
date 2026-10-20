@@ -256,6 +256,7 @@
 - Added `trx.stats.has_crystals`, which says whether any level of the game holds a save crystal
 - Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
 - Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
+- Added `ammo_objects` to `trx.weapons.Weapon`, every kind of ammunition a weapon takes
 - Added `order` and `alone` to `trx.ui.regions.place`, which say where a widget stacks in its region and whether it shows only while the region holds nothing else
 - Added `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
 - Added `trx.overlay.show_version`, which asks for the game's version on screen as the title screen does

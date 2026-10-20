@@ -473,6 +473,19 @@ static int M_L_WeaponGetAmmoObject(lua_State *const L)
     return 1;
 }
 
+// trxc.weapons.get_ammo_objects(weapon: trx.catalog.weapons): trx.catalog.objects[]
+static int M_L_WeaponGetAmmoObjects(lua_State *const L)
+{
+    const LARA_GUN_TYPE gun_type = M_GetWeapon(L, 1);
+    const int32_t count = Gun_GetAmmoKindCount(gun_type);
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushinteger(L, Gun_GetAmmoKind(gun_type, i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 // trxc.weapons.rounds_per_shot(weapon: trx.catalog.weapons): integer
 static int M_L_WeaponRoundsPerShot(lua_State *const L)
 {
@@ -611,6 +624,7 @@ static const luaL_Reg m_Module[] = {
     { "is_available", M_L_WeaponIsAvailable },
     { "get_object", M_L_WeaponGetObject },
     { "get_ammo_object", M_L_WeaponGetAmmoObject },
+    { "get_ammo_objects", M_L_WeaponGetAmmoObjects },
     { "rounds_per_shot", M_L_WeaponRoundsPerShot },
     { "ammo_icon", M_L_WeaponAmmoIcon },
     { "has_infinite_ammo", M_L_WeaponHasInfiniteAmmo },

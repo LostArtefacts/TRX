@@ -2485,7 +2485,9 @@
             "name": "Crossbow Bolts",
         },
         "crossbow_ammo_2_item": "$objects/crossbow_ammo_1_item",
+        "crossbow_ammo_2_option": "$objects/crossbow_ammo_1_item",
         "crossbow_ammo_3_item": "$objects/crossbow_ammo_1_item",
+        "crossbow_ammo_3_option": "$objects/crossbow_ammo_1_item",
         "crossbow_ammo_option": "$objects/crossbow_ammo_1_item",
         "crossbow_bolt": {
             "name": "Crossbow Bolt",
@@ -2778,7 +2780,9 @@
             "name": "Grenade",
         },
         "grenade_ammo_2_item": "$objects/grenade_ammo_item",
+        "grenade_ammo_2_option": "$objects/grenade_ammo_item",
         "grenade_ammo_3_item": "$objects/grenade_ammo_item",
+        "grenade_ammo_3_option": "$objects/grenade_ammo_item",
         "grenade_ammo_item": {
             "name": "Grenades",
         },
@@ -3785,6 +3789,7 @@
             "name": "Shiva",
         },
         "shotgun_ammo_2_item": "$objects/shotgun_ammo_item",
+        "shotgun_ammo_2_option": "$objects/shotgun_ammo_item",
         "shotgun_ammo_item": {
             "name": "Shotgun Shells",
         },

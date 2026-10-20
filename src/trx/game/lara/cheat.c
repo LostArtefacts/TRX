@@ -34,7 +34,7 @@ static void M_GiveAllGunsImpl(const bool ignore_exclusions)
             continue;
         }
         if (Lara_Cheat_GiveGun(gun_type, ignore_exclusions)) {
-            Inv_SetAmmo(gun_type, bonus_flag ? 10001 : info->cheat_ammo);
+            Inv_FillAmmo(gun_type, bonus_flag ? 10001 : info->cheat_ammo);
         }
     }
 }

@@ -154,6 +154,7 @@ local Anim = h.handle("weapons.Anim", "WEAPON_ANIM_INFO", {
 ---@field fire_overlay_pitch integer The pitch at which to play the overlay sample.
 ---@field object trx.catalog.objects? The pickup the weapon is, for handing it to `trx.inventory.give`. `nil` where this game has no such weapon.
 ---@field ammo_object trx.catalog.objects? The box of ammunition it takes, or `nil` where it takes none.
+---@field ammo_objects trx.catalog.objects[] Every kind of ammunition it takes, each named by its box, in the order the inventory lists them. The first is `trx.weapons.Weapon.ammo_object`, and the list is empty where the weapon takes none. Only the TR4 shotgun, grenade gun and crossbow take more than one.
 ---@field has_infinite_ammo boolean Whether the weapon never runs dry. The pistols do in most games, and a level or a script may say so of any weapon. A count of shots left means nothing in this context.
 ---@field ammo_icon string? The markup drawn beside the ammunition count in TR1. Later games count without one, and a weapon that carries no icon answers with `nil`.
 ---@field rounds_per_shot integer How many rounds one pull of the trigger spends: six for the shotgun, one for everything else. What a box is worth in shots is `trx.weapons.Ammo.box_shots`.
@@ -205,6 +206,9 @@ local Weapon = h.handle("weapons.Weapon", "WEAPON_INFO", {
     end,
     ammo_object = function(weapon)
       return raw.get_ammo_object(weapon.id)
+    end,
+    ammo_objects = function(weapon)
+      return raw.get_ammo_objects(weapon.id)
     end,
     has_infinite_ammo = function(weapon)
       return raw.has_infinite_ammo(weapon.id)

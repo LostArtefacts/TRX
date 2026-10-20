@@ -13,18 +13,22 @@
         "crossbow_ammo_2_item": {
             "name": "Crossbow Poison Ammo",
         },
+        "crossbow_ammo_2_option": "$objects/crossbow_ammo_2_item",
         "crossbow_ammo_3_item": {
             "name": "Crossbow Explosive Ammo",
         },
+        "crossbow_ammo_3_option": "$objects/crossbow_ammo_3_item",
         "flare_item": {
             "name": "Flares",
         },
         "grenade_ammo_2_item": {
             "name": "Grenade Gun Super Ammo",
         },
+        "grenade_ammo_2_option": "$objects/grenade_ammo_2_item",
         "grenade_ammo_3_item": {
             "name": "Grenade Gun Flash Ammo",
         },
+        "grenade_ammo_3_option": "$objects/grenade_ammo_3_item",
         "grenade_ammo_item": {
             "name": "Grenade Gun Normal Ammo",
         },
@@ -40,6 +44,7 @@
         "shotgun_ammo_2_item": {
             "name": "Shotgun Wideshot Ammo",
         },
+        "shotgun_ammo_2_option": "$objects/shotgun_ammo_2_item",
         "shotgun_ammo_item": {
             "name": "Shotgun Normal Ammo",
         },

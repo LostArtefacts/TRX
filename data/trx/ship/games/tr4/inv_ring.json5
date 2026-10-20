@@ -252,6 +252,20 @@
     },
 
     {
+        "object_id": "shotgun_ammo_2_option",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "z_trans_sel": 296,
+        "scale": 1.6,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 2,
+        "base_rot_y": -16384,
+    },
+
+    {
         "object_id": "magnums_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
@@ -359,6 +373,32 @@
 
     {
         "object_id": "grenade_ammo_option",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "z_trans_sel": 296,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 10,
+        "base_rot_y": -16384,
+    },
+
+    {
+        "object_id": "grenade_ammo_2_option",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "z_trans_sel": 296,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 10,
+        "base_rot_y": -16384,
+    },
+
+    {
+        "object_id": "grenade_ammo_3_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -738,6 +778,34 @@
 
     {
         "object_id": "crossbow_ammo_option",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 7200,
+        "z_trans_sel": 256,
+        "scale": 0.73,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 15,
+        "base_rot_y": -16384,
+    },
+
+    {
+        "object_id": "crossbow_ammo_2_option",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 7200,
+        "z_trans_sel": 256,
+        "scale": 0.73,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 15,
+        "base_rot_y": -16384,
+    },
+
+    {
+        "object_id": "crossbow_ammo_3_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,

@@ -154,7 +154,45 @@ static RESULT M_ReadAmmo(
     int32_t ammo = 0;
     MUST(JSON_PUSH(io, key));
     MUST(JSON_READ(io, "ammo", &ammo));
-    Inv_SetAmmo(gun_type, ammo);
+    Inv_SetKindAmmo(gun_type, Gun_GetAmmoKind(gun_type, 0), ammo);
+    MUST(JSON_POP(io));
+    return OK;
+}
+
+// Introduced in TRX 1.12. The list holds every round Lara carries, by weapon
+// and kind, and replaces the rounds the weapons' own keys hold.
+static RESULT M_ReadAmmoList(
+    JSON_READ_IO *const io, INVENTORY_STATE *const state)
+{
+    if (!JSON_ReadIO_HasKey(io, "ammo")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "ammo"));
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        MUST(JSON_PUSH_INDEX(io, i));
+        CATALOG_ID gun_type = NO_CATALOG_ID;
+        CATALOG_ID kind = NO_CATALOG_ID;
+        int32_t rounds = 0;
+        bool selected = false;
+        MUST(SaveGame_ReadIdentity(
+            io, "gun_type", "gun_key", CATALOG_WEAPONS, &gun_type));
+        MUST(SaveGame_ReadIdentity(
+            io, "object_id", "object_key", CATALOG_OBJECTS, &kind));
+        MUST(JSON_READ(io, "rounds", &rounds));
+        MUST(JSON_READ(io, "selected", &selected));
+        if (gun_type == NO_CATALOG_ID || !Gun_Registry_IsValidType(gun_type)
+            || (kind != Gun_GetAmmoKind(gun_type, 0)
+                && !Gun_IsAmmoKind(gun_type, kind))) {
+            SaveGame_NoteDropped("ammunition");
+        } else {
+            Inv_State_SetKindAmmo(state, gun_type, kind, rounds);
+            if (selected) {
+                Inv_State_SelectAmmoKind(state, gun_type, kind);
+            }
+        }
+        MUST(JSON_POP(io));
+    }
     MUST(JSON_POP(io));
     return OK;
 }
@@ -347,6 +385,8 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
     // Arms need no repair; the gun control recomputes them every frame.
     MUST(M_ReadArm(io, "left_arm", &lara->left_arm));
     MUST(M_ReadArm(io, "right_arm", &lara->right_arm));
+    // Starts from no rounds, so that the save alone says what Lara carries.
+    Inv_State_ClearAmmo(Inv_GetState());
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
         if (info->save_ammo_key == nullptr) {
@@ -358,6 +398,7 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
             SHOULD(M_ReadAmmo(io, info->save_ammo_key, info->gun_type));
         }
     }
+    MUST(M_ReadAmmoList(io, Inv_GetState()));
 
     if (JSON_ReadIO_HasKey(io, "weapon")) {
         MUST(JSON_PUSH(io, "weapon"));
@@ -1235,6 +1276,7 @@ static RESULT M_ReadResumeInfo(
         &resume->back_gun_type)); // LGT_UNKNOWN
     MUST(JSON_READ(io, "costume", &resume->flags.costume));
 
+    Inv_State_ClearAmmo(&resume->inv);
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
         if (info->save_resume_has_key == nullptr) {
@@ -1249,10 +1291,13 @@ static RESULT M_ReadResumeInfo(
             SHOULD(JSON_READ_OPT(io, info->save_resume_ammo_key, &ammo));
             SHOULD(JSON_READ_OPT(io, info->save_resume_has_key, &has_weapon));
         }
-        Inv_State_SetAmmo(&resume->inv, info->gun_type, ammo);
+        Inv_State_SetKindAmmo(
+            &resume->inv, info->gun_type, Gun_GetAmmoKind(info->gun_type, 0),
+            ammo);
         Inv_State_SetCount(
             &resume->inv, Gun_GetGunObject(info->gun_type), has_weapon ? 1 : 0);
     }
+    MUST(M_ReadAmmoList(io, &resume->inv));
 
     // Introduced in TRX 1.9
     bool has_binoculars = false;

@@ -22,7 +22,12 @@ typedef struct {
 
 typedef struct {
     LARA_GUN_TYPE gun_type;
+    // The kind of ammunition, named by the pickup it arrives as.
+    OBJECT_ID kind;
     int32_t rounds;
+    // Whether the weapon fires this kind. A weapon with no kind selected
+    // fires its first.
+    bool is_selected;
 } INVENTORY_AMMO;
 
 // What Lara is carrying. Holding no pointers, it is copied by assignment,
@@ -30,9 +35,10 @@ typedef struct {
 typedef struct {
     INVENTORY_ENTRY entries[INV_MAX_ENTRIES];
     int32_t count;
-    // Store rounds by weapon identity so catalog-created weapons can have
-    // ammunition even when Lara does not carry the corresponding weapon.
-    INVENTORY_AMMO ammo[MAX_WEAPONS];
+    // Store rounds by weapon identity and kind, so that catalog-created
+    // weapons can have ammunition even when Lara does not carry the
+    // corresponding weapon.
+    INVENTORY_AMMO ammo[MAX_WEAPONS * MAX_AMMO_KINDS];
     int32_t ammo_count;
 } INVENTORY_STATE;
 
@@ -52,6 +58,19 @@ void Inv_State_AddAmmo(
 int32_t Inv_State_GetAmmo(const INVENTORY_STATE *state, LARA_GUN_TYPE gun_type);
 void Inv_State_SetAmmo(
     INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, int32_t rounds);
+int32_t Inv_State_GetKindAmmo(
+    const INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, OBJECT_ID kind);
+void Inv_State_SetKindAmmo(
+    INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, OBJECT_ID kind,
+    int32_t rounds);
+// Sets the rounds of every kind of a weapon's ammunition, as the cheats and a
+// bonus game hand them out.
+void Inv_State_FillAmmo(
+    INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, int32_t rounds);
+OBJECT_ID Inv_State_GetAmmoKind(
+    const INVENTORY_STATE *state, LARA_GUN_TYPE gun_type);
+void Inv_State_SelectAmmoKind(
+    INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, OBJECT_ID kind);
 // Remove all rounds from the inventory when a level supplies Lara's
 // ammunition itself.
 void Inv_State_ClearAmmo(INVENTORY_STATE *state);
@@ -104,8 +123,17 @@ void Inv_Clear(void);
 // Whether the weapon spends rounds at all, which the flare and the unarmed
 // hand do not.
 bool Inv_HasAmmoSlot(LARA_GUN_TYPE gun_type);
-// Rounds for one weapon. What a round is worth is the weapon's business, and
-// Gun_GetRoundsPerShot and Gun_GetRoundsPerBox answer for it.
+// Rounds for one weapon, of the kind it fires. What a round is worth is the
+// weapon's business, and Gun_GetRoundsPerShot and Gun_GetRoundsPerBox answer
+// for it.
 int32_t Inv_GetAmmo(LARA_GUN_TYPE gun_type);
 void Inv_SetAmmo(LARA_GUN_TYPE gun_type, int32_t rounds);
 void Inv_AddAmmo(LARA_GUN_TYPE gun_type, int32_t rounds);
+// Rounds for one kind of a weapon's ammunition.
+int32_t Inv_GetKindAmmo(LARA_GUN_TYPE gun_type, OBJECT_ID kind);
+void Inv_FillAmmo(LARA_GUN_TYPE gun_type, int32_t rounds);
+void Inv_SetKindAmmo(LARA_GUN_TYPE gun_type, OBJECT_ID kind, int32_t rounds);
+// The kind of ammunition a weapon fires, which is its first kind until
+// another is selected. Selecting a kind the weapon does not take does nothing.
+OBJECT_ID Inv_GetAmmoKind(LARA_GUN_TYPE gun_type);
+void Inv_SelectAmmoKind(LARA_GUN_TYPE gun_type, OBJECT_ID kind);

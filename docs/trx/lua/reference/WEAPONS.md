@@ -179,6 +179,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.ammo" name="weapons.Weapon.ammo"></a>**`ammo`**: [trx.weapons.Ammo](#weapons.Ammo). What the weapon is fed.
     - <a id="weapons.Weapon.ammo_icon" name="weapons.Weapon.ammo_icon"></a>**`ammo_icon`**: string. The markup drawn beside the ammunition count in TR1. Later games count without one, and a weapon that carries no icon answers with `nil`.
     - <a id="weapons.Weapon.ammo_object" name="weapons.Weapon.ammo_object"></a>**`ammo_object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The box of ammunition it takes, or `nil` where it takes none.
+    - <a id="weapons.Weapon.ammo_objects" name="weapons.Weapon.ammo_objects"></a>**`ammo_objects`**: [trx.catalog.objects](CATALOG.md#catalog.objects). Every kind of ammunition it takes, each named by its box, in the order the inventory lists them. The first is [`ammo_object`](#weapons.Weapon.ammo_object), and the list is empty where the weapon takes none. Only the TR4 shotgun, grenade gun and crossbow take more than one.
     - <a id="weapons.Weapon.anim" name="weapons.Weapon.anim"></a>**`anim`**: [trx.weapons.Anim](#weapons.Anim). The animation numbers it is drawn and fired by.
     - <a id="weapons.Weapon.flash" name="weapons.Weapon.flash"></a>**`flash`**: [trx.weapons.Flash](#weapons.Flash). The muzzle flash a shot draws.
     - <a id="weapons.Weapon.glow" name="weapons.Weapon.glow"></a>**`glow`**: [trx.weapons.Glow](#weapons.Glow). The glow drawn where it burns.
