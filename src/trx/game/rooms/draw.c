@@ -10,6 +10,9 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/mesh.h>
 #include <trx/game/matrix.h>
+#include <trx/game/objects.h>
+#include <trx/game/objects/draw.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
 #include <trx/game/output/water.h>
@@ -17,6 +20,7 @@
 #include <trx/game/rope.h>
 #include <trx/game/sparks.h>
 #include <trx/game/viewport.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -393,6 +397,62 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
     }
 }
 
+static void M_DrawEffect(const EFFECT *const effect)
+{
+    const OBJECT *const obj = Object_Get(effect->object_id);
+    if (!obj->loaded) {
+        return;
+    }
+
+    // TR3 uses BUBBLES1 as a dummy effect carrier and renders the bubble via
+    // an attached spark; keep TR1/TR2 legacy bubble rendering intact.
+    if (g_TRVersion == 3 && effect->object_id == O_BUBBLE_1) {
+        return;
+    }
+
+    if (effect->object_id == O_GLOW) {
+        Output_DrawSprite(
+            effect->interp.result.pos.x, effect->interp.result.pos.y,
+            effect->interp.result.pos.z, Object_Get(O_GLOW)->mesh_idx,
+            effect->shade, COLOR_RGBA_F_WHITE, DRAW_BLEND, 1.0f);
+        return;
+    }
+
+    if (obj->effect_draw_func != nullptr) {
+        if (obj->effect_draw_func(effect)) {
+            return;
+        }
+    }
+
+    if (obj->mesh_count < 0) {
+        const RGBA_F tint =
+            ObjectFamily_Has(effect->object_id, OBJ_FAMILY_WATER_SPRITE)
+            ? COLOR_RGBA_F_WHITE
+            : Output_GetTint();
+        int16_t shade = effect->shade;
+        if (shade == -1) {
+            Output_CalculateLight(effect->pos, effect->room_num);
+            shade = Output_GetLightAdder();
+        }
+        Output_DrawSprite(
+            effect->interp.result.pos.x, effect->interp.result.pos.y,
+            effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
+            shade, tint, DRAW_BLEND, 1.0f);
+    } else {
+        Matrix_Push();
+        Matrix_TranslateAbs32(effect->interp.result.pos);
+        Matrix_Rot16(effect->interp.result.rot);
+        if (obj->mesh_count != 0) {
+            Output_CalculateStaticLight(effect->shade);
+            Object_DrawMesh(obj->mesh_idx, -1, false);
+        } else {
+            Output_CalculateLight(effect->interp.result.pos, effect->room_num);
+            Object_DrawMesh(effect->frame_num, -1, false);
+        }
+        Matrix_Pop();
+    }
+}
+
 static void M_DrawSingleRoom(const ROOM *const room)
 {
     Output_SetCurrentRoom(room);
@@ -470,7 +530,7 @@ static void M_DrawSingleRoom(const ROOM *const room)
     int16_t effect_num = room->effect_num;
     while (effect_num != NO_EFFECT) {
         const EFFECT *const effect = Effect_Get(effect_num);
-        Effect_Draw(effect_num);
+        M_DrawEffect(effect);
         effect_num = effect->next_free;
     }
 
