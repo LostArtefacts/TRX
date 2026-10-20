@@ -771,7 +771,8 @@ static void M_Control(const int16_t item_num)
         boat_item->rot.z += p->tilt_angle;
     }
 
-    const int32_t pitch = water_height - ceiling < M_SOUND_CEILING
+    const int32_t pitch =
+        water_height != NO_HEIGHT && water_height - ceiling < M_SOUND_CEILING
         ? boat_item->speed * (water_height - ceiling) / M_SOUND_CEILING
         : boat_item->speed;
 
