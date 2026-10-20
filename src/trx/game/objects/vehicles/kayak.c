@@ -1144,7 +1144,7 @@ static void M_KayakToBaddieCollision(const ITEM *const p)
 static bool M_Draw(const ITEM *const item)
 {
     ((ITEM *)item)->pos.y += 32;
-    const bool drawn = Object_DrawAnimatingItem(item);
+    const bool drawn = Item_DrawAnimating(item);
     ((ITEM *)item)->pos.y -= 32;
     if (drawn) {
         FX_Wake_Draw(item);

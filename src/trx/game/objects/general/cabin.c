@@ -70,7 +70,7 @@ static void M_Control(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->draw_func = Object_DrawUnclippedItem;
+    obj->draw_func = Item_DrawUnclipped;
     obj->collision_func = Object_Collision;
     obj->save_anim = true;
     obj->save_flags = true;

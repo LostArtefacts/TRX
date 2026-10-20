@@ -89,7 +89,7 @@ typedef struct OBJECT {
 
     // Effects are counted in their own pool and drawn from their own struct,
     // so neither of these can be the item's: the number a control takes would
-    // name another item, and the default draw is Object_DrawAnimatingItem,
+    // name another item, and the default draw is Item_DrawAnimating,
     // which takes an ITEM.
     void (*effect_initialise_func)(int16_t effect_num);
     void (*effect_control_func)(int16_t effect_num);

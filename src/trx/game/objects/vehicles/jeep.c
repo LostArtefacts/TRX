@@ -1404,7 +1404,7 @@ static int32_t M_Dynamics(ITEM *const item)
 
 static bool M_Draw(const ITEM *const item)
 {
-    const bool drawn = Object_DrawAnimatingItem(item);
+    const bool drawn = Item_DrawAnimating(item);
     if (drawn && Lara_Vehicle_GetItem() == item) {
         // TODO: draw speedometer
     }

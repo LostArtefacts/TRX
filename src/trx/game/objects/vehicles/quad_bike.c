@@ -1348,7 +1348,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
     obj->collision_func = M_Collision;
-    obj->draw_func = Object_DrawAnimatingItem;
+    obj->draw_func = Item_DrawAnimating;
     obj->event_func = Vehicle_HandleEvent;
     obj->save_position = true;
     obj->save_flags = true;

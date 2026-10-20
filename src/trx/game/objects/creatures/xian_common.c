@@ -1,7 +1,7 @@
 #include <trx/game/objects/creatures/xian_common.h>
 
+#include <trx/game/items/draw.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/draw.h>
 
 bool XianWarrior_Draw(const ITEM *item)
 {
@@ -11,5 +11,5 @@ bool XianWarrior_Draw(const ITEM *item)
     } else {
         swap = Object_Get(O_XIAN_KNIGHT_STATUE);
     }
-    return Object_DrawAnimatingItemWithSwap(item, swap, item->mesh_bits);
+    return Item_DrawAnimatingWithSwap(item, swap, item->mesh_bits);
 }

@@ -585,7 +585,7 @@ static void M_AddWalkable(const int16_t item_num)
 
 static bool M_Draw(const ITEM *const item)
 {
-    Object_DrawAnimatingItem(item);
+    Item_DrawAnimating(item);
     if (!g_Config.debug.enable_debug_bounding_boxes
         || !g_Config.gameplay.fix_lift_collision) {
         return true;

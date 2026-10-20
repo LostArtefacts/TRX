@@ -155,7 +155,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
-    obj->draw_func = Object_DrawUnclippedItem;
+    obj->draw_func = Item_DrawUnclipped;
     obj->collision_func = Creature_Collision;
 
     obj->radius = M_RADIUS;

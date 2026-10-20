@@ -64,7 +64,7 @@ void Object_SetupAllObjects(void)
         obj->control_func = nullptr;
         obj->floor_height_func = nullptr;
         obj->ceiling_height_func = nullptr;
-        obj->draw_func = Object_DrawAnimatingItem;
+        obj->draw_func = Item_DrawAnimating;
         obj->collision_func = nullptr;
         obj->add_walkable_func = nullptr;
         obj->is_usable_func = nullptr;

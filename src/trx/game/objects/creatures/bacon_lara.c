@@ -190,7 +190,7 @@ static bool M_Draw(const ITEM *const item)
 {
     M_PRIV *const p = item->priv;
     if (p->status || !Item_IsInPlay(item)) {
-        return Object_DrawAnimatingItem(item);
+        return Item_DrawAnimating(item);
     }
 
     OBJECT_MESH *old_mesh_ptrs[LM_NUMBER_OF];

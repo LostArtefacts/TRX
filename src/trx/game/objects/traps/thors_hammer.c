@@ -206,7 +206,7 @@ static void M_SetupHandle(OBJECT *const obj)
 {
     obj->initialise_func = M_InitialiseHandle;
     obj->control_func = M_ControlHandle;
-    obj->draw_func = Object_DrawUnclippedItem;
+    obj->draw_func = Item_DrawUnclipped;
     obj->collision_func = M_CollisionHandle;
     obj->add_walkable_func = M_AddWalkable;
     obj->floor_height_func = M_GetFloorHeight;
@@ -219,7 +219,7 @@ static void M_SetupHandle(OBJECT *const obj)
 static void M_SetupHead(OBJECT *const obj)
 {
     obj->collision_func = M_CollisionHead;
-    obj->draw_func = Object_DrawUnclippedItem;
+    obj->draw_func = Item_DrawUnclipped;
     obj->save_flags = true;
     obj->save_anim = true;
 }

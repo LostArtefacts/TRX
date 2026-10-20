@@ -500,7 +500,7 @@ static void M_SetupUWCeiling(OBJECT *const obj)
 static void M_SetupAirlock(OBJECT *const obj)
 {
     M_SetupCommon(obj);
-    obj->draw_func = Object_DrawUnclippedItem;
+    obj->draw_func = Item_DrawUnclipped;
 }
 
 static void M_SetupJump(OBJECT *const obj)

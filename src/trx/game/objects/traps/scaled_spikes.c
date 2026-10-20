@@ -312,7 +312,7 @@ static bool M_Draw(const ITEM *const item)
 
     const XYZ_32 scale = M_GetDrawScale(p->scale);
     const XYZ_32 prev_scale = M_GetDrawScale(p->prev_scale);
-    return Object_DrawScaledItem(item, scale, prev_scale);
+    return Item_DrawScaled(item, scale, prev_scale);
 }
 
 static void M_Setup(OBJECT *const obj)

@@ -17,7 +17,6 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/skin/common.h>
 #include <trx/game/music.h>
-#include <trx/game/objects/draw.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
@@ -1958,7 +1957,7 @@ static bool M_Draw(const ITEM *const item)
     const OBJECT *const swap = Object_Get(O_MESH_SWAP_1);
     if (!swap->loaded
         || swap->mesh_count != Object_Get(item->object_id)->mesh_count) {
-        return Object_DrawUnclippedItem(item);
+        return Item_DrawUnclipped(item);
     }
 
     const int32_t left = g_PhdLeft;
@@ -1971,8 +1970,8 @@ static bool M_Draw(const ITEM *const item)
     g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
-    const bool result = Object_DrawAnimatingItemWithSwap(
-        item, swap, item->mesh_bits & ~p->swap_bits);
+    const bool result =
+        Item_DrawAnimatingWithSwap(item, swap, item->mesh_bits & ~p->swap_bits);
 
     g_PhdLeft = left;
     g_PhdTop = top;
