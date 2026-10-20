@@ -236,7 +236,7 @@ local HANDLERS = {
     end,
   },
   ["rendering.borders"] = { slow = 1, fast = 5 },
-  ["rendering.aspect_mode"] = { order = { "4:3", "16:9", "16:10", "any" } },
+  ["rendering.aspect_mode"] = { order = { "4_3", "16_9", "16_10", "any" } },
   ["rendering.texture_filter"] = { order = TEXTURE_FILTER_ORDER },
   ["rendering.ui_filter"] = { order = TEXTURE_FILTER_ORDER },
   ["rendering.upscaling_filter"] = { order = TEXTURE_FILTER_ORDER },
