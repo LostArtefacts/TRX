@@ -473,6 +473,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     Properties:
     - <a id="ui.MenuContext.background" name="ui.MenuContext.background"></a>**`background`**: string. The picture the title's menu stands on, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
     - <a id="ui.MenuContext.is_live" name="ui.MenuContext.is_live"></a>**`is_live`**: boolean. Whether the title level runs behind the menu, in place of a picture. *(read-only)*
+    - <a id="ui.MenuContext.key" name="ui.MenuContext.key"></a>**`key`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The item that fits the keyhole or receptacle the menu opens at, whether Lara carries it or not, or `nil` where the menu opens elsewhere. *(read-only)*
     - <a id="ui.MenuContext.mode" name="ui.MenuContext.mode"></a>**`mode`**: [trx.ui.MenuMode](#ui.MenuMode). What the menu opened for. *(read-only)*
     - <a id="ui.MenuContext.object" name="ui.MenuContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The entry the menu opens on, such as the crowbar a door asks for, or `nil` for none. *(read-only)*
 

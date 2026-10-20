@@ -10,6 +10,7 @@
 - Changed the "Fixed" wall glitch mode to prevent Lara being voided when jumping under low ceilings, similar to TR3+ (Gameplay → Fixes → Wall glitch mode)
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
 - Fixed Lara staying silent in TR4 when using an item that fits nothing, such as a combo piece
+- Fixed the inventory opening in TR4 when Lara uses a keyhole or receptacle without its item (TRX1826)
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 - Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)
 - Fixed Lara's position while vaulting to prevent cases where she may be slightly embedded into the block she is interacting with (OG bug)

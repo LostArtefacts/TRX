@@ -83,6 +83,9 @@ static void M_PushArgs(lua_State *const L, const LUA_HOOK_ARG *const arg)
         }
         M_SetBackground(L, args);
         M_SetBool(L, "is_live", args->is_live);
+        if (args->key_id != NO_OBJECT) {
+            M_SetInt(L, "key", args->key_id);
+        }
         break;
     case UI_TAKEOVER_PAUSE:
         M_SetBool(L, "can_exit_to_title", args->can_exit_to_title);

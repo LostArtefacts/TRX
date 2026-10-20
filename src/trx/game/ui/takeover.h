@@ -49,6 +49,9 @@ typedef struct {
     const char *background;
     // Whether the title level runs behind the menu, for UI_TAKEOVER_MENU.
     bool is_live;
+    // The item that fits the lock the menu opens at, or NO_OBJECT where the
+    // menu opens elsewhere, for UI_TAKEOVER_MENU.
+    OBJECT_ID key_id;
     // How long the screen shows and fades, in ticks, for
     // UI_TAKEOVER_LEVEL_VIEW and UI_TAKEOVER_PICTURE.
     int32_t display_ticks;
