@@ -237,7 +237,7 @@ end
 ---@param object integer The icon to draw.
 ---@param x number
 ---@param y number
----@param opts { xrot?: number, yrot?: number, zoom?: number, bright?: number, opacity?: number, bones?: trx.ui.BoneTurn[] }
+---@param opts { xrot?: number, yrot?: number, zoom?: number, bright?: number, opacity?: number, bones?: trx.ui.BoneTurn[], mesh_opacity?: table<integer, number> }
 function M.draw(object, x, y, opts)
   local item = items.of(object)
   local spec = item.opens and entries.item(object) or nil
@@ -270,6 +270,7 @@ function M.draw(object, x, y, opts)
     at_pivot = item.at_pivot,
     bones = opts.bones,
     mesh_mask = item.meshes,
+    mesh_opacity = opts.mesh_opacity,
     opacity = opts.opacity or 1,
     light = { ambient = { r = bright, g = bright, b = bright } },
   })

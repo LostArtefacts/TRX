@@ -2,6 +2,7 @@
 -- carries stands in a row across the screen, and the entry in the middle
 -- names what can be done with it in a list.
 
+local compass_needle = require("common.ui.compass")
 local death = require("common.ui.flat_menu.death")
 local fade = require("common.ui.fade")
 local items = require("common.ui.flat_menu.items")
@@ -767,6 +768,7 @@ local function paint(state)
     local left = w / 2 - h * 4 / 3 / 2
     strip.draw(objects.COMPASS_OPTION, left + h * 4 / 3 * COMPASS_X, h / 2, {
       bones = compass_bones(state),
+      mesh_opacity = compass_needle.mesh_opacity(),
       opacity = state.backdrop:get(),
     })
   end
