@@ -7,14 +7,44 @@
         }
     },
     "objects": {
+        "crossbow_ammo_1_item": {
+            "name": "Crossbow Normal Ammo",
+        },
+        "crossbow_ammo_2_item": {
+            "name": "Crossbow Poison Ammo",
+        },
+        "crossbow_ammo_3_item": {
+            "name": "Crossbow Explosive Ammo",
+        },
         "flare_item": {
             "name": "Flares",
+        },
+        "grenade_ammo_2_item": {
+            "name": "Grenadegun Super Ammo",
+        },
+        "grenade_ammo_3_item": {
+            "name": "Grenadegun Flash Ammo",
+        },
+        "grenade_ammo_item": {
+            "name": "Grenadegun Normal Ammo",
         },
         "grenade_gun_item": {
             "name": "Grenade Gun",
         },
+        "pistols_ammo_item": {
+            "name": "Pistol Ammo",
+        },
         "quest_item_1": {
             "name": "Amulet of Horus",
+        },
+        "shotgun_ammo_2_item": {
+            "name": "Shotgun Wideshot Ammo",
+        },
+        "shotgun_ammo_item": {
+            "name": "Shotgun Normal Ammo",
+        },
+        "uzis_ammo_item": {
+            "name": "Uzi Ammo",
         }
     },
     "cutscenes": [],
