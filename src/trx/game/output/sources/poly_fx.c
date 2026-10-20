@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-// The smallest size a blood drop is drawn at, in the screen pixels of the
-// REF_PERSP reference viewport.
-#define M_BLOOD_MIN_SIZE 16
+// The smallest size a blood drop shrinks to as it falls, in the size units of
+// the spark. It matches the smallest size a TR4 drop spawns at.
+#define M_BLOOD_MIN_SIZE 8
 
 typedef struct {
     XYZW_F pos;
@@ -976,15 +976,19 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     int32_t sw = render_width;
     int32_t sh = render_height;
 
+    // The original clamps blood drops in screen pixels, which makes them grow
+    // with distance and shrink close up. The floor is applied to the size of
+    // the drop instead, so that it keeps a fixed size in the world.
+    if (g_TRVersion == 4 && (spark->flags & SPARK_F_BLOOD) != 0U) {
+        CLAMPL(sw, M_BLOOD_MIN_SIZE);
+        CLAMPL(sh, M_BLOOD_MIN_SIZE);
+    }
+
     const bool use_sprite = (spark->flags & SPARK_F_SPRITE) != 0U;
     if ((spark->flags & SPARK_F_SCALE) != 0U) {
         const int32_t scalar = spark->scalar;
         sw = (int32_t)(((((int64_t)sw * REF_PERSP) << scalar) / vpos_z));
         sh = (int32_t)(((((int64_t)sh * REF_PERSP) << scalar) / vpos_z));
-    }
-    if (g_TRVersion == 4 && (spark->flags & SPARK_F_BLOOD) != 0U) {
-        CLAMP(sw, M_BLOOD_MIN_SIZE, render_width << 3);
-        CLAMP(sh, M_BLOOD_MIN_SIZE, render_height << 3);
     }
 
     // A spark that does not scale keeps the size the original gave it in the
