@@ -20,6 +20,12 @@ void UI_RequestItem(OBJECT_ID object_id);
 // Returns the entry asked for and forgets it, or NO_OBJECT where none was.
 OBJECT_ID UI_TakeRequestedItem(void);
 
+// Tells the next menu the item that fits the lock it opens at.
+void UI_RequestKey(OBJECT_ID object_id);
+
+// Returns the key told and forgets it, or NO_OBJECT where none was.
+OBJECT_ID UI_TakeRequestedKey(void);
+
 // Announces an object in the corner of the screen, as the game does for a
 // pickup Lara collects. A script draws the announcement and plays the secret
 // music for a secret.

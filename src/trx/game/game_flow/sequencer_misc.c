@@ -85,9 +85,11 @@ GF_COMMAND GF_ShowInventory(const INVENTORY_MODE mode)
 
 bool GF_ShowInventoryKeys(const OBJECT_ID receptacle_type_id)
 {
+    const OBJECT_ID key_id =
+        ObjectLink_GetInverse(receptacle_type_id, OBJ_LINK_KEY_TO_RECEPTACLE);
+    UI_RequestKey(key_id);
     if (g_Config.gameplay.enable_auto_item_selection) {
-        UI_RequestItem(ObjectLink_GetInverse(
-            receptacle_type_id, OBJ_LINK_KEY_TO_RECEPTACLE));
+        UI_RequestItem(key_id);
     }
     PHASE *const phase = Phase_Inventory_Create(INV_KEYS_MODE);
     const GF_COMMAND gf_cmd = PhaseExecutor_Run(phase);

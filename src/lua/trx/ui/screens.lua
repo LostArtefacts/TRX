@@ -403,9 +403,10 @@ local PictureContext = h.class("ui.PictureContext", {
 ---@type table<integer, table>
 ---The context of the game's menu, for `trx.ui.Screen.MENU`.
 ---@class (exact) trx.ui.MenuContext: trx.ui.ScreenContext
----@trx.readonly mode, object, background, is_live
+---@trx.readonly mode, object, key, background, is_live
 ---@field mode trx.ui.MenuMode What the menu opened for.
 ---@field object trx.catalog.objects? The entry the menu opens on, such as the crowbar a door asks for, or `nil` for none.
+---@field key trx.catalog.objects? The item that fits the keyhole or receptacle the menu opens at, whether Lara carries it or not, or `nil` where the menu opens elsewhere.
 ---@field background string? The picture the title's menu stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
 ---@field is_live boolean Whether the title level runs behind the menu, in place of a picture.
 local MenuContext = h.class("ui.MenuContext", {
@@ -413,6 +414,7 @@ local MenuContext = h.class("ui.MenuContext", {
   fields = {
     mode = reported("mode"),
     object = reported("object"),
+    key = reported("key"),
     background = background,
     is_live = reported("is_live"),
   },

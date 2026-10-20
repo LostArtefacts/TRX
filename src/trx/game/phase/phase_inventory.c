@@ -120,6 +120,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
                 ? g_GameFlow.main_menu_background_path
                 : nullptr,
             .is_live = p->live_scene,
+            .key_id = UI_TakeRequestedKey(),
         });
     if (!p->is_shown) {
         if (p->music_paused) {
