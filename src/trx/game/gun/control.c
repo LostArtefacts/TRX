@@ -509,11 +509,16 @@ int32_t Gun_FireWeapon(
     Stats_AddAmmoUsed();
     lara->has_fired = true;
 
-    const XYZ_32 view_pos = {
+    XYZ_32 view_pos = {
         .x = src->pos.x,
         .y = src->pos.y - weapon->gun_height,
         .z = src->pos.z,
     };
+    if (g_TRVersion >= 4) {
+        XYZ_32 arm_pos = {};
+        Lara_GetJointAbsPosition(&arm_pos, LM_UARM_L);
+        view_pos.y = arm_pos.y;
+    }
     const XYZ_16 view_rot = {
         .x = angles[1]
             + weapon->shot_accuracy * (Random_GetControl() - DEG_90) / DEG_360,
