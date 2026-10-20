@@ -312,17 +312,22 @@ local function light_of(shade)
   }
 end
 
+-- The compass needle keeps its angle and speed from one opening to the next,
+-- so it swings from where it last pointed, as in the original games.
+---@type { angle: trx.math.Angle, speed: number }
+local needle = { angle = 0, speed = 0 }
+
 -- The needle of the compass swings towards north as Lara faces, and settles.
-local function swing_needle(state, entry)
+local function swing_needle(entry)
   local lara = trx.lara ~= nil and trx.lara.item or nil
   if lara == nil then
     return
   end
   local facing = entry.y_rot:get() + (entry.spec.base_rot.y or 0)
-  local delta = wrap(-facing - lara.rot.y - state.needle)
-  state.needle_speed = trx.math.idiv(state.needle_speed * 19, 20)
+  local delta = wrap(-facing - lara.rot.y - needle.angle)
+  needle.speed = trx.math.idiv(needle.speed * 19, 20)
     + trx.math.idiv(delta, 50)
-  state.needle = wrap(state.needle + state.needle_speed)
+  needle.angle = wrap(needle.angle + needle.speed)
 end
 
 -- The turns the hands of the stopwatch take, from the time the level has
@@ -377,7 +382,7 @@ local function paint_entry(state, index)
     opts.blend = trx.ui.interpolation_rate()
   end
   if object == objects.COMPASS_OPTION then
-    opts.bones = { { bone = 0, y = state.needle } }
+    opts.bones = { { bone = 0, y = needle.angle } }
     opts.mesh_opacity = compass.mesh_opacity()
   elseif object == objects.STOPWATCH_OPTION then
     opts.bones = stopwatch_bones()
@@ -1239,7 +1244,7 @@ local function run(state)
   then
     local index = index_of(state.list, objects.COMPASS_OPTION)
     if index ~= nil then
-      swing_needle(state, view.entries[index])
+      swing_needle(view.entries[index])
     end
   end
 
@@ -1323,8 +1328,6 @@ local function open(ctx)
     ctx = ctx,
     mode = ctx.mode,
     status = Status.OPENING,
-    needle = 0,
-    needle_speed = 0,
     idle_ticks = 0,
     demo_ticks = ctx.mode == MenuMode.TITLE and demo_ticks() or 0,
     turning_held = false,
