@@ -111,6 +111,7 @@
 - Fixed Earthquakes resetting to their starting shake intensity when loading a save (TRX1622, regression from 1.2)
 - Fixed Lara stopping a turn at once when the look button is held
 - Fixed Lara, enemies and vehicles moving slightly differently from the original game
+- Fixed Lara's braid floating upright when mounting the UPV while the breeze mode option is set to TR2 or disabled
 - Fixed civilians, military police and prisoners not starting slightly turned, as they do in the original game
 - Fixed guns that eject shells puffing smoke at the muzzle rather than at the shell
 - Fixed a misaligned barrier mesh in Aldwych room 57 (TRX1639, regression from 1.5)
