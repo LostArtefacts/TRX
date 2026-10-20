@@ -7,14 +7,44 @@
         }
     },
     "objects": {
+        "crossbow_ammo_1_item": {
+            "name": "\\{review}Dardi Normali per Balestra",
+        },
+        "crossbow_ammo_2_item": {
+            "name": "\\{review}Dardi Avvelenati per Balestra",
+        },
+        "crossbow_ammo_3_item": {
+            "name": "\\{review}Dardi Esplosivi per Balestra",
+        },
         "flare_item": {
             "name": "Razzi di Segnalazione",
+        },
+        "grenade_ammo_2_item": {
+            "name": "\\{review}Granate Potenziate",
+        },
+        "grenade_ammo_3_item": {
+            "name": "\\{review}Granate Accecanti",
+        },
+        "grenade_ammo_item": {
+            "name": "\\{review}Granate Normali",
         },
         "grenade_gun_item": {
             "name": "Lanciagranate",
         },
+        "pistols_ammo_item": {
+            "name": "\\{review}Munizioni per Pistole",
+        },
         "quest_item_1": {
             "name": "\\{review}Amuleto di Horus",
+        },
+        "shotgun_ammo_2_item": {
+            "name": "\\{review}Munizioni a Rosa Larga per Fucile a Pompa",
+        },
+        "shotgun_ammo_item": {
+            "name": "\\{review}Munizioni Normali per Fucile a Pompa",
+        },
+        "uzis_ammo_item": {
+            "name": "\\{review}Munizioni per Uzi",
         }
     },
     "cutscenes": [],
