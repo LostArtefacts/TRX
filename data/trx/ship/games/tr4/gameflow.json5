@@ -99,6 +99,7 @@
             ],
             "injections": [
                 "seth_fd.bin",
+                "seth_textures.bin",
             ],
         },
 
@@ -119,6 +120,7 @@
             ],
             "injections": [
                 "burial_animating_bounds.bin",
+                "burial_textures.bin",
             ],
             "unobtainable_kills": 7,
         },
@@ -142,6 +144,7 @@
             "injections": [
                 "guide_gun.bin",
                 "valley_fd.bin",
+                "valley_textures.bin",
             ],
         },
 
@@ -163,6 +166,9 @@
                 {"type": "play_fmv", "fmv_id": 3},
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "kv5_textures.bin",
             ],
             "unobtainable_kills": 1,
         },

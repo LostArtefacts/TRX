@@ -224,6 +224,11 @@
 - Fixed z-fighting between pickups 21 and 22 in Valley of the Kings (OG bug, TRX1571)
 - Fixed the compass needle staying solid when Lara faces true north, unlike the original game (TRX1784)
 - Fixed the compass facing away in the inventory ring, and added the opening and closing of its lid, as in TR1 (TRX1802)
+- Fixed a mis-rotated texture in Angkor Wat room 3 (TRX1624)
+- Fixed stretched and incorrect textures in Tomb of Seth rooms 31, 42 and 126 (TRX1624)
+- Fixed stretched and incorrect textures in Burial Chambers rooms 11, 12, 58, 88, 89 and 114 (TRX1624)
+- Fixed an incorrect texture in Valley of the Kings room 25 (TRX1624)
+- Fixed incorrect and missing textures in KV5 rooms 2, 4, 37, 50, 65, 69 and 77 (TRX1624)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)

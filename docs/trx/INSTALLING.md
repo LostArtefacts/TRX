@@ -1346,21 +1346,25 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── angkor_fd.bin
 │   │   │   ├── angkor_textures.bin
 │   │   │   ├── burial_animating_bounds.bin
+│   │   │   ├── burial_textures.bin
 │   │   │   ├── font.bin
 │   │   │   ├── guide_gun.bin
 │   │   │   ├── henchman_jeep.bin
 │   │   │   ├── inventory_models.bin
 │   │   │   ├── karnak_fd.bin
+│   │   │   ├── kv5_textures.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── pickup_aid.bin
 │   │   │   ├── race_fd.bin
 │   │   │   ├── race_textures.bin
 │   │   │   ├── seth_fd.bin
+│   │   │   ├── seth_textures.bin
 │   │   │   ├── shadow_sprite.bin
 │   │   │   ├── sparks_gfx.bin
 │   │   │   ├── title_textures.bin
-│   │   │   └── valley_fd.bin
+│   │   │   ├── valley_fd.bin
+│   │   │   └── valley_textures.bin
 │   │   ├── modules
 │   │   │   ├── cutscenes.lua
 │   │   │   ├── expanding_blocks.lua
@@ -2891,21 +2895,25 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── angkor_fd.bin
     │   │   │   │   ├── angkor_textures.bin
     │   │   │   │   ├── burial_animating_bounds.bin
+    │   │   │   │   ├── burial_textures.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── guide_gun.bin
     │   │   │   │   ├── henchman_jeep.bin
     │   │   │   │   ├── inventory_models.bin
     │   │   │   │   ├── karnak_fd.bin
+    │   │   │   │   ├── kv5_textures.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   ├── pickup_aid.bin
     │   │   │   │   ├── race_fd.bin
     │   │   │   │   ├── race_textures.bin
     │   │   │   │   ├── seth_fd.bin
+    │   │   │   │   ├── seth_textures.bin
     │   │   │   │   ├── shadow_sprite.bin
     │   │   │   │   ├── sparks_gfx.bin
     │   │   │   │   ├── title_textures.bin
-    │   │   │   │   └── valley_fd.bin
+    │   │   │   │   ├── valley_fd.bin
+    │   │   │   │   └── valley_textures.bin
     │   │   │   ├── modules
     │   │   │   │   ├── cutscenes.lua
     │   │   │   │   ├── expanding_blocks.lua
