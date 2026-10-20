@@ -1493,6 +1493,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── text_dialog.lua
 │   │   │   └── window.lua
 │   │   ├── captions.lua
+│   │   ├── compass.lua
 │   │   ├── fade.lua
 │   │   ├── level_start.lua
 │   │   ├── menu.lua
@@ -3037,6 +3038,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── text_dialog.lua
     │   │   │   │   └── window.lua
     │   │   │   ├── captions.lua
+    │   │   │   ├── compass.lua
     │   │   │   ├── fade.lua
     │   │   │   ├── level_start.lua
     │   │   │   ├── menu.lua
