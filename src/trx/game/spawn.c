@@ -5,6 +5,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/bubble.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
@@ -171,6 +172,10 @@ void Spawn_Explosion(
 
 void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
 {
+    if (g_TRVersion == 4) {
+        FX_Bubble_Create(*pos, room_num, 8, 7);
+        return;
+    }
     if (g_TRVersion == 3) {
         Spawn_BubbleEx(pos, room_num, 8, 8);
         return;
@@ -191,6 +196,10 @@ void Spawn_BubbleEx(
     const XYZ_32 *const pos, const int16_t room_num, const int32_t size,
     const int32_t size_range)
 {
+    if (g_TRVersion == 4) {
+        FX_Bubble_Create(*pos, room_num, size, size_range - 1);
+        return;
+    }
     if (g_TRVersion != 3) {
         Spawn_Bubble(pos, room_num);
         return;
