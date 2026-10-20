@@ -10,6 +10,7 @@
 -- Usage:
 --   require("common.ui.menu").setup()
 
+local ammo_choice = require("common.ui.ring.ammo")
 local compass = require("common.ui.compass")
 local entries = require("common.ui.ring.entries")
 local fade = require("common.ui.fade")
@@ -78,6 +79,7 @@ local Action = {
   USE = "use",
   EXAMINE = "examine",
   COMBINE = "combine",
+  CHOOSE_AMMO = "choose_ammo",
 }
 
 -- The screen a script is offered for what the player does with an entry.
@@ -620,7 +622,10 @@ end
 -- The hints for what the player may do with the entry the ring rests on.
 local function hints_of(state)
   local actions = state.actions
-  if actions == nil or not (actions.examine or actions.combine) then
+  if
+    actions == nil
+    or not (actions.examine or actions.combine or state.ammo_weapon)
+  then
     return {}
   end
   local result = {}
@@ -629,8 +634,13 @@ local function hints_of(state)
       input = Role.MENU_SHOW_INFO,
       text = trx.locale.get("general/actions/examine_item"),
     }
+  elseif state.ammo_weapon ~= nil then
+    result[#result + 1] = {
+      input = Role.MENU_SHOW_INFO,
+      text = trx.locale.get("general/actions/choose_ammo"),
+    }
   end
-  if actions.use or actions.combine then
+  if actions.use or actions.combine or state.ammo_weapon ~= nil then
     result[#result + 1] = {
       input = Role.MENU_CONFIRM,
       text = actions.combine and trx.locale.get(
@@ -842,8 +852,9 @@ local function pick_sound(object)
   return samples.MENU_CHOOSE
 end
 
--- Picks the entry the ring rests on, to use it or to examine it.
-local function pick(state, examine)
+-- Picks the entry the ring rests on, to use it, to examine it, or to choose
+-- its ammunition.
+local function pick(state, examine, choosing_ammo)
   if is_forced_mode(state.mode) then
     state.passport_shown = true
   end
@@ -852,8 +863,8 @@ local function pick(state, examine)
   local content = state.list[view.current]
   local spec = content.spec
   local anim = state.anims[view.current]
-  if examine then
-    state.action = Action.EXAMINE
+  if examine or choosing_ammo then
+    state.action = choosing_ammo and Action.CHOOSE_AMMO or Action.EXAMINE
     anim.goal = 0
   elseif state.actions ~= nil and state.actions.combine then
     state.action = Action.COMBINE
@@ -917,11 +928,11 @@ local function control_open(state, keys)
     return
   end
 
-  local examine = keys:pressed(Role.MENU_SHOW_INFO)
-    and state.actions ~= nil
-    and state.actions.examine
-  if keys:pressed(Role.MENU_CONFIRM) or examine then
-    pick(state, examine)
+  local info = keys:pressed(Role.MENU_SHOW_INFO)
+  local examine = info and state.actions ~= nil and state.actions.examine
+  local choosing_ammo = info and not examine and state.ammo_weapon ~= nil
+  if keys:pressed(Role.MENU_CONFIRM) or examine or choosing_ammo then
+    pick(state, examine, choosing_ammo)
     return
   end
 
@@ -1026,12 +1037,33 @@ local function control_entry(state, keys, busy)
   end
 end
 
+-- Opens the row of the picked weapon's ammunition, and puts the weapon back
+-- into the ring once the row closes.
+local function choose_ammo(state)
+  local choice
+  choice = ammo_choice.open(state.ctx, state.ammo_weapon, function()
+    if state.screen ~= choice then
+      return
+    end
+    state.screen = nil
+    if state.status == Status.SELECTED then
+      close_item(state, leaves_after_save(state.mode))
+    end
+  end)
+  state.screen = choice
+  state.unhandled = false
+end
+
 -- Offers the screen of what the player does with the entry, once.
 local function offer(state)
   if state.offered then
     return
   end
   state.offered = true
+  if state.action == Action.CHOOSE_AMMO then
+    choose_ammo(state)
+    return
+  end
   local screen = SCREEN_OF[state.action]
   local object = drawn_object(state, state.view.current)
   ---@type trx.ui.ScreenContext?
@@ -1249,7 +1281,9 @@ local function run(state)
 
   if state.status ~= Status.DONE then
     if SHOWN[state.status] then
-      state.actions = trx.inventory.actions(state.list[view.current].object)
+      local object = state.list[view.current].object
+      state.actions = trx.inventory.actions(object)
+      state.ammo_weapon = ammo_choice.weapon_of(object)
     end
     say(state)
     ring.set_rest_frame(rest_frame_of(state))

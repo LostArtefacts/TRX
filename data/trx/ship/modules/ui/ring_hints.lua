@@ -42,6 +42,19 @@ function M.setup()
       end),
     })
   end
+  -- Keeps the line of the hints while the ring shows a count and no hints,
+  -- so that the count stays where it is as the hints come and go.
+  parts[#parts + 1] = ui.widgets.Custom({
+    visible = hint:map(function(texts)
+      return #texts == 0
+    end),
+    measure = function()
+      local text = ui.input_hint_text(trx.input.Role.MENU_CONFIRM, "")
+      local _, h = ui.primitive.measure_text(text, 1.0)
+      return 0, h
+    end,
+    paint = function() end,
+  })
 
   -- The count stands to the right of the middle, where the ring draws it, and
   -- keeps the room of its text where it would stand centered. It reads the
@@ -72,7 +85,7 @@ function M.setup()
         ui.widgets.Stack({
           orientation = ui.Orientation.HORIZONTAL,
           spacing = PART_SPACING,
-          visible = has_hint,
+          visible = has_hint | has_count,
           children = parts,
         }),
         shifted_count,

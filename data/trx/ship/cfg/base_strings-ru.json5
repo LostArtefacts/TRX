@@ -5,6 +5,7 @@
     "general": {
         "actions": {
             "cancel": "\\{review}Отмена",
+            "choose_ammo": "\\{review}Выбрать патроны",
             "combine_item": "\\{review}Соединить",
             "examine_item": "Осмотреть",
             "hide_dialog": "Скрыть диалог",

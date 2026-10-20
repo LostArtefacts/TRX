@@ -5,6 +5,7 @@
     "general": {
         "actions": {
             "cancel": "\\{review}Sguir dheth",
+            "choose_ammo": "\\{review}Tagh peilearan",
             "combine_item": "\\{review}Co-cheangail",
             "examine_item": "Sgrùd",
             "hide_dialog": "Falaich an còmhradh",

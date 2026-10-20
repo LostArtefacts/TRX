@@ -1455,6 +1455,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── assault.lua
 │   │   │   └── legend.lua
 │   │   ├── ring
+│   │   │   ├── ammo.lua
 │   │   │   ├── entries.lua
 │   │   │   ├── init.lua
 │   │   │   ├── motion.lua
@@ -3005,6 +3006,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── assault.lua
     │   │   │   │   └── legend.lua
     │   │   │   ├── ring
+    │   │   │   │   ├── ammo.lua
     │   │   │   │   ├── entries.lua
     │   │   │   │   ├── init.lua
     │   │   │   │   ├── motion.lua
