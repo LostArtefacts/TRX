@@ -147,3 +147,17 @@ TEST(add_and_subtract_are_componentwise)
     CHECK_EQ_INT(sum.z, 33);
     M_CheckNear(XYZ_32_Subtract(sum, b), a);
 }
+
+TEST(add_and_subtract_16_are_componentwise)
+{
+    const XYZ_16 a = { .x = 1, .y = -2, .z = 300 };
+    const XYZ_16 b = { .x = 10, .y = -20, .z = 30 };
+    const XYZ_16 sum = XYZ_16_Add(a, b);
+    CHECK_EQ_INT(sum.x, 11);
+    CHECK_EQ_INT(sum.y, -22);
+    CHECK_EQ_INT(sum.z, 330);
+    const XYZ_16 diff = XYZ_16_Subtract(sum, b);
+    CHECK_EQ_INT(diff.x, a.x);
+    CHECK_EQ_INT(diff.y, a.y);
+    CHECK_EQ_INT(diff.z, a.z);
+}

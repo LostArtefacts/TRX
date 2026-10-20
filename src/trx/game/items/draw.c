@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/debug.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/utils.h>
@@ -98,6 +99,46 @@ static BOUNDS_16 M_GetBoundingBox(
     return new_bounds;
 }
 
+static bool M_DrawPose(
+    const OBJECT *const obj, const ITEM_DRAW_DESC *const desc,
+    const int16_t *const extra_rotation, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
+{
+    if (frame1 == nullptr) {
+        return false;
+    }
+    const CLIP clip = Object_GetClip(obj, &frame1->bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
+        return false;
+    }
+
+    ASSERT(rate != 0);
+    Matrix_Push();
+
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrames(frame1, frame2, frac, rate),
+            .extra_rotations = extra_rotation,
+            .applies_base_rot = true,
+        });
+    while (Anim_Walk_Next(&walk)) {
+        const int32_t mesh_idx = walk.joint;
+        if ((desc->mesh_mask & (1u << mesh_idx)) != 0) {
+            Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, walk.interpolated);
+        } else if (desc->mesh_swap != nullptr) {
+            Object_DrawMesh(
+                desc->mesh_swap->mesh_idx + mesh_idx, clip, walk.interpolated);
+        }
+    }
+    Anim_Walk_End(&walk);
+
+    Matrix_Pop();
+    return true;
+}
+
 void Item_ControlDraw(ITEM *const item)
 {
     if (g_TRVersion == 3 && item->is_visible && item->after_death < 32
@@ -142,12 +183,12 @@ bool Item_DrawUnclipped(const ITEM *const item)
 
 bool Item_DrawAnimating(const ITEM *item)
 {
-    return Item_DrawAnimatingWithSwap(item, nullptr, item->mesh_bits);
+    return Item_DrawAnimatingEx(
+        item, &(ITEM_DRAW_DESC) { .mesh_mask = item->mesh_bits });
 }
 
-bool Item_DrawAnimatingWithSwap(
-    const ITEM *const item, const OBJECT *const mesh_swap,
-    const uint32_t mesh_mask)
+bool Item_DrawAnimatingEx(
+    const ITEM *const item, const ITEM_DRAW_DESC *const desc)
 {
     ANIM_FRAME *frames[2];
     int32_t rate;
@@ -155,12 +196,12 @@ bool Item_DrawAnimatingWithSwap(
     const OBJECT *const obj = Object_Get(item->object_id);
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
-    const OBJECT *swap_obj = mesh_swap;
-    if (swap_obj != nullptr && !swap_obj->loaded) {
-        swap_obj = nullptr;
+    ITEM_DRAW_DESC meshes = *desc;
+    if (meshes.mesh_swap != nullptr && !meshes.mesh_swap->loaded) {
+        meshes.mesh_swap = nullptr;
     }
-    if (swap_obj != nullptr) {
-        ASSERT(swap_obj->mesh_count >= obj->mesh_count);
+    if (meshes.mesh_swap != nullptr) {
+        ASSERT(meshes.mesh_swap->mesh_count >= obj->mesh_count);
     }
 
     if (obj->shadow_size != 0) {
@@ -182,9 +223,8 @@ bool Item_DrawAnimatingWithSwap(
 
     const int16_t *extra_rotation = item->extra_rotations;
 
-    bool result = Object_DrawInterpolatedObjectWithSwap(
-        obj, mesh_mask, extra_rotation, frames[0], frames[1], frac, rate,
-        swap_obj);
+    bool result = M_DrawPose(
+        obj, &meshes, extra_rotation, frames[0], frames[1], frac, rate);
     if (g_Config.debug.enable_debug_bounding_boxes) {
         const BOUNDS_32 debug_bounds = BOUNDS_32_From16(bounds);
         Output_DrawCuboid(&debug_bounds);

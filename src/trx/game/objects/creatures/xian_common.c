@@ -11,5 +11,10 @@ bool XianWarrior_Draw(const ITEM *item)
     } else {
         swap = Object_Get(O_XIAN_KNIGHT_STATUE);
     }
-    return Item_DrawAnimatingWithSwap(item, swap, item->mesh_bits);
+    return Item_DrawAnimatingEx(
+        item,
+        &(ITEM_DRAW_DESC) {
+            .mesh_mask = item->mesh_bits,
+            .mesh_swap = swap,
+        });
 }

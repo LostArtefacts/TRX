@@ -1970,8 +1970,12 @@ static bool M_Draw(const ITEM *const item)
     g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
-    const bool result =
-        Item_DrawAnimatingWithSwap(item, swap, item->mesh_bits & ~p->swap_bits);
+    const bool result = Item_DrawAnimatingEx(
+        item,
+        &(ITEM_DRAW_DESC) {
+            .mesh_mask = item->mesh_bits & ~p->swap_bits,
+            .mesh_swap = swap,
+        });
 
     g_PhdLeft = left;
     g_PhdTop = top;

@@ -554,7 +554,12 @@ static bool M_Draw(const ITEM *const item)
     } else {
         swap = Object_Get(O_MESH_SWAP_2);
     }
-    return Item_DrawAnimatingWithSwap(item, swap, item->mesh_bits);
+    return Item_DrawAnimatingEx(
+        item,
+        &(ITEM_DRAW_DESC) {
+            .mesh_mask = item->mesh_bits,
+            .mesh_swap = swap,
+        });
 }
 
 static void M_Setup(OBJECT *const obj)
