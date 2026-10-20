@@ -122,6 +122,10 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             .is_live = p->live_scene,
         });
     if (!p->is_shown) {
+        if (p->music_paused) {
+            Music_Unpause();
+            Sound_UnpauseAll();
+        }
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
             .gf_cmd = { .action = GF_NOOP },
