@@ -36,7 +36,7 @@ void FX_Control(void)
     }
 }
 
-void FX_Draw(void)
+void FX_DrawAll(void)
 {
     for (int32_t i = 0; i < m_ModuleCount; i++) {
         if (m_Modules[i]->draw_func != nullptr) {

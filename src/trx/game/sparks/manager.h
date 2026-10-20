@@ -15,7 +15,7 @@ void Sparks_ResetWind(void);
 // the other games advance it with the rest of the sparks.
 void Sparks_UpdateWind(void);
 void Sparks_Control(void);
-void Sparks_Draw(void);
+void Sparks_DrawAll(void);
 
 // Writes and reads one spark. A sprite spark stores its object and sprite
 // offset. The owning pool stores the on flag and attachment.

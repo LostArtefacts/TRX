@@ -577,8 +577,8 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 
     Output_Water_SetupAboveWater(false);
     if (!M_IsSceneryOnly()) {
-        FX_Draw();
-        Sparks_Draw();
+        FX_DrawAll();
+        Sparks_DrawAll();
     }
     Rope_DrawAll();
     Output_LensFlares_Draw();
