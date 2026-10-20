@@ -283,6 +283,9 @@ void Room_BuildOutsideTable(void)
         for (int32_t x = 0; x < blocks_z; x += M_OUTSIDE_TABLE_STEP) {
             for (int32_t i = 0; i < num_rooms; i++) {
                 const ROOM *const room = Room_Get(i);
+                if (room->flip_status == RFS_FLIPPED) {
+                    continue;
+                }
 
                 const int32_t room_x = (room->pos.z >> WALL_SHIFT)
                     - (m_OutsideOriginCellZ * M_OUTSIDE_TABLE_STEP);

@@ -235,6 +235,7 @@
 - Fixed an incorrect texture in Valley of the Kings room 25 (TRX1624)
 - Fixed incorrect and missing textures in KV5 rooms 2, 4, 37, 50, 65, 69 and 77 (TRX1624)
 - Fixed Lara's shots being too high when crouched (TRX1257)
+- Fixed water particles appearing in dry rooms that have an alternate underwater room (TRX1830)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
