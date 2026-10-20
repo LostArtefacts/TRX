@@ -531,9 +531,9 @@ static bool M_Draw(const ITEM *const item)
     // A block shoved by a lift or sliding pillar moves without being on the
     // simulation list, so it is not in play; it still draws unclipped.
     if (Item_IsInPlay(item) || M_IsForcedMoving(item)) {
-        return Object_DrawUnclippedItem(item);
+        return Item_DrawUnclipped(item);
     } else {
-        return Object_DrawAnimatingItem(item);
+        return Item_DrawAnimating(item);
     }
 }
 

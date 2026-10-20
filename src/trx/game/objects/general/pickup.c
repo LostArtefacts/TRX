@@ -983,9 +983,9 @@ static bool M_Draw(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
     if (p->pickup_mode == PICKUP_MODE_CROWBAR) {
-        return Object_DrawAnimatingItem(item);
+        return Item_DrawAnimating(item);
     }
-    return Object_DrawPickupItem(item);
+    return Item_DrawPickup(item);
 }
 
 void Pickup_Setup(OBJECT *const obj)

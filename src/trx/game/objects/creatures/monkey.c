@@ -5,9 +5,9 @@
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items/anim.h>
+#include <trx/game/items/draw.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/draw.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -554,7 +554,7 @@ static bool M_Draw(const ITEM *const item)
     } else {
         swap = Object_Get(O_MESH_SWAP_2);
     }
-    return Object_DrawAnimatingItemWithSwap(item, swap, item->mesh_bits);
+    return Item_DrawAnimatingWithSwap(item, swap, item->mesh_bits);
 }
 
 static void M_Setup(OBJECT *const obj)

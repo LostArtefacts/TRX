@@ -610,7 +610,7 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
-    const bool result = Object_DrawAnimatingItem(item);
+    const bool result = Item_DrawAnimating(item);
     if (p->explode_count != 0) {
         if (p->explode_count != 0 && p->explode_count <= 64) {
             M_DrawShield(item);

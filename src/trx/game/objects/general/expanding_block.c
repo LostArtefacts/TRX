@@ -263,7 +263,7 @@ static bool M_Draw(const ITEM *const item)
     const M_PRIV *const p = item->priv;
     const XYZ_32 scale = M_GetDrawScale(item->object_id, p->scale);
     const XYZ_32 prev_scale = M_GetDrawScale(item->object_id, p->prev_scale);
-    return Object_DrawScaledItem(item, scale, prev_scale);
+    return Item_DrawScaled(item, scale, prev_scale);
 }
 
 static void M_Setup(OBJECT *const obj)

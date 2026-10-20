@@ -1,9 +1,102 @@
 #include <trx/game/items/draw.h>
 
+#include <trx/config.h>
+#include <trx/debug.h>
+#include <trx/game/interpolation.h>
+#include <trx/game/inventory.h>
 #include <trx/game/items/utils.h>
+#include <trx/game/matrix.h>
+#include <trx/game/objects.h>
+#include <trx/game/objects/draw.h>
+#include <trx/game/objects/families.h>
+#include <trx/game/output.h>
+#include <trx/game/output/sources/shadows.h>
+#include <trx/game/output/vars.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
+
+static BOUNDS_16 M_GetBoundingBox(
+    const OBJECT *const obj, const XYZ_16 *const mesh_rots,
+    const uint32_t mesh_bits)
+{
+    Matrix_PushUnit();
+    if (mesh_rots != nullptr) {
+        Matrix_Rot16(mesh_rots[0]);
+    }
+
+    BOUNDS_16 new_bounds = {
+        .min.x = 0x7FFF,
+        .min.y = 0x7FFF,
+        .min.z = 0x7FFF,
+        .max.x = -0x7FFF,
+        .max.y = -0x7FFF,
+        .max.z = -0x7FFF,
+    };
+
+    for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+        if (mesh_idx != 0) {
+            const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+            if (bone->matrix_pop) {
+                Matrix_Pop();
+            }
+
+            if (bone->matrix_push) {
+                Matrix_Push();
+            }
+
+            Matrix_TranslateRel32(bone->pos);
+            if (mesh_rots != nullptr) {
+                Matrix_Rot16(mesh_rots[mesh_idx]);
+            }
+        }
+
+        if (!(mesh_bits & (1 << mesh_idx))) {
+            continue;
+        }
+
+        const OBJECT_MESH *const mesh =
+            Object_GetMesh(obj->mesh_idx + mesh_idx);
+        for (int32_t i = 0; i < mesh->num_vertices; i++) {
+            // clang-format off
+            const XYZ_16 *const vertex = &mesh->vertices[i];
+            const MATRIX *const mptr = g_MatrixPtr;
+            const double xv = (
+                mptr->_00 * vertex->x +
+                mptr->_01 * vertex->y +
+                mptr->_02 * vertex->z +
+                mptr->_03
+            );
+            const double yv = (
+                mptr->_10 * vertex->x +
+                mptr->_11 * vertex->y +
+                mptr->_12 * vertex->z +
+                mptr->_13
+            );
+            double zv = (
+                mptr->_20 * vertex->x +
+                mptr->_21 * vertex->y +
+                mptr->_22 * vertex->z +
+                mptr->_23
+            );
+            // clang-format on
+
+            const int32_t x = ((int32_t)xv) >> W2V_SHIFT;
+            const int32_t y = ((int32_t)yv) >> W2V_SHIFT;
+            const int32_t z = ((int32_t)zv) >> W2V_SHIFT;
+
+            new_bounds.min.x = MIN(new_bounds.min.x, x);
+            new_bounds.min.y = MIN(new_bounds.min.y, y);
+            new_bounds.min.z = MIN(new_bounds.min.z, z);
+            new_bounds.max.x = MAX(new_bounds.max.x, x);
+            new_bounds.max.y = MAX(new_bounds.max.y, y);
+            new_bounds.max.z = MAX(new_bounds.max.z, z);
+        }
+    }
+
+    Matrix_Pop();
+    return new_bounds;
+}
 
 void Item_ControlDraw(ITEM *const item)
 {
@@ -24,4 +117,232 @@ void Item_ControlDraw(ITEM *const item)
                 Random_GetDraw() << 1, item->room_num, 1);
         }
     }
+}
+
+bool Item_DrawUnclipped(const ITEM *const item)
+{
+    const int32_t left = g_PhdLeft;
+    const int32_t top = g_PhdTop;
+    const int32_t right = g_PhdRight;
+    const int32_t bottom = g_PhdBottom;
+
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+
+    Item_DrawAnimating(item);
+
+    g_PhdLeft = left;
+    g_PhdTop = top;
+    g_PhdRight = right;
+    g_PhdBottom = bottom;
+    return true;
+}
+
+bool Item_DrawAnimating(const ITEM *item)
+{
+    return Item_DrawAnimatingWithSwap(item, nullptr, item->mesh_bits);
+}
+
+bool Item_DrawAnimatingWithSwap(
+    const ITEM *const item, const OBJECT *const mesh_swap,
+    const uint32_t mesh_mask)
+{
+    ANIM_FRAME *frames[2];
+    int32_t rate;
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+
+    const OBJECT *swap_obj = mesh_swap;
+    if (swap_obj != nullptr && !swap_obj->loaded) {
+        swap_obj = nullptr;
+    }
+    if (swap_obj != nullptr) {
+        ASSERT(swap_obj->mesh_count >= obj->mesh_count);
+    }
+
+    if (obj->shadow_size != 0) {
+        OutputSource_Shadows_Draw(obj->shadow_size, bounds, item);
+    }
+
+    Matrix_Push();
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
+
+    const CLIP clip = Object_GetClip(obj, bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
+        Matrix_Pop();
+        return false;
+    }
+
+    Output_CalculateObjectLighting(
+        item, frames[0] != nullptr ? &frames[0]->bounds : bounds);
+
+    const int16_t *extra_rotation = item->extra_rotations;
+
+    bool result = Object_DrawInterpolatedObjectWithSwap(
+        obj, mesh_mask, extra_rotation, frames[0], frames[1], frac, rate,
+        swap_obj);
+    if (g_Config.debug.enable_debug_bounding_boxes) {
+        const BOUNDS_32 debug_bounds = BOUNDS_32_From16(bounds);
+        Output_DrawCuboid(&debug_bounds);
+    }
+    Matrix_Pop();
+    return result;
+}
+
+bool Item_DrawScaled(
+    const ITEM *const item, const XYZ_32 scale, const XYZ_32 prev_scale)
+{
+    ANIM_FRAME *frames[2];
+    int32_t rate;
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    Matrix_Push();
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_RotX(item->interp.result.rot.x);
+    Matrix_RotZ(item->interp.result.rot.z);
+    Matrix_RotY(item->interp.result.rot.y);
+
+    const CLIP clip = Object_GetClip(obj, bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
+        Matrix_Pop();
+        return false;
+    }
+
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+    if (do_interp) {
+        Matrix_ScaleXYZ((XYZ_32) {
+            .x = LERP(prev_scale.x, scale.x, ratio),
+            .y = LERP(prev_scale.y, scale.y, ratio),
+            .z = LERP(prev_scale.z, scale.z, ratio),
+        });
+    } else {
+        Matrix_ScaleXYZ(scale);
+    }
+
+    Output_CalculateObjectLighting(
+        item, frames[0] != nullptr ? &frames[0]->bounds : bounds);
+    Object_DrawMesh(obj->mesh_idx, clip, false);
+
+    if (g_Config.debug.enable_debug_bounding_boxes) {
+        const BOUNDS_32 debug_bounds = BOUNDS_32_From16(bounds);
+        Output_DrawCuboid(&debug_bounds);
+    }
+    Matrix_Pop();
+    return true;
+}
+
+bool Item_DrawSprite(const ITEM *const item)
+{
+    const RGBA_F tint = Output_GetTint();
+    SHADE shade = item->shade;
+    if (shade.value_1 < 0) {
+        shade.value_1 = SHADE_NEUTRAL;
+    }
+
+    if (g_TRVersion > 1) {
+        Output_CalculateStaticMeshLight(
+            item->interp.result.pos, shade, Room_Get(item->room_num));
+        shade.value_1 = Output_GetLightAdder() + SHADE_NEUTRAL;
+    }
+
+    const OBJECT *const obj = Object_Get(item->object_id);
+    Output_DrawSprite(
+        item->interp.result.pos.x, item->interp.result.pos.y,
+        item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
+        shade.value_1, tint, DRAW_BLEND, 1.0f);
+    return true;
+}
+
+bool Item_DrawPickup(const ITEM *const item)
+{
+    if (item->trigger.spent) {
+        return false;
+    }
+
+    // An object without sprites, such as one an injection brings, stays a
+    // mesh even with 3D pickups disabled.
+    const OBJECT *const sprite_obj = Object_Get(item->object_id);
+    if (!g_Config.visuals.enable_3d_pickups && sprite_obj->loaded
+        && sprite_obj->mesh_count < 0) {
+        return Item_DrawSprite(item);
+    }
+
+    // Convert item to menu display item.
+    const OBJECT *obj = Object_TryGet(Inv_GetItemPickup(item->object_id));
+    if (obj == nullptr || !obj->loaded || obj->mesh_count < 0) {
+        obj = Object_TryGet(Inv_GetItemOption(item->object_id));
+    }
+
+    if (obj == nullptr || !obj->loaded || obj->mesh_count < 0) {
+        return Item_DrawSprite(item);
+    }
+
+    // Standardize the bounds and offsets of all pickup items, and handle cases
+    // such as the prayer wheels in Barkhang Monastery, which have no frames.
+    XYZ_16 offset = {};
+
+    const XYZ_16 *mesh_rots = nullptr;
+    if (obj->anim_idx != NO_ANIM) {
+        const ANIM_FRAME *const frame = obj->frame_base;
+        mesh_rots = frame->mesh_rots;
+        offset = frame->offset;
+        if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_ELEVATED_PICKUP)) {
+            offset.y = (frame->bounds.min.y - frame->offset.y) / 2;
+        } else {
+            offset.y -= frame->bounds.max.y;
+        }
+    }
+
+    const BOUNDS_16 bounds = M_GetBoundingBox(obj, mesh_rots, item->mesh_bits);
+    if (obj->anim_idx == NO_ANIM) {
+        offset.y = (bounds.max.y - bounds.min.y) / -2;
+    }
+
+    Matrix_Push();
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
+    Matrix_TranslateRel16(offset);
+
+    // Use object lighting for TR4 pickups so nearby point lights affect them.
+    if (g_TRVersion >= 4) {
+        Output_CalculateObjectLighting(item, &bounds);
+    } else {
+        Output_CalculateLight(item->pos, item->room_num);
+    }
+
+    const CLIP clip = Object_GetClip(obj, &bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
+        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+            if (mesh_idx > 0) {
+                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+                if (bone->matrix_pop) {
+                    Matrix_Pop();
+                }
+                if (bone->matrix_push) {
+                    Matrix_Push();
+                }
+
+                Matrix_TranslateRel32(bone->pos);
+            }
+
+            if (mesh_rots != nullptr) {
+                Matrix_Rot16(mesh_rots[mesh_idx]);
+            }
+
+            if ((item->mesh_bits & (1 << mesh_idx)) != 0) {
+                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
+            }
+        }
+    }
+
+    Matrix_Pop();
+    return true;
 }

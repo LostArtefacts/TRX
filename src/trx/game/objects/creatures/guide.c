@@ -681,11 +681,11 @@ static bool M_Draw(const ITEM *const item)
     const OBJECT *const swap = Object_Get(O_MESH_SWAP_2);
     if (!swap->loaded
         || swap->mesh_count != Object_Get(item->object_id)->mesh_count) {
-        return Object_DrawAnimatingItem(item);
+        return Item_DrawAnimating(item);
     }
 
     const M_PRIV *const p = item->priv;
-    return Object_DrawAnimatingItemWithSwap(
+    return Item_DrawAnimatingWithSwap(
         item, swap, item->mesh_bits & ~p->swap_bits);
 }
 

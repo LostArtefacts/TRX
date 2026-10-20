@@ -331,7 +331,7 @@ static void M_ApplyMode(OBJECT *const obj)
     const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
     const bool enabled = mode != SAVE_CRYSTAL_OFF;
 
-    obj->draw_func = enabled ? Object_DrawAnimatingItem : nullptr;
+    obj->draw_func = enabled ? Item_DrawAnimating : nullptr;
     obj->control_func = enabled ? M_Control : nullptr;
     obj->collision_func = mode == SAVE_CRYSTAL_SAVE ? M_Collision : nullptr;
     obj->save_flags = enabled;

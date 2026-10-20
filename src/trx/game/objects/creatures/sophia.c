@@ -893,7 +893,7 @@ static void M_DrawShield(const ITEM *const item)
 
 static bool M_Draw(const ITEM *const item)
 {
-    const bool result = Object_DrawAnimatingItem(item);
+    const bool result = Item_DrawAnimating(item);
 
     const M_PRIV *const p = item->priv;
     if (p->explode_count != 0) {
