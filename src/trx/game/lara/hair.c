@@ -404,6 +404,9 @@ static void M_Control(
                 && (water_height == NO_HEIGHT || s->pos.y <= water_height)) {
                 water_status = LWS_ABOVE_WATER;
             }
+            if (Lara_Vehicle_IsOnType(O_UPV)) {
+                water_status = LWS_UNDERWATER;
+            }
             switch (water_status) {
             case LWS_ABOVE_WATER:
                 s->pos.y += 10;
