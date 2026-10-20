@@ -18,6 +18,7 @@
 #include <trx/game/output/uniforms.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/viewport.h>
+#include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
@@ -449,6 +450,8 @@ static void M_DrawMeshes(const M_PRIV *const p)
             continue;
         }
 
+        const bool own_target =
+            mesh->world != nullptr && TRX_GL_Renderer_BeginUiWorldModel();
         if (p->objects_source->render_begin != nullptr) {
             p->objects_source->render_begin(p->objects_source);
         }
@@ -512,6 +515,13 @@ static void M_DrawMeshes(const M_PRIV *const p)
         }
         if (p->objects_source->render_end != nullptr) {
             p->objects_source->render_end(p->objects_source);
+        }
+        if (own_target) {
+            TRX_GL_Renderer_EndUiWorldModel();
+            SceneCompositor_BindTextures();
+            Output_MeshShader_Bind(Output_GetMeshShader());
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
         }
         if (mesh->world != nullptr) {
             Viewport_AlterFOV(old_fov, old_fov_mode);
