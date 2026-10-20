@@ -13,6 +13,10 @@
             "unbind": "Очистить",
             "use_item": "Использовать",
         },
+        "ammo": {
+            "count_fmt": "\\{review}%d x %s",
+            "unlimited_fmt": "\\{review}%s без ограничений",
+        },
         "config_presets": {
             "applied": "\\{review}Предустановка применена.",
             "confirm_apply": "\\{review}Применить",
@@ -24,6 +28,7 @@
             "title_fmt": "\\{review}Применить предустановку %s?",
         },
         "flat_menu": {
+            "choose_ammo": "\\{review}ВЫБРАТЬ ПАТРОНЫ",
             "combine": "\\{review}ОБЪЕДИНИТЬ",
             "combine_with": "\\{review}ОБЪЕДИНИТЬ С",
             "count_fmt": "\\{review}%d x %s",

@@ -13,6 +13,10 @@
             "unbind": "Unbind",
             "use_item": "Use",
         },
+        "ammo": {
+            "count_fmt": "%d x %s",
+            "unlimited_fmt": "Unlimited %s",
+        },
         "config_presets": {
             "applied": "Preset applied.",
             "confirm_apply": "Apply",
@@ -24,6 +28,7 @@
             "title_fmt": "Apply preset %s?",
         },
         "flat_menu": {
+            "choose_ammo": "CHOOSE AMMO",
             "combine": "COMBINE",
             "combine_with": "COMBINE WITH",
             "count_fmt": "%d x %s",

@@ -13,6 +13,10 @@
             "unbind": "Dissocia",
             "use_item": "Usa",
         },
+        "ammo": {
+            "count_fmt": "\\{review}%d x %s",
+            "unlimited_fmt": "\\{review}%s illimitate",
+        },
         "config_presets": {
             "applied": "Profilo applicato.",
             "confirm_apply": "Applica",
@@ -24,6 +28,7 @@
             "title_fmt": "Applicare il profilo %s?",
         },
         "flat_menu": {
+            "choose_ammo": "\\{review}SCEGLI MUNIZIONI",
             "combine": "\\{review}COMBINA",
             "combine_with": "\\{review}COMBINA CON",
             "count_fmt": "\\{review}%d x %s",

@@ -13,6 +13,10 @@
             "unbind": "Falamhaich",
             "use_item": "Cleachd",
         },
+        "ammo": {
+            "count_fmt": "\\{review}%d x %s",
+            "unlimited_fmt": "\\{review}%s gun chrìoch",
+        },
         "config_presets": {
             "applied": "Ro-shealladh air a chur an sàs.",
             "confirm_apply": "\\{review}Cuir an sàs",
@@ -24,6 +28,7 @@
             "title_fmt": "Cuir an ro-shealladh %s an sàs?",
         },
         "flat_menu": {
+            "choose_ammo": "\\{review}TAGH PEILEARAN",
             "combine": "\\{review}CUIR CÒMHLA",
             "combine_with": "\\{review}CUIR CÒMHLA RI",
             "count_fmt": "\\{review}%d x %s",

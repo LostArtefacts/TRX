@@ -13,6 +13,10 @@
             "unbind": "Dissocier",
             "use_item": "Utiliser",
         },
+        "ammo": {
+            "count_fmt": "\\{review}%d x %s",
+            "unlimited_fmt": "\\{review}%s illimitées",
+        },
         "config_presets": {
             "applied": "\\{review}Préréglage appliqué.",
             "confirm_apply": "\\{review}Appliquer",
@@ -24,6 +28,7 @@
             "title_fmt": "\\{review}Appliquer le préréglage %s ?",
         },
         "flat_menu": {
+            "choose_ammo": "\\{review}CHOISIR MUNITIONS",
             "combine": "\\{review}COMBINER",
             "combine_with": "\\{review}COMBINER AVEC",
             "count_fmt": "\\{review}%d x %s",

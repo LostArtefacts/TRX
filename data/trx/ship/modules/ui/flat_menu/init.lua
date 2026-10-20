@@ -2,12 +2,14 @@
 -- carries stands in a row across the screen, and the entry in the middle
 -- names what can be done with it in a list.
 
+local ammo = require("common.ui.ammo")
 local compass_needle = require("common.ui.compass")
 local death = require("common.ui.flat_menu.death")
 local fade = require("common.ui.fade")
 local items = require("common.ui.flat_menu.items")
 local ring = require("common.ui.ring")
 local saves = require("common.ui.flat_menu.saves")
+local scroll = require("common.ui.scroll")
 local sound = require("common.ui.flat_menu.sound").play
 local strip = require("common.ui.flat_menu.strip")
 local title = require("common.ui.flat_menu.title")
@@ -19,6 +21,7 @@ trx.locale.declare({
   ["general/flat_menu/use"] = "USE",
   ["general/flat_menu/combine"] = "COMBINE",
   ["general/flat_menu/equip"] = "EQUIP",
+  ["general/flat_menu/choose_ammo"] = "CHOOSE AMMO",
   ["general/flat_menu/combine_with"] = "COMBINE WITH",
   ["general/flat_menu/examine"] = "EXAMINE",
   ["general/flat_menu/load_game"] = "LOAD GAME",
@@ -31,8 +34,8 @@ local Role = trx.input.Role
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
 
 -- Where the original draws each part, as shares of the screen's height: the
--- row of what Lara carries, the row of what an entry combines with, and the
--- name over each.
+-- row of what Lara carries, the row of what an entry combines with, which is
+-- also where a weapon's ammunition stands, and the name over each.
 local MAIN_ROW = 42 / 240
 local COMBINE_ROW = 190 / 240
 local MAIN_NAME = 1 / 2 - 3 / 16
@@ -48,6 +51,8 @@ local COLOR_OPTION = 5
 local COLOR_NAME = 8
 
 local FADE_TICKS = 12
+-- How long a weapon's row of ammunition takes to fade in or out.
+local AMMO_FADE_TICKS = 4
 
 -- How much larger an examined entry is drawn than in the row, and how long
 -- it takes to fade in, as the original's examine mode does.
@@ -94,6 +99,7 @@ local Option = {
   EXAMINE = "examine",
   USE = "use",
   EQUIP = "equip",
+  CHOOSE_AMMO = "choose_ammo",
   COMBINE = "combine",
 }
 
@@ -112,6 +118,9 @@ local OPTION_TEXT = {
   end,
   [Option.EQUIP] = function()
     return trx.locale.get("general/flat_menu/equip")
+  end,
+  [Option.CHOOSE_AMMO] = function()
+    return trx.locale.get("general/flat_menu/choose_ammo")
   end,
   [Option.COMBINE] = function()
     return trx.locale.get("general/flat_menu/combine")
@@ -171,8 +180,12 @@ local function options_of(object)
   if actions.examine then
     result[#result + 1] = Option.EXAMINE
   end
-  if weapon_of(object) ~= nil then
+  local weapon = weapon_of(object)
+  if weapon ~= nil then
     result[#result + 1] = Option.EQUIP
+    if ammo.is_choosable(weapon) then
+      result[#result + 1] = Option.CHOOSE_AMMO
+    end
   elseif not is_examine_only(object) then
     result[#result + 1] = Option.USE
   end
@@ -298,7 +311,9 @@ local function option_lines(state)
     local texts = {}
     for i, option in ipairs(state.options) do
       local color = i == state.option and COLOR_PICKED or COLOR_OPTION
-      texts[#texts + 1] = colored(color, OPTION_TEXT[option]())
+      local text = type(option) == "table" and option.name
+        or OPTION_TEXT[option]()
+      texts[#texts + 1] = colored(color, text)
     end
     lines:set(texts)
   end
@@ -350,6 +365,9 @@ end
 local Status = {
   OPENING = "opening",
   OPEN = "open",
+  -- The options name the kinds of ammunition of the picked weapon, and the
+  -- player picks one, as the original's CHOOSE AMMO does.
+  CHOOSING_AMMO = "choosing_ammo",
   COMBINING = "combining",
   -- The row of partners fades out, and where two entries combined, the row of
   -- what Lara carries fades out and back in on what they made, as the
@@ -375,6 +393,48 @@ local function finish(state, used)
   end
 end
 
+-- Fades out the row of ammunition, which stays to be drawn until it has.
+local function hide_ammo(state)
+  local shown = state.ammo
+  if shown == nil then
+    return
+  end
+  state.ammo = nil
+  shown.caption:close()
+  shown.row:show(false, AMMO_FADE_TICKS)
+  state.ammo_fading = shown.row
+end
+
+-- Shows the row of ammunition under the picked weapon, the kind it fires
+-- spinning, with the shots Lara carries of that kind over it.
+local function show_ammo(state)
+  hide_ammo(state)
+  local entry = state.main ~= nil and state.main:picked() or nil
+  local weapon = entry ~= nil and weapon_of(entry.object) or nil
+  if weapon == nil or #weapon.ammo_objects == 0 then
+    return
+  end
+  local kinds = ammo.kinds(weapon)
+  local row = strip.new(kinds, COMBINE_ROW, { fixed = true })
+  row:pick_at(ammo.fired_index(weapon))
+  row.fade:set(0)
+  row:show(true, AMMO_FADE_TICKS)
+  local text = trx.signal.new("")
+  local shown = {
+    object = entry.object,
+    weapon = weapon,
+    kinds = kinds,
+    row = row,
+  }
+  function shown.follow()
+    local kind = kinds[row.current].kind
+    text:set(colored(COLOR_NAME, ammo.caption(weapon, kind)))
+  end
+  shown.follow()
+  shown.caption = push_line(state.ctx, text, COMBINE_NAME)
+  state.ammo = shown
+end
+
 local function hide_texts(state)
   for _, key in ipairs({ "name_layer", "options_layer" }) do
     if state[key] ~= nil then
@@ -382,6 +442,7 @@ local function hide_texts(state)
       state[key] = nil
     end
   end
+  hide_ammo(state)
   ring.show_health_bar(false)
 end
 
@@ -445,6 +506,26 @@ local function refresh_options(state)
   state.option = 1
   state.follow_options()
   state.follow_name()
+end
+
+-- Shows the row of ammunition while the row rests on a weapon with its
+-- options showing, and hides it as soon as the row slides on and while the
+-- player keeps turning it, so that it does not flicker as the row turns past
+-- the weapons.
+local function follow_ammo(state)
+  if state.status ~= Status.OPEN then
+    return
+  end
+  local entry = state.main ~= nil and state.main:picked() or nil
+  local wanted = state.options_layer ~= nil
+    and not state.main:is_sliding()
+    and not (state.turning_held and #state.main.list > 1)
+    and entry ~= nil
+  if not wanted then
+    hide_ammo(state)
+  elseif state.ammo == nil or state.ammo.object ~= entry.object then
+    show_ammo(state)
+  end
 end
 
 -- Shows Lara's health bar while the row rests on a medipack with its options
@@ -573,6 +654,7 @@ local function start_combine(state)
   )
   state.options_layer:close()
   state.options_layer = nil
+  hide_ammo(state)
   state.status = Status.COMBINING
 end
 
@@ -612,6 +694,42 @@ local function tick_combine(state)
   end
 end
 
+-- Puts the kinds of ammunition in place of the options. The kind the weapon
+-- fires is the one picked first, and it changes only once the player
+-- confirms.
+local function start_choosing_ammo(state)
+  local shown = state.ammo
+  if shown == nil then
+    return
+  end
+  state.ammo_option = state.option
+  local options = {}
+  for _, kind in ipairs(shown.kinds) do
+    local info = trx.objects[kind.object]
+    options[#options + 1] = { name = info ~= nil and info.name or "" }
+  end
+  state.options = options
+  state.option = shown.row.current
+  state.follow_options()
+  state.status = Status.CHOOSING_AMMO
+end
+
+local function stop_choosing_ammo(state, chosen)
+  local shown = state.ammo
+  local entry = state.main:picked()
+  state.options = entry ~= nil and options_of(entry.object) or {}
+  state.status = Status.OPEN
+  if chosen then
+    ammo.choose(shown.weapon, shown.kinds[shown.row.current].kind)
+    state.option = 1
+  else
+    shown.row:pick_at(ammo.fired_index(shown.weapon))
+    shown.follow()
+    state.option = state.ammo_option
+  end
+  state.follow_options()
+end
+
 local function choose(state)
   local option = state.options[state.option]
   local entry = state.main:picked()
@@ -625,6 +743,8 @@ local function choose(state)
     close(state, entry.object)
   elseif option == Option.EXAMINE then
     examine(state, entry.object)
+  elseif option == Option.CHOOSE_AMMO then
+    start_choosing_ammo(state)
   elseif option == Option.COMBINE then
     start_combine(state)
   elseif option == Option.LOAD then
@@ -676,10 +796,41 @@ local function control_combine(state, keys)
   end
 end
 
+-- Moves between the kinds of ammunition with any of the four directions, as
+-- the original does, and as the wraparound setting allows, the row spinning
+-- the kind picked.
+local function control_ammo(state, keys)
+  local shown = state.ammo
+  local step = nil
+  if keys:pressed(Role.MENU_UP) or keys:pressed(Role.MENU_LEFT) then
+    step = -1
+  elseif keys:pressed(Role.MENU_DOWN) or keys:pressed(Role.MENU_RIGHT) then
+    step = 1
+  end
+  local option = step and scroll.step(state.option, step, #state.options)
+  if option ~= nil then
+    state.option = option
+    shown.row:pick_at(option)
+    shown.follow()
+    sound("select")
+    state.follow_options()
+  elseif keys:pressed(Role.MENU_CONFIRM) then
+    sound("choose")
+    stop_choosing_ammo(state, true)
+  elseif keys:pressed(Role.MENU_BACK) then
+    sound("select")
+    stop_choosing_ammo(state, false)
+  end
+end
+
 local function control(state, keys)
   state.turning_held = keys:held(Role.MENU_LEFT) or keys:held(Role.MENU_RIGHT)
   if state.status == Status.COMBINING then
     control_combine(state, keys)
+    return
+  end
+  if state.status == Status.CHOOSING_AMMO then
+    control_ammo(state, keys)
     return
   end
   if state.status ~= Status.OPEN then
@@ -693,11 +844,13 @@ local function control(state, keys)
   local main = state.main
   if keys:held(Role.MENU_LEFT) then
     if main:turn(1) then
+      hide_ammo(state)
       sound("rotate")
     end
     return
   elseif keys:held(Role.MENU_RIGHT) then
     if main:turn(-1) then
+      hide_ammo(state)
       sound("rotate")
     end
     return
@@ -729,6 +882,15 @@ local function tick(state)
   if state.combine ~= nil then
     state.combine:tick()
   end
+  if state.ammo ~= nil then
+    state.ammo.row:tick()
+  end
+  if state.ammo_fading ~= nil then
+    state.ammo_fading:tick()
+    if not state.ammo_fading:is_fading() then
+      state.ammo_fading = nil
+    end
+  end
   -- The names and the options show once the row has faded in, as they go
   -- before it fades out.
   if state.status == Status.OPENING and not state.main:is_fading() then
@@ -738,6 +900,7 @@ local function tick(state)
   end
   tick_combine(state)
   follow_health_bar(state)
+  follow_ammo(state)
   if state.status == Status.FADING and not state.backdrop:is_moving() then
     finish(state, state.closing)
   end
@@ -776,6 +939,12 @@ local function paint(state)
   state.main:paint()
   if state.combine ~= nil then
     state.combine:paint()
+  end
+  if state.ammo ~= nil then
+    state.ammo.row:paint()
+  end
+  if state.ammo_fading ~= nil then
+    state.ammo_fading:paint()
   end
   if state.compass then
     local w, h = trx.ui.canvas.width, trx.ui.canvas.height
