@@ -373,6 +373,7 @@ common_sources = [
   'trx/game/fader.c',
   'trx/game/flyby_mode.c',
   'trx/game/fmv.c',
+  'trx/game/fx/bubble.c',
   'trx/game/fx/common.c',
   'trx/game/fx/debris.c',
   'trx/game/fx/droplets.c',

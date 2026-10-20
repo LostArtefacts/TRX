@@ -97,15 +97,22 @@ static void M_Bubbles(ITEM *const item)
         return;
     }
 
-    const int32_t count = g_TRVersion == 3 ? (Random_GetControl() & 3) + 2
-                                           : (Random_GetDraw() * 3) / 0x8000;
+    int32_t count;
+    if (g_TRVersion == 4) {
+        count = (Random_GetControl() & 1) + 2;
+    } else if (g_TRVersion == 3) {
+        count = (Random_GetControl() & 3) + 2;
+    } else {
+        count = (Random_GetDraw() * 3) / 0x8000;
+    }
     if (count == 0) {
         return;
     }
 
     Sound_Effect(SFX_LARA_BUBBLES, &lara_item->pos, SPM_UNDERWATER);
 
-    XYZ_32 offset = { .x = 0, .y = 0, .z = 50 };
+    XYZ_32 offset = g_TRVersion == 4 ? (XYZ_32) { .x = 0, .y = -4, .z = 64 }
+                                     : (XYZ_32) { .x = 0, .y = 0, .z = 50 };
     Collide_GetJointAbsPosition(lara_item, &offset, LM_HEAD);
 
     for (int32_t i = 0; i < count; i++) {
