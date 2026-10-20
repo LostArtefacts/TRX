@@ -137,6 +137,24 @@ XYZ_32 XYZ_32_Subtract(const XYZ_32 a, const XYZ_32 b)
     };
 }
 
+XYZ_16 XYZ_16_Add(const XYZ_16 a, const XYZ_16 b)
+{
+    return (XYZ_16) {
+        .x = a.x + b.x,
+        .y = a.y + b.y,
+        .z = a.z + b.z,
+    };
+}
+
+XYZ_16 XYZ_16_Subtract(const XYZ_16 a, const XYZ_16 b)
+{
+    return (XYZ_16) {
+        .x = a.x - b.x,
+        .y = a.y - b.y,
+        .z = a.z - b.z,
+    };
+}
+
 XYZ_32 XYZ_32_RotateYaw(XYZ_32 vec, const int16_t yaw)
 {
     if (yaw != 0) {

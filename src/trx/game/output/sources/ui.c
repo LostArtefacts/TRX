@@ -6,6 +6,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
@@ -291,6 +292,45 @@ static const ANIM_FRAME *M_GetWorldFrame(
     return &object->frame_base[frame];
 }
 
+// Draws the joints in mesh_mask in a pose blended between two frames. At the
+// pivot, the frame offset is left out.
+static void M_DrawWorldPose(
+    const OBJECT *const obj, const uint32_t mesh_mask,
+    const int16_t *const extra_rotation, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate,
+    const bool at_pivot)
+{
+    BOUNDS_16 bounds = frame1->bounds;
+    if (at_pivot) {
+        bounds.min = XYZ_16_Subtract(bounds.min, frame1->offset);
+        bounds.max = XYZ_16_Subtract(bounds.max, frame1->offset);
+    }
+    const CLIP clip = Object_GetClip(obj, &bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
+        return;
+    }
+
+    Matrix_Push();
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrames(frame1, frame2, frac, rate),
+            .extra_rotations = extra_rotation,
+            .applies_base_rot = true,
+            .skips_frame_offset = at_pivot,
+        });
+    while (Anim_Walk_Next(&walk)) {
+        if ((mesh_mask & (1u << walk.joint)) != 0) {
+            Object_DrawMesh(
+                obj->mesh_idx + walk.joint, clip, walk.interpolated);
+        }
+    }
+    Anim_Walk_End(&walk);
+    Matrix_Pop();
+}
+
 // Draws a model in a world of its own in its frame, blended towards the next,
 // with the turns its bones take on top. The bones that take a turn keep the
 // axes they turn about, as the engine's own animated bones do.
@@ -361,13 +401,9 @@ static void M_DrawWorldFrame(const OUTPUT_UI_MESH *const mesh)
                 .a = world->mesh_opacity[i],
             });
         }
-        if (world->at_pivot) {
-            Object_DrawInterpolatedObjectAtPivot(
-                obj, mask, extra_rotation, frame1, frame2, frac, rate);
-        } else {
-            Object_DrawInterpolatedObject(
-                obj, mask, extra_rotation, frame1, frame2, frac, rate);
-        }
+        M_DrawWorldPose(
+            obj, mask, extra_rotation, frame1, frame2, frac, rate,
+            world->at_pivot);
         if (i >= 0) {
             Output_PopTintOverride();
         }
