@@ -91,6 +91,32 @@ test("ammunition is counted in shots, however much a shot costs", function()
   trx.inventory.set_shots(SHOTGUN, 0)
 end)
 
+test("a weapon fires one kind of ammunition, and counts each apart", function()
+  local SHOTGUN = trx.catalog.weapons.SHOTGUN
+  local normal, wideshot = table.unpack(trx.weapons.shotgun.ammo_objects)
+
+  assert(trx.inventory.ammo_kind(SHOTGUN) == normal, "the first kind fires")
+  trx.inventory.set_shots(SHOTGUN, 4)
+  trx.inventory.set_ammo_kind(SHOTGUN, wideshot)
+  assert(trx.inventory.ammo_kind(SHOTGUN) == wideshot)
+  assert(trx.inventory.shots(SHOTGUN) == 0, "no wideshot shells yet")
+  trx.inventory.set_shots(SHOTGUN, 2)
+  assert(trx.inventory.shots(SHOTGUN, wideshot) == 2)
+  assert(trx.inventory.shots(SHOTGUN, normal) == 4, "the normal ones stay")
+
+  raises(function()
+    trx.inventory.set_ammo_kind(SHOTGUN, trx.weapons.uzis.ammo_object)
+  end)
+  raises(function()
+    trx.inventory.shots(SHOTGUN, trx.weapons.uzis.ammo_object)
+  end)
+  assert(trx.inventory.ammo_kind(SHOTGUN) == wideshot, "a raise changes none")
+
+  trx.inventory.set_shots(SHOTGUN, 0)
+  trx.inventory.set_ammo_kind(SHOTGUN, normal)
+  trx.inventory.set_shots(SHOTGUN, 0)
+end)
+
 test("a weapon goes in and comes back out", function()
   local uzi_item = trx.weapons.object(UZIS)
 

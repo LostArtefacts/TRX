@@ -225,17 +225,56 @@ static int M_L_InvTake(lua_State *const L)
     return 1;
 }
 
-// inventory:shots(weapon) -> int
+// Reads a kind of ammunition the weapon takes, and raises for one it does not.
+static OBJECT_ID M_GetAmmoKind(
+    lua_State *const L, const int arg, const LARA_GUN_TYPE gun_type)
+{
+    const lua_Integer kind = luaL_checkinteger(L, arg);
+    if (!Gun_IsAmmoKind(gun_type, (OBJECT_ID)kind)) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic(
+                "'%s' takes no ammunition %d",
+                Catalog_IDToKey(CATALOG_WEAPONS, gun_type), (int32_t)kind));
+    }
+    return (OBJECT_ID)kind;
+}
+
+// inventory:shots(weapon, kind?) -> int
 static int M_L_InvShots(lua_State *const L)
 {
     const INVENTORY_STATE *const state = M_CheckInventory(L, 1);
     const LARA_GUN_TYPE gun_type = M_GetWeapon(L, 2);
-    lua_pushinteger(
-        L, Inv_State_GetAmmo(state, gun_type) / Gun_GetRoundsPerShot(gun_type));
+    const int32_t rounds = lua_isnoneornil(L, 3)
+        ? Inv_State_GetAmmo(state, gun_type)
+        : Inv_State_GetKindAmmo(state, gun_type, M_GetAmmoKind(L, 3, gun_type));
+    lua_pushinteger(L, rounds / Gun_GetRoundsPerShot(gun_type));
     return 1;
 }
 
-// inventory:set_shots(weapon, count)
+// inventory:ammo_kind(weapon) -> object?
+static int M_L_InvAmmoKind(lua_State *const L)
+{
+    const INVENTORY_STATE *const state = M_CheckInventory(L, 1);
+    const OBJECT_ID kind = Inv_State_GetAmmoKind(state, M_GetWeapon(L, 2));
+    if (kind == NO_OBJECT) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, kind);
+    }
+    return 1;
+}
+
+// inventory:set_ammo_kind(weapon, kind)
+static int M_L_InvSetAmmoKind(lua_State *const L)
+{
+    INVENTORY_STATE *const state = M_CheckInventory(L, 1);
+    const LARA_GUN_TYPE gun_type = M_GetWeapon(L, 2);
+    Inv_State_SelectAmmoKind(state, gun_type, M_GetAmmoKind(L, 3, gun_type));
+    return 0;
+}
+
+// inventory:set_shots(weapon, count, kind?)
 static int M_L_InvSetShots(lua_State *const L)
 {
     INVENTORY_STATE *const state = M_CheckInventory(L, 1);
@@ -246,7 +285,10 @@ static int M_L_InvSetShots(lua_State *const L)
     }
     const int32_t rounds =
         (int32_t)MIN(shots, MAX_QTY) * Gun_GetRoundsPerShot(gun_type);
-    if (M_IsLive(state)) {
+    if (!lua_isnoneornil(L, 4)) {
+        Inv_State_SetKindAmmo(
+            state, gun_type, M_GetAmmoKind(L, 4, gun_type), rounds);
+    } else if (M_IsLive(state)) {
         Inv_SetAmmo(gun_type, rounds);
     } else {
         Inv_State_SetAmmo(state, gun_type, rounds);
@@ -361,6 +403,8 @@ static const luaL_Reg m_InventoryMethods[] = {
     { "take", M_L_InvTake },
     { "shots", M_L_InvShots },
     { "set_shots", M_L_InvSetShots },
+    { "ammo_kind", M_L_InvAmmoKind },
+    { "set_ammo_kind", M_L_InvSetAmmoKind },
     { "has_weapon", M_L_InvHasWeapon },
     { "entry", M_L_InvEntry },
     { "entry_at", M_L_InvEntryAt },

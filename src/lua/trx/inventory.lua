@@ -99,15 +99,34 @@ end
 ---which is what the counter shows the player; the shotgun spends six rounds on
 ---each.
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@param kind? trx.catalog.objects The kind of ammunition, one of `trx.weapons.Weapon.ammo_objects`. Defaults to the kind the weapon fires; any other object raises.
 ---@return integer # 0 where she carries no ammunition for it.
-function Inventory:shots(weapon)
+function Inventory:shots(weapon, kind)
+  return h.native()
+end
+
+---The kind of ammunition the weapon fires, one of
+---`trx.weapons.Weapon.ammo_objects`. A weapon fires its first kind until
+---another is set.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return trx.catalog.objects? # The kind, or `nil` where the weapon takes no ammunition.
+function Inventory:ammo_kind(weapon)
+  return h.native()
+end
+
+---Sets the kind of ammunition the weapon fires. The weapon keeps the kind
+---when it runs out of it.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@param kind trx.catalog.objects One of `trx.weapons.Weapon.ammo_objects`. Any other object raises.
+function Inventory:set_ammo_kind(weapon, kind)
   return h.native()
 end
 
 ---Sets how many shots there are for it.
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 ---@param count integer Shots. Below 0 raises.
-function Inventory:set_shots(weapon, count)
+---@param kind? trx.catalog.objects The kind of ammunition, one of `trx.weapons.Weapon.ammo_objects`. Defaults to the kind the weapon fires; any other object raises.
+function Inventory:set_shots(weapon, count, kind)
   return h.native()
 end
 
@@ -199,9 +218,31 @@ end
 
 ---Asks `trx.inventory.Inventory:shots` of what Lara carries.
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@param kind? trx.catalog.objects The kind of ammunition, one of `trx.weapons.Weapon.ammo_objects`. Defaults to the kind the weapon fires; any other object raises.
 ---@return integer # 0 where she carries no ammunition for it.
-function M.shots(weapon)
-  return raw.get_current():shots(weapon)
+function M.shots(weapon, kind)
+  return raw.get_current():shots(weapon, kind)
+end
+
+---Asks `trx.inventory.Inventory:ammo_kind` of what Lara carries.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return trx.catalog.objects? # The kind, or `nil` where the weapon takes no ammunition.
+function M.ammo_kind(weapon)
+  return raw.get_current():ammo_kind(weapon)
+end
+
+---Asks `trx.inventory.Inventory:set_ammo_kind` of what Lara carries.
+---
+---```lua
+---trx.inventory.set_ammo_kind(
+---  trx.catalog.weapons.SHOTGUN,
+---  trx.catalog.objects.SHOTGUN_AMMO_2_ITEM
+---)
+---```
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@param kind trx.catalog.objects One of `trx.weapons.Weapon.ammo_objects`. Any other object raises.
+function M.set_ammo_kind(weapon, kind)
+  return raw.get_current():set_ammo_kind(weapon, kind)
 end
 
 ---Asks `trx.inventory.Inventory:set_shots` of what Lara carries.
@@ -211,8 +252,9 @@ end
 ---```
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 ---@param count integer Shots. Below 0 raises.
-function M.set_shots(weapon, count)
-  return raw.get_current():set_shots(weapon, count)
+---@param kind? trx.catalog.objects The kind of ammunition, one of `trx.weapons.Weapon.ammo_objects`. Defaults to the kind the weapon fires; any other object raises.
+function M.set_shots(weapon, count, kind)
+  return raw.get_current():set_shots(weapon, count, kind)
 end
 
 ---Asks `trx.inventory.Inventory:has_weapon` of what Lara carries.

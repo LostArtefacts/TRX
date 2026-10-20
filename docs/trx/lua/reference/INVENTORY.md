@@ -83,6 +83,16 @@ end
 
     Methods:
 
+    - <a id="inventory.Inventory.ammo_kind" name="inventory.Inventory.ammo_kind"></a>[lua]`inventory:ammo_kind(weapon)`  
+      The kind of ammunition the weapon fires, one of
+      [`trx.weapons.Weapon.ammo_objects`](WEAPONS.md#weapons.Weapon.ammo_objects). A weapon fires its first kind until
+      another is set.
+
+      Parameters:
+      - <a id="inventory.Inventory.ammo_kind.weapon" name="inventory.Inventory.ammo_kind.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+
+      Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The kind, or `nil` where the weapon takes no ammunition.
+
     - <a id="inventory.Inventory.can_add" name="inventory.Inventory.can_add"></a>[lua]`inventory:can_add(object_id)`  
       Whether [`give`](#inventory.Inventory.give) would do anything in the level being
       played. The level has to carry the inventory model, which is not the same as
@@ -159,6 +169,14 @@ end
 
       Returns: boolean. True where the weapon itself is in it.
 
+    - <a id="inventory.Inventory.set_ammo_kind" name="inventory.Inventory.set_ammo_kind"></a>[lua]`inventory:set_ammo_kind(weapon, kind)`  
+      Sets the kind of ammunition the weapon fires. The weapon keeps the kind
+      when it runs out of it.
+
+      Parameters:
+      - <a id="inventory.Inventory.set_ammo_kind.weapon" name="inventory.Inventory.set_ammo_kind.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+      - <a id="inventory.Inventory.set_ammo_kind.kind" name="inventory.Inventory.set_ammo_kind.kind"></a>**`kind`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). One of [`trx.weapons.Weapon.ammo_objects`](WEAPONS.md#weapons.Weapon.ammo_objects). Any other object raises.
+
     - <a id="inventory.Inventory.set_count" name="inventory.Inventory.set_count"></a>[lua]`inventory:set_count(object_id, count)`  
       Sets how many of it there are. Zero takes it away.
 
@@ -166,20 +184,22 @@ end
       - <a id="inventory.Inventory.set_count.object_id" name="inventory.Inventory.set_count.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
       - <a id="inventory.Inventory.set_count.count" name="inventory.Inventory.set_count.count"></a>**`count`** (integer). How many. Below 0 raises.
 
-    - <a id="inventory.Inventory.set_shots" name="inventory.Inventory.set_shots"></a>[lua]`inventory:set_shots(weapon, count)`  
+    - <a id="inventory.Inventory.set_shots" name="inventory.Inventory.set_shots"></a>[lua]`inventory:set_shots(weapon, count, [kind])`  
       Sets how many shots there are for it.
 
       Parameters:
       - <a id="inventory.Inventory.set_shots.weapon" name="inventory.Inventory.set_shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
       - <a id="inventory.Inventory.set_shots.count" name="inventory.Inventory.set_shots.count"></a>**`count`** (integer). Shots. Below 0 raises.
+      - <a id="inventory.Inventory.set_shots.kind" name="inventory.Inventory.set_shots.kind"></a>**`kind`** ([trx.catalog.objects](CATALOG.md#catalog.objects), optional). The kind of ammunition, one of [`trx.weapons.Weapon.ammo_objects`](WEAPONS.md#weapons.Weapon.ammo_objects). Defaults to the kind the weapon fires; any other object raises.
 
-    - <a id="inventory.Inventory.shots" name="inventory.Inventory.shots"></a>[lua]`inventory:shots(weapon)`  
+    - <a id="inventory.Inventory.shots" name="inventory.Inventory.shots"></a>[lua]`inventory:shots(weapon, [kind])`  
       How many shots there are for the weapon. A shot is one pull of the trigger,
       which is what the counter shows the player; the shotgun spends six rounds on
       each.
 
       Parameters:
       - <a id="inventory.Inventory.shots.weapon" name="inventory.Inventory.shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+      - <a id="inventory.Inventory.shots.kind" name="inventory.Inventory.shots.kind"></a>**`kind`** ([trx.catalog.objects](CATALOG.md#catalog.objects), optional). The kind of ammunition, one of [`trx.weapons.Weapon.ammo_objects`](WEAPONS.md#weapons.Weapon.ammo_objects). Defaults to the kind the weapon fires; any other object raises.
 
       Returns: integer. 0 where she carries no ammunition for it.
 
@@ -253,20 +273,45 @@ end
 
   Returns: integer. How many came out.
 
-- <a id="inventory.shots" name="inventory.shots"></a>[lua]`trx.inventory.shots(weapon)`  
+- <a id="inventory.shots" name="inventory.shots"></a>[lua]`trx.inventory.shots(weapon, [kind])`  
   Asks [`trx.inventory.Inventory:shots`](#inventory.Inventory.shots) of what Lara carries.
 
   Parameters:
   - <a id="inventory.shots.weapon" name="inventory.shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+  - <a id="inventory.shots.kind" name="inventory.shots.kind"></a>**`kind`** ([trx.catalog.objects](CATALOG.md#catalog.objects), optional). The kind of ammunition, one of [`trx.weapons.Weapon.ammo_objects`](WEAPONS.md#weapons.Weapon.ammo_objects). Defaults to the kind the weapon fires; any other object raises.
 
   Returns: integer. 0 where she carries no ammunition for it.
 
-- <a id="inventory.set_shots" name="inventory.set_shots"></a>[lua]`trx.inventory.set_shots(weapon, count)`  
+- <a id="inventory.ammo_kind" name="inventory.ammo_kind"></a>[lua]`trx.inventory.ammo_kind(weapon)`  
+  Asks [`trx.inventory.Inventory:ammo_kind`](#inventory.Inventory.ammo_kind) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.ammo_kind.weapon" name="inventory.ammo_kind.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+
+  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The kind, or `nil` where the weapon takes no ammunition.
+
+- <a id="inventory.set_ammo_kind" name="inventory.set_ammo_kind"></a>[lua]`trx.inventory.set_ammo_kind(weapon, kind)`  
+  Asks [`trx.inventory.Inventory:set_ammo_kind`](#inventory.Inventory.set_ammo_kind) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.set_ammo_kind.weapon" name="inventory.set_ammo_kind.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+  - <a id="inventory.set_ammo_kind.kind" name="inventory.set_ammo_kind.kind"></a>**`kind`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). One of [`trx.weapons.Weapon.ammo_objects`](WEAPONS.md#weapons.Weapon.ammo_objects). Any other object raises.
+
+  Example:
+  ```lua
+  trx.inventory.set_ammo_kind(
+    trx.catalog.weapons.SHOTGUN,
+    trx.catalog.objects.SHOTGUN_AMMO_2_ITEM
+  )
+  ```
+
+- <a id="inventory.set_shots" name="inventory.set_shots"></a>[lua]`trx.inventory.set_shots(weapon, count, [kind])`  
   Asks [`trx.inventory.Inventory:set_shots`](#inventory.Inventory.set_shots) of what Lara carries.
 
   Parameters:
   - <a id="inventory.set_shots.weapon" name="inventory.set_shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
   - <a id="inventory.set_shots.count" name="inventory.set_shots.count"></a>**`count`** (integer). Shots. Below 0 raises.
+  - <a id="inventory.set_shots.kind" name="inventory.set_shots.kind"></a>**`kind`** ([trx.catalog.objects](CATALOG.md#catalog.objects), optional). The kind of ammunition, one of [`trx.weapons.Weapon.ammo_objects`](WEAPONS.md#weapons.Weapon.ammo_objects). Defaults to the kind the weapon fires; any other object raises.
 
   Example:
   ```lua

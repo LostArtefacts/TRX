@@ -124,7 +124,14 @@ local function give_gun(got, weapon, ammo, ignore_exclusions)
   if object == nil or trx.inventory.give(object) == 0 then
     return
   end
-  trx.inventory.set_shots(weapon, trx.game.is_ngplus and NGPLUS_AMMO or ammo)
+  local shots = trx.game.is_ngplus and NGPLUS_AMMO or ammo
+  local kinds = trx.weapons[weapon].ammo_objects
+  if #kinds == 0 then
+    trx.inventory.set_shots(weapon, shots)
+  end
+  for _, kind in ipairs(kinds) do
+    trx.inventory.set_shots(weapon, shots, kind)
+  end
   got[#got + 1] = object
 end
 
