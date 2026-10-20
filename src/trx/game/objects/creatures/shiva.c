@@ -23,6 +23,7 @@
 #define M_WALK_TURN      (4 * DEG_1)
 #define M_PINCER_RANGE   SQUARE(WALL_L * 5 / 4)
 #define M_CHOPPER_RANGE  SQUARE(WALL_L * 4 / 3)
+#define M_SWORD_HAND     (1u << 10)
 // clang-format on
 
 typedef enum {
@@ -487,12 +488,17 @@ static bool M_Draw(const ITEM *const item)
         M_TriggerSmoke(smoke_pos, true);
     }
 
+    // A dead statue that dropped a sword draws without the hand that held it.
+    const bool is_hand_lost = item->hit_points <= 0 && !Item_IsInPlay(item)
+        && item->carried_item != nullptr
+        && (item->mesh_bits & M_SWORD_HAND) == 0;
     const OBJECT *const swap = Object_Get(O_MESH_SWAP_1);
     return Item_DrawAnimatingEx(
         item,
         &(ITEM_DRAW_DESC) {
             .mesh_mask = item->mesh_bits,
             .mesh_swap = swap,
+            .hide_mask = is_hand_lost ? M_SWORD_HAND : 0,
         });
 }
 
