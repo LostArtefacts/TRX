@@ -35,6 +35,7 @@
 - Improved the frame rate, as the game now draws solid surfaces faster
 - Changed rain to fall as far as the fog reaches, rather than only near Lara
 - Changed gun and flare flashes in TR1 and TR2 to turn semi-transparent with PlayStation blending rather than with gun glow
+- Changed blood in TR4 to keep its size, rather than growing in the distance and shrinking close up (TRX1832)
 - Fixed the screen not fading to black after a skipped FMV (TRX1613)
 - Fixed static objects keeping the underwater tint and lighting after their room drains (TRX1630, regression from 1.11)
 - Fixed dynamic lights, such as a flare in Lara's hand, not lighting the room once more than 32 were active, for example in the Temple of Horus (OG bug) (TRX1533)
