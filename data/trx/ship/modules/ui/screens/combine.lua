@@ -24,21 +24,28 @@ local SPACING = 90.0
 
 local SPIN_PER_TICK = 4 * trx.math.DEG_1
 
+-- How far an entry no longer in the middle turns back each tick, as the ring
+-- turns back its own entries.
+local SPIN_BACK_PER_TICK = 512
+
+-- How far an entry turns about its own axis as the ring poses it.
+local function rest_turn(object)
+  local entry = ring.item(object)
+  return entry and entry.y_rot_sel + entry.base_rot_y or 0
+end
+
 -- The model of an entry as the ring poses it, turning while it is in the
--- middle.
-local function model(object, index, selected)
+-- middle, and turning back to face the player once it leaves the middle.
+local function model(object, turn)
   local entry = ring.item(object)
   return trx.ui.widgets.Model({
     object = object,
     w = MODEL_WIDTH,
     h = MODEL_HEIGHT,
     rot_x = entry and entry.base_rot_x or 0,
-    rot_y = entry and entry.y_rot_sel + entry.base_rot_y or 0,
+    rot_y = turn,
     rot_z = entry and entry.base_rot_z or 0,
     mesh_mask = entry and entry.meshes_drawn or nil,
-    spin = selected:map(function(at)
-      return at == index and SPIN_PER_TICK or 0
-    end),
   })
 end
 
@@ -54,7 +61,7 @@ local function dialog(state)
     items = partners,
     selected = selected,
     build = function(object, index)
-      return model(object, index, selected)
+      return model(object, state.turns[index])
     end,
     w = ROW_WIDTH,
     h = ROW_HEIGHT,
@@ -113,11 +120,28 @@ local function turn(state, step)
   trx.sound.play(trx.catalog.samples.MENU_ROTATE)
 end
 
+-- Turns the entry in the middle a step further, and the others a step back.
+local function spin(state)
+  local wrap = trx.math.wrap_angle
+  for i, object in ipairs(state.partners) do
+    local turn = state.turns[i]
+    local at = turn:target()
+    if i == state.selected:get() then
+      turn:to(at + SPIN_PER_TICK, 1)
+    else
+      local off = wrap(at - rest_turn(object))
+      local back = math.min(math.abs(off), SPIN_BACK_PER_TICK)
+      turn:to(off > 0 and at - back or at + back, 1)
+    end
+  end
+end
+
 local function control(ctx, state, keys)
   if not state.shown:get() then
     begin(ctx, state)
     return
   end
+  spin(state)
   if state.row:is_sliding() then
     return
   end
@@ -143,8 +167,12 @@ local function open(ctx)
   local state = {
     partners = trx.inventory.combine_partners(ctx.object),
     selected = trx.signal.new(1),
+    turns = {},
     shown = trx.signal.new(false),
   }
+  for i, object in ipairs(state.partners) do
+    state.turns[i] = trx.ui.tween(rest_turn(object))
+  end
   ctx:on_end(function()
     ring.set_darkened(false)
   end)
