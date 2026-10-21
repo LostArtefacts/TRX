@@ -36,14 +36,16 @@ def load_glyph(
     glyph: Glyph, source, stretch_y: float
 ) -> tuple[np.ndarray, int, int, int, int]:
     """Return the glyph's pixels and its l, t, r, b extents, stretched
-    vertically if it is text.
+    vertically if it is text or marked with stretch().
     """
     pixels, bbox = source.load(glyph)
     l = bbox.x + glyph.extra_x
     r = l + bbox.w
     t = bbox.y + glyph.extra_y
     b = t + bbox.h
-    if stretch_y == 1.0 or glyph.glyph_class not in TEXT_GLYPH_CLASSES:
+    if stretch_y == 1.0 or (
+        glyph.glyph_class not in TEXT_GLYPH_CLASSES and not glyph.stretch
+    ):
         return pixels, l, t, r, b
 
     height, width, _ = pixels.shape
