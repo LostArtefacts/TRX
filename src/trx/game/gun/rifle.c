@@ -13,6 +13,7 @@
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/projectiles/crossbow_bolt.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -286,6 +287,44 @@ finish:
     if ((count % recoil) == 0) {
         m_ReloadHarpoon = Gun_HasRoundsLeft(weapon_type);
     }
+}
+
+// Fires a bolt from the crossbow at Lara's arm, aimed by the arm, as TR4 does.
+static void M_FireCrossbow(const LARA_GUN_TYPE weapon_type, const bool running)
+{
+    if (!Gun_HasRoundsLeft(weapon_type)) {
+        return;
+    }
+
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    XYZ_32 pos = { .x = 0, .y = 228, .z = 32 };
+    Lara_GetJointAbsPosition(&pos, LM_UARM_L);
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    if (Room_GetHeight(sector, pos) < pos.y) {
+        pos.x = lara_item->pos.x;
+        pos.z = lara_item->pos.z;
+        room_num = lara_item->room_num;
+    }
+
+    XYZ_16 rot = {
+        .x = lara->left_arm.rot.x + lara_item->rot.x,
+        .y = lara->left_arm.rot.y + lara_item->rot.y,
+    };
+    if (!lara->left_arm.lock) {
+        rot.x += lara->torso_rot.x;
+        rot.y += lara->torso_rot.y;
+    }
+
+    if (CrossbowBolt_Fire(pos, room_num, rot) == NO_ITEM) {
+        return;
+    }
+    lara->has_fired = true;
+    Gun_SpendRound(weapon_type);
+    Stats_AddAmmoUsed();
+    Sound_Effect(
+        Gun_Registry_Get(weapon_type)->sample_num, nullptr, SPM_NORMAL);
 }
 
 static void M_FireGrenade(const LARA_GUN_TYPE weapon_type, const bool running)
@@ -809,6 +848,7 @@ REGISTER_GUN_KIND(
 
 REGISTER_GUN_ROUTINE(Fire, "generic", M_FireGeneric)
 REGISTER_GUN_ROUTINE(Fire, "m16", M_FireM16)
+REGISTER_GUN_ROUTINE(Fire, "crossbow", M_FireCrossbow)
 REGISTER_GUN_ROUTINE(Fire, "grenade", M_FireGrenade)
 REGISTER_GUN_ROUTINE(Fire, "rocket", M_FireRocket)
 REGISTER_GUN_ROUTINE(Fire, "harpoon", M_FireHarpoon)

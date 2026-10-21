@@ -798,6 +798,7 @@ common_sources = [
   'trx/game/objects/links.c',
   'trx/game/objects/names.c',
   'trx/game/objects/projectiles/claw_mutant_plasma_ball.c',
+  'trx/game/objects/projectiles/crossbow_bolt.c',
   'trx/game/objects/projectiles/dart.c',
   'trx/game/objects/projectiles/grenade.c',
   'trx/game/objects/projectiles/harpoon_bolt.c',
