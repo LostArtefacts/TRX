@@ -233,10 +233,8 @@ void Sparks_TriggerRainSplash(const XYZ_32 pos)
         spark->vel.z = dir.z;
         spark->pos = pos;
         spark->friction = 5;
-        // Each spark keeps one pixel of the reference screen at any distance,
-        // so that it neither swells near the camera nor vanishes far away.
-        spark->flags = 0;
-        spark->scalar = 0;
+        spark->flags = SPARK_F_SCALE;
+        spark->scalar = 4;
         spark->max_y_vel = 0;
         spark->gravity = (Random_GetDraw() & 0xF) + 48;
         spark->size.width = 1;
