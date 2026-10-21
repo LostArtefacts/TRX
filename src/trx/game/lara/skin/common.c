@@ -23,6 +23,7 @@
 
 #define M_NO_OUTFIT (-1)
 #define M_NO_MESH (-1)
+#define M_GUN_ATTACHMENT_OFFSET 1
 
 static LARA_SKIN_TYPE m_SkinType = LARA_SKIN_TYPE_DEFAULT;
 static bool m_HolstersVisible = true;
@@ -278,8 +279,7 @@ static const LARA_SKIN_OUTFIT *M_GetExtraOutfit(const LARA_EXTRA_STATE state)
 
 static void M_SetEquipment(
     const LARA_MESH mesh, const LARA_SKIN_EQUIPMENT_TYPE type,
-    const int32_t data, const int32_t offset,
-    const LARA_SKIN_OUTFIT *const outfit)
+    const int32_t data, int32_t offset, const LARA_SKIN_OUTFIT *const outfit)
 {
     LARA_SKIN_EQUIPMENT *const equipment = &m_Equipment[mesh];
     equipment->type = type;
@@ -291,11 +291,7 @@ static void M_SetEquipment(
         const OBJECT_ID attached_id =
             mesh == LM_HAND_R ? Gun_GetAttachedAnimObject(data) : NO_OBJECT;
         if (attached_id != NO_OBJECT) {
-            const OBJECT *const attached_obj = Object_Get(attached_id);
-            equipment->mesh =
-                Object_GetMesh(attached_obj->mesh_idx + LM_HAND_R);
-            equipment->offset = (XYZ_16) {};
-            break;
+            offset += M_GUN_ATTACHMENT_OFFSET;
         }
         // Use the weapon's object when it provides one. This keeps its model
         // the same under every outfit.

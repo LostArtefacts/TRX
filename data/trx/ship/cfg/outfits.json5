@@ -622,35 +622,35 @@
                 "thigh_l": 2,
             },
             "shotgun": {
-                "hand_r": 59,
-                "torso": 67,
-            },
-            "flare": {
-                "hand_l": 60,
-            },
-            "m16": {
-                "hand_r": 61,
-                "torso": 68,
-            },
-            "mp5": {
-                "hand_r": 62,
+                "hand_r": 60,
                 "torso": 69,
             },
-            "grenade": {
-                "hand_r": 63,
+            "flare": {
+                "hand_l": 61,
+            },
+            "m16": {
+                "hand_r": 62,
                 "torso": 70,
             },
-            "harpoon": {
-                "hand_r": 64,
+            "mp5": {
+                "hand_r": 63,
                 "torso": 71,
             },
-            "rocket": {
-                "hand_r": 65,
+            "grenade": {
+                "hand_r": 64,
                 "torso": 72,
             },
-            "crossbow": {
-                "hand_r": 66,
+            "harpoon": {
+                "hand_r": 65,
                 "torso": 73,
+            },
+            "rocket": {
+                "hand_r": 66,
+                "torso": 74,
+            },
+            "crossbow": {
+                "hand_r": 67,
+                "torso": 75,
             },
         },
 
@@ -695,35 +695,35 @@
                 "thigh_l": 14,
             },
             "shotgun": {
-                "hand_r": 59,
-                "torso": 67,
-            },
-            "flare": {
-                "hand_l": 60,
-            },
-            "m16": {
-                "hand_r": 61,
-                "torso": 68,
-            },
-            "mp5": {
-                "hand_r": 62,
+                "hand_r": 60,
                 "torso": 69,
             },
-            "grenade": {
-                "hand_r": 63,
+            "flare": {
+                "hand_l": 61,
+            },
+            "m16": {
+                "hand_r": 62,
                 "torso": 70,
             },
-            "harpoon": {
-                "hand_r": 64,
+            "mp5": {
+                "hand_r": 63,
                 "torso": 71,
             },
-            "rocket": {
-                "hand_r": 65,
+            "grenade": {
+                "hand_r": 64,
                 "torso": 72,
             },
-            "crossbow": {
-                "hand_r": 66,
+            "harpoon": {
+                "hand_r": 65,
                 "torso": 73,
+            },
+            "rocket": {
+                "hand_r": 66,
+                "torso": 74,
+            },
+            "crossbow": {
+                "hand_r": 67,
+                "torso": 75,
             },
         },
 
@@ -768,35 +768,35 @@
                 "thigh_l": 26,
             },
             "shotgun": {
-                "hand_r": 59,
-                "torso": 67,
-            },
-            "flare": {
-                "hand_l": 60,
-            },
-            "m16": {
-                "hand_r": 61,
-                "torso": 68,
-            },
-            "mp5": {
-                "hand_r": 62,
+                "hand_r": 60,
                 "torso": 69,
             },
-            "grenade": {
-                "hand_r": 63,
+            "flare": {
+                "hand_l": 61,
+            },
+            "m16": {
+                "hand_r": 62,
                 "torso": 70,
             },
-            "harpoon": {
-                "hand_r": 64,
+            "mp5": {
+                "hand_r": 63,
                 "torso": 71,
             },
-            "rocket": {
-                "hand_r": 65,
+            "grenade": {
+                "hand_r": 64,
                 "torso": 72,
             },
-            "crossbow": {
-                "hand_r": 66,
+            "harpoon": {
+                "hand_r": 65,
                 "torso": 73,
+            },
+            "rocket": {
+                "hand_r": 66,
+                "torso": 74,
+            },
+            "crossbow": {
+                "hand_r": 67,
+                "torso": 75,
             },
         },
 
@@ -841,35 +841,35 @@
                 "thigh_l": 38,
             },
             "shotgun": {
-                "hand_r": 59,
-                "torso": 67,
-            },
-            "flare": {
-                "hand_l": 60,
-            },
-            "m16": {
-                "hand_r": 61,
-                "torso": 68,
-            },
-            "mp5": {
-                "hand_r": 62,
+                "hand_r": 60,
                 "torso": 69,
             },
-            "grenade": {
-                "hand_r": 63,
+            "flare": {
+                "hand_l": 61,
+            },
+            "m16": {
+                "hand_r": 62,
                 "torso": 70,
             },
-            "harpoon": {
-                "hand_r": 64,
+            "mp5": {
+                "hand_r": 63,
                 "torso": 71,
             },
-            "rocket": {
-                "hand_r": 65,
+            "grenade": {
+                "hand_r": 64,
                 "torso": 72,
             },
-            "crossbow": {
-                "hand_r": 66,
+            "harpoon": {
+                "hand_r": 65,
                 "torso": 73,
+            },
+            "rocket": {
+                "hand_r": 66,
+                "torso": 74,
+            },
+            "crossbow": {
+                "hand_r": 67,
+                "torso": 75,
             },
         },
     ],
