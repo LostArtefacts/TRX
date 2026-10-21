@@ -875,12 +875,12 @@ local function control(state, keys)
   if main:is_sliding() then
     return
   end
-  if keys:pressed(Role.MENU_UP) and state.option > 1 then
-    state.option = state.option - 1
-    sound("select")
-    state.follow_options()
-  elseif keys:pressed(Role.MENU_DOWN) and state.option < #state.options then
-    state.option = state.option + 1
+  local step = keys:pressed(Role.MENU_UP) and -1
+    or keys:pressed(Role.MENU_DOWN) and 1
+    or nil
+  local option = step and scroll.step(state.option, step, #state.options)
+  if option ~= nil then
+    state.option = option
     sound("select")
     state.follow_options()
   elseif keys:pressed(Role.MENU_CONFIRM) then
