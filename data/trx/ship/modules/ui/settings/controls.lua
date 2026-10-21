@@ -396,9 +396,9 @@ function Editor:navigate(keys)
     then
       return nil
     elseif keys:pressed(Role.MENU_LEFT) then
-      self.slot:set((self.slot:get() - 2) % SLOTS + 1)
+      self.slot:set(scroll.step(self.slot:get(), -1, SLOTS) or self.slot:get())
     elseif keys:pressed(Role.MENU_RIGHT) then
-      self.slot:set(self.slot:get() % SLOTS + 1)
+      self.slot:set(scroll.step(self.slot:get(), 1, SLOTS) or self.slot:get())
     elseif keys:pressed(Role.MENU_UP) then
       if not self.scroll:select_prev(false) then
         self.focus:set("group")
