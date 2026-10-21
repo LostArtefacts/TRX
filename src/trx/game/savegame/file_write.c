@@ -197,6 +197,7 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
     JSONW_WRITE(io, "ai_bits", item->ai_bits);
     JSONW_WRITE_NZ(io, "ai_tag", item->ai_tag);
     JSONW_WRITE_NZ(io, "fade", item->fade);
+    JSONW_WRITE_NZ(io, "poisoned", item->is_poisoned);
     if (intelligent) {
         const CREATURE *const creature = item->creature_data;
         JSONW_WRITE(io, "head_rot", creature->head_rotation);

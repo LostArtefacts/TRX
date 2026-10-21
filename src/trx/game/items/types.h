@@ -147,6 +147,8 @@ typedef struct ITEM {
     bool looked_at;
     bool dynamic_light;
     bool clear_body;
+    // Loses health slowly, as a TR4 creature does after a poison bolt.
+    bool is_poisoned;
     bool include_in_kill_stats;
 
     struct {
