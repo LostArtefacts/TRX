@@ -86,6 +86,18 @@ static const char *M_ValueAsString(lua_State *const L, const int32_t arg)
     return luaL_checkstring(L, arg);
 }
 
+// Returns the text to write into an option. Lua reads a dynamic enum value
+// with no text, such as the outfit that the level chooses, as an empty string,
+// so an empty string writes that value back.
+static const char *M_ValueForOption(
+    const CONFIG_OPTION *const option, const char *const text)
+{
+    if (option->value.type == TVT_DYNAMIC_ENUM && text[0] == '\0') {
+        return nullptr;
+    }
+    return text;
+}
+
 // trxc.config.get(key: string): any
 static int M_L_ConfigGet(lua_State *const L)
 {
@@ -229,21 +241,17 @@ static int M_L_ConfigLabels(lua_State *const L)
         const void *const token = Config_Option_GetEnumKey(option);
         const int32_t count = DynamicEnum_GetValueCount(token);
         lua_createtable(L, count, 0);
-        int32_t n = 0;
         for (int32_t i = 0; i < count; i++) {
             const char *const value = DynamicEnum_GetValueAt(token, i);
-            if (value == nullptr) {
-                continue;
-            }
             const char *const label = DynamicEnum_GetLabelAt(token, i);
             lua_createtable(L, 0, 3);
-            lua_pushstring(L, value);
+            lua_pushstring(L, value != nullptr ? value : "");
             lua_setfield(L, -2, "value");
-            lua_pushstring(L, label != nullptr ? label : value);
+            lua_pushstring(L, label);
             lua_setfield(L, -2, "label");
             lua_pushboolean(L, DynamicEnum_IsValueEnabled(token, value));
             lua_setfield(L, -2, "enabled");
-            lua_rawseti(L, -2, ++n);
+            lua_rawseti(L, -2, i + 1);
         }
         return 1;
     }
@@ -290,11 +298,12 @@ static int M_L_ConfigIsDefault(lua_State *const L)
 static int M_L_ConfigSet(lua_State *const L)
 {
     CONFIG_OPTION *const option = M_GetOption(L, 1);
-    const char *const new_value = M_ValueAsString(L, 2);
+    const char *const text = M_ValueAsString(L, 2);
     const bool force = lua_toboolean(L, 3);
-    if (!Config_Option_SetFromString(option, new_value, force)) {
+    if (!Config_Option_SetFromString(
+            option, M_ValueForOption(option, text), force)) {
         return luaL_error(
-            L, "failed to set option %s to %s", option->name, new_value);
+            L, "failed to set option %s to %s", option->name, text);
     }
     Config_Update();
     return 0;
@@ -317,11 +326,11 @@ static int M_L_ConfigReset(lua_State *const L)
 static int M_L_ConfigOverride(lua_State *const L)
 {
     CONFIG_OPTION *const option = M_GetOption(L, 1);
-    const char *const new_value = M_ValueAsString(L, 2);
+    const char *const text = M_ValueAsString(L, 2);
     if (!Config_Option_PushHoldFromString(
-            option, new_value, CONFIG_HOLD_SCRIPT)) {
+            option, M_ValueForOption(option, text), CONFIG_HOLD_SCRIPT)) {
         return luaL_error(
-            L, "failed to override option %s with %s", option->name, new_value);
+            L, "failed to override option %s with %s", option->name, text);
     }
     Config_Update();
     return 0;
