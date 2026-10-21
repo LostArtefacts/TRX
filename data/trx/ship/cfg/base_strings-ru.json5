@@ -2967,6 +2967,9 @@
         "lara_crossbow": {
             "name": "\\{review}Анимация арбалета",
         },
+        "lara_crossbow_laser": {
+            "name": "\\{review}Анимация арбалета (лазерный прицел)",
+        },
         "lara_desert_eagle": {
             "name": "\\{review}Анимация Дезерт Игл",
         },
@@ -3014,6 +3017,9 @@
         },
         "lara_revolver": {
             "name": "\\{review}Анимация револьвера",
+        },
+        "lara_revolver_laser": {
+            "name": "\\{review}Анимация револьвера (лазерный прицел)",
         },
         "lara_rib": {
             "name": "\\{review}Анимация RIB",

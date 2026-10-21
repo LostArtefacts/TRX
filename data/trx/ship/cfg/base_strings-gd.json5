@@ -2967,6 +2967,9 @@
         "lara_crossbow": {
             "name": "Beothachadh Cros-bhogha",
         },
+        "lara_crossbow_laser": {
+            "name": "\\{review}Beothachadh Cros-bhogha (sealladair laser)",
+        },
         "lara_desert_eagle": {
             "name": "Beòthalachd an Desert Eagle",
         },
@@ -3014,6 +3017,9 @@
         },
         "lara_revolver": {
             "name": "Beothachadh Dag",
+        },
+        "lara_revolver_laser": {
+            "name": "\\{review}Beothachadh Dag (sealladair laser)",
         },
         "lara_rib": {
             "name": "Beòthalachd RIB",

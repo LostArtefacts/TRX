@@ -2967,6 +2967,9 @@
         "lara_crossbow": {
             "name": "Animazione Balestra",
         },
+        "lara_crossbow_laser": {
+            "name": "\\{review}Animazione Balestra (mirino laser)",
+        },
         "lara_desert_eagle": {
             "name": "Animazione Desert Eagle",
         },
@@ -3014,6 +3017,9 @@
         },
         "lara_revolver": {
             "name": "Animazione Revolver",
+        },
+        "lara_revolver_laser": {
+            "name": "\\{review}Animazione Revolver (mirino laser)",
         },
         "lara_rib": {
             "name": "Animazione Gommone a Motore",

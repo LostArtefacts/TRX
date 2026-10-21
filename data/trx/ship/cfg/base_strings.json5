@@ -3031,6 +3031,9 @@
         "lara_crossbow": {
             "name": "Crossbow Animation",
         },
+        "lara_crossbow_laser": {
+            "name": "Crossbow Animation (Laser Sight)",
+        },
         "lara_desert_eagle": {
             "name": "Desert Eagle Animation",
         },
@@ -3078,6 +3081,9 @@
         },
         "lara_revolver": {
             "name": "Revolver Animation",
+        },
+        "lara_revolver_laser": {
+            "name": "Revolver Animation (Laser Sight)",
         },
         "lara_rib": {
             "name": "RIB Animation",

@@ -2967,6 +2967,9 @@
         "lara_crossbow": {
             "name": "\\{review}Animation d'Arbalète",
         },
+        "lara_crossbow_laser": {
+            "name": "\\{review}Animation d'Arbalète (viseur laser)",
+        },
         "lara_desert_eagle": {
             "name": "\\{review}Animation du Desert Eagle",
         },
@@ -3014,6 +3017,9 @@
         },
         "lara_revolver": {
             "name": "\\{review}Animation de Revolver",
+        },
+        "lara_revolver_laser": {
+            "name": "\\{review}Animation de Revolver (viseur laser)",
         },
         "lara_rib": {
             "name": "\\{review}Animation du RIB",
