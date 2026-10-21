@@ -281,7 +281,7 @@ end
 ---@return boolean consumed
 ---@return boolean leave
 function PresetTab:control(keys)
-  local wraps = trx.config.get("ui.enable_wraparound")
+  local wraps = scroll.wraps()
   local count = #self.presets
   local at = self.scroll.selected:get() or 0
   if keys:pressed(Role.MENU_UP) then

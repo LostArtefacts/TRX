@@ -225,7 +225,7 @@ function Editor:control(keys)
   if keys:pressed(Role.MENU_UP) then
     return true, not self.scroll:select_prev(false)
   elseif keys:pressed(Role.MENU_DOWN) then
-    local wraps = trx.config.get("ui.enable_wraparound")
+    local wraps = scroll.wraps()
     return true, not self.scroll:select_next(false) and wraps
   end
   if key == nil then

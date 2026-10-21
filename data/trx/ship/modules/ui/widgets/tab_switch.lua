@@ -9,7 +9,7 @@
 
 local metrics = require("common.ui.metrics")
 local row_arrows = require("common.ui.widgets.row_arrows")
-require("common.ui.scroll")
+local scroll = require("common.ui.scroll")
 
 local M = {}
 
@@ -27,10 +27,6 @@ M.Mode = {
   -- Framed as the option under the cursor: the player is on the bar.
   FOCUSED = 2,
 }
-
-local function wraps()
-  return trx.config.get("ui.enable_wraparound")
-end
 
 ---@class common.ui.TabSwitch
 ---@field widget trx.ui.Widget The bar.
@@ -51,7 +47,7 @@ function TabSwitch:cycle(dir)
   if self.count == 0 then
     return false
   elseif target < 1 or target > self.count then
-    if not wraps() then
+    if not scroll.wraps() then
       return false
     end
     target = target < 1 and self.count or 1

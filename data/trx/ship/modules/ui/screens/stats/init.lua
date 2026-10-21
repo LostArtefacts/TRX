@@ -11,7 +11,7 @@ local listing = require("common.ui.screens.stats.rows")
 local metrics = require("common.ui.metrics")
 local requester = require("common.ui.widgets.requester")
 local ring = require("common.ui.ring")
-require("common.ui.scroll")
+local scroll = require("common.ui.scroll")
 
 local M = {}
 
@@ -298,7 +298,7 @@ local function open_level_end(ctx)
   end)
 end
 
-local function scroll(state, step)
+local function scroll_by(state, step)
   ---@type integer
   local visible = state.visible:get()
   ---@type integer
@@ -306,7 +306,7 @@ local function scroll(state, step)
   first = first + step
   local last_first = math.max(#state.rows - visible + 1, 1)
   if first < 1 or first > last_first then
-    if not trx.config.get("ui.enable_wraparound") then
+    if not scroll.wraps() then
       return
     end
     first = first < 1 and last_first or 1
@@ -381,9 +381,9 @@ local function open_ring_entry(ctx)
       if mode == Mode.ASSAULT then
         control_reset(state, keys)
         if keys:pressed(trx.input.Role.MENU_DOWN) then
-          scroll(state, 1)
+          scroll_by(state, 1)
         elseif keys:pressed(trx.input.Role.MENU_UP) then
-          scroll(state, -1)
+          scroll_by(state, -1)
         end
       end
       if keys:pressed(trx.input.Role.MENU_CONFIRM) then

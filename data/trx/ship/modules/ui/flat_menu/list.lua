@@ -4,6 +4,7 @@
 -- screen. A list longer than that room scrolls, and the selection wraps
 -- around where the player asks for it.
 
+local scroll = require("common.ui.scroll")
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
 
 local M = {}
@@ -108,14 +109,14 @@ function List:move(keys)
   if count == 0 then
     return false
   end
-  local wraps = trx.config.get("ui.enable_wraparound")
-  if keys:pressed(Role.MENU_UP) and (self.selected > 1 or wraps) then
-    self.selected = (self.selected - 2) % count + 1
-  elseif keys:pressed(Role.MENU_DOWN) and (self.selected < count or wraps) then
-    self.selected = self.selected % count + 1
-  else
+  local step = keys:pressed(Role.MENU_UP) and -1
+    or keys:pressed(Role.MENU_DOWN) and 1
+    or nil
+  local to = step and scroll.step(self.selected, step, count)
+  if to == nil then
     return false
   end
+  self.selected = to
   self:follow()
   return true
 end

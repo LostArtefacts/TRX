@@ -5,8 +5,7 @@
 
 local pages = require("common.ui.screens.passport.pages")
 local sound = require("common.ui.flat_menu.sound").play
--- Declares the wraparound setting, which the list follows.
-require("common.ui.scroll")
+local scroll = require("common.ui.scroll")
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
 
 local M = {}
@@ -225,15 +224,12 @@ function M.push(ctx, kind, on_done)
       return 0, 0
     end,
     on_input = function(_, keys)
-      local wraps = trx.config.get("ui.enable_wraparound") and count > 0
-      if keys:pressed(Role.MENU_UP) and (state.selected > 1 or wraps) then
-        state.selected = (state.selected - 2) % count + 1
-        sound("move")
-        follow()
-      elseif
-        keys:pressed(Role.MENU_DOWN) and (state.selected < count or wraps)
-      then
-        state.selected = state.selected % count + 1
+      local step = keys:pressed(Role.MENU_UP) and -1
+        or keys:pressed(Role.MENU_DOWN) and 1
+        or nil
+      local to = step and scroll.step(state.selected, step, count)
+      if to ~= nil then
+        state.selected = to
         sound("move")
         follow()
       elseif keys:pressed(Role.MENU_CONFIRM) then

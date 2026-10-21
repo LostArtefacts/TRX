@@ -12,6 +12,7 @@
 --   ctx:push({ root = settings_dialog.widget, place = dialog.PLACE })
 
 local metrics = require("common.ui.metrics")
+local scroll = require("common.ui.scroll")
 local editor = require("common.ui.settings.editor")
 local value = require("common.ui.value")
 local tab_switch = require("common.ui.widgets.tab_switch")
@@ -149,9 +150,7 @@ function Dialog:control(keys)
       keys:pressed(Role.MENU_DOWN) and not keys:pressed(Role.MENU_CONFIRM)
     then
       self:enter(false)
-    elseif
-      keys:pressed(Role.MENU_UP) and trx.config.get("ui.enable_wraparound")
-    then
+    elseif keys:pressed(Role.MENU_UP) and scroll.wraps() then
       self:enter(true)
     elseif keys:pressed(Role.MENU_BACK) then
       return true
@@ -260,7 +259,7 @@ function M.new(settings)
     titles = titles,
     mode = tab_switch.Mode.FOCUSED,
     wraps = self.changed:map(function()
-      return trx.config.get("ui.enable_wraparound")
+      return scroll.wraps()
     end),
   })
   self.active = self.bar.active
