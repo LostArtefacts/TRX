@@ -2175,6 +2175,10 @@
             "title": "Water tint",
             "description": "How much of Lara the water color takes while she is in water. Whole tints all of her, as TR1 and TR2 do. Per mesh tints each of her meshes by where it sits, as TR3 and TR4 do. Responsive cuts her at the water surface, so that only what lies under the water takes the color.",
         },
+        "window.is_borderless": {
+            "title": "Borderless fullscreen",
+            "description": "Fills the screen with a window that has no border, so that other windows and overlays can stay on top of the game.",
+        },
         "window.is_fullscreen": {
             "title": "Fullscreen",
             "description": "Fills the screen, or runs in a window.",

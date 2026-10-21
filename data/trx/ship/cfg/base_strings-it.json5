@@ -2175,6 +2175,10 @@
             "title": "\\{review}Tonalità dell'acqua",
             "description": "\\{review}Quanta parte di Lara assume il colore dell'acqua mentre è in acqua. Intera colora tutto il suo corpo, come in TR1 e TR2. Per mesh colora ogni mesh in base a dove si trova, come in TR3 e TR4. Accurata la divide alla superficie dell'acqua, così solo ciò che è immerso assume il colore.",
         },
+        "window.is_borderless": {
+            "title": "\\{review}Schermo intero senza bordi",
+            "description": "\\{review}Riempie lo schermo con una finestra senza bordi, così che altre finestre e sovrapposizioni possano restare sopra il gioco.",
+        },
         "window.is_fullscreen": {
             "title": "\\{review}Schermo intero",
             "description": "\\{review}Riempie lo schermo, oppure gira in una finestra.",

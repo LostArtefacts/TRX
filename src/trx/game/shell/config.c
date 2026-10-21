@@ -30,6 +30,28 @@ static bool M_MustUpdateRendererViewport(void)
     return m_ViewportSize.w != size.w || m_ViewportSize.h != size.h;
 }
 
+// Covers the display with a window that has no border, rather than making the
+// window fullscreen. Other windows and overlays can then stay on top of the
+// game. On Windows, graphics drivers can treat a window that covers the
+// display exactly as exclusive fullscreen, so the window reaches one pixel past
+// the bottom edge.
+static void M_FillDisplay(SDL_Window *const window)
+{
+#ifdef _WIN32
+    const int32_t overhang = 1;
+#else
+    const int32_t overhang = 0;
+#endif
+    SDL_Rect bounds;
+    SDL_GetDisplayBounds(SDL_GetWindowDisplayIndex(window), &bounds);
+    SDL_SetWindowFullscreen(window, 0);
+    SDL_RestoreWindow(window);
+    SDL_SetWindowBordered(window, SDL_FALSE);
+    SDL_SetWindowPosition(window, bounds.x, bounds.y);
+    SDL_SetWindowSize(window, bounds.w, bounds.h + overhang);
+    SDL_ShowCursor(SDL_DISABLE);
+}
+
 void Shell_RefreshRendererViewport(void)
 {
     const bool size_changed = M_MustUpdateRendererViewport();
@@ -45,12 +67,19 @@ void Shell_SyncToWindow(void)
     m_UpdateDebounce = SDL_GetTicks();
 
     LOG_DEBUG(
-        "is_fullscreen=%d is_maximized=%d x=%d y=%d width=%d height=%d",
-        g_Config.window.is_fullscreen, g_Config.window.is_maximized,
-        g_Config.window.x, g_Config.window.y, g_Config.window.width,
-        g_Config.window.height);
+        "is_fullscreen=%d is_borderless=%d is_maximized=%d x=%d y=%d "
+        "width=%d height=%d",
+        g_Config.window.is_fullscreen, g_Config.window.is_borderless,
+        g_Config.window.is_maximized, g_Config.window.x, g_Config.window.y,
+        g_Config.window.width, g_Config.window.height);
 
     SDL_Window *const window = Shell_GetWindow();
+    if (g_Config.window.is_fullscreen && g_Config.window.is_borderless) {
+        M_FillDisplay(window);
+        return;
+    }
+
+    SDL_SetWindowBordered(window, SDL_TRUE);
     if (g_Config.window.is_fullscreen) {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
         SDL_ShowCursor(SDL_DISABLE);
@@ -165,10 +194,10 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
         Music_SetVolume(g_Config.audio.music_volume);
     }
 
-    if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)
-        || L_CHANGED(window.width) || L_CHANGED(window.height)
-        || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)
-        || L_CHANGED(rendering.upscaling_factor)
+    if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_borderless)
+        || L_CHANGED(window.is_maximized) || L_CHANGED(window.width)
+        || L_CHANGED(window.height) || L_CHANGED(window.fs_width)
+        || L_CHANGED(window.fs_height) || L_CHANGED(rendering.upscaling_factor)
         || L_CHANGED(rendering.supersampling_factor)
         || L_CHANGED(rendering.borders) || L_CHANGED(rendering.aspect_mode)) {
         if (!m_IgnoreConfigChanges) {

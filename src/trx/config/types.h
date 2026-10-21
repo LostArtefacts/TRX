@@ -48,6 +48,7 @@ typedef struct {
 
     struct {
         bool is_fullscreen;
+        bool is_borderless;
         bool is_maximized;
         int32_t x;
         int32_t y;

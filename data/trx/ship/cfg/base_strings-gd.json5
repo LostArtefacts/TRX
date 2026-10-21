@@ -2175,6 +2175,10 @@
             "title": "\\{review}Dath an uisge",
             "description": "\\{review}Dè uiread de Lara a ghabhas dath an uisge fhad 's a tha i san uisge. Bidh Slàn a' dathadh a h-uile pàirt dhith, mar a nì TR1 is TR2. Bidh A rèir mogail a' dathadh gach mogail a rèir far a bheil e, mar a nì TR3 is TR4. Bidh Freagarrach ga gearradh aig uachdar an uisge, agus mar sin cha ghabh ach na tha fon uisge an dath.",
         },
+        "window.is_borderless": {
+            "title": "\\{review}Làn-sgrìn gun iomall",
+            "description": "\\{review}Lìonaidh e an sgrìn le uinneag gun iomall, gus an urrainn do dh’uinneagan is tar-chòmhdachaidhean eile fuireach os cionn a’ gheama.",
+        },
         "window.is_fullscreen": {
             "title": "\\{review}Làn-sgrìn",
             "description": "\\{review}Lìonaidh e an sgrìn, no ruithidh e ann an uinneag.",

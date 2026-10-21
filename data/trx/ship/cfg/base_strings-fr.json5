@@ -2175,6 +2175,10 @@
             "title": "\\{review}Teinte de l'eau",
             "description": "\\{review}Quelle partie de Lara prend la couleur de l'eau lorsqu'elle est dans l'eau. Entière la teinte en totalité, comme dans TR1 et TR2. Par maillage teinte chaque maillage selon sa position, comme dans TR3 et TR4. Adaptative la coupe à la surface de l'eau, de sorte que seule la partie immergée prend la couleur.",
         },
+        "window.is_borderless": {
+            "title": "\\{review}Plein écran sans bordure",
+            "description": "\\{review}Remplit l’écran avec une fenêtre sans bordure, afin que d’autres fenêtres et superpositions puissent rester au-dessus du jeu.",
+        },
         "window.is_fullscreen": {
             "title": "\\{review}Plein écran",
             "description": "\\{review}Remplit l’écran, ou s’exécute dans une fenêtre.",
