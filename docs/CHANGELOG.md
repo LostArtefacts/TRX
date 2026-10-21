@@ -201,6 +201,7 @@
 - Fixed inventory items such as the Broken Beetle appearing in the wrong place or not appearing in the ring
 - Fixed items appearing at the wrong angle in the pickup display
 - Fixed the shotgun, revolver, and crossbow showing the laser sight in the inventory (OG bug)
+- Fixed fog showing on the black mask of the binoculars
 - Fixed the revolver and crossbow showing the laser sight in the pickup display
 - Fixed the shotgun, revolver, and crossbow showing the laser sight where they lie in a level
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)

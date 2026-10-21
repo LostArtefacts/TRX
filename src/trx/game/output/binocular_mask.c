@@ -42,8 +42,10 @@ static bool M_GetVertexShade(
     return true;
 }
 
+// The mask lies over the screen rather than in the scene, so neither the
+// fog nor the fog bulbs reach it.
 static const OUTPUT_OBJECT_MESH_POLICY m_BinocularMaskMeshPolicy = {
-    .vertex_flags = VERT_USE_OWN_LIGHT,
+    .vertex_flags = VERT_USE_OWN_LIGHT | VERT_NO_FOG,
     .get_face_pass = M_GetFacePass,
     .get_vertex_color = M_GetVertexColor,
     .get_vertex_shade = M_GetVertexShade,
