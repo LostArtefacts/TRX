@@ -10,6 +10,12 @@ local M = {}
 -- The height of the arrows that say a list goes on past its edge.
 M.HINT_HEIGHT = 7
 
+-- How far the arrows that say a list goes on past its edge move from the
+-- middle of their room, upwards for the top arrow and downwards for the
+-- bottom one.
+M.HINT_NUDGE_UP = -3.5
+M.HINT_NUDGE_DOWN = 5.25
+
 -- The most rows of settings a dialog shows at once.
 M.MAX_DIALOG_ROWS = 16
 

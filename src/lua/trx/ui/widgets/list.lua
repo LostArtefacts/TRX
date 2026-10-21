@@ -13,8 +13,8 @@ local new_widget = base.new_widget
 -- The geometry of a list in canvas units at the default text size.
 
 local LIST_HINT_SCALE = 0.7
-local LIST_HINT_ANCHOR_UP = 1.5
-local LIST_HINT_ANCHOR_DOWN = -1.0
+local LIST_HINT_NUDGE_UP = -3.5
+local LIST_HINT_NUDGE_DOWN = 5.25
 local LIST_RIGHT_GAP = 8
 local LIST_RULE_LINE = 2
 local LIST_RULE_PAD_Y = 4
@@ -193,13 +193,15 @@ local function list_measure(list)
   return width * scale, height * scale
 end
 
-local function list_hint(list, glyph, anchor, x, y, w, scale)
+-- Draws an arrow with its line centred on the room for the arrow, then moved
+-- by `nudge`.
+local function list_hint(list, glyph, nudge, x, y, w, scale)
   local gw, gh = primitive.measure_text(glyph, LIST_HINT_SCALE)
   local slack = setting(list, "hint_height") * scale - gh
   primitive.text(
     glyph,
     x + (w - gw) / 2,
-    y + slack * anchor,
+    y + slack / 2 + nudge * scale,
     LIST_HINT_SCALE,
     0
   )
@@ -226,7 +228,7 @@ local function list_paint(list, x, y, w)
 
   if scrolls then
     if list._first > 1 then
-      list_hint(list, "\\{arrow up}", LIST_HINT_ANCHOR_UP, x, top, w, scale)
+      list_hint(list, "\\{arrow up}", LIST_HINT_NUDGE_UP, x, top, w, scale)
     end
     top = top + setting(list, "hint_height") * scale
   end
@@ -271,7 +273,7 @@ local function list_paint(list, x, y, w)
     list_hint(
       list,
       "\\{arrow down}",
-      LIST_HINT_ANCHOR_DOWN,
+      LIST_HINT_NUDGE_DOWN,
       x,
       y + height - setting(list, "hint_height") * scale,
       w,
