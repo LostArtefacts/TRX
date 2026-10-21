@@ -585,6 +585,24 @@ local function follow_health_bar(state)
   )
 end
 
+-- Remembers the entry the row rests on, so that the menu opens on it again.
+local function remember(row_strip)
+  local picked = row_strip:picked()
+  if picked ~= nil then
+    store.flat_menu_left_on = picked.object
+  end
+end
+
+-- Remembers the entry as soon as the row settles on it, and shows its
+-- options. Remembering it as the menu closes would overwrite the entry that a
+-- load restores.
+local function follow_row(state, row_strip)
+  row_strip.on_change = function()
+    remember(row_strip)
+    refresh_options(state)
+  end
+end
+
 -- Builds the row again around what Lara carries now, resting on an entry.
 local function rebuild(state, object)
   local list = contents()
@@ -594,12 +612,11 @@ local function rebuild(state, object)
     end
   end
   local current = strip.new(list, MAIN_ROW)
-  current.on_change = function()
-    refresh_options(state)
-  end
+  follow_row(state, current)
   if object ~= nil then
     current:pick(object)
   end
+  remember(current)
   state.main = current
   refresh_options(state)
 end
@@ -1106,15 +1123,7 @@ function M.open(ctx)
     else
       pick_left_on(state.main)
     end
-    -- Remembers the entry as soon as the row settles on it. Remembering it
-    -- as the menu closes would overwrite the entry that a load restores.
-    state.main.on_change = function(row_strip)
-      local picked = row_strip:picked()
-      if picked ~= nil then
-        store.flat_menu_left_on = picked.object
-      end
-      refresh_options(state)
-    end
+    follow_row(state, state.main)
     state.main.fade:set(0)
     state.main:show(true, state.fades:ticks(FADE_TICKS))
   end
