@@ -109,8 +109,7 @@ local function begin(ctx, state)
 end
 
 local function turn(state, step)
-  local count = #state.partners
-  state.selected:set((state.selected:get() - 1 + step) % count + 1)
+  state.row:turn(step)
   trx.sound.play(trx.catalog.samples.MENU_ROTATE)
 end
 
