@@ -280,7 +280,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 221 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 222 names
 
     Every sound sample TRX has a name for.
 
@@ -310,8 +310,8 @@ convert between the two.
     `HIT_ROCK`, `HUGE_ROCKET_LOOP`, `ICICLE`, `JEEP_IDLE`, `JEEP_MOVE`,
     `LARA_AUTOS`, `LARA_BAREFOOT`, `LARA_BAREFOOT_LAND`, `LARA_BODYSL`,
     `LARA_BREATH`, `LARA_BUBBLES`, `LARA_BULLETHIT`, `LARA_CLIMB_3`,
-    `LARA_DESERT_EAGLE`, `LARA_DRAW`, `LARA_EMPTY`, `LARA_FALL`,
-    `LARA_FALL_DEATH`, `LARA_FLARE_BURN`, `LARA_FLARE_IGNITE`,
+    `LARA_CROSSBOW`, `LARA_DESERT_EAGLE`, `LARA_DRAW`, `LARA_EMPTY`,
+    `LARA_FALL`, `LARA_FALL_DEATH`, `LARA_FLARE_BURN`, `LARA_FLARE_IGNITE`,
     `LARA_FLESH_WOUND`, `LARA_FOOTSTEP`, `LARA_GENERAL_DEATH`, `LARA_GET_OUT`,
     `LARA_HOLSTER`, `LARA_INJURY`, `LARA_KEY`, `LARA_LAND`, `LARA_MAGNUMS`,
     `LARA_NO`, `LARA_PISTOLS`, `LARA_POLE_LOOP`, `LARA_RELOAD`, `LARA_RICOCHET`,

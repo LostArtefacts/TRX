@@ -893,6 +893,7 @@
         "harpoon_bolt",
         "grenade",
         "rocket",
+        "crossbow_bolt",
     ],
     "pushable": [
         "movable_block_1",

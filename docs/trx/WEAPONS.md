@@ -103,7 +103,7 @@ The keys a weapon states on its own:
   <tr valign="top">
     <td><code>fire</code></td>
     <td>String</td>
-    <td>What the weapon does when fired: <code>generic</code>, <code>m16</code>, <code>grenade</code>, <code>rocket</code> or <code>harpoon</code>. A script may provide a function instead.</td>
+    <td>What the weapon does when fired: <code>generic</code>, <code>m16</code>, <code>crossbow</code>, <code>grenade</code>, <code>rocket</code> or <code>harpoon</code>. A script may provide a function instead.</td>
   </tr>
   <tr valign="top">
     <td><code>is_available</code></td>

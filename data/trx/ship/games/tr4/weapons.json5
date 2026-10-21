@@ -397,7 +397,7 @@
         "gun_height": 500,
         "is_remembered": true,
         "wants_combat_camera": true,
-        "fire": "generic",
+        "fire": "crossbow",
         "objects": {
             "pickup": "crossbow_item",
             "ammo": "crossbow_ammo_1_item",
@@ -442,7 +442,7 @@
             "count": 24,
         },
         "sound": {
-            "fire": "",
+            "fire": "lara_crossbow",
         },
         "stow": {
             "place": "back",
