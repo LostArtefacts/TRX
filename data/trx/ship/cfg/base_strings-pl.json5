@@ -4,6 +4,8 @@
     "language_name": "Polski",
     "general": {
         "actions": {
+            "action": "\\{review}Akcja",
+            "ammo": "\\{review}Amunicja",
             "cancel": "\\{review}Anuluj",
             "choose_ammo": "\\{review}Wybierz amunicję",
             "combine_item": "\\{review}Połącz",
@@ -11,8 +13,10 @@
             "hide_dialog": "Ukryj dialog",
             "reset_defaults": "Zresetuj układ",
             "rotate": "Obróć",
+            "separate_item": "\\{review}Rozdziel",
             "unbind": "Usuń przypisanie",
             "use_item": "Użyj",
+            "weapon_options": "\\{review}Opcje",
         },
         "ammo": {
             "count_fmt": "\\{review}%d x %s",

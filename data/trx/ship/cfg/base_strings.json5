@@ -4,6 +4,8 @@
     "language_name": "English",
     "general": {
         "actions": {
+            "action": "Action",
+            "ammo": "Ammo",
             "cancel": "Cancel",
             "choose_ammo": "Choose ammo",
             "combine_item": "Combine",
@@ -11,8 +13,10 @@
             "hide_dialog": "Hide dialog",
             "reset_defaults": "Reset All",
             "rotate": "Rotate",
+            "separate_item": "Separate",
             "unbind": "Unbind",
             "use_item": "Use",
+            "weapon_options": "Options",
         },
         "ammo": {
             "count_fmt": "%d x %s",

@@ -110,7 +110,7 @@ test("a model in a world of its own draws with its camera and pose", function()
   assert(
     found
       == "world_model obj=5 mask=3 lit=1 lights=1 steps=2 fov=14560 kinds=TM "
-        .. "frame=0 next=0 blend=0.00 bones= pivot=0",
+        .. "frame=0 next=0 blend=0.00 bones= pivot=0 opacity=1.00",
     tostring(found)
   )
 end)
@@ -143,7 +143,7 @@ test("a model in a world of its own takes a frame and bone turns", function()
   assert(
     found ~= nil
       and found:match(
-        " kinds=MS frame=3 next=4 blend=0.25 bones=0:0,100,0;3:0,0,%-5 pivot=1$"
+        " kinds=MS frame=3 next=4 blend=0.25 bones=0:0,100,0;3:0,0,%-5 pivot=1 opacity=1.00$"
       ),
     tostring(found)
   )

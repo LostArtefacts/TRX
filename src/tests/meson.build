@@ -2370,7 +2370,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'modules/ui/ring/ammo',
+  'name': 'modules/ui/ring/weapon',
   'bundles': [
     b_lua_surface,
     b_lua_math,

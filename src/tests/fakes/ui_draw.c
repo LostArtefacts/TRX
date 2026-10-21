@@ -250,11 +250,11 @@ void UI_ScheduleDrawModelInWorld(
     }
     FakeUIDraw_Record(String_FormatStatic(
         "world_model obj=%d mask=%u lit=%u lights=%d steps=%d fov=%d kinds=%s "
-        "frame=%d next=%d blend=%.2f bones=%s pivot=%d",
+        "frame=%d next=%d blend=%.2f bones=%s pivot=%d opacity=%.2f",
         (int32_t)object_id, mesh_mask, light != nullptr ? light->lit_mask : 0,
         light != nullptr ? light->light_count : 0, world->step_count,
         world->fov, kinds, world->frame, world->next_frame, world->blend, bones,
-        world->at_pivot ? 1 : 0));
+        world->at_pivot ? 1 : 0, world->opacity));
 }
 
 void UI_ScheduleDrawDarken(const float opacity)

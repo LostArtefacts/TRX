@@ -4,6 +4,8 @@
     "language_name": "Русский",
     "general": {
         "actions": {
+            "action": "\\{review}Действие",
+            "ammo": "\\{review}Патроны",
             "cancel": "\\{review}Отмена",
             "choose_ammo": "\\{review}Выбрать патроны",
             "combine_item": "\\{review}Соединить",
@@ -11,8 +13,10 @@
             "hide_dialog": "Скрыть диалог",
             "reset_defaults": "Сброс",
             "rotate": "Повернуть",
+            "separate_item": "\\{review}Разъединить",
             "unbind": "Очистить",
             "use_item": "Использовать",
+            "weapon_options": "\\{review}Опции",
         },
         "ammo": {
             "count_fmt": "\\{review}%d x %s",
