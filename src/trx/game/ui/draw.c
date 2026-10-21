@@ -894,16 +894,15 @@ void UI_ScheduleDrawModelInWorld(
         mesh_world.bones[i].axes = world->bones[i].axes;
         mesh_world.bones[i].rot = world->bones[i].rot;
     }
-    M_SCHEDULE_OP(
-        M_DrawOp_Model,
-        ((M_DRAW_OP_MODEL) {
-            .object_id = object_id,
-            .mesh_mask = mesh_mask,
-            .has_light = light != nullptr,
-            .light = M_CopyLight(light),
-            .has_world = true,
-            .world = mesh_world,
-        }));
+    const M_DRAW_OP_MODEL op = {
+        .object_id = object_id,
+        .mesh_mask = mesh_mask,
+        .has_light = light != nullptr,
+        .light = M_CopyLight(light),
+        .has_world = true,
+        .world = mesh_world,
+    };
+    M_ScheduleBackdropOp(M_DrawOp_Model, sizeof(op), &op.base);
 }
 
 void UI_ScheduleDrawBackground(
@@ -942,7 +941,8 @@ void UI_ScheduleDrawBackdrop(
 
 void UI_ScheduleDrawDarken(const float opacity)
 {
-    M_SCHEDULE_OP(M_DrawOp_Darken, ((M_DRAW_OP_DARKEN) { .opacity = opacity }));
+    const M_DRAW_OP_DARKEN op = { .opacity = opacity };
+    M_ScheduleBackdropOp(M_DrawOp_Darken, sizeof(op), &op.base);
 }
 
 void UI_ScheduleDrawSnapshotSlot(const int32_t slot, const float opacity)
