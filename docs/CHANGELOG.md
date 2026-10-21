@@ -199,6 +199,7 @@
 - Added the laser sight, which combines with the revolver and the crossbow, and gives a zoomed view to aim and fire through, which the look key opens and closes; holding the key instead, as in the original game, is optional (Gameplay → Controls → Laser sight toggle) (TRX481)
 - Added crossbow bolts that fly through the air and break against walls, as in the original game, rather than hitting at once (TRX1823)
 - Added poison crossbow bolts, which slowly drain the health of the enemies they hit (TRX1824)
+- Added explosive crossbow bolts, which blow up where they land (TRX1825)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
