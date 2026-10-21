@@ -17,6 +17,7 @@
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
+#include <trx/gl/renderer.h>
 #include <trx/version.h>
 
 #include <math.h>
@@ -503,6 +504,7 @@ static void M_DrawOp_Background(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_BACKGROUND *const op = (const M_DRAW_OP_BACKGROUND *)base;
     SceneCompositor_Flush();
+    const bool own_target = TRX_GL_Renderer_BeginUiScenePass();
     if (op->path == nullptr) {
         Output_Overlay_DrawBlackRectangle(1.0f);
     } else {
@@ -514,14 +516,21 @@ static void M_DrawOp_Background(const M_DRAW_OP *const base)
         Output_Overlay_DrawBlackRectangle(op->dim);
     }
     SceneCompositor_Flush();
+    if (own_target) {
+        TRX_GL_Renderer_EndUiScenePass();
+    }
 }
 
 static void M_DrawOp_Backdrop(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_BACKDROP *const op = (const M_DRAW_OP_BACKDROP *)base;
     SceneCompositor_Flush();
+    const bool own_target = TRX_GL_Renderer_BeginUiScenePass();
     Output_Overlay_DrawBackground(op->style, op->progress, op->path);
     SceneCompositor_Flush();
+    if (own_target) {
+        TRX_GL_Renderer_EndUiScenePass();
+    }
 }
 
 // Allocate a new deferred draw operation in the arena.

@@ -42,13 +42,14 @@ typedef struct {
     // Whether resolve_fbo already holds this frame's scene.
     bool scene_resolved;
 
-    // A model in a world of its own is rasterized here, at the size and with
-    // the samples of the geometry framebuffer, when the scene is upscaled. It
-    // is brought down to the scene resolution in model_resolve_fbo and then
-    // stretched onto the UI framebuffer the way the scene is stretched onto
-    // the window. Only allocated while the scene is upscaled.
-    TRX_GL_FBO model_fbo;
-    TRX_GL_FBO model_resolve_fbo;
+    // A model in a world of its own or a backdrop is rasterized here, at the
+    // size and with the samples of the geometry framebuffer, when the scene is
+    // upscaled. It is brought down to the scene resolution in
+    // ui_scene_resolve_fbo and then stretched onto the UI framebuffer the way
+    // the scene is stretched onto the window. Only allocated while the scene
+    // is upscaled.
+    TRX_GL_FBO ui_scene_fbo;
+    TRX_GL_FBO ui_scene_resolve_fbo;
 
     // Full-screen quad resources for blitting FBOs to default framebuffer.
     TRX_GL_VERTEX_ARRAY vertex_array;
@@ -182,9 +183,9 @@ static void M_UpdateFBOSizes(TRX_GL_RENDERER *renderer)
     TRX_GL_FBO_ResizeIfNeeded(
         &p->ui_fbo, rect.width, rect.height, M_GetUiSamples(p));
 
-    if (!M_IsSceneUpscaled() && p->model_fbo.fbo != 0) {
-        TRX_GL_FBO_Close(&p->model_fbo);
-        TRX_GL_FBO_Close(&p->model_resolve_fbo);
+    if (!M_IsSceneUpscaled() && p->ui_scene_fbo.fbo != 0) {
+        TRX_GL_FBO_Close(&p->ui_scene_fbo);
+        TRX_GL_FBO_Close(&p->ui_scene_resolve_fbo);
     }
 }
 
@@ -377,8 +378,8 @@ static void M_Shutdown(TRX_GL_RENDERER *renderer)
     TRX_GL_FBO_Close(&p->ui_fbo);
     TRX_GL_FBO_Close(&p->resolve_fbo);
     TRX_GL_FBO_Close(&p->ui_resolve_fbo);
-    TRX_GL_FBO_Close(&p->model_fbo);
-    TRX_GL_FBO_Close(&p->model_resolve_fbo);
+    TRX_GL_FBO_Close(&p->ui_scene_fbo);
+    TRX_GL_FBO_Close(&p->ui_scene_resolve_fbo);
     if (p->composite_fbo != 0) {
         glDeleteFramebuffers(1, &p->composite_fbo);
         p->composite_fbo = 0;
@@ -510,7 +511,7 @@ void TRX_GL_Renderer_SetPaletteLut(const void *const rgba, const int32_t size)
     }
 }
 
-bool TRX_GL_Renderer_BeginUiWorldModel(void)
+bool TRX_GL_Renderer_BeginUiScenePass(void)
 {
     M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
     if (!M_IsSceneUpscaled()) {
@@ -524,16 +525,16 @@ bool TRX_GL_Renderer_BeginUiWorldModel(void)
 
     const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
     const int32_t samples = M_GetGeometrySamples(p);
-    if (p->model_fbo.fbo == 0) {
+    if (p->ui_scene_fbo.fbo == 0) {
         TRX_GL_FBO_Init(
-            &p->model_fbo, game.width, game.height, samples, GL_RGBA8, GL_RGBA,
-            true);
+            &p->ui_scene_fbo, game.width, game.height, samples, GL_RGBA8,
+            GL_RGBA, true);
     } else {
         TRX_GL_FBO_ResizeIfNeeded(
-            &p->model_fbo, game.width, game.height, samples);
+            &p->ui_scene_fbo, game.width, game.height, samples);
     }
 
-    TRX_GL_FBO_Bind(&p->model_fbo);
+    TRX_GL_FBO_Bind(&p->ui_scene_fbo);
     glViewport(0, 0, game.width, game.height);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -541,33 +542,33 @@ bool TRX_GL_Renderer_BeginUiWorldModel(void)
     return true;
 }
 
-void TRX_GL_Renderer_EndUiWorldModel(void)
+void TRX_GL_Renderer_EndUiScenePass(void)
 {
     M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
     const VIEWPORT_RECT scene = Viewport_GetRect(VIEWPORT_SCENE);
     const int32_t factor =
-        scene.width > 0 ? p->model_fbo.width / scene.width : 1;
+        scene.width > 0 ? p->ui_scene_fbo.width / scene.width : 1;
 
-    const TRX_GL_FBO *source = &p->model_fbo;
-    if (factor > 1 || p->model_fbo.samples > 1) {
-        if (p->model_resolve_fbo.fbo == 0) {
+    const TRX_GL_FBO *source = &p->ui_scene_fbo;
+    if (factor > 1 || p->ui_scene_fbo.samples > 1) {
+        if (p->ui_scene_resolve_fbo.fbo == 0) {
             TRX_GL_FBO_Init(
-                &p->model_resolve_fbo, scene.width, scene.height, 1, GL_RGBA8,
-                GL_RGBA, false);
+                &p->ui_scene_resolve_fbo, scene.width, scene.height, 1,
+                GL_RGBA8, GL_RGBA, false);
         } else {
             TRX_GL_FBO_ResizeIfNeeded(
-                &p->model_resolve_fbo, scene.width, scene.height, 1);
+                &p->ui_scene_resolve_fbo, scene.width, scene.height, 1);
         }
-        if (p->model_fbo.samples > 1) {
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, p->model_fbo.fbo);
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p->model_resolve_fbo.fbo);
+        if (p->ui_scene_fbo.samples > 1) {
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, p->ui_scene_fbo.fbo);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p->ui_scene_resolve_fbo.fbo);
             glBlitFramebuffer(
                 0, 0, scene.width, scene.height, 0, 0, scene.width,
                 scene.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
             TRX_GL_CheckError();
         } else {
             M_BindQuadState(p);
-            TRX_GL_FBO_Bind(&p->model_resolve_fbo);
+            TRX_GL_FBO_Bind(&p->ui_scene_resolve_fbo);
             glViewport(0, 0, scene.width, scene.height);
             TRX_GL_Sampler_Parameteri(
                 &p->sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -577,10 +578,10 @@ void TRX_GL_Renderer_EndUiWorldModel(void)
             TRX_GL_Program_Uniform1i(
                 &p->program, p->loc_dither_mode, DITHER_MODE_DISABLED);
             TRX_GL_Program_Uniform1i(&p->program, p->loc_palette_lut_size, 0);
-            M_Blit(p, &p->model_fbo);
+            M_Blit(p, &p->ui_scene_fbo);
             TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, 1);
         }
-        source = &p->model_resolve_fbo;
+        source = &p->ui_scene_resolve_fbo;
     }
 
     const GLuint filter = p->config->display_filter == TEXTURE_FILTER_BILINEAR
