@@ -19,6 +19,10 @@ local SPIN_BACK_MAX = 16384
 local BRIGHT_PICKED = 160
 local BRIGHT_REST = 32
 local BRIGHT_STEP = 16
+-- How bright an entry of a fixed row is drawn. The original sets it at once,
+-- with no steps.
+local FIXED_BRIGHT_PICKED = 127
+local FIXED_BRIGHT_REST = 47
 -- How long the row takes to fade in or out as a whole.
 local FADE_TICKS = 4
 -- The original's field of view, and the share of the screen's height that
@@ -118,7 +122,7 @@ function M.new(list, row, opts)
   for i in ipairs(list) do
     self.anims[i] = {
       yrot = stepped(0),
-      bright = stepped(BRIGHT_REST),
+      bright = stepped(self.fixed and FIXED_BRIGHT_REST or BRIGHT_REST),
     }
   end
   return self
@@ -214,7 +218,9 @@ function Strip:tick()
     step_angle(anim.yrot, yrot)
 
     local bright = anim.bright.now
-    if i == picked then
+    if self.fixed then
+      bright = i == picked and FIXED_BRIGHT_PICKED or FIXED_BRIGHT_REST
+    elseif i == picked then
       bright = math.min(bright + BRIGHT_STEP, BRIGHT_PICKED)
     else
       bright = math.max(bright - BRIGHT_STEP, BRIGHT_REST)
