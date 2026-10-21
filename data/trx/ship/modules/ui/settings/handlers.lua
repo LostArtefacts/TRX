@@ -280,6 +280,11 @@ local HANDLERS = {
     end,
   },
   ["gameplay.fix_flare_throw_priority"] = { available = flare },
+  ["window.is_borderless"] = {
+    visible = function()
+      return get("window.is_fullscreen")
+    end,
+  },
   ["gameplay.fix_m16_accuracy"] = { available = machine_gun },
   ["gameplay.m16_aim_mode"] = { available = machine_gun },
   ["gameplay.fix_wade_sprint"] = {

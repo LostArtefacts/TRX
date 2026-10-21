@@ -32,6 +32,7 @@
 - Added splashes where rain hits the ground or the water (Graphic Options → Visuals → Rain splashes) (#6838 / TRX1726)
 - Added an option to leave the previous frame on screen where nothing is drawn, as the PC releases did, which some levels such as Thames Wharf use for effects (Graphic Options → Rendering → Hall of mirrors) (TRX1814)
 - Added the PlayStation blending of faces such as water surfaces, glass and the snowmobile windshield to TR1 and TR2 (Graphic Options → Rendering → PlayStation blending)
+- Added an option to fill the screen with a borderless window, so that other windows and overlays can stay on top of the game (Graphic Options → Rendering → Borderless fullscreen) (#6968)
 - Improved the frame rate, as the game now draws solid surfaces faster
 - Changed rain to fall as far as the fog reaches, rather than only near Lara
 - Changed gun and flare flashes in TR1 and TR2 to turn semi-transparent with PlayStation blending rather than with gun glow

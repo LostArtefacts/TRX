@@ -2175,6 +2175,10 @@
             "title": "\\{review}Wasserfärbung",
             "description": "\\{review}Wie viel von Lara die Wasserfarbe annimmt, während sie im Wasser ist. Ganz färbt sie vollständig, wie in TR1 und TR2. Pro Mesh färbt jedes Mesh danach, wo es sitzt, wie in TR3 und TR4. Reaktiv schneidet sie an der Wasseroberfläche, sodass nur der Teil unter Wasser die Farbe annimmt.",
         },
+        "window.is_borderless": {
+            "title": "\\{review}Randloser Vollbildmodus",
+            "description": "\\{review}Füllt den Bildschirm mit einem Fenster ohne Rahmen, sodass andere Fenster und Overlays über dem Spiel bleiben können.",
+        },
         "window.is_fullscreen": {
             "title": "\\{review}Vollbild",
             "description": "\\{review}Füllt den Bildschirm aus oder läuft im Fenster.",

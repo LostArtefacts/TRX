@@ -2175,6 +2175,10 @@
             "title": "\\{review}Zabarwienie wodą",
             "description": "\\{review}Jak duża część Lary przyjmuje kolor wody, gdy jest ona w wodzie. Cała barwi ją w całości, jak w TR1 i TR2. Na siatkę barwi każdą siatkę wedle jej położenia, jak w TR3 i TR4. Reaktywna tnie ją na powierzchni wody, więc kolor przyjmuje tylko to, co jest pod wodą.",
         },
+        "window.is_borderless": {
+            "title": "\\{review}Pełny ekran bez ramki",
+            "description": "\\{review}Wypełnia ekran oknem bez ramki, dzięki czemu inne okna i nakładki mogą pozostać nad grą.",
+        },
         "window.is_fullscreen": {
             "title": "\\{review}Pełny ekran",
             "description": "\\{review}Wypełnia ekran lub działa w oknie.",

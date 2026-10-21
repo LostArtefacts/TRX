@@ -296,6 +296,7 @@ local TABS = {
   },
   graphic_rendering = {
     "window.is_fullscreen",
+    "window.is_borderless",
 
     "rendering.fps",
     "rendering.enable_trapezoid_filter",
