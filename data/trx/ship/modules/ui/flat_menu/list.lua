@@ -4,6 +4,7 @@
 -- screen. A list longer than that room scrolls, and the selection wraps
 -- around where the player asks for it.
 
+local arrows = require("common.ui.flat_menu.arrows")
 local scroll = require("common.ui.scroll")
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
 
@@ -143,6 +144,12 @@ function List:paint()
   for i = first, math.min(first + shown - 1, #self.rows) do
     local color = i == self.selected and COLOR_PICKED or COLOR_OTHER
     centred(colored(color, self.rows[i].text), y + step * (i - first))
+  end
+  if shown > 0 and first > 1 then
+    arrows.beside(arrows.UP, y)
+  end
+  if shown > 0 and first + shown - 1 < #self.rows then
+    arrows.beside(arrows.DOWN, y + step * (shown - 1))
   end
 end
 

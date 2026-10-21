@@ -3,6 +3,7 @@
 -- save and the level it was made in. The quick saves come first, as the
 -- passport lists them, and can be loaded but not saved over.
 
+local arrows = require("common.ui.flat_menu.arrows")
 local pages = require("common.ui.screens.passport.pages")
 local sound = require("common.ui.flat_menu.sound").play
 local scroll = require("common.ui.scroll")
@@ -143,10 +144,14 @@ function M.push(ctx, kind, on_done)
   end
 
   -- How many rows show at once: as many as fit between the first row and the
-  -- foot of the safe area.
+  -- foot of the safe area. A list that does not fit gives its last line to
+  -- the arrow that says it goes on.
   local function visible()
     local safe = trx.ui.safe_area
     local fit = math.floor((safe.y + safe.height - top()) / line())
+    if count > fit then
+      fit = fit - 1
+    end
     return math.max(1, math.min(count, fit))
   end
 
@@ -195,6 +200,12 @@ function M.push(ctx, kind, on_done)
         local number_w = primitive.measure_text(row.number .. " ", TEXT_SCALE)
         name_x = math.max(name_x, number_x + number_w)
       end
+    end
+    if state.first > 1 then
+      arrows.centred(arrows.UP, top() - height)
+    end
+    if state.first + #state.rows - 1 < count then
+      arrows.centred(arrows.DOWN, top() + height * #state.rows)
     end
     for i, row in ipairs(state.rows) do
       local y = top() + height * (i - 1)
