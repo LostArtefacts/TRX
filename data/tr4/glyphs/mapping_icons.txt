@@ -1,10 +1,10 @@
 # --------------------------------------------------
 # Icons
 # --------------------------------------------------
-"\\{button down}"     0 I grid_sprite("buttons.png", 0, 1, index=106)
-"\\{button up}"       0 I grid_sprite("buttons.png", 1, 1, index=107)
-"\\{button left}"     0 I grid_sprite("buttons.png", 2, 1, index=108)
-"\\{button right}"    0 I grid_sprite("buttons.png", 3, 1, index=109)
+"\\{button down}"     0 I image("arrow_down.png", 0, -9, 17, 0, index=106) stretch()
+"\\{button up}"       0 I image("arrow_up.png", 0, -9, 16, 0, index=107) stretch()
+"\\{button left}"     0 I image("arrow_left.png", 0, -10, 11, 2, index=108) stretch()
+"\\{button right}"    0 I image("arrow_right.png", 0, -10, 11, 2, index=109) stretch()
 "\\{button triangle}" 0 I grid_sprite("buttons.png", 0, 2, index=93)
 "\\{button circle}"   0 I grid_sprite("buttons.png", 1, 2, index=94)
 "\\{button x}"        0 I grid_sprite("buttons.png", 2, 2, index=95)
@@ -19,6 +19,6 @@
 "\\{ammo shotgun}"    0 I grid_sprite("buttons.png", 7, 1, index=103)
 "\\{ammo magnums}"    0 I grid_sprite("buttons.png", 8, 1, index=104)
 "\\{ammo uzis}"       0 I grid_sprite("buttons.png", 9, 1, index=105)
-"\\{arrow up}"        0 I grid_sprite("buttons.png", 8, 2, index=80)
-"\\{arrow down}"      0 I grid_sprite("buttons.png", 9, 2, index=81) translate(y=-2)
+"\\{arrow up}"        0 I image("arrow_up.png", 0, -9, 16, 0, index=80) stretch()
+"\\{arrow down}"      0 I image("arrow_down.png", 0, -9, 17, 0, index=81) stretch()
 "\\{review}"          0 R grid_sprite("buttons.png", 7, 2)

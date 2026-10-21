@@ -60,7 +60,7 @@
 - Changed the inventory and pause screens in TR4 to no longer fade in and out by default, as in the original game (Graphic Options → UI)
 - Changed the TR4 inventory to open on the item it was left on by default, and to keep that item in saved games, as in the original game (Gameplay → General → Remember inventory position) (TRX1843)
 - Changed the names of the items in the TR4 inventory to show in gold, as in the original game
-- Changed the TR4 font to be taller, as in the original game (TRX1845)
+- Changed the TR4 font and arrows to look as in the original game (TRX1845)
 - Changed the texts of the examined items in TR4 to show in the colours of the original game (TRX484)
 - Changed the examine screen to show its hide dialog prompt where the rotate prompt shows, and to no longer repeat the name of the item over its description
 - Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
