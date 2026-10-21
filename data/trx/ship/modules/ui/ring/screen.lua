@@ -1139,7 +1139,7 @@ local function run(state)
       state.passport_open = true
     end
     offer(state)
-    if state.screen ~= nil and trx.game.is_leaving then
+    if state.screen ~= nil and trx.game.is_leaving and not state.exiting then
       state.chosen = state.list[view.current].object
       keep_place(state)
       local screen = state.screen
