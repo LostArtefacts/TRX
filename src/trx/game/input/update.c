@@ -56,6 +56,16 @@ static void M_UpdateTargetChange(void)
     const TARGET_CHANGE_MODE mode = g_Config.gameplay.target_change_mode;
     const bool is_ready = Lara_GetLaraInfo()->gun_status == LGS_READY;
 
+    // The laser sight view holds no target, so look closes it at once. The
+    // press that closes it counts as held, so that letting go of it does not
+    // change target.
+    if (Camera_Binoculars_IsLaserSight()) {
+        g_Input.change_target = 0;
+        m_LookFrames = 0;
+        m_IsLookHeld = g_Input.look;
+        return;
+    }
+
     if (mode != TARGET_CHANGE_MODE_TR4 || !is_ready) {
         m_LookFrames = 0;
         m_IsLookHeld = false;

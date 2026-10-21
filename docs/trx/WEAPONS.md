@@ -250,6 +250,11 @@ most, loose or on a weapon.
     <td>Integer</td>
     <td>The meshes that the inventory draws the weapon with while the weapon carries the attachment, one bit each.</td>
   </tr>
+  <tr valign="top">
+    <td><code>fire_delay</code></td>
+    <td>Integer</td>
+    <td>The ticks between two shots through the laser sight view, which a weapon with an attachment opens while the player holds the look key.</td>
+  </tr>
 </table>
 
 ### `aim`

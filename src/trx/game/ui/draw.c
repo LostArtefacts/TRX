@@ -999,6 +999,6 @@ void UI_Draw(void)
 void UI_DrawBinocularMask(void)
 {
     if (Game_IsPlaying() && Camera_Binoculars_IsActive()) {
-        OutputSource_UI_StageBinocularMask();
+        OutputSource_UI_StageBinocularMask(Camera_Binoculars_IsLaserSight());
     }
 }

@@ -68,6 +68,7 @@ local TABS = {
     "input.quick_guns_mode",
     "gameplay.enable_underwater_auto_draw",
     "gameplay.look_mode",
+    "gameplay.enable_laser_sight_toggle",
     "gameplay.enable_manual_camera",
     "gameplay.idle_pose_timeout",
     "gameplay.enable_idle_pose_camera",

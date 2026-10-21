@@ -1271,6 +1271,10 @@
             "title": "Enable killer pushblocks",
             "description": "If enabled, when a pushblock falls from the air and lands on Lara, it will kill her outright. Otherwise, Lara will clip on top of the block and survive.",
         },
+        "gameplay.enable_laser_sight_toggle": {
+            "title": "Laser sight toggle",
+            "description": "Makes the look key open the laser sight view and close it again on the next press. If disabled, the look key has to be held down to keep the view open, as in the original game.",
+        },
         "gameplay.enable_lean_jumping": {
             "title": "Lean jumping",
             "description": "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed (TR2+ style). In the original TR1 she creeps forwards whatever the input, and far more slowly.",

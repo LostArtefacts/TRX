@@ -1271,6 +1271,10 @@
             "title": "Cleachd blocaichean putadh marbhach",
             "description": "Ma tha seo comasach, nuair a thuiteas bloc putadh bhon adhar air Lara, cuiridh e i gu bàs i. Mur nach eil, theid Lara troimh a' bhloc.",
         },
+        "gameplay.enable_laser_sight_toggle": {
+            "title": "\\{review}Toglaich sealladair laser",
+            "description": "\\{review}Fosglaidh iuchair an t-seallaidh sealladh an t-sealladair laser agus dùinidh i e leis an ath bhrùthadh. Ma tha seo dheth, feumar an iuchair a chumail sìos gus an sealladh a chumail fosgailte, mar a bha sa gheama thùsail.",
+        },
         "gameplay.enable_lean_jumping": {
             "title": "Leum le claonadh",
             "description": "Leigidh Lara sleamhnachadh beagan air adhart/air ais le leum neodrach ma bhithear a' cumail iuchair stiùiridh. Tha seo ann bho TR2 a-mach; san TR1 thùsail gluaisidh i air adhart co-dhiù, ge b' e dè an iuchair, ach fada nas slaodaiche.",

@@ -1271,6 +1271,10 @@
             "title": "Blocchi mobili letali",
             "description": "Se abilitato, quando un blocco mobile cade e atterra su Lara, lei morirà all'istante. Se disabilitato, Lara si sposterà sopra il blocco e rimarrà illesa.",
         },
+        "gameplay.enable_laser_sight_toggle": {
+            "title": "\\{review}Mirino laser a commutazione",
+            "description": "\\{review}Il tasto per guardare apre la vista del mirino laser e la chiude alla pressione successiva. Se disattivato, il tasto va tenuto premuto per mantenere la vista aperta, come nel gioco originale.",
+        },
         "gameplay.enable_lean_jumping": {
             "title": "Salti inclinati",
             "description": "Permette a Lara di spostarsi leggermente in avanti o indietro, tenendo premuto il relativo tasto, quando esegue salti sul posto (come in TR2+). Nella versione originale di TR1, Lara si sposta in avanti qualunque sia il tasto premuto, ma in modo molto più lento.",

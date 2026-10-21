@@ -4,11 +4,18 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
+#include <trx/game/fx/laser_sight.h>
+#include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/laser_sight.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/input.h>
+#include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/stats.h>
 #include <trx/game/viewport.h>
 
 #define M_MIN_RANGE 128
@@ -22,6 +29,9 @@
 #define M_MAX_HEAD_ROT_X 5460
 #define M_HEAD_TURN 364
 #define M_TARGET_DIST 20736
+// How many ticks the look key stays held with a weapon ready before the
+// laser sight view opens. A shorter press is the original's target switch.
+#define M_LASER_SIGHT_HOLD_TICKS 6
 #define M_TORCH_BRIGHTNESS 192
 #define M_TORCH_STEPS 32
 #define M_FOR_EACH_EXIT_INPUT(X)                                               \
@@ -30,12 +40,22 @@
     X(Option, option)
 
 static bool m_Active = false;
+// Whether the view is the laser sight's rather than the binoculars'.
+static bool m_LaserSight = false;
+// Whether the laser sight fires on the next update, and how many ticks it
+// waits before it can fire again.
+static bool m_FirePending = false;
+static int32_t m_FireDelay = 0;
+static int32_t m_LookHeldTicks = 0;
 static bool m_Pending = false;
 static bool m_JustEntered = false;
 static bool m_TorchActive = false;
 // Holds the torch off while the action key that was held as the binoculars
 // came up stays held, such as the key that chose them in the inventory.
 static bool m_TorchHeldOff = false;
+// Holds the zoom off while a zoom key that was held as the laser sight view
+// opened stays held, such as the crouch key that keeps Lara crouched.
+static bool m_ZoomHeldOff = false;
 #define M_DECLARE_SUPPRESS_FLAG(name, field)                                   \
     static bool m_Suppress##name = false;
 M_FOR_EACH_EXIT_INPUT(M_DECLARE_SUPPRESS_FLAG)
@@ -53,6 +73,23 @@ static bool M_CanEnter(void)
         && lara_info->water_status == LWS_ABOVE_WATER
         && Lara_Vehicle_GetItem() == nullptr
         && lara_item->current_anim_state == LS(LS_STOP)
+        && g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_PHOTO_MODE;
+}
+
+// Whether Lara can look through the laser sight of the weapon she holds:
+// she holds it ready, the weapon carries its attachment, and she stands or
+// crouches still. The original refuses while the crouch key is held, and the
+// view instead holds off the zoom until that key is let go.
+static bool M_CanEnterLaserSight(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    return lara_item->hit_points > 0 && lara_info->gun_status == LGS_READY
+        && Inv_HasAttachment(lara_info->gun_type)
+        && lara_info->water_status == LWS_ABOVE_WATER
+        && Lara_Vehicle_GetItem() == nullptr
+        && (lara_item->current_anim_state == LS(LS_STOP)
+            || lara_item->current_anim_state == LS(LS_CROUCH_IDLE))
         && g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_PHOTO_MODE;
 }
 
@@ -79,6 +116,22 @@ static void M_RefuseRequest(void)
         && !lara->extra_anim) {
         Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_ALWAYS);
     }
+}
+
+// The look key closes the laser sight view as it is pressed again where the
+// view toggles, and as it is let go otherwise, as in the original.
+static bool M_ShouldExitLaserSight(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const bool look_closes = g_Config.gameplay.enable_laser_sight_toggle
+        ? g_InputDB.look
+        : !g_Input.look;
+    return look_closes || g_Input.option || g_Input.save || g_Input.load
+        || g_InputDB.quick_save || g_InputDB.quick_load
+        || lara_item->hit_points <= 0 || Lara_Vehicle_GetItem() != nullptr
+        || lara_info->gun_status != LGS_READY
+        || !Inv_HasAttachment(lara_info->gun_type);
 }
 
 static bool M_ShouldExit(void)
@@ -124,6 +177,10 @@ static void M_HandleLookInput(void)
 
 static void M_HandleZoomInput(void)
 {
+    if (m_ZoomHeldOff) {
+        m_ZoomHeldOff = g_Input.sprint || g_Input.crouch;
+        return;
+    }
     const int32_t step = g_Input.slow ? M_ZOOM_STEP_SLOW : M_ZOOM_STEP;
     if (g_Input.sprint) {
         m_Range -= step;
@@ -216,12 +273,54 @@ static void M_SuppressExitInputs(void)
 #undef M_SUPPRESS_EXIT_INPUT
 }
 
+// Fires the weapon through the laser sight while ACTION is held, as often as
+// the attachment allows and while the weapon has rounds left.
+static void M_HandleLaserSightFire(void)
+{
+    if (m_FireDelay > 0) {
+        m_FireDelay--;
+    }
+    const LARA_GUN_TYPE gun_type = Lara_GetLaraInfo()->gun_type;
+    if (!g_Input.action || m_FireDelay > 0 || !Gun_HasRoundsLeft(gun_type)) {
+        return;
+    }
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(gun_type);
+    m_FireDelay = weapon->attachment.fire_delay;
+    m_FirePending = true;
+    for (int32_t i = 0; i < Gun_GetRoundsPerShot(gun_type); i++) {
+        Gun_SpendRound(gun_type);
+    }
+    Stats_AddAmmoUsed();
+    Sound_Effect(weapon->sample_num, nullptr, SPM_NORMAL);
+}
+
+static void M_EnterLaserSight(void)
+{
+    m_LookHeldTicks = 0;
+    m_OriginalCamera = g_Camera;
+    m_OriginalFOV = Viewport_GetEffectiveFOV();
+    m_OriginalFOVMode = Viewport_GetFOVMode();
+    m_Range = M_MIN_RANGE;
+    m_TorchActive = false;
+    m_FirePending = false;
+    m_FireDelay = 0;
+    m_ZoomHeldOff = g_Input.sprint || g_Input.crouch;
+    m_JustEntered = true;
+    m_Active = true;
+    m_LaserSight = true;
+    g_Camera.type = CAM_BINOCULARS;
+}
+
 void Camera_Binoculars_Reset(void)
 {
     m_Active = false;
+    m_LaserSight = false;
+    m_FirePending = false;
+    m_FireDelay = 0;
     m_Pending = false;
     m_TorchActive = false;
     m_TorchHeldOff = false;
+    m_ZoomHeldOff = false;
 #define M_RESET_SUPPRESS_FLAG(name, field) m_Suppress##name = false;
     M_FOR_EACH_EXIT_INPUT(M_RESET_SUPPRESS_FLAG)
 #undef M_RESET_SUPPRESS_FLAG
@@ -244,7 +343,34 @@ void Camera_Binoculars_Control(void)
             } else {
                 M_RefuseRequest();
             }
+        } else if (g_Input.look && M_CanEnterLaserSight()) {
+            m_LookHeldTicks++;
+            if (m_LookHeldTicks >= M_LASER_SIGHT_HOLD_TICKS) {
+                M_EnterLaserSight();
+                g_Input = (INPUT_STATE) {};
+                g_InputDB = (INPUT_STATE) {};
+            }
+        } else {
+            m_LookHeldTicks = 0;
         }
+        return;
+    }
+
+    if (m_LaserSight) {
+        if (M_ShouldExitLaserSight()) {
+            Camera_Binoculars_Exit();
+#define M_CAPTURE_EXIT_INPUT(name, field) m_Suppress##name = g_Input.field;
+            M_FOR_EACH_EXIT_INPUT(M_CAPTURE_EXIT_INPUT)
+#undef M_CAPTURE_EXIT_INPUT
+            M_SuppressExitInputs();
+            return;
+        }
+        g_Camera.type = CAM_BINOCULARS;
+        M_HandleLookInput();
+        M_HandleZoomInput();
+        M_HandleLaserSightFire();
+        g_Input = (INPUT_STATE) {};
+        g_InputDB = (INPUT_STATE) {};
         return;
     }
 
@@ -324,6 +450,13 @@ void Camera_Binoculars_Update(void)
     if (m_TorchActive) {
         M_EmitTorch(g_Camera.pos.pos, g_Camera.target.pos);
     }
+    if (m_LaserSight) {
+        GAME_VECTOR sight = g_Camera.target;
+        sight.room_num = lara_item->room_num;
+        Gun_LaserSight_Aim(
+            lara_info->gun_type, g_Camera.pos, sight, m_FirePending);
+        m_FirePending = false;
+    }
 }
 
 void Camera_Binoculars_Exit(void)
@@ -340,7 +473,14 @@ void Camera_Binoculars_Exit(void)
     m_TorchActive = false;
     m_TorchHeldOff = false;
     lara_item->mesh_bits = 0xFFFFFFFF;
-    lara_info->gun_status = LGS_ARMLESS;
+    // The laser sight leaves the weapon ready in Lara's hands.
+    if (m_LaserSight) {
+        m_LaserSight = false;
+        m_FirePending = false;
+        FX_LaserSight_ClearDot();
+    } else {
+        lara_info->gun_status = LGS_ARMLESS;
+    }
     lara_info->head_rot.x = 0;
     lara_info->head_rot.y = 0;
     lara_info->torso_rot.x = 0;
@@ -361,6 +501,11 @@ void Camera_Binoculars_Exit(void)
 bool Camera_Binoculars_IsActive(void)
 {
     return m_Active;
+}
+
+bool Camera_Binoculars_IsLaserSight(void)
+{
+    return m_Active && m_LaserSight;
 }
 
 int32_t Camera_Binoculars_GetRange(void)
