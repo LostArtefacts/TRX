@@ -9,6 +9,7 @@
 --   end, "visuals.water_color")
 
 local metrics = require("common.ui.metrics")
+local scroll = require("common.ui.scroll")
 local handlers = require("common.ui.settings.handlers")
 local rows = require("common.ui.settings.rows")
 local color = require("common.ui.widgets.color")
@@ -187,11 +188,13 @@ function M.open(push, key)
       layer:close()
       return
     end
-    local count = #SLIDERS
-    if keys:pressed(Role.MENU_UP) then
-      selected:set((selected:get() - 2) % count + 1)
-    elseif keys:pressed(Role.MENU_DOWN) then
-      selected:set(selected:get() % count + 1)
+    local step = keys:pressed(Role.MENU_UP) and -1
+      or keys:pressed(Role.MENU_DOWN) and 1
+      or nil
+    if step ~= nil then
+      selected:set(
+        scroll.step(selected:get(), step, #SLIDERS) or selected:get()
+      )
     elseif keys:pressed(Role.MENU_LEFT) or keys:pressed(Role.MENU_RIGHT) then
       local handler = handlers.get(key)
       local fine = keys:held(Role.MENU_FINE_ADJUST)
