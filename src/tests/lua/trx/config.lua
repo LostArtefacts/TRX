@@ -393,6 +393,21 @@ test("a declared value carries a label of its own", function()
   assert(trx.config.get("mod.shade") == "gold")
 end)
 
+test("a value with no text can be picked again", function()
+  trx.config.declare({
+    key = "mod.outfit",
+    kind = "dynamic_enum",
+    values = { "natla" },
+    default = "natla",
+  })
+  fake.add_blank_value("mod.outfit", "x/default")
+  assert(offered("mod.outfit") == "natla,", offered("mod.outfit"))
+  trx.config.set("mod.outfit", "")
+  assert(trx.config.get("mod.outfit") == "")
+  trx.config.set("mod.outfit", "natla")
+  assert(trx.config.get("mod.outfit") == "natla")
+end)
+
 test("a key already taken raises", function()
   raises(function()
     trx.config.declare({

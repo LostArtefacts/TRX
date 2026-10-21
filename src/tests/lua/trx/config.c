@@ -5,8 +5,11 @@
 #include <fakes/level.h>
 #include <harness/lua_surface.h>
 
-#include <trx/game/lua/registry.h>
+#include <trx/config/option.h>
+#include <trx/config/registry.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
 
@@ -45,6 +48,17 @@ static int M_FakeEndLevel(lua_State *const L)
     return 0;
 }
 
+// Adds a value with no text to a dynamic enum, as the outfits add the one
+// that leaves the choice to the level.
+static int M_FakeAddBlankValue(lua_State *const L)
+{
+    const CONFIG_OPTION *const option =
+        Config_FindOption(luaL_checkstring(L, 1));
+    DynamicEnum_AddValue(
+        Config_Option_GetEnumKey(option), nullptr, luaL_checkstring(L, 2));
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeSetEnforced);
@@ -57,6 +71,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_world_loaded");
     lua_pushcfunction(L, M_FakeLoadWorld);
     lua_setfield(L, -2, "load_world");
+    lua_pushcfunction(L, M_FakeAddBlankValue);
+    lua_setfield(L, -2, "add_blank_value");
 }
 
 int main(void)
