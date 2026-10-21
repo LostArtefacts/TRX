@@ -44,6 +44,7 @@ static void M_PersistInventory(RESUME_INFO *const resume)
 
     resume->inv = (INVENTORY_STATE) {};
     Inv_State_CopyAmmo(&resume->inv, live);
+    Inv_State_CopyAttachments(&resume->inv, live);
 
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);

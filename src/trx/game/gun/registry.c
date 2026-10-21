@@ -37,6 +37,11 @@ static void M_SeedNew(void)
             .anim_object_id = NO_OBJECT,
             .shell_object_id = NO_OBJECT,
             .projectile_object_id = NO_OBJECT,
+            .attachment = {
+                .object_id = NO_OBJECT,
+                .anim_object_id = NO_OBJECT,
+                .inventory_meshes = -1,
+            },
         };
     }
     m_SeededCount = count;

@@ -31,6 +31,9 @@ OBJECT_ID Gun_GetAmmoObject(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetAmmoKindCount(LARA_GUN_TYPE gun_type);
 OBJECT_ID Gun_GetAmmoKind(LARA_GUN_TYPE gun_type, int32_t idx);
 bool Gun_IsAmmoKind(LARA_GUN_TYPE gun_type, OBJECT_ID obj_id);
+// The object Lara holds a weapon as while it carries its attachment, or
+// NO_OBJECT where it carries none or the level has no such object.
+OBJECT_ID Gun_GetAttachedAnimObject(LARA_GUN_TYPE gun_type);
 // Ammunition is counted in rounds, one of which is what a single shot at a
 // target spends. The shotgun fires six of them at once.
 int32_t Gun_GetInitialRounds(LARA_GUN_TYPE gun_type);

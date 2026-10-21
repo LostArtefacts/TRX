@@ -104,6 +104,16 @@ typedef struct {
     int16_t thigh_l;
 } WEAPON_MESH_INFO;
 
+// What a weapon can carry attached, such as the TR4 laser sight on the
+// revolver: the pickup that attaches, the object Lara's right hand is drawn
+// from while it is attached, and the meshes the inventory draws the weapon
+// with then. A weapon that takes nothing names NO_OBJECT.
+typedef struct {
+    OBJECT_ID object_id;
+    OBJECT_ID anim_object_id;
+    int32_t inventory_meshes;
+} WEAPON_ATTACHMENT_INFO;
+
 typedef struct {
     LARA_GUN_TYPE gun_type;
     WEAPON_TYPE type;
@@ -155,6 +165,7 @@ typedef struct {
     OBJECT_ID gun_object_id;
     OBJECT_ID ammo_object_id;
     OBJECT_ID anim_object_id;
+    WEAPON_ATTACHMENT_INFO attachment;
     // Where the weapon rides when it is put away, and which weapon shows
     // there when Lara carries several: the lowest order wins.
     STOW_PLACE stow_place;
