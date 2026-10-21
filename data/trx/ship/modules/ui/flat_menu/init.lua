@@ -40,10 +40,16 @@ local MAIN_ROW = 42 / 240
 local COMBINE_ROW = 190 / 240
 local MAIN_NAME = 1 / 2 - 3 / 16
 local COMBINE_NAME = 1 / 2 + 3 / 16
--- The height of a line of the original's text.
-local LINE = 3 / 40
 -- The compass stands at the left, level with the middle of the screen.
 local COMPASS_X = 60 / 512
+
+-- The height of a line of the menu's text. The lines follow the size of the
+-- text, so that a smaller text set by the player does not leave wide gaps
+-- between them.
+local function line_height()
+  local _, h = trx.ui.primitive.measure_text("A", TEXT_SCALE)
+  return h
+end
 
 -- The colours the original prints its text in.
 local COLOR_PICKED = 1
@@ -319,9 +325,7 @@ local function option_lines(state)
   end
   follow()
   local primitive = trx.ui.primitive
-  local function step()
-    return trx.ui.canvas.height * LINE
-  end
+  local step = line_height
   local layer = state.ctx:push({
     root = trx.ui.widgets.Custom({
       measure = function()
@@ -650,7 +654,7 @@ local function start_combine(state)
   state.combine_heading = push_line(
     state.ctx,
     colored(COLOR_PICKED, trx.locale.get("general/flat_menu/combine_with")),
-    0.5 - LINE / 2
+    0.5 - line_height() / trx.ui.canvas.height / 2
   )
   state.options_layer:close()
   state.options_layer = nil
