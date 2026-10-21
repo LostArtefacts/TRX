@@ -14,6 +14,7 @@
 #include <trx/game/objects/creatures/tribe_boss.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/property.h>
+#include <trx/game/output/state.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -392,6 +393,20 @@ static void M_AvoidStoppers(ITEM *const item, CREATURE *const creature)
     }
 }
 
+// Takes a point of health from a poisoned creature every 16 ticks, down to
+// one, as TR4 does, where the creature can take damage at all.
+static void M_TickPoison(ITEM *const item)
+{
+    if (!item->is_poisoned || item->hit_points <= 1
+        || !Item_CanTakeDamage(item)) {
+        return;
+    }
+    const int32_t wibble = (int32_t)Output_GetTimeInGame() * 4;
+    if ((wibble & 0x3F) == 0) {
+        item->hit_points--;
+    }
+}
+
 bool Creature_SameZone(const CREATURE *const creature, ITEM *const target_item)
 {
     if (creature->lot.setup.fly != 0) {
@@ -453,6 +468,8 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     if (creature == nullptr) {
         return;
     }
+
+    M_TickPoison(item);
 
     ITEM *enemy =
         g_TRVersion >= 3 ? creature->enemy : M_ChooseEnemy(item, nullptr);

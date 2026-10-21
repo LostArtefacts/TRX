@@ -728,6 +728,8 @@ static RESULT M_ReadItemAt(JSON_READ_IO *const io, const int16_t item_num)
         MUST(JSON_READ_OPT(io, "ai_tag", &item->ai_tag));
         // Introduced in TRX 1.10, not written if zero
         MUST(JSON_READ_OPT(io, "fade", &item->fade));
+        // Introduced in TRX 1.12, not written if false
+        MUST(JSON_READ_OPT(io, "poisoned", &item->is_poisoned));
 
         bool intelligent = obj->intelligent;
         // Introduced in TRX 1.2
