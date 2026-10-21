@@ -288,6 +288,13 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
     }
 }
 
+// Subtracts a gameflow count from a scanned one. A level that declares more
+// unobtainable entries than it holds gets zero rather than wrapping around.
+static uint32_t M_Subtract(const uint32_t value, const uint32_t amount)
+{
+    return value > amount ? value - amount : 0;
+}
+
 void Stats_ScanLevel(const GF_LEVEL *const level)
 {
     ASSERT(level != nullptr);
@@ -295,10 +302,14 @@ void Stats_ScanLevel(const GF_LEVEL *const level)
     LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
     M_CalculateStats(max_stats);
     max_stats->maxes[STATS_CAT_PICKUPS] += GF_GetSecretRewardCount(level);
-    max_stats->maxes[STATS_CAT_PICKUPS] -= level->unobtainable.pickups;
-    max_stats->maxes[STATS_CAT_SECRETS] -= level->unobtainable.secrets;
-    max_stats->max_kill_ally_count -= level->unobtainable.ally_kills;
-    max_stats->max_kill_non_ally_count -= level->unobtainable.kills;
+    max_stats->maxes[STATS_CAT_PICKUPS] = M_Subtract(
+        max_stats->maxes[STATS_CAT_PICKUPS], level->unobtainable.pickups);
+    max_stats->maxes[STATS_CAT_SECRETS] = M_Subtract(
+        max_stats->maxes[STATS_CAT_SECRETS], level->unobtainable.secrets);
+    max_stats->max_kill_ally_count = M_Subtract(
+        max_stats->max_kill_ally_count, level->unobtainable.ally_kills);
+    max_stats->max_kill_non_ally_count = M_Subtract(
+        max_stats->max_kill_non_ally_count, level->unobtainable.kills);
     max_stats->maxes[STATS_CAT_KILLS] =
         max_stats->max_kill_non_ally_count + max_stats->max_kill_ally_count;
     Benchmark_End(&benchmark, nullptr);
