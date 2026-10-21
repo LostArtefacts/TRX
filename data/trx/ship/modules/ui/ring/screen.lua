@@ -10,8 +10,9 @@
 -- Usage:
 --   require("common.ui.menu").setup()
 
-local ammo_choice = require("common.ui.ring.ammo")
+local attachment = require("common.ui.attachment")
 local compass = require("common.ui.compass")
+local weapon_choice = require("common.ui.ring.weapon")
 local entries = require("common.ui.ring.entries")
 local fade = require("common.ui.fade")
 local motion = require("common.ui.ring.motion")
@@ -33,6 +34,8 @@ local wrap = trx.math.wrap_angle
 -- How long the backdrop takes to come in and to go, and how long the screen
 -- takes to go black when the game leaves, in ticks.
 local FADE_TICKS = 16
+-- How long the entries take to fade out, or back in, as the ring rebuilds.
+local REBUILD_FADE_TICKS = 8
 local BLACK_TICKS = 8
 local BLACK_HOLD_TICKS = 1
 
@@ -54,6 +57,9 @@ local Status = {
   EXITING = "exiting",
   CLOSING = "closing",
   FADING_OUT = "fading_out",
+  -- The entries fade out, the ring builds itself again around what Lara
+  -- carries now, and the entries fade back in, as after a combine.
+  REBUILDING = "rebuilding",
   DONE = "done",
 }
 
@@ -79,7 +85,7 @@ local Action = {
   USE = "use",
   EXAMINE = "examine",
   COMBINE = "combine",
-  CHOOSE_AMMO = "choose_ammo",
+  WEAPON = "weapon",
 }
 
 -- The screen a script is offered for what the player does with an entry.
@@ -267,7 +273,7 @@ local function meshes_of(object, spec, frame)
   elseif object == objects.SAVE_CRYSTAL_OPTION then
     return crystal_meshes()
   end
-  return spec.meshes_sel
+  return attachment.meshes_of(object) or spec.meshes_sel
 end
 
 local function grey(value)
@@ -375,6 +381,7 @@ local function paint_entry(state, index)
     at_pivot = content.spec.draws_at_pivot,
     mesh_mask = meshes_of(object, content.spec, anim.frame),
     light = light_of(view:shade(index)),
+    opacity = state.contents:get(),
   }
   -- The entry moves from the frame the tick started on to the one it reached,
   -- and holds still while its animation waits.
@@ -616,7 +623,7 @@ local function name_of(object)
   if name == nil or name == "" then
     return nil
   end
-  return name
+  return attachment.name_of(object, name)
 end
 
 -- The hints for what the player may do with the entry the ring rests on.
@@ -624,7 +631,7 @@ local function hints_of(state)
   local actions = state.actions
   if
     actions == nil
-    or not (actions.examine or actions.combine or state.ammo_weapon)
+    or not (actions.examine or actions.combine or state.weapon_choice)
   then
     return {}
   end
@@ -634,13 +641,13 @@ local function hints_of(state)
       input = Role.MENU_SHOW_INFO,
       text = trx.locale.get("general/actions/examine_item"),
     }
-  elseif state.ammo_weapon ~= nil then
+  elseif state.weapon_choice ~= nil then
     result[#result + 1] = {
       input = Role.MENU_SHOW_INFO,
-      text = trx.locale.get("general/actions/choose_ammo"),
+      text = weapon_choice.hint_of(state.weapon_choice),
     }
   end
-  if actions.use or actions.combine or state.ammo_weapon ~= nil then
+  if actions.use or actions.combine or state.weapon_choice ~= nil then
     result[#result + 1] = {
       input = Role.MENU_CONFIRM,
       text = actions.combine and trx.locale.get(
@@ -852,9 +859,9 @@ local function pick_sound(object)
   return samples.MENU_CHOOSE
 end
 
--- Picks the entry the ring rests on, to use it, to examine it, or to choose
--- its ammunition.
-local function pick(state, examine, choosing_ammo)
+-- Picks the entry the ring rests on, to use it, to examine it, or for what
+-- else a weapon offers.
+local function pick(state, examine, weapon)
   if is_forced_mode(state.mode) then
     state.passport_shown = true
   end
@@ -863,8 +870,8 @@ local function pick(state, examine, choosing_ammo)
   local content = state.list[view.current]
   local spec = content.spec
   local anim = state.anims[view.current]
-  if examine or choosing_ammo then
-    state.action = choosing_ammo and Action.CHOOSE_AMMO or Action.EXAMINE
+  if examine or weapon then
+    state.action = weapon and Action.WEAPON or Action.EXAMINE
     anim.goal = 0
   elseif state.actions ~= nil and state.actions.combine then
     state.action = Action.COMBINE
@@ -930,9 +937,9 @@ local function control_open(state, keys)
 
   local info = keys:pressed(Role.MENU_SHOW_INFO)
   local examine = info and state.actions ~= nil and state.actions.examine
-  local choosing_ammo = info and not examine and state.ammo_weapon ~= nil
-  if keys:pressed(Role.MENU_CONFIRM) or examine or choosing_ammo then
-    pick(state, examine, choosing_ammo)
+  local weapon = info and not examine and state.weapon_choice ~= nil
+  if keys:pressed(Role.MENU_CONFIRM) or examine or weapon then
+    pick(state, examine, weapon)
     return
   end
 
@@ -1037,21 +1044,29 @@ local function control_entry(state, keys, busy)
   end
 end
 
--- Opens the row of the picked weapon's ammunition, and puts the weapon back
--- into the ring once the row closes.
-local function choose_ammo(state)
-  local choice
-  choice = ammo_choice.open(state.ctx, state.ammo_weapon, function()
-    if state.screen ~= choice then
+-- Does what the picked weapon offers: its one action at once, or the frame
+-- of its actions. The weapon goes back into the ring either way, which builds
+-- itself again around what changed.
+local function offer_weapon(state)
+  local choice = state.weapon_choice
+  state.unhandled = false
+  if weapon_choice.is_immediate(choice) then
+    state.rebuilds = weapon_choice.perform_at_once(choice)
+    close_item(state, leaves_after_save(state.mode))
+    return
+  end
+  local frame
+  frame = weapon_choice.open(state.ctx, choice, function(rebuilds)
+    if state.screen ~= frame then
       return
     end
     state.screen = nil
+    state.rebuilds = rebuilds
     if state.status == Status.SELECTED then
       close_item(state, leaves_after_save(state.mode))
     end
   end)
-  state.screen = choice
-  state.unhandled = false
+  state.screen = frame
 end
 
 -- Offers the screen of what the player does with the entry, once.
@@ -1060,8 +1075,8 @@ local function offer(state)
     return
   end
   state.offered = true
-  if state.action == Action.CHOOSE_AMMO then
-    choose_ammo(state)
+  if state.action == Action.WEAPON then
+    offer_weapon(state)
     return
   end
   local screen = SCREEN_OF[state.action]
@@ -1086,6 +1101,8 @@ local function offer(state)
       or leaves_after_save(state.mode)
     if confirmed then
       keep_place(state)
+      -- The ring fades its entries out and back in on what a combine made.
+      state.rebuilds = state.action == Action.COMBINE
     end
     state.left_by_screen = leaves
     close_item(state, leaves)
@@ -1126,12 +1143,38 @@ end
 
 -- Builds the ring again where the entry the player put back is gone, as
 -- combining two takes them, and rests it on what the script asked for.
+-- Whether the ring holds other entries than what Lara carries now, as after
+-- she separates a weapon from its attachment.
+local function is_stale(state)
+  local list = entries.contents(state.ring_type, state.mode)
+  if #list ~= #state.list then
+    return true
+  end
+  for i, content in ipairs(list) do
+    if content.object ~= state.list[i].object then
+      return true
+    end
+  end
+  return false
+end
+
+-- Builds the ring again where what Lara carries changed: around the next
+-- entry where the one it rests on is gone, and on the same entry otherwise.
 local function refresh(state)
-  local content = state.list[state.view.current]
-  if trx.inventory.has(content.object) or state.ring_type == Ring.OPTION then
+  if state.ring_type == Ring.OPTION then
     return
   end
-  fill(state, state.ring_type, state.view.current)
+  local content = state.list[state.view.current]
+  local held = trx.inventory.has(content.object)
+  if held and not is_stale(state) then
+    return
+  end
+  local current = state.view.current
+  if held then
+    local list = entries.contents(state.ring_type, state.mode)
+    current = index_of(list, content.object) or current
+  end
+  fill(state, state.ring_type, current)
   local view = state.view
   view.radius:set(motion.RING.radius)
   view.camera_y:set(motion.RING.camera_height)
@@ -1187,7 +1230,11 @@ local function run(state)
         state.anims[index].last = 0
       end
       if state.close_to == Status.DESELECTING then
-        refresh(state)
+        -- A ring that rebuilds after what the player did fades its entries
+        -- out and back in once the entry is back, as the flat menu does.
+        if not state.rebuilds then
+          refresh(state)
+        end
         trx.sound.play(samples.MENU_SPINOUT)
         set_status(state, Status.DESELECTING, Motion.DESELECT)
       else
@@ -1196,6 +1243,14 @@ local function run(state)
     end
   elseif status == Status.EXITING and not view:is_moving() then
     close(state)
+  elseif status == Status.REBUILDING and not state.contents:is_moving() then
+    if state.rebuilt then
+      state.status = Status.OPEN
+    else
+      refresh(state)
+      state.rebuilt = true
+      state.contents:to(1, REBUILD_FADE_TICKS)
+    end
   end
   -- Putting an entry back can build the ring again around fewer entries.
   view = state.view
@@ -1226,7 +1281,12 @@ local function run(state)
   if state.status ~= Status.DONE and not state.waiting then
     if view:tick(spin) then
       local ended = state.status
-      if ended == Status.OPENING or ended == Status.DESELECTING then
+      if ended == Status.DESELECTING and state.rebuilds then
+        state.rebuilds = false
+        state.rebuilt = false
+        state.status = Status.REBUILDING
+        state.contents:to(0, REBUILD_FADE_TICKS)
+      elseif ended == Status.OPENING or ended == Status.DESELECTING then
         state.status = Status.OPEN
       elseif ended == Status.SELECTING then
         state.status = Status.SELECTED
@@ -1283,7 +1343,7 @@ local function run(state)
     if SHOWN[state.status] then
       local object = state.list[view.current].object
       state.actions = trx.inventory.actions(object)
-      state.ammo_weapon = ammo_choice.weapon_of(object)
+      state.weapon_choice = weapon_choice.choice_of(object)
     end
     say(state)
     ring.set_rest_frame(rest_frame_of(state))
@@ -1360,6 +1420,7 @@ local function open(ctx)
   local state = {
     ctx = ctx,
     mode = ctx.mode,
+    contents = trx.ui.tween(1),
     status = Status.OPENING,
     idle_ticks = 0,
     demo_ticks = ctx.mode == MenuMode.TITLE and demo_ticks() or 0,

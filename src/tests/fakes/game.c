@@ -54,6 +54,7 @@ static OBJECT_ID m_Combined[2];
 // Whether every entry can be examined.
 static bool m_Examinable;
 static bool m_Separable;
+static OBJECT_ID m_SeparatedObject = NO_OBJECT;
 // Whether every entry leads nowhere, as an entry with no lock to use it on.
 static bool m_Unusable;
 
@@ -69,6 +70,7 @@ static void M_Reset(void)
     m_Override = (GF_COMMAND) { .action = GF_NOOP };
     m_PartnerCount = 0;
     m_Separable = false;
+    m_SeparatedObject = NO_OBJECT;
     m_Combined[0] = NO_OBJECT;
     m_Combined[1] = NO_OBJECT;
     m_GlobeCount = 0;
@@ -222,10 +224,12 @@ static int M_L_SetExaminable(lua_State *const L)
     return 0;
 }
 
-// fake.set_separable(bool) - whether every entry carries an attachment.
+// fake.set_separable(bool, object?) - whether every entry carries an
+// attachment, and what separating one gives Lara.
 static int M_L_SetSeparable(lua_State *const L)
 {
     m_Separable = lua_toboolean(L, 1);
+    m_SeparatedObject = (OBJECT_ID)luaL_optinteger(L, 2, NO_OBJECT);
     return 0;
 }
 
@@ -717,6 +721,10 @@ OBJECT_ID Inv_Combine(const OBJECT_ID obj_id, const OBJECT_ID partner_id)
     return NO_OBJECT;
 }
 
+// The fake inventory, where the test links one. Separating gives back what
+// the test names only where it does.
+extern bool Inv_AddItem(OBJECT_ID object_id) __attribute__((weak));
+
 // Separates an entry where the fake says entries carry an attachment, and
 // hands back the entry itself as the attachment, so that a test sees what was
 // asked for.
@@ -727,6 +735,10 @@ OBJECT_ID Inv_Separate(const OBJECT_ID obj_id)
         return NO_OBJECT;
     }
     m_Separable = false;
+    if (m_SeparatedObject != NO_OBJECT && Inv_AddItem != nullptr) {
+        Inv_AddItem(m_SeparatedObject);
+        return m_SeparatedObject;
+    }
     return obj_id;
 }
 

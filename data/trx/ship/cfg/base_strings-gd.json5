@@ -4,6 +4,8 @@
     "language_name": "Gàidhlig",
     "general": {
         "actions": {
+            "action": "\\{review}Gnìomh",
+            "ammo": "\\{review}Peilearan",
             "cancel": "\\{review}Sguir dheth",
             "choose_ammo": "\\{review}Tagh peilearan",
             "combine_item": "\\{review}Co-cheangail",
@@ -11,8 +13,10 @@
             "hide_dialog": "Falaich an còmhradh",
             "reset_defaults": "Ath-shuidhich",
             "rotate": "Tionndaidh",
+            "separate_item": "\\{review}Dealaich",
             "unbind": "Falamhaich",
             "use_item": "Cleachd",
+            "weapon_options": "\\{review}Roghainnean",
         },
         "ammo": {
             "count_fmt": "\\{review}%d x %s",

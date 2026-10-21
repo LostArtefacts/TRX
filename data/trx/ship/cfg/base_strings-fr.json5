@@ -4,6 +4,8 @@
     "language_name": "Français",
     "general": {
         "actions": {
+            "action": "\\{review}Action",
+            "ammo": "\\{review}Munitions",
             "cancel": "\\{review}Annuler",
             "choose_ammo": "\\{review}Choisir munitions",
             "combine_item": "\\{review}Combiner",
@@ -11,8 +13,10 @@
             "hide_dialog": "Masquer le dialogue",
             "reset_defaults": "\\{review}Réinitialiser",
             "rotate": "Tourner",
+            "separate_item": "\\{review}Séparer",
             "unbind": "Dissocier",
             "use_item": "Utiliser",
+            "weapon_options": "\\{review}Options",
         },
         "ammo": {
             "count_fmt": "\\{review}%d x %s",

@@ -4,6 +4,8 @@
     "language_name": "Italiano",
     "general": {
         "actions": {
+            "action": "\\{review}Azione",
+            "ammo": "\\{review}Munizioni",
             "cancel": "\\{review}Annulla",
             "choose_ammo": "\\{review}Scegli munizioni",
             "combine_item": "\\{review}Combina",
@@ -11,8 +13,10 @@
             "hide_dialog": "Nascondi dialogo",
             "reset_defaults": "Ripristina",
             "rotate": "Ruota",
+            "separate_item": "\\{review}Separa",
             "unbind": "Dissocia",
             "use_item": "Usa",
+            "weapon_options": "\\{review}Opzioni",
         },
         "ammo": {
             "count_fmt": "\\{review}%d x %s",

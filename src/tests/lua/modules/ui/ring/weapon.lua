@@ -1,6 +1,6 @@
--- The shipped ammunition row of the inventory ring: offered on a weapon that
--- takes more than one kind, as examining is on an entry, and the kind it
--- chooses.
+-- The shipped weapon frame of the inventory ring: offered on a weapon as
+-- examining is on an entry, with the kinds of ammunition to choose from and
+-- the attachment to separate.
 
 local h = require("harness")
 local test = h.test
@@ -24,7 +24,9 @@ local UZIS = trx.inventory.icon_of(uzis.object) or uzis.object
 local SETTLE_TICKS = 40
 local SLIDE_TICKS = 8
 
-for object, inv_pos in pairs({ [SHOTGUN] = 3, [UZIS] = 4 }) do
+local SIGHT = trx.catalog.objects.LASERSIGHT_OPTION
+
+for object, inv_pos in pairs({ [SHOTGUN] = 3, [UZIS] = 4, [SIGHT] = 5 }) do
   entries.declare({
     object_id = trx.catalog.key(trx.catalog.Context.OBJECTS, object),
     inv_pos = inv_pos,
@@ -170,6 +172,90 @@ test("picking the shotgun still draws it at once", function()
     fake.calls().use_item.object_id == SHOTGUN,
     "the shotgun was not drawn"
   )
+  finish()
+end)
+
+local function hint_names(text)
+  return h.ring_hint():find(text, 1, true) ~= nil
+end
+
+test(
+  "a weapon with an attachment and nothing to choose separates it",
+  function()
+    carry()
+    fake.set_separable(true)
+    open(UZIS)
+    local separate = trx.locale.get("general/actions/separate_item")
+    assert(hint_names(separate), h.ring_hint())
+    press(Role.MENU_SHOW_INFO)
+    ticks(SETTLE_TICKS)
+    local separated = fake.calls().separate
+    assert(separated ~= nil and separated.count == 1, "nothing was separated")
+    assert(fake.take_choice(MENU) == CHOICE_NONE, "the ring closed")
+    assert(fake.calls().use_item.count == 0, "the uzis were drawn")
+    finish()
+  end
+)
+
+local function draws(object)
+  local wanted = ("^world_model obj=%d "):format(object)
+  for _, op in ipairs(fake.scene()) do
+    if op:match(wanted) then
+      return true
+    end
+  end
+  return false
+end
+
+-- Returns the lowest opacity the ring draws an entry at in this frame.
+local function faintest()
+  local result = 1.0
+  for _, op in ipairs(fake.scene()) do
+    local opacity = op:match("^world_model .- opacity=([%d.]+)")
+    if opacity ~= nil then
+      result = math.min(result, tonumber(opacity))
+    end
+  end
+  return result
+end
+
+test("the ring fades out and back in on what a separate gave back", function()
+  carry()
+  fake.set_separable(true, SIGHT)
+  open(UZIS)
+  assert(not draws(SIGHT), "the laser sight showed before")
+  press(Role.MENU_SHOW_INFO)
+  local faded = false
+  for _ = 1, SETTLE_TICKS do
+    fake.tick()
+    faded = faded or faintest() < 0.5
+  end
+  assert(faded, "the entries did not fade")
+  assert(faintest() == 1.0, "the entries did not come back")
+  assert(draws(SIGHT), "the ring did not show the laser sight")
+  trx.inventory.take(SIGHT)
+  finish()
+end)
+
+test("the shotgun with an attachment offers both actions", function()
+  carry()
+  fake.set_separable(true)
+  open(SHOTGUN)
+  assert(
+    hint_names(trx.locale.get("general/actions/weapon_options")),
+    h.ring_hint()
+  )
+  open_row()
+  assert(shows(trx.locale.get("general/actions/choose_ammo")), "no ammo line")
+  local separate = trx.locale.get("general/actions/separate_item")
+  assert(shows(separate), "no separate line")
+  press(Role.MENU_RIGHT)
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  local separated = fake.calls().separate
+  assert(separated ~= nil and separated.count == 1, "nothing was separated")
+  assert(trx.inventory.ammo_kind(shotgun.id) == NORMAL, "the kind changed")
   finish()
 end)
 
