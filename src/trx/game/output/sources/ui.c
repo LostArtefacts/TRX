@@ -451,7 +451,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
         }
 
         const bool own_target =
-            mesh->world != nullptr && TRX_GL_Renderer_BeginUiWorldModel();
+            mesh->world != nullptr && TRX_GL_Renderer_BeginUiScenePass();
         if (p->objects_source->render_begin != nullptr) {
             p->objects_source->render_begin(p->objects_source);
         }
@@ -517,7 +517,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
             p->objects_source->render_end(p->objects_source);
         }
         if (own_target) {
-            TRX_GL_Renderer_EndUiWorldModel();
+            TRX_GL_Renderer_EndUiScenePass();
             SceneCompositor_BindTextures();
             Output_MeshShader_Bind(Output_GetMeshShader());
             glEnable(GL_DEPTH_TEST);

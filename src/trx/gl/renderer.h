@@ -32,19 +32,19 @@ void TRX_GL_Renderer_BindUiFbo(void);
 // source.
 GLuint TRX_GL_Renderer_GetGeometryFboId(void);
 
-// Starts drawing a model in a world of its own over the interface at the
-// scene resolution, so that the upscaling factor applies to it as it applies
-// to the scene. Returns false, having changed nothing, where the scene is not
-// upscaled or the UI framebuffer is not the one bound: the model is then drawn
-// where it is.
-bool TRX_GL_Renderer_BeginUiWorldModel(void);
+// Starts drawing over the interface at the scene resolution, so that the
+// upscaling factor applies to what is drawn as it applies to the scene. Used
+// for models in a world of their own and for backdrops. Returns false, having
+// changed nothing, where the scene is not upscaled or the UI framebuffer is not
+// the one bound: drawing then goes where it is.
+bool TRX_GL_Renderer_BeginUiScenePass(void);
 
-// Stretches the model started by TRX_GL_Renderer_BeginUiWorldModel onto the
-// UI framebuffer, over what is there, with the upscaling filter. Leaves the
-// UI framebuffer bound with its viewport and premultiplied blending on; the
+// Stretches what was drawn since TRX_GL_Renderer_BeginUiScenePass onto the UI
+// framebuffer, over what is there, with the upscaling filter. Leaves the UI
+// framebuffer bound with its viewport and premultiplied blending on; the
 // program, vertex array, sampler and texture of unit 0 are the renderer's
 // own, and depth testing and culling are off.
-void TRX_GL_Renderer_EndUiWorldModel(void);
+void TRX_GL_Renderer_EndUiScenePass(void);
 
 // Resize the framebuffers to the current viewport sizes. The renderer does
 // this itself once the frame has been presented; call it when the viewports
