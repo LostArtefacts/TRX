@@ -93,7 +93,7 @@ function M.slider(settings)
     visible = settings.visible,
     measure = function()
       local scale = trx.ui.text_scale
-      return settings.w * scale, metrics.TEXT_HEIGHT * 0.5 * scale
+      return settings.w * scale, metrics.line_height() * 0.5 * scale
     end,
     paint = function(x, y, w, h)
       local ix, iy, iw, ih = boxes(x, y, w, h)

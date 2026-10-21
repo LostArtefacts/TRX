@@ -9,7 +9,6 @@ require("trx.ui.primitive")
 local primitive = trx.ui.primitive
 
 local PADDING = 5.0
-local TEXT_HEIGHT = 15
 local LOG_SCALE = 0.8
 local MAX_LOG_LINES = 20
 local SECONDS_PER_CHAR = 0.2
@@ -22,8 +21,7 @@ local BLINK_SECONDS = 1 / 3
 
 -- Returns the text scale used by the engine.
 local function text_scale()
-  local _, height = primitive.measure_text("", 1.0)
-  return height / TEXT_HEIGHT
+  return trx.ui.text_scale
 end
 
 -- Returns the available width for wrapped log text.
@@ -273,9 +271,9 @@ local grab = nil
 ---@type number
 local blink_from = 0
 
-local function backdrop(line_height)
+local function backdrop(line_height, line_pitch)
   local canvas = trx.ui.canvas
-  local height = line_height + 7 * line_height * LOG_SCALE
+  local height = line_height + 7 * line_pitch * LOG_SCALE
   -- The canvas holds a whole number of units, so its right and bottom edges
   -- stop short of the screen by the fraction that was dropped. Reaching one
   -- unit past both always covers it.
@@ -305,9 +303,11 @@ local function draw()
   local canvas = trx.ui.canvas
   local scale = text_scale()
   local padding = PADDING * scale
-  local line_height = TEXT_HEIGHT * scale
+  local _, line_height = primitive.measure_text("", 1.0)
+  local _, two_lines = primitive.measure_text("\n", 1.0)
+  local line_pitch = two_lines - line_height
   logs.reflow(room_to_wrap(scale), scale)
-  backdrop(line_height)
+  backdrop(line_height, line_pitch)
 
   local baseline = canvas.height - padding - line_height
   if open then
@@ -324,7 +324,7 @@ local function draw()
   for i = 1, #logs.entries do
     local lines = logs.entries[i].lines
     for j = #lines, 1, -1 do
-      y = y - line_height * LOG_SCALE
+      y = y - line_pitch * LOG_SCALE
       primitive.text(lines[j], padding, y, LOG_SCALE, 16)
     end
   end

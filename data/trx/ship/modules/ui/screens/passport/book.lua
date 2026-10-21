@@ -131,7 +131,9 @@ end
 -------------------------------------------------------------------------------
 
 -- Includes the gap between the button and the list.
-local DELETE_FOOTER_HEIGHT = 3.0 + hold_button.HEIGHT
+local function delete_footer_height()
+  return 3.0 + hold_button.height()
+end
 
 local function is_deletable(page)
   if
@@ -171,9 +173,10 @@ local function list_req(rows, title, footer)
     min_w = PASSPORT_WIDTH,
     reserve = true,
     footer = footer,
-    footer_height = footer ~= nil and DELETE_FOOTER_HEIGHT or nil,
+    footer_height = footer ~= nil and delete_footer_height() or nil,
   })
-  req.place = requester.on_page_line(req, page_anchor(), DELETE_FOOTER_HEIGHT)
+  req.place =
+    requester.on_page_line(req, page_anchor(), delete_footer_height())
   return req
 end
 
@@ -185,7 +188,8 @@ local function modes_req(rows, title)
     row_pad = metrics.CHOICE_ROW_PAD,
     arrows = false,
   })
-  req.place = requester.on_page_line(req, page_anchor(), DELETE_FOOTER_HEIGHT)
+  req.place =
+    requester.on_page_line(req, page_anchor(), delete_footer_height())
   return req
 end
 
@@ -809,7 +813,7 @@ end
 -- Where a dialog of the request goes so that it shares the line every list
 -- of the book rests on.
 function M.place_on_page(req)
-  return requester.on_page_line(req, page_anchor(), DELETE_FOOTER_HEIGHT)
+  return requester.on_page_line(req, page_anchor(), delete_footer_height())
 end
 
 function M.open_alone(ctx, book_pages, index, crystal)

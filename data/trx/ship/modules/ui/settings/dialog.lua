@@ -33,7 +33,7 @@ local Role = trx.input.Role
 -- size.
 local function chrome_height(line)
   return window.chrome_height({ title = true, hints = true })
-    - metrics.TEXT_HEIGHT
+    - metrics.line_height()
     + line
     + line
     + TAB_BAR_SPACING
@@ -355,7 +355,7 @@ function M.new(settings)
         trx.ui.widgets.Resize({
           scaled = true,
           w = self.dialog_width,
-          h = metrics.TEXT_HEIGHT,
+          h = metrics.line_height(),
           child = trx.ui.widgets.Stack({
             align = trx.ui.HAlign.SPAN,
             children = footers,

@@ -155,12 +155,12 @@ local function confirm(push, preset, changes)
     + 3
     + #lines_of(wrapped_note)
   )
-      * metrics.TEXT_HEIGHT
+      * metrics.line_height()
     + window.chrome_height({ title = true, hints = true })
     + 2 * CONFIRM_PAD
   local room = trx.ui.safe_area.height / trx.ui.text_scale
   local visible =
-    math.floor((room - fixed) / (metrics.TEXT_HEIGHT + CONFIRM_ROW_SPACING))
+    math.floor((room - fixed) / (metrics.line_height() + CONFIRM_ROW_SPACING))
   visible = math.max(CONFIRM_MIN_ROWS, math.min(visible, CONFIRM_MAX_ROWS))
   local list = scroll.new({ count = #lines, visible = visible })
 
@@ -184,7 +184,7 @@ local function confirm(push, preset, changes)
           align = trx.ui.HAlign.SPAN,
           children = {
             label(wrapped_description),
-            trx.ui.widgets.Spacer({ h = metrics.TEXT_HEIGHT }),
+            trx.ui.widgets.Spacer({ h = metrics.line_height() }),
           },
         }),
         content = trx.ui.widgets.Stack({
@@ -195,9 +195,9 @@ local function confirm(push, preset, changes)
         footer = trx.ui.widgets.Stack({
           align = trx.ui.HAlign.SPAN,
           children = {
-            trx.ui.widgets.Spacer({ h = metrics.TEXT_HEIGHT }),
+            trx.ui.widgets.Spacer({ h = metrics.line_height() }),
             label(wrapped_note),
-            trx.ui.widgets.Spacer({ h = metrics.TEXT_HEIGHT }),
+            trx.ui.widgets.Spacer({ h = metrics.line_height() }),
             centered(trx.ui.widgets.Stack({
               orientation = trx.ui.Orientation.HORIZONTAL,
               v_align = trx.ui.VAlign.CENTER,
@@ -368,7 +368,7 @@ function M.new(settings)
     spacing = LIST_ROW_SPACING,
     children = children,
   })
-  self.footer = trx.ui.widgets.Spacer({ h = metrics.TEXT_HEIGHT })
+  self.footer = trx.ui.widgets.Spacer({ h = metrics.line_height() })
   return self
 end
 

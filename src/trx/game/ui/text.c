@@ -32,6 +32,9 @@
 #define M_TR4_BASE_ROW 11
 #define M_TR4_PULSE_COLOR 1
 #define M_TR4_PULSE_FRAMES 32
+#define M_LINE_HEIGHT 15
+#define M_TR4_LINE_HEIGHT 29
+#define M_TR4_LINE_PITCH 24
 
 typedef enum {
     M_FONT_DEFAULT = 0,
@@ -231,6 +234,19 @@ static int32_t M_GetTR4Row(const M_FONT font, const int32_t y)
     int32_t row = (M_TR4_BASE_ROW * above + cap / 2) / cap;
     CLAMP(row, 0, M_TR4_SHADE_ROWS - 1);
     return row;
+}
+
+// Returns the height of a line of text, from its top to its baseline.
+static int32_t M_GetLineHeight(void)
+{
+    return g_TRVersion == 4 ? M_TR4_LINE_HEIGHT : M_LINE_HEIGHT;
+}
+
+// Returns the distance between the baselines of two lines of text. In TR4,
+// the lines of a passage sit closer together than the height of one line.
+static int32_t M_GetLinePitch(void)
+{
+    return g_TRVersion == 4 ? M_TR4_LINE_PITCH : M_LINE_HEIGHT;
 }
 
 static bool M_IsTR4Shaded(const int32_t color_idx)
@@ -624,7 +640,7 @@ static void M_Process(
 
     float x = scale_func(base_x / UI_Scaler_GetTextScale());
     float y = scale_func(
-        base_y / UI_Scaler_GetTextScale() + settings.scale * UI_TEXT_HEIGHT);
+        base_y / UI_Scaler_GetTextScale() + settings.scale * M_GetLineHeight());
     int32_t z = settings.z;
 
     float max_width = 0.0f;
@@ -675,7 +691,7 @@ static void M_Process(
         }
 
         if (glyph->role == GLYPH_NEW_LINE || glyph->role == GLYPH_NEW_PAGE) {
-            y += UI_TEXT_HEIGHT * scale / UI_TEXT_BASE_SCALE;
+            y += M_GetLinePitch() * scale / UI_TEXT_BASE_SCALE;
             x = start_x;
             goto loop_end;
         }

@@ -282,7 +282,7 @@ function M.assault_visible_rows()
     - ASSAULT_CHROME
   local result = math.min(
     math.min(rows, MAX_ASSAULT_ROWS),
-    math.floor(available / metrics.TEXT_HEIGHT)
+    math.floor(available / metrics.line_height())
   )
   return math.max(1, math.min(result, rows))
 end
