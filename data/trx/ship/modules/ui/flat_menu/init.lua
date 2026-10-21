@@ -201,12 +201,25 @@ local function options_of(object)
   return result
 end
 
+-- Whether the entry is the box of flares, and Lara's flares never run out,
+-- as in a bonus game.
+local function has_endless_flares(object)
+  local flare = trx.weapons[trx.catalog.weapons.FLARE]
+  return object == objects.FLARES_BOX_OPTION
+    and flare ~= nil
+    and flare.has_infinite_ammo
+end
+
 -- The name of an entry, with how many there are, as the original names it.
--- A weapon shows no count, however many times Lara picked it up. Ammunition
--- always shows the quantity its boxes are labelled with.
+-- A weapon shows no count, however many times Lara picked it up, and nor do
+-- flares that never run out. Ammunition always shows the quantity its boxes
+-- are labelled with.
 local function name_of(entry)
   local info = trx.objects[entry.object]
   local name = info ~= nil and info.name or ""
+  if has_endless_flares(entry.object) then
+    return name
+  end
   local count = entry.count or 0
   local ammo_weapon = ammo_weapon_of(entry.object)
   if ammo_weapon ~= nil and not ammo_weapon.has_infinite_ammo then
