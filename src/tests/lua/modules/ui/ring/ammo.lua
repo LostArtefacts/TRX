@@ -173,4 +173,41 @@ test("picking the shotgun still draws it at once", function()
   finish()
 end)
 
+-- Returns where the ring draws its count down the screen, or nil where it
+-- draws none.
+local function count_y()
+  local count = require("common.ui.ring").signals.count:get()
+  if count == nil then
+    return nil
+  end
+  for _, op in ipairs(fake.scene()) do
+    local y, text = op:match("^text x=%-?%d+ y=(%-?%d+) .- text=(.*)$")
+    if text == count then
+      return tonumber(y)
+    end
+  end
+  return nil
+end
+
+test("the count stays where it is as the hints go", function()
+  require("common.ui.captions").setup()
+  require("common.ui.ring_hints").setup()
+  carry()
+  open(SHOTGUN)
+  local before = count_y()
+  assert(before ~= nil, "the ring drew no count")
+  fake.release_all()
+  fake.press(Role.MENU_CONFIRM)
+  fake.tick()
+  fake.release_all()
+  fake.tick()
+  assert(h.ring_hint() == "", "the hints did not go")
+  local after = count_y()
+  assert(
+    after == before,
+    ("the count moved from %d to %s"):format(before, after)
+  )
+  finish()
+end)
+
 return h.report()

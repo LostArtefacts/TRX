@@ -82,13 +82,13 @@ function M.setup()
       spacing = SPACING,
       align = ui.HAlign.CENTER,
       children = {
+        shifted_count,
         ui.widgets.Stack({
           orientation = ui.Orientation.HORIZONTAL,
           spacing = PART_SPACING,
           visible = has_hint | has_count,
           children = parts,
         }),
-        shifted_count,
         ui.widgets.Spacer({
           h = CAPTION_GAP,
           visible = has_hint | has_count,
