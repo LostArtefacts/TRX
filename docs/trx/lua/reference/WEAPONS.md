@@ -87,6 +87,16 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.HandPos.left" name="weapons.HandPos.left"></a>**`left`**: [trx.math.Vec3](MATH.md#math.Vec3). Offset in the left hand.
     - <a id="weapons.HandPos.right" name="weapons.HandPos.right"></a>**`right`**: [trx.math.Vec3](MATH.md#math.Vec3). Offset in the right hand.
 
+- <a id="weapons.Attachment" name="weapons.Attachment"></a>[lua]`trx.weapons.Attachment`
+
+    What a weapon can carry attached, such as the laser sight on the TR4
+    revolver. The player combines it with the weapon in the inventory.
+
+    Properties:
+    - <a id="weapons.Attachment.anim" name="weapons.Attachment.anim"></a>**`anim`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The object Lara's right hand is drawn from while she holds the weapon with the attachment.
+    - <a id="weapons.Attachment.inventory_meshes" name="weapons.Attachment.inventory_meshes"></a>**`inventory_meshes`**: integer. The meshes the inventory draws the weapon with while it carries the attachment, one bit each.
+    - <a id="weapons.Attachment.object" name="weapons.Attachment.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The pickup that attaches.
+
 - <a id="weapons.Ammo" name="weapons.Ammo"></a>[lua]`trx.weapons.Ammo`
 
     What the weapon is fed. A shot is one pull of the trigger, which for the
@@ -181,6 +191,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.ammo_object" name="weapons.Weapon.ammo_object"></a>**`ammo_object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The box of ammunition it takes, or `nil` where it takes none.
     - <a id="weapons.Weapon.ammo_objects" name="weapons.Weapon.ammo_objects"></a>**`ammo_objects`**: [trx.catalog.objects](CATALOG.md#catalog.objects). Every kind of ammunition it takes, each named by its box, in the order the inventory lists them. The first is [`ammo_object`](#weapons.Weapon.ammo_object), and the list is empty where the weapon takes none. Only the TR4 shotgun, grenade gun and crossbow take more than one.
     - <a id="weapons.Weapon.anim" name="weapons.Weapon.anim"></a>**`anim`**: [trx.weapons.Anim](#weapons.Anim). The animation numbers it is drawn and fired by.
+    - <a id="weapons.Weapon.attachment" name="weapons.Weapon.attachment"></a>**`attachment`**: [trx.weapons.Attachment](#weapons.Attachment). What the weapon can carry attached, such as the laser sight on the TR4 revolver, or `nil` where it takes nothing. [`trx.inventory.has_attachment`](INVENTORY.md#inventory.has_attachment) says whether it carries it.
     - <a id="weapons.Weapon.flash" name="weapons.Weapon.flash"></a>**`flash`**: [trx.weapons.Flash](#weapons.Flash). The muzzle flash a shot draws.
     - <a id="weapons.Weapon.glow" name="weapons.Weapon.glow"></a>**`glow`**: [trx.weapons.Glow](#weapons.Glow). The glow drawn where it burns.
     - <a id="weapons.Weapon.has_infinite_ammo" name="weapons.Weapon.has_infinite_ammo"></a>**`has_infinite_ammo`**: boolean. Whether the weapon never runs dry. The pistols do in most games, and a level or a script may say so of any weapon. A count of shots left means nothing in this context.

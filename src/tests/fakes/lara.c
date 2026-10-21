@@ -50,6 +50,24 @@ static INVENTORY_ENTRY *M_StateEntry(
     return nullptr;
 }
 
+// Gives every weapon no attachment, as the engine's registry does. A zeroed
+// record would name object 0 instead.
+static void M_SeedWeapons(void)
+{
+    static bool seeded = false;
+    if (seeded) {
+        return;
+    }
+    seeded = true;
+    for (int32_t i = 0; i < MAX_WEAPONS; i++) {
+        m_Weapons[i].attachment = (WEAPON_ATTACHMENT_INFO) {
+            .object_id = NO_OBJECT,
+            .anim_object_id = NO_OBJECT,
+            .inventory_meshes = -1,
+        };
+    }
+}
+
 static void M_Reset(void)
 {
     memset(&m_Lara, 0, sizeof(m_Lara));
@@ -94,6 +112,7 @@ RESULT Gun_Registry_Declare(
 
 WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)
 {
+    M_SeedWeapons();
     m_Weapons[gun_type].gun_type = gun_type;
     return &m_Weapons[gun_type];
 }
@@ -305,6 +324,17 @@ INVENTORY_STATE *Inv_GetState(void)
 OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 {
     return object_id;
+}
+
+bool Inv_State_HasAttachment(
+    const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
+{
+    for (int32_t i = 0; i < state->attached_count; i++) {
+        if (state->attached[i] == gun_type) {
+            return true;
+        }
+    }
+    return false;
 }
 
 int32_t Inv_State_GetKindAmmo(
