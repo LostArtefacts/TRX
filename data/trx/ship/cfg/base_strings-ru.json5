@@ -42,6 +42,7 @@
             "load_game": "\\{review}ЗАГРУЗИТЬ ИГРУ",
             "options": "\\{review}Настройки",
             "save_game": "\\{review}СОХРАНИТЬ ИГРУ",
+            "separate": "\\{review}РАЗЪЕДИНИТЬ",
             "statistics": "\\{review}Статистика",
             "use": "\\{review}ИСПОЛЬЗОВАТЬ",
         },
@@ -52,6 +53,9 @@
             "area_4": "\\{review}Зона 4",
             "area_5": "\\{review}Зона 5",
             "area_6": "\\{review}Зона 6",
+        },
+        "inventory": {
+            "attached_fmt": "\\{review}%s + %s",
         },
         "inventory_ring": {
             "heading_adventure": "\\{review}Приключение",

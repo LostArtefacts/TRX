@@ -42,6 +42,7 @@
             "load_game": "LOAD GAME",
             "options": "Options",
             "save_game": "SAVE GAME",
+            "separate": "SEPARATE",
             "statistics": "Statistics",
             "use": "USE",
         },
@@ -52,6 +53,9 @@
             "area_4": "Area 4",
             "area_5": "Area 5",
             "area_6": "Area 6",
+        },
+        "inventory": {
+            "attached_fmt": "%s + %s",
         },
         "inventory_ring": {
             "heading_adventure": "Adventure",

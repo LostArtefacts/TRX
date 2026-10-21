@@ -313,6 +313,27 @@ test("going back from the kinds keeps the kind the weapon fired", function()
   put_shotgun_away(shotgun, normal, wideshot)
 end)
 
+test("a weapon with an attachment offers to separate it", function()
+  fake.set_separable(true)
+  local shotgun, normal, wideshot = open_on_shotgun()
+  local separate = trx.locale.get("general/flat_menu/separate")
+  assert(text_middle(separate) ~= nil, "no option to separate")
+  press(Role.MENU_DOWN)
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  local separated = fake.calls().separate
+  assert(separated ~= nil and separated.count == 1, "nothing was separated")
+  assert(
+    separated.obj_id == trx.inventory.icon_of(shotgun.object)
+      or separated.obj_id == shotgun.object,
+    "the wrong one"
+  )
+  assert(fake.take_choice(MENU) == 0, "the menu closed")
+  assert(text_middle(separate) == nil, "the option stayed")
+  put_shotgun_away(shotgun, normal, wideshot)
+end)
+
 test("the compass is drawn open", function()
   carry()
   trx.inventory.give(objects.COMPASS_OPTION)

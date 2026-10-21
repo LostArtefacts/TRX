@@ -42,6 +42,7 @@
             "load_game": "\\{review}CHARGER PARTIE",
             "options": "\\{review}Options",
             "save_game": "\\{review}SAUVER PARTIE",
+            "separate": "\\{review}SÉPARER",
             "statistics": "\\{review}Statistiques",
             "use": "\\{review}UTILISER",
         },
@@ -52,6 +53,9 @@
             "area_4": "\\{review}Zone 4",
             "area_5": "\\{review}Zone 5",
             "area_6": "\\{review}Zone 6",
+        },
+        "inventory": {
+            "attached_fmt": "\\{review}%s + %s",
         },
         "inventory_ring": {
             "heading_adventure": "\\{review}Aventure",
