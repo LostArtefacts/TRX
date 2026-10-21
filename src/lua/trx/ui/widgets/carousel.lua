@@ -28,12 +28,25 @@ local SIDE_SIZE = 0.6
 ---A row of items turned to the one in the middle.
 ---@class (exact) trx.ui.Carousel: trx.ui.Widget
 ---@field private _position trx.ui.Tween
+---@field private _slide fun(step: integer)
 local Carousel = h.class("ui.Carousel", { extends = "ui.Widget" })
 
 ---Returns whether the row is still sliding to the selected item.
 ---@return boolean # Whether it slides.
 function Carousel:is_sliding()
   return self._position:is_moving()
+end
+
+---Selects the item some places away, and slides the row that way, wrapping
+---round at either end. Setting the selected signal slides the row the short
+---way round, which has no direction where the row holds two items.
+---
+---```lua
+---carousel:turn(-1)
+---```
+---@param by integer How many places to move, to the right where positive.
+function Carousel:turn(by)
+  self._slide(by)
 end
 
 -- How far an item stands from the middle, in places, going the short way round
@@ -120,23 +133,32 @@ function widgets.Carousel(settings)
     base.hold(child, self)
   end
 
+  local function slide(step)
+    if count < 2 or step == 0 then
+      return
+    end
+    placed = (placed - 1 + step) % count + 1
+    position:to(
+      position:target() + step,
+      value_of(self.ticks) or SLIDE_TICKS,
+      { curve = value_of(self.curve) or trx.ui.ease.quad_in_out }
+    )
+    self.selected:set(placed)
+  end
+
   -- The selection slides the row the short way round from where it is.
   base.listen(self, self.selected, function(index)
-    if count < 2 or index == nil then
+    if count < 2 or index == nil or index == placed then
       return
     end
     local step = (index - placed) % count
     if step > count / 2 then
       step = step - count
     end
-    placed = index
-    position:to(
-      position:target() + step,
-      value_of(self.ticks) or SLIDE_TICKS,
-      { curve = value_of(self.curve) or trx.ui.ease.quad_in_out }
-    )
+    slide(step)
   end)
 
   self._position = position
+  self._slide = slide
   return self
 end

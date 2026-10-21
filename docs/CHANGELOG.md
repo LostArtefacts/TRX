@@ -367,7 +367,7 @@
 - Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
 - Added `trx.signal.polled_while`, which reads a value once a tick only while another signal is true
 - Added `trx.ui.widgets.Spacer`, which keeps empty room that follows the text size
-- Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes
+- Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes, or either way with `trx.ui.Carousel:turn`
 - Added the `common.timer` module, which runs a function after some ticks or every few ticks, counted while the level runs or on every tick
 - Added `trx.ui.Screen.MENU` and `trx.ui.MenuContext`, so a script draws the menu the game opens over the play and on the title screen
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks, after a delay if asked, and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
