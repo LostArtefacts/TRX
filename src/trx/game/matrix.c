@@ -679,6 +679,15 @@ void Matrix_RotZ_M(MATRIX *const m, const int16_t angle)
 XYZ_16 Matrix_SlerpRot16(
     const XYZ_16 rotation_1, const XYZ_16 rotation_2, const double t)
 {
+    // Returns the endpoints unchanged, because the round trip through
+    // fixed-point matrices loses precision and turns even equal rotations.
+    if (t >= 1.0 || XYZ_16_AreEquivalent(rotation_1, rotation_2)) {
+        return rotation_2;
+    }
+    if (t <= 0.0) {
+        return rotation_1;
+    }
+
     MATRIX m1 = g_IDMatrix;
     M_RotYXZ(&m1, rotation_1);
     MATRIX m2 = g_IDMatrix;
