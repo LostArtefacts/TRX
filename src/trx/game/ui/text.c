@@ -35,6 +35,7 @@
 #define M_LINE_HEIGHT 15
 #define M_TR4_LINE_HEIGHT 29
 #define M_TR4_LINE_PITCH 24
+#define M_TR4_BASELINE 24
 
 typedef enum {
     M_FONT_DEFAULT = 0,
@@ -236,10 +237,18 @@ static int32_t M_GetTR4Row(const M_FONT font, const int32_t y)
     return row;
 }
 
-// Returns the height of a line of text, from its top to its baseline.
+// Returns the height of a line of text.
 static int32_t M_GetLineHeight(void)
 {
     return g_TRVersion == 4 ? M_TR4_LINE_HEIGHT : M_LINE_HEIGHT;
+}
+
+// Returns the distance from the top of a line of text to its baseline. In TR4,
+// the baseline sits above the bottom of the line, so that the capital letters
+// are centred in it.
+static int32_t M_GetBaseline(void)
+{
+    return g_TRVersion == 4 ? M_TR4_BASELINE : M_LINE_HEIGHT;
 }
 
 // Returns the distance between the baselines of two lines of text. In TR4,
@@ -640,7 +649,7 @@ static void M_Process(
 
     float x = scale_func(base_x / UI_Scaler_GetTextScale());
     float y = scale_func(
-        base_y / UI_Scaler_GetTextScale() + settings.scale * M_GetLineHeight());
+        base_y / UI_Scaler_GetTextScale() + settings.scale * M_GetBaseline());
     int32_t z = settings.z;
 
     float max_width = 0.0f;
@@ -757,7 +766,9 @@ static void M_Process(
     }
 
     if (out_h != nullptr) {
-        *out_h = y;
+        *out_h = y
+            + scale_func(
+                     settings.scale * (M_GetLineHeight() - M_GetBaseline()));
     }
 }
 

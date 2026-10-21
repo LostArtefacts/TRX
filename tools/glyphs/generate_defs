@@ -32,20 +32,32 @@ TEXT_STRETCH_Y = {4: 1.6}
 TEXT_GLYPH_CLASSES = {"T", "C", "c"}
 
 
+def get_icon_shift_y(glyphs: list[Glyph], stretch_y: float) -> int:
+    """Return how far to raise the glyphs that keep their size, so that they
+    stay centred on the stretched capital letters.
+    """
+    if stretch_y == 1.0:
+        return 0
+    glyph = next(g for g in glyphs if g.text == "H" and g.font_idx == 0)
+    _, bbox = glyph.source.load(glyph)
+    return round(-bbox.y * (stretch_y - 1.0) / 2)
+
+
 def load_glyph(
-    glyph: Glyph, source, stretch_y: float
+    glyph: Glyph, source, stretch_y: float, icon_shift_y: int
 ) -> tuple[np.ndarray, int, int, int, int]:
-    """Return the glyph's pixels and its l, t, r, b extents, stretched
-    vertically if it is text or marked with stretch().
+    """Return the glyph's pixels and its l, t, r, b extents. Text and glyphs
+    marked with stretch() are stretched vertically, and the other glyphs are
+    raised by icon_shift_y.
     """
     pixels, bbox = source.load(glyph)
     l = bbox.x + glyph.extra_x
     r = l + bbox.w
     t = bbox.y + glyph.extra_y
     b = t + bbox.h
-    if stretch_y == 1.0 or (
-        glyph.glyph_class not in TEXT_GLYPH_CLASSES and not glyph.stretch
-    ):
+    if glyph.glyph_class not in TEXT_GLYPH_CLASSES and not glyph.stretch:
+        return pixels, l, t - icon_shift_y, r, b - icon_shift_y
+    if stretch_y == 1.0:
         return pixels, l, t, r, b
 
     height, width, _ = pixels.shape
@@ -62,6 +74,7 @@ def pack_sprites(
     output_dir: Path,
     font_idx: int,
     stretch_y: float = 1.0,
+    icon_shift_y: int = 0,
     page_size: int = 256,
     padding: int = 1,
 ):
@@ -78,7 +91,7 @@ def pack_sprites(
 
     packer = rectpack.newPacker(rotation=False)
     for sprite_index, (glyph, source) in glyph_with_sources.items():
-        pixels, *_ = load_glyph(glyph, source, stretch_y)
+        pixels, *_ = load_glyph(glyph, source, stretch_y, icon_shift_y)
         height, width, _ = pixels.shape
         packer.add_rect(width + padding * 2, height + padding * 2, sprite_index)
     packer.add_bin(page_size, page_size, count=float("inf"))
@@ -101,7 +114,9 @@ def pack_sprites(
             height = rect.height - padding * 2
             glyph, source = glyph_with_sources[rect.rid]
 
-            pixels, l, t, r, b = load_glyph(glyph, source, stretch_y)
+            pixels, l, t, r, b = load_glyph(
+                glyph, source, stretch_y, icon_shift_y
+            )
 
             dst_pixels[
                 dst_y : dst_y + height,
@@ -184,6 +199,8 @@ def main() -> None:
 
     glyphs = get_glyph_map(input_dir)
 
+    stretch_y = TEXT_STRETCH_Y.get(args.game, 1.0)
+    icon_shift_y = get_icon_shift_y(glyphs, stretch_y)
     fonts = sorted({glyph.font_idx for glyph in glyphs})
     for font_idx in fonts:
         font_glyphs = [glyph for glyph in glyphs if glyph.font_idx == font_idx]
@@ -191,7 +208,8 @@ def main() -> None:
             font_glyphs,
             output_dir=injector_output_dir,
             font_idx=font_idx,
-            stretch_y=TEXT_STRETCH_Y.get(args.game, 1.0),
+            stretch_y=stretch_y,
+            icon_shift_y=icon_shift_y,
         )
 
     default_glyphs = [glyph for glyph in glyphs if glyph.font_idx == 0]

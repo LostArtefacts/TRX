@@ -185,7 +185,7 @@ end
 
 -- An arrow that says the rows go on past the top or the foot of the box. It
 -- keeps its room while there is nothing to point at, which `lit` says.
-local function hint(state, glyph, anchor, lit)
+local function hint(state, glyph, nudge, lit)
   local scale = fitted(state, HINT_SCALE)
   return trx.ui.widgets.Custom({
     measure = function()
@@ -201,7 +201,7 @@ local function hint(state, glyph, anchor, lit)
       trx.ui.primitive.text(
         glyph,
         x + (w - gw) / 2,
-        y + slack * anchor,
+        y + slack / 2 + fitted(state, nudge) * trx.ui.text_scale,
         scale,
         0
       )
@@ -252,8 +252,13 @@ local function window(state)
     local down = state.first:map(function(first)
       return first + visible - 1 < #state.rows
     end)
-    table.insert(body, 1, hint(state, "\\{arrow up}", 1.5, up))
-    body[#body + 1] = hint(state, "\\{arrow down}", -1.0, down)
+    table.insert(
+      body,
+      1,
+      hint(state, "\\{arrow up}", metrics.HINT_NUDGE_UP, up)
+    )
+    body[#body + 1] =
+      hint(state, "\\{arrow down}", metrics.HINT_NUDGE_DOWN, down)
   end
 
   return trx.ui.widgets.Frame({

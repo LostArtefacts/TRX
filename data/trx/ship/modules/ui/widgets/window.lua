@@ -13,12 +13,10 @@ local M = {}
 
 local TITLE_SPACING = 3
 local HINT_SCALE = 0.7
-local HINT_ANCHOR_UP = 1.5
-local HINT_ANCHOR_DOWN = -1.0
 
 -- A row the height of a scroll arrow, there while `visible` holds and holding
 -- the arrow while `blank` does not.
-local function hint_row(glyph, anchor, visible, blank)
+local function hint_row(glyph, nudge, visible, blank)
   local arrow = trx.ui.widgets.Custom({
     measure = function()
       return 0, metrics.HINT_HEIGHT * trx.ui.text_scale
@@ -28,7 +26,7 @@ local function hint_row(glyph, anchor, visible, blank)
       trx.ui.primitive.text(
         glyph,
         x + (w - gw) / 2,
-        y + (h - gh) * anchor,
+        y + (h - gh) / 2 + nudge * trx.ui.text_scale,
         HINT_SCALE,
         0
       )
@@ -114,9 +112,18 @@ function M.new(settings)
           return visible < count
         end
       )
-    up = hint_row("\\{arrow up}", HINT_ANCHOR_UP, hints, ~scroll:more_above())
-    down =
-      hint_row("\\{arrow down}", HINT_ANCHOR_DOWN, hints, ~scroll:more_below())
+    up = hint_row(
+      "\\{arrow up}",
+      metrics.HINT_NUDGE_UP,
+      hints,
+      ~scroll:more_above()
+    )
+    down = hint_row(
+      "\\{arrow down}",
+      metrics.HINT_NUDGE_DOWN,
+      hints,
+      ~scroll:more_below()
+    )
   end
 
   body[#body + 1] = up
