@@ -19,6 +19,7 @@ typedef enum {
     M_SOUND,
     M_READY_ANIM,
     M_SMOKE_SIZE,
+    M_SIGHT_FIRE,
     M_NUM_ROUTINE_KINDS,
 } M_ROUTINE_KIND;
 
@@ -110,6 +111,14 @@ void Gun_Routines_AddSmokeSize(
     M_Add(M_SMOKE_SIZE, name, (M_FUNC)func);
 }
 
+void Gun_Routines_AddSightFire(
+    const char *const name,
+    void (*const func)(
+        LARA_GUN_TYPE gun_type, GAME_VECTOR start, GAME_VECTOR target))
+{
+    M_Add(M_SIGHT_FIRE, name, (M_FUNC)func);
+}
+
 void (*Gun_Routines_GetFire(const char *const name))(LARA_GUN_TYPE, bool)
 {
     return (void (*)(LARA_GUN_TYPE, bool))M_Get(M_FIRE, name);
@@ -133,4 +142,11 @@ int16_t (*Gun_Routines_GetReadyAnim(const char *const name))(void)
 uint8_t (*Gun_Routines_GetSmokeSize(const char *const name))(void)
 {
     return (uint8_t (*)(void))M_Get(M_SMOKE_SIZE, name);
+}
+
+void (*Gun_Routines_GetSightFire(const char *const name))(
+    LARA_GUN_TYPE, GAME_VECTOR, GAME_VECTOR)
+{
+    return (void (*)(LARA_GUN_TYPE, GAME_VECTOR, GAME_VECTOR))M_Get(
+        M_SIGHT_FIRE, name);
 }

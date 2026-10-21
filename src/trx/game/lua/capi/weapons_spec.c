@@ -347,6 +347,7 @@ static RESULT M_ReadAttachment(
     MUST(M_ReadObjectId(L, idx, "anim", &attachment->anim_object_id));
     M_INT(L, idx, "inventory_meshes", attachment->inventory_meshes);
     M_INT(L, idx, "fire_delay", attachment->fire_delay);
+    M_ROUTINE(L, idx, SightFire, "fire", attachment->fire_func);
     return OK;
 }
 

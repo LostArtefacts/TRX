@@ -25,6 +25,10 @@ void Gun_Routines_AddFlash(const char *name, GUN_FLASH (*func)(void));
 void Gun_Routines_AddSound(const char *name, void (*func)(bool stopping));
 void Gun_Routines_AddReadyAnim(const char *name, int16_t (*func)(void));
 void Gun_Routines_AddSmokeSize(const char *name, uint8_t (*func)(void));
+void Gun_Routines_AddSightFire(
+    const char *name,
+    void (*func)(
+        LARA_GUN_TYPE gun_type, GAME_VECTOR start, GAME_VECTOR target));
 
 // Return a named routine that a weapon spec references.
 void (*Gun_Routines_GetFire(const char *name))(LARA_GUN_TYPE, bool);
@@ -32,6 +36,8 @@ GUN_FLASH (*Gun_Routines_GetFlash(const char *name))(void);
 void (*Gun_Routines_GetSound(const char *name))(bool);
 int16_t (*Gun_Routines_GetReadyAnim(const char *name))(void);
 uint8_t (*Gun_Routines_GetSmokeSize(const char *name))(void);
+void (*Gun_Routines_GetSightFire(const char *name))(
+    LARA_GUN_TYPE, GAME_VECTOR, GAME_VECTOR);
 
 // Register routines during module initialization.
 #define REGISTER_GUN_KIND(type_, ...)                                          \

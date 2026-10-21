@@ -59,14 +59,16 @@ void Gun_LaserSight_Aim(
     ITEM *const creature = M_FindCreature(start, &target);
     Room_GetSector(target.pos, &target.room_num);
 
-    if (fire && !Gun_ShootStatic(start, target)) {
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(gun_type);
+    if (fire && weapon->attachment.fire_func != nullptr) {
+        weapon->attachment.fire_func(gun_type, start, target);
+    } else if (fire && !Gun_ShootStatic(start, target)) {
         if (Gun_SmashItems(start, target, &target.pos, NO_OBJECT)
             == PROJECTILE_HIT_STOP) {
             Room_GetSector(target.pos, &target.room_num);
         } else if (creature != nullptr) {
             Stats_AddAmmoHits();
-            Gun_HitTarget(
-                creature, &start, &target, Gun_Registry_Get(gun_type)->damage);
+            Gun_HitTarget(creature, &start, &target, weapon->damage);
         } else if (!reaches) {
             Spawn_RicochetRay(start, target, 8, false);
         }

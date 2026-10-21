@@ -327,6 +327,19 @@ static void M_FireCrossbow(const LARA_GUN_TYPE weapon_type, const bool running)
         Gun_Registry_Get(weapon_type)->sample_num, nullptr, SPM_NORMAL);
 }
 
+// Fires a bolt from the laser sight view toward where the sight points, as
+// TR4 does.
+static void M_FireCrossbowFromSight(
+    const LARA_GUN_TYPE weapon_type, const GAME_VECTOR start,
+    const GAME_VECTOR target)
+{
+    int16_t angles[2];
+    Math_GetVectorAngles(
+        target.x - start.x, target.y - start.y, target.z - start.z, angles);
+    CrossbowBolt_Fire(
+        start.pos, start.room_num, (XYZ_16) { .x = angles[1], .y = angles[0] });
+}
+
 static void M_FireGrenade(const LARA_GUN_TYPE weapon_type, const bool running)
 {
     if (running) {
@@ -849,6 +862,7 @@ REGISTER_GUN_KIND(
 REGISTER_GUN_ROUTINE(Fire, "generic", M_FireGeneric)
 REGISTER_GUN_ROUTINE(Fire, "m16", M_FireM16)
 REGISTER_GUN_ROUTINE(Fire, "crossbow", M_FireCrossbow)
+REGISTER_GUN_ROUTINE(SightFire, "crossbow", M_FireCrossbowFromSight)
 REGISTER_GUN_ROUTINE(Fire, "grenade", M_FireGrenade)
 REGISTER_GUN_ROUTINE(Fire, "rocket", M_FireRocket)
 REGISTER_GUN_ROUTINE(Fire, "harpoon", M_FireHarpoon)

@@ -6,6 +6,7 @@
 #include <trx/game/lara/enum.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/sound/ids.h>
+#include <trx/game/types.h>
 
 typedef enum {
     WEAPON_TYPE_DUAL_PISTOLS,
@@ -114,6 +115,10 @@ typedef struct {
     int32_t inventory_meshes;
     // The ticks between two shots through the laser sight view.
     int32_t fire_delay;
+    // Fires a shot through the laser sight view from start toward target, or
+    // nullptr for a shot that hits at once.
+    void (*fire_func)(
+        LARA_GUN_TYPE gun_type, GAME_VECTOR start, GAME_VECTOR target);
 } WEAPON_ATTACHMENT_INFO;
 
 typedef struct {

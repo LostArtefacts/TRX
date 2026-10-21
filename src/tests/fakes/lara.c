@@ -753,6 +753,12 @@ uint8_t (*Gun_Routines_GetSmokeSize(const char *const name))(void)
     return nullptr;
 }
 
+void (*Gun_Routines_GetSightFire(const char *const name))(
+    LARA_GUN_TYPE, GAME_VECTOR, GAME_VECTOR)
+{
+    return nullptr;
+}
+
 LARA_GUN_TYPE Lara_Vehicle_GetGunType(void)
 {
     return LGT_UNARMED;

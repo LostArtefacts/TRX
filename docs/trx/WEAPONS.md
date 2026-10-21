@@ -255,6 +255,11 @@ most, loose or on a weapon.
     <td>Integer</td>
     <td>The ticks between two shots through the laser sight view, which a weapon with an attachment opens while the player holds the look key.</td>
   </tr>
+  <tr valign="top">
+    <td><code>fire</code></td>
+    <td>String</td>
+    <td>What a shot through the laser sight view does: <code>crossbow</code> sends a bolt toward where the sight points. A weapon that names nothing hits at once where the sight points.</td>
+  </tr>
 </table>
 
 ### `aim`
