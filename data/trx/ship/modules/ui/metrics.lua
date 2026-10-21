@@ -7,9 +7,6 @@
 
 local M = {}
 
--- The height of one line of text.
-M.TEXT_HEIGHT = 15
-
 -- The height of the arrows that say a list goes on past its edge.
 M.HINT_HEIGHT = 7
 
@@ -84,7 +81,7 @@ function M.chrome_height(title_spacing, scrolls)
   ---@type number
   local height = 2 * (M.outer_pad() + M.body_pad_y())
   if title_spacing ~= nil then
-    height = height + M.TEXT_HEIGHT + 2 * M.title_pad_y() + title_spacing
+    height = height + M.line_height() + 2 * M.title_pad_y() + title_spacing
   end
   if scrolls then
     height = height + 2 * M.HINT_HEIGHT
@@ -97,6 +94,13 @@ end
 function M.line_height()
   local _, h = trx.ui.primitive.measure_text("0", 1.0)
   return h / trx.ui.text_scale
+end
+
+-- The distance between the lines of a passage of text, in canvas units at the
+-- default text size. In TR4, it is shorter than the height of one line.
+function M.line_pitch()
+  local _, h = trx.ui.primitive.measure_text("0\n0", 1.0)
+  return h / trx.ui.text_scale - M.line_height()
 end
 
 -- The gap between two rows of a list.

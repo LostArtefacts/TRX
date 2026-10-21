@@ -26,11 +26,40 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from shared.glyph_mapping import CombineSource, Glyph, get_glyph_map
 from shared.paths import PROJECT_PATHS, REPO_DIR, SHARED_SRC_DIR
 
+# The original TR4 draws its font 640/512 times wider and 480/240 times taller
+# than the bitmaps, which makes the letters 1.6 times as tall as they are wide.
+TEXT_STRETCH_Y = {4: 1.6}
+TEXT_GLYPH_CLASSES = {"T", "C", "c"}
+
+
+def load_glyph(
+    glyph: Glyph, source, stretch_y: float
+) -> tuple[np.ndarray, int, int, int, int]:
+    """Return the glyph's pixels and its l, t, r, b extents, stretched
+    vertically if it is text.
+    """
+    pixels, bbox = source.load(glyph)
+    l = bbox.x + glyph.extra_x
+    r = l + bbox.w
+    t = bbox.y + glyph.extra_y
+    b = t + bbox.h
+    if stretch_y == 1.0 or glyph.glyph_class not in TEXT_GLYPH_CLASSES:
+        return pixels, l, t, r, b
+
+    height, width, _ = pixels.shape
+    image = Image.fromarray(pixels.astype("uint8"), "RGBA").convert("RGBa")
+    image = image.resize(
+        (width, max(1, round(height * stretch_y))), Image.Resampling.LANCZOS
+    )
+    pixels = np.array(image.convert("RGBA"))
+    return pixels, l, round(t * stretch_y), r, round(b * stretch_y)
+
 
 def pack_sprites(
     glyphs: list[Glyph],
     output_dir: Path,
     font_idx: int,
+    stretch_y: float = 1.0,
     page_size: int = 256,
     padding: int = 1,
 ):
@@ -47,7 +76,7 @@ def pack_sprites(
 
     packer = rectpack.newPacker(rotation=False)
     for sprite_index, (glyph, source) in glyph_with_sources.items():
-        pixels, _ = source.load(glyph)
+        pixels, *_ = load_glyph(glyph, source, stretch_y)
         height, width, _ = pixels.shape
         packer.add_rect(width + padding * 2, height + padding * 2, sprite_index)
     packer.add_bin(page_size, page_size, count=float("inf"))
@@ -70,7 +99,7 @@ def pack_sprites(
             height = rect.height - padding * 2
             glyph, source = glyph_with_sources[rect.rid]
 
-            pixels, bbox = source.load(glyph)
+            pixels, l, t, r, b = load_glyph(glyph, source, stretch_y)
 
             dst_pixels[
                 dst_y : dst_y + height,
@@ -85,10 +114,10 @@ def pack_sprites(
                     "y": dst_y,
                     "w": width,
                     "h": height,
-                    "l": bbox.x + glyph.extra_x,
-                    "t": bbox.y + glyph.extra_y,
-                    "b": bbox.y + glyph.extra_y + bbox.h,
-                    "r": bbox.x + glyph.extra_x + bbox.w,
+                    "l": l,
+                    "t": t,
+                    "b": b,
+                    "r": r,
                 }
             )
 
@@ -156,7 +185,12 @@ def main() -> None:
     fonts = sorted({glyph.font_idx for glyph in glyphs})
     for font_idx in fonts:
         font_glyphs = [glyph for glyph in glyphs if glyph.font_idx == font_idx]
-        pack_sprites(font_glyphs, output_dir=injector_output_dir, font_idx=font_idx)
+        pack_sprites(
+            font_glyphs,
+            output_dir=injector_output_dir,
+            font_idx=font_idx,
+            stretch_y=TEXT_STRETCH_Y.get(args.game, 1.0),
+        )
 
     default_glyphs = [glyph for glyph in glyphs if glyph.font_idx == 0]
     generate_def_file(def_path, default_glyphs)

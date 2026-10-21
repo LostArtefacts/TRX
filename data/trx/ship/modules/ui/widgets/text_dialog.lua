@@ -96,7 +96,9 @@ local function text_widget(self)
         w = math.max(w, (trx.ui.primitive.measure_text(page, 1.0)))
       end
       if #pages > 1 then
-        return w, metrics.TEXT_HEIGHT * self.lines * trx.ui.text_scale
+        local h = metrics.line_height()
+          + metrics.line_pitch() * (self.lines - 1)
+        return w, h * trx.ui.text_scale
       end
       local _, h = trx.ui.primitive.measure_text(current, 1.0)
       return w, h

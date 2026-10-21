@@ -26,7 +26,6 @@ local FOOTER_SPACING = 20
 local BAR_WIDTH = 60
 local BAR_HEIGHT = 12
 local SWATCH_SPACING = 4
-local SWATCH_SIZE = metrics.TEXT_HEIGHT - 2
 local BLACK = trx.math.color("000000")
 
 local Role = trx.input.Role
@@ -34,6 +33,10 @@ local Role = trx.input.Role
 local width_of = metrics.text_width
 
 -- How wide the arrows around a value are, with the gaps they keep from it.
+local function swatch_size()
+  return metrics.line_height() - 2
+end
+
 local function arrows_width()
   return width_of("\\{button left}")
     + width_of("\\{button right}")
@@ -112,7 +115,7 @@ local function measure_value(self, key)
   if rows.is_color(key) then
     result = math.max(result, width_of("#FFFFFF"))
       + SWATCH_SPACING
-      + SWATCH_SIZE
+      + swatch_size()
   end
   return result
 end
@@ -298,8 +301,8 @@ local function value_widget(key, changed)
         color = state:map(function(v)
           return v.color or BLACK
         end),
-        w = SWATCH_SIZE,
-        h = SWATCH_SIZE,
+        w = swatch_size(),
+        h = swatch_size(),
       }),
     },
   })

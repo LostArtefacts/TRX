@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define UI_TEXT_HEIGHT 15
 #define UI_TEXT_BASE_SCALE 0x10000
 
 typedef struct {

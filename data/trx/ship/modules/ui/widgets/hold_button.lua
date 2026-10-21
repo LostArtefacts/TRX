@@ -26,11 +26,14 @@ local BAR_HEIGHT = 4.0
 local HOLD_DEBUFF = 10
 local HOLD_MAX = 30
 
--- The height that the button takes, in canvas units at the default text size.
-M.HEIGHT = 2.0 * PAD_Y
-  + metrics.TEXT_HEIGHT * TEXT_SCALE
-  + SPACING
-  + BAR_HEIGHT
+-- Returns the height that the button takes, in canvas units at the default
+-- text size.
+function M.height()
+  return 2.0 * PAD_Y
+    + metrics.line_height() * TEXT_SCALE
+    + SPACING
+    + BAR_HEIGHT
+end
 
 -- A button: its widget, and the hold it counts.
 ---@class common.ui.HoldButton

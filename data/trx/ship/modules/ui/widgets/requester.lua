@@ -46,7 +46,8 @@ local function fit_rows(fitting, count, width)
       - (fitting.footer_height or 0)
       - chrome_height(fitting.title ~= nil, scrolls)
       + fitting.row_spacing
-    local rows = math.floor(room / (metrics.TEXT_HEIGHT + fitting.row_spacing))
+    local rows =
+      math.floor(room / (metrics.line_height() + fitting.row_spacing))
     return math.min(math.max(rows, MIN_VISIBLE_ROWS), MAX_VISIBLE_ROWS)
   end
   local rows = fits(false)
@@ -146,7 +147,7 @@ function M.new(settings)
       or nil,
     row_pad = settings.row_pad,
     row_spacing = fitting.row_spacing,
-    row_height = metrics.TEXT_HEIGHT,
+    row_height = metrics.line_height(),
     hint_height = metrics.HINT_HEIGHT,
     rule_overhang = metrics.rule_overhang(),
     frame_overhang = metrics.frame_overhang(),
@@ -212,7 +213,7 @@ function M.on_page_line(req, anchor, footer_height)
       footer_height = footer_height,
     }, MAX_VISIBLE_ROWS + 1, w)
     local height = chrome_height(true, true)
-      + rows * metrics.TEXT_HEIGHT
+      + rows * metrics.line_height()
       + (rows - 1) * spacing
     local line = (available_height(w) - height - 5) * anchor
       + (height - footer_height) / 2
