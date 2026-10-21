@@ -2967,6 +2967,9 @@
         "lara_crossbow": {
             "name": "\\{review}Animacja kuszy",
         },
+        "lara_crossbow_laser": {
+            "name": "\\{review}Animacja kuszy (celownik laserowy)",
+        },
         "lara_desert_eagle": {
             "name": "Animacja Desert Eagle",
         },
@@ -3014,6 +3017,9 @@
         },
         "lara_revolver": {
             "name": "\\{review}Animacja rewolweru",
+        },
+        "lara_revolver_laser": {
+            "name": "\\{review}Animacja rewolweru (celownik laserowy)",
         },
         "lara_rib": {
             "name": "Animacja RIB",
