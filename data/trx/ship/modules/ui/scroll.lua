@@ -4,7 +4,7 @@
 -- Usage:
 --   local scroll = require("common.ui.scroll")
 --   local list = scroll.new({ count = 20, visible = 8 })
---   list:select_next(trx.config.get("ui.enable_wraparound"))
+--   list:select_next(scroll.wraps())
 --   local first = list.first:get()
 
 local M = {}
@@ -19,6 +19,31 @@ trx.config.declare({
   kind = "boolean",
   default = true,
 })
+
+-- Returns whether directional navigation in menus wraps around at either
+-- end, as the wraparound setting says.
+---@return boolean
+function M.wraps()
+  return trx.config.get("ui.enable_wraparound") == true
+end
+
+-- Returns the item `step` items away from `at` in a list of `count` items,
+-- counted from 1. Past either end, the item wraps around to the other end
+-- where the wraparound setting is on; otherwise, the function returns nil.
+---@param at integer
+---@param step integer
+---@param count integer
+---@return integer?
+function M.step(at, step, count)
+  local to = at + step
+  if to >= 1 and to <= count then
+    return to
+  end
+  if count == 0 or not M.wraps() then
+    return nil
+  end
+  return (to - 1) % count + 1
+end
 
 ---@class common.ui.Scroll
 ---@field first trx.signal.Signal The first item in the window.

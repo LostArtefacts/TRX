@@ -360,7 +360,7 @@ function Editor:navigate(keys)
 
   local focus = self.focus:get()
   local custom = self:layout() ~= Layout.DEFAULT
-  local wraps = trx.config.get("ui.enable_wraparound")
+  local wraps = scroll.wraps()
   if focus ~= "inputs" and keys:pressed(Role.MENU_CONFIRM) then
     return "exit"
   elseif keys:pressed(Role.MENU_BACK) then
