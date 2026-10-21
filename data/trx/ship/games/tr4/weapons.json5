@@ -408,6 +408,7 @@
             "anim": "lara_crossbow_laser",
             "inventory_meshes": 11,
             "fire_delay": 32,
+            "fire": "crossbow",
         },
         "ammo": {
             "initial_shots": 10,
