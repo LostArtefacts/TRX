@@ -41,9 +41,16 @@ local function chrome_height(line)
     + line
 end
 
-local function visible_rows()
+-- How many rows show in a dialog of the given width, in canvas units at the
+-- default text size. The rows fit the room that the dialog is placed in, such
+-- as the room under the logo of the title screen, and leave a line of text
+-- free under the dialog, so that it stays clear of the caption at the foot of
+-- the screen.
+local function visible_rows(width)
   local line = metrics.line_height()
-  local room = trx.ui.safe_area.height / trx.ui.text_scale
+  local area =
+    trx.ui.safe_area_for((width + window.chrome_width()) * trx.ui.text_scale)
+  local room = area.height / trx.ui.text_scale - line / (1 - M.PLACE.y)
   local rows = math.floor((room - chrome_height(line)) / line)
   return math.max(MIN_VISIBLE_ROWS, math.min(rows, metrics.MAX_DIALOG_ROWS))
 end
@@ -51,13 +58,11 @@ end
 -- The size of the dialog: how wide its rows are, how many it shows, and
 -- whether the tab bar shows the active tab alone.
 local function lay_out(tabs, titles)
-  local rows = visible_rows()
-  local max_w, min_w, height = 0.0, 0.0, 0
+  local max_w, min_w = 0.0, 0.0
   for _, tab in ipairs(tabs) do
     local content, least = tab:widths()
     max_w = math.max(max_w, content)
     min_w = math.max(min_w, least)
-    height = math.max(height, tab:fit(rows))
   end
   local available = (
     trx.ui.safe_area.width / trx.ui.text_scale - window.chrome_width()
@@ -71,8 +76,14 @@ local function lay_out(tabs, titles)
   local bar = collapsed and single or full
   max_w = math.max(max_w, bar)
   min_w = math.max(min_w, bar)
+  local width = math.max(min_w, math.min(max_w, available))
+  local rows = visible_rows(width)
+  local height = 0
+  for _, tab in ipairs(tabs) do
+    height = math.max(height, tab:fit(rows))
+  end
   return {
-    width = math.max(min_w, math.min(max_w, available)),
+    width = width,
     height = height,
     collapsed = collapsed,
   }
