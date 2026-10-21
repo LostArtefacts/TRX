@@ -1,10 +1,11 @@
-#include "sophia_internal.h"
+#include <trx/game/objects/projectiles/sophia_laser_bolt.h>
 
 #include <trx/core/math/func.h>
 #include <trx/game/items/manager.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/projectiles/sophia_plasma_ball.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>

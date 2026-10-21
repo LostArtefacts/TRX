@@ -1,5 +1,3 @@
-#include "tony_internal.h"
-
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
@@ -8,6 +6,7 @@
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/projectiles/tony_fire_ball.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/pathing.h>
