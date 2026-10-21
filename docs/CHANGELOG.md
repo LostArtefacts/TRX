@@ -57,7 +57,7 @@
 - Changed the PS1 loading bars to match the size and position of the PS1 releases, with a "Loading" caption in TR4 (TRX1619)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Changed the inventory and pause screens in TR4 to no longer fade in and out by default, as in the original game (Graphic Options → UI)
-- Changed the TR4 inventory to open on the item it was left on by default, as in the original game (Gameplay → General → Remember inventory position)
+- Changed the TR4 inventory to open on the item it was left on by default, and to keep that item in saved games, as in the original game (Gameplay → General → Remember inventory position) (TRX1843)
 - Changed the names of the items in the TR4 inventory to show in gold, as in the original game
 - Changed the texts of the examined items in TR4 to show in the colours of the original game (TRX484)
 - Changed the examine screen to show its hide dialog prompt where the rotate prompt shows, and to no longer repeat the name of the item over its description

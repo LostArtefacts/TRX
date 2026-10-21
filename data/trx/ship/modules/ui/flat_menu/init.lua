@@ -55,9 +55,9 @@ local EXAMINE_ZOOM = 2
 local EXAMINE_FADE_TICKS = 16
 
 -- The entry the menu was left on, which it opens on again where the player
--- asks the inventory to remember its position. A new game forgets it.
----@type integer?
-local left_on = nil
+-- asks the inventory to remember its position. The savegame keeps it, as in
+-- the original, and a new game forgets it.
+local store = trx.store.game
 
 local function is_remembered()
   local ok, mode = pcall(trx.config.get, "gameplay.ring_memory_mode")
@@ -394,6 +394,7 @@ end
 -- Picks the entry the menu was left on, or another fill of the same
 -- waterskin.
 local function pick_left_on(row_strip)
+  local left_on = store.flat_menu_left_on
   if not is_remembered() or left_on == nil or row_strip:pick(left_on) then
     return
   end
@@ -428,10 +429,6 @@ local function close(state, used)
   -- lock that the entry does not fit.
   if used ~= nil then
     trx.input.hold_off(Role.ACTION)
-  end
-  local picked = state.main ~= nil and state.main:picked() or nil
-  if picked ~= nil then
-    left_on = picked.object
   end
   if ticks > 0 then
     state.backdrop:to(0, ticks)
@@ -796,14 +793,6 @@ end
 -- Opening
 -------------------------------------------------------------------------------
 
--- Forgets the entry the menu was left on as a game starts. Called once, as
--- the menu is set up.
-function M.setup()
-  trx.events.on_game_start(function()
-    left_on = nil
-  end)
-end
-
 -- Opens the quick save and load screens as the list of save slots. The
 -- screen ends with a cancel, which the engine takes whether or not a game was
 -- saved.
@@ -894,7 +883,13 @@ function M.open(ctx)
     else
       pick_left_on(state.main)
     end
-    state.main.on_change = function()
+    -- Remembers the entry as soon as the row settles on it. Remembering it
+    -- as the menu closes would overwrite the entry that a load restores.
+    state.main.on_change = function(row_strip)
+      local picked = row_strip:picked()
+      if picked ~= nil then
+        store.flat_menu_left_on = picked.object
+      end
       refresh_options(state)
     end
     state.main.fade:set(0)
