@@ -424,7 +424,9 @@ static void M_RenderWorldPasses(const M_PRIV *const p)
     SceneCompositor_SetSubtractiveBlend();
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_SUB);
     glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    // Adds light and leaves the coverage alone, so that the scene under the
+    // interface still shows through the face.
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_ONE);
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_ADD);
     glDepthMask(GL_TRUE);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -508,7 +510,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
                 p->objects_source, SCENE_PASS_OPAQUE);
             p->objects_source->render_pass(
                 p->objects_source, SCENE_PASS_TRANSPARENT);
-            glBlendFunc(GL_ONE, GL_ONE);
+            glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ZERO, GL_ONE);
             p->objects_source->render_pass(
                 p->objects_source, SCENE_PASS_BLEND_ADD);
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -573,7 +575,7 @@ static void M_DrawBinocularMask(const M_PRIV *const p)
 
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_OPAQUE);
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_TRANSPARENT);
-    glBlendFunc(GL_ONE, GL_ONE);
+    glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ZERO, GL_ONE);
     p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_ADD);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     if (p->objects_source->render_end != nullptr) {
