@@ -1,5 +1,3 @@
-#include "sophia_internal.h"
-
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/math/geom.h>
@@ -11,6 +9,8 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/electric.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/projectiles/sophia_laser_bolt.h>
+#include <trx/game/objects/projectiles/sophia_plasma_ball.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
@@ -21,6 +21,7 @@
 
 // clang-format off
 #define M_HIT_POINTS     300
+#define M_KNOCKBACK_DAMAGE 200
 #define M_SMALL_FLASH    10
 
 #define M_RIGHT_PRONG    0
@@ -210,7 +211,7 @@ static bool M_KnockBackCollision(const FX_RING *const ring)
     }
 
     Lara_TakeDamage(
-        M_GetObjectDamage("knockback_damage", SOPHIA_KNOCKBACK_DAMAGE), true);
+        M_GetObjectDamage("knockback_damage", M_KNOCKBACK_DAMAGE), true);
 
     const int16_t angle = Math_Atan(delta.z, delta.x);
     const int16_t dy = lara_item->rot.y - angle;
@@ -944,7 +945,7 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_HIT_POINTS),
         OBJECT_PROPERTY_STORED(
-            "knockback_damage", SOPHIA_KNOCKBACK_DAMAGE,
+            "knockback_damage", M_KNOCKBACK_DAMAGE,
             "Damage dealt by the knockback shockwave."),
         OBJECT_PROPERTY_STORED(
             "laser_bolt_damage", SOPHIA_LASER_BOLT_DAMAGE,

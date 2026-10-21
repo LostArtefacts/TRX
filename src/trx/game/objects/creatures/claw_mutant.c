@@ -3,7 +3,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/creatures/claw_mutant_internal.h>
+#include <trx/game/objects/projectiles/claw_mutant_plasma_ball.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>

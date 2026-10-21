@@ -1,4 +1,4 @@
-#include "tony_internal.h"
+#include <trx/game/objects/projectiles/tony_fire_ball.h>
 
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>

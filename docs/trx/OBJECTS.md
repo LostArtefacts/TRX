@@ -1085,24 +1085,6 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### dart
-<table width="100%">
-<thead><tr><th>Property</th><th align="center">TR1 (39)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt on hit.</td></tr>
-<tr><td><code>poison</code></td><td colspan="3" align="center">false</td><td>Apply poison buildup in addition to hit damage.</td></tr>
-</tbody>
-</table>
-
-#### disc
-<table width="100%">
-<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (61)</th><th align="center">TR3</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt on hit.</td></tr>
-<tr><td><code>poison</code></td><td colspan="3" align="center">false</td><td>Apply poison buildup in addition to hit damage.</td></tr>
-</tbody>
-</table>
-
 #### falling_blade
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
@@ -1340,15 +1322,6 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara is struck by the blades.</td></tr>
-</tbody>
-</table>
-
-#### poison_dart
-<table width="100%">
-<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (90)</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>damage</code></td><td colspan="3" align="center">25</td><td>Damage dealt on hit.</td></tr>
-<tr><td><code>poison</code></td><td colspan="3" align="center">true</td><td>Apply poison buildup in addition to hit damage.</td></tr>
 </tbody>
 </table>
 
@@ -1930,6 +1903,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### dart
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (39)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt on hit.</td></tr>
+<tr><td><code>poison</code></td><td colspan="3" align="center">false</td><td>Apply poison buildup in addition to hit damage.</td></tr>
+</tbody>
+</table>
+
 #### desert_eagle_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (252)</th><th align="center">TR2 (289)</th><th align="center">TR3 (170)</th><th>Description</th></tr></thead>
@@ -1953,6 +1935,15 @@ This page lists documented moveable object properties.
 <tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
+</tbody>
+</table>
+
+#### disc
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (61)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt on hit.</td></tr>
+<tr><td><code>poison</code></td><td colspan="3" align="center">false</td><td>Apply poison buildup in addition to hit damage.</td></tr>
 </tbody>
 </table>
 
@@ -3012,6 +3003,15 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (132)</th><th align="center">TR3 (157)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### poison_dart
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (90)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">25</td><td>Damage dealt on hit.</td></tr>
+<tr><td><code>poison</code></td><td colspan="3" align="center">true</td><td>Apply poison buildup in addition to hit damage.</td></tr>
 </tbody>
 </table>
 

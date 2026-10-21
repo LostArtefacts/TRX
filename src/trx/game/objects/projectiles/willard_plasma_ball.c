@@ -1,4 +1,4 @@
-#include "willard_internal.h"
+#include <trx/game/objects/projectiles/willard_plasma_ball.h>
 
 #include <trx/core/math/func.h>
 #include <trx/game/collision.h>

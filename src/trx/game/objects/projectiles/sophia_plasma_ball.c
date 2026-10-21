@@ -1,4 +1,4 @@
-#include "sophia_internal.h"
+#include <trx/game/objects/projectiles/sophia_plasma_ball.h>
 
 #include <trx/core/math/func.h>
 #include <trx/game/effects.h>
