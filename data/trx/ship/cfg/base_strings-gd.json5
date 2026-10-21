@@ -42,6 +42,7 @@
             "load_game": "\\{review}LUCHDAICH GEAMA",
             "options": "\\{review}Roghainnean",
             "save_game": "\\{review}SÀBHAIL GEAMA",
+            "separate": "\\{review}DEALAICH",
             "statistics": "\\{review}Staitistearachd",
             "use": "\\{review}CLEACHD",
         },
@@ -52,6 +53,9 @@
             "area_4": "Raon 4",
             "area_5": "Raon 5",
             "area_6": "Raon 6",
+        },
+        "inventory": {
+            "attached_fmt": "\\{review}%s + %s",
         },
         "inventory_ring": {
             "heading_adventure": "Cuairt-dànachd",

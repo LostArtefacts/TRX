@@ -3,6 +3,7 @@
 -- names what can be done with it in a list.
 
 local ammo = require("common.ui.ammo")
+local attachment = require("common.ui.attachment")
 local compass_needle = require("common.ui.compass")
 local death = require("common.ui.flat_menu.death")
 local fade = require("common.ui.fade")
@@ -20,6 +21,7 @@ local M = {}
 trx.locale.declare({
   ["general/flat_menu/use"] = "USE",
   ["general/flat_menu/combine"] = "COMBINE",
+  ["general/flat_menu/separate"] = "SEPARATE",
   ["general/flat_menu/equip"] = "EQUIP",
   ["general/flat_menu/choose_ammo"] = "CHOOSE AMMO",
   ["general/flat_menu/combine_with"] = "COMBINE WITH",
@@ -107,6 +109,7 @@ local Option = {
   EQUIP = "equip",
   CHOOSE_AMMO = "choose_ammo",
   COMBINE = "combine",
+  SEPARATE = "separate",
 }
 
 local OPTION_TEXT = {
@@ -130,6 +133,9 @@ local OPTION_TEXT = {
   end,
   [Option.COMBINE] = function()
     return trx.locale.get("general/flat_menu/combine")
+  end,
+  [Option.SEPARATE] = function()
+    return trx.locale.get("general/flat_menu/separate")
   end,
 }
 
@@ -195,8 +201,16 @@ local function options_of(object)
   elseif not is_examine_only(object) then
     result[#result + 1] = Option.USE
   end
-  if actions.combine then
+  -- Picking a weapon draws it, so the inventory does not count combining as
+  -- a weapon's action, but the original offers it among the options.
+  if
+    actions.combine
+    or (weapon ~= nil and #(trx.inventory.combine_partners(object) or {}) > 0)
+  then
     result[#result + 1] = Option.COMBINE
+  end
+  if actions.separate then
+    result[#result + 1] = Option.SEPARATE
   end
   return result
 end
@@ -216,7 +230,8 @@ end
 -- are labelled with.
 local function name_of(entry)
   local info = trx.objects[entry.object]
-  local name = info ~= nil and info.name or ""
+  local name =
+    attachment.name_of(entry.object, info ~= nil and info.name or "")
   if has_endless_flares(entry.object) then
     return name
   end
@@ -276,6 +291,7 @@ local function contents()
         object = entry.object,
         count = entry.count,
         order = items.order(entry.object) or 1000 + i,
+        meshes = attachment.meshes_of(entry.object),
       }
     end
   end
@@ -287,10 +303,17 @@ end
 
 -- The entries that Lara carries that the picked one could combine with.
 local function combine_contents(picked)
+  local partners = {}
+  for _, partner in ipairs(trx.inventory.combine_partners(picked) or {}) do
+    partners[partner] = true
+  end
   local result = {}
   for _, entry in ipairs(contents()) do
     local actions = trx.inventory.actions(entry.object)
-    if entry.object ~= picked and actions ~= nil and actions.combine then
+    if
+      entry.object ~= picked
+      and (partners[entry.object] or (actions ~= nil and actions.combine))
+    then
       result[#result + 1] = entry
     end
   end
@@ -747,6 +770,19 @@ local function stop_choosing_ammo(state, chosen)
   state.follow_options()
 end
 
+-- Takes the attachment off the picked weapon, and fades the row out and back
+-- in on the weapon, as the original does.
+local function separate(state, object)
+  if trx.inventory.separate(object) == nil then
+    sound("no")
+    return
+  end
+  hide_texts(state)
+  state.main:show(false)
+  state.combined = object
+  state.status = Status.SWAPPING_OUT
+end
+
 local function choose(state)
   local option = state.options[state.option]
   local entry = state.main:picked()
@@ -762,6 +798,8 @@ local function choose(state)
     examine(state, entry.object)
   elseif option == Option.CHOOSE_AMMO then
     start_choosing_ammo(state)
+  elseif option == Option.SEPARATE then
+    separate(state, entry.object)
   elseif option == Option.COMBINE then
     start_combine(state)
   elseif option == Option.LOAD then

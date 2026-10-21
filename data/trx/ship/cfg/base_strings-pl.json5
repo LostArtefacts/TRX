@@ -42,6 +42,7 @@
             "load_game": "\\{review}WCZYTAJ GRĘ",
             "options": "\\{review}Opcje",
             "save_game": "\\{review}ZAPISZ GRĘ",
+            "separate": "\\{review}ROZDZIEL",
             "statistics": "\\{review}Statystyki",
             "use": "\\{review}UŻYJ",
         },
@@ -52,6 +53,9 @@
             "area_4": "Obszar 4",
             "area_5": "Obszar 5",
             "area_6": "Obszar 6",
+        },
+        "inventory": {
+            "attached_fmt": "\\{review}%s + %s",
         },
         "inventory_ring": {
             "heading_adventure": "Przygoda",

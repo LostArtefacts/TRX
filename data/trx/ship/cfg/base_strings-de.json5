@@ -42,6 +42,7 @@
             "load_game": "\\{review}SPIEL LADEN",
             "options": "\\{review}Optionen",
             "save_game": "\\{review}SPIEL SPEICHERN",
+            "separate": "\\{review}TRENNEN",
             "statistics": "\\{review}Statistiken",
             "use": "\\{review}BENUTZEN",
         },
@@ -52,6 +53,9 @@
             "area_4": "\\{review}Bereich 4",
             "area_5": "\\{review}Bereich 5",
             "area_6": "\\{review}Bereich 6",
+        },
+        "inventory": {
+            "attached_fmt": "\\{review}%s + %s",
         },
         "inventory_ring": {
             "heading_adventure": "\\{review}Abenteuer",

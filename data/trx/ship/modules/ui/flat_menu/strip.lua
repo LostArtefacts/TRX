@@ -246,7 +246,7 @@ end
 ---@param object integer The icon to draw.
 ---@param x number
 ---@param y number
----@param opts { xrot?: number, yrot?: number, zoom?: number, bright?: number, opacity?: number, bones?: trx.ui.BoneTurn[], mesh_opacity?: table<integer, number> }
+---@param opts { xrot?: number, yrot?: number, zoom?: number, bright?: number, opacity?: number, bones?: trx.ui.BoneTurn[], mesh_opacity?: table<integer, number>, meshes?: integer }
 function M.draw(object, x, y, opts)
   local item = items.of(object)
   local spec = item.opens and entries.item(object) or nil
@@ -278,7 +278,7 @@ function M.draw(object, x, y, opts)
     frame = spec ~= nil and spec.open_frame or nil,
     at_pivot = item.at_pivot,
     bones = opts.bones,
-    mesh_mask = item.meshes,
+    mesh_mask = opts.meshes or item.meshes,
     mesh_opacity = opts.mesh_opacity,
     opacity = opts.opacity or 1,
     light = { ambient = { r = bright, g = bright, b = bright } },
@@ -307,6 +307,7 @@ function Strip:paint()
         w / 2 + (i - (count + 1) / 2) * spacing,
         h * self.row,
         {
+          meshes = entry.meshes,
           yrot = read(anim.yrot),
           bright = read(anim.bright),
           opacity = fade,
@@ -326,6 +327,7 @@ function Strip:paint()
       local index = self:index_at(place)
       local anim = self.anims[index]
       M.draw(self.list[index].object, w / 2 + offset * spacing, y, {
+        meshes = self.list[index].meshes --[[@as integer?]],
         yrot = read(anim.yrot),
         bright = read(anim.bright),
         opacity = opacity * fade,

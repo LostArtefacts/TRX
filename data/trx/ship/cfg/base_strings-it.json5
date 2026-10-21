@@ -42,6 +42,7 @@
             "load_game": "\\{review}CARICA PARTITA",
             "options": "\\{review}Opzioni",
             "save_game": "\\{review}SALVA PARTITA",
+            "separate": "\\{review}SEPARA",
             "statistics": "\\{review}Statistiche",
             "use": "\\{review}USA",
         },
@@ -52,6 +53,9 @@
             "area_4": "Area 4",
             "area_5": "Area 5",
             "area_6": "Area 6",
+        },
+        "inventory": {
+            "attached_fmt": "\\{review}%s + %s",
         },
         "inventory_ring": {
             "heading_adventure": "Avventura",
