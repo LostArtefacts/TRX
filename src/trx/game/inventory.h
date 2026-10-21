@@ -40,6 +40,9 @@ typedef struct {
     // corresponding weapon.
     INVENTORY_AMMO ammo[MAX_WEAPONS * MAX_AMMO_KINDS];
     int32_t ammo_count;
+    // The weapons that carry their attachment, such as the laser sight.
+    LARA_GUN_TYPE attached[MAX_WEAPONS];
+    int32_t attached_count;
 } INVENTORY_STATE;
 
 // What Lara is carrying, which the rings are drawn from. Writing it puts her
@@ -75,6 +78,14 @@ void Inv_State_SelectAmmoKind(
 // ammunition itself.
 void Inv_State_ClearAmmo(INVENTORY_STATE *state);
 void Inv_State_CopyAmmo(INVENTORY_STATE *dst, const INVENTORY_STATE *src);
+// Whether a weapon carries its attachment, such as the laser sight.
+bool Inv_State_HasAttachment(
+    const INVENTORY_STATE *state, LARA_GUN_TYPE gun_type);
+void Inv_State_SetAttachment(
+    INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, bool attached);
+void Inv_State_ClearAttachments(INVENTORY_STATE *state);
+void Inv_State_CopyAttachments(
+    INVENTORY_STATE *dst, const INVENTORY_STATE *src);
 int32_t Inv_State_GetDrawnEntries(
     const INVENTORY_STATE *state, INVENTORY_ENTRY *entries, int32_t max_count);
 
@@ -94,9 +105,14 @@ int32_t Inv_GetCombinePartners(
     OBJECT_ID obj_id, OBJECT_ID *partners, int32_t max_count);
 
 // Combines two items Lara carries into what they make, taking one of each.
-// Returns what they made, or NO_OBJECT, changing nothing, where the two do not
-// combine or Lara lacks either.
+// A weapon and the attachment it takes combine into the weapon carrying the
+// attachment. Returns what they made, or NO_OBJECT, changing nothing, where
+// the two do not combine or Lara lacks either.
 OBJECT_ID Inv_Combine(OBJECT_ID obj_id, OBJECT_ID partner_id);
+// Takes the attachment off a weapon Lara carries and gives it back to her.
+// Returns the entry the attachment went into, or NO_OBJECT, changing
+// nothing, where the weapon carries none.
+OBJECT_ID Inv_Separate(OBJECT_ID obj_id);
 
 OBJECT_ID Inv_GetItemOption(OBJECT_ID obj_id);
 OBJECT_ID Inv_GetItemPickup(OBJECT_ID obj_id);
@@ -107,6 +123,7 @@ int32_t Inv_GetItemCount(OBJECT_ID obj_id);
 // for rounds she has no gun to spend. Answers how many were written.
 int32_t Inv_GetDrawnEntries(INVENTORY_ENTRY *entries, int32_t max_count);
 bool Inv_HasItem(OBJECT_ID obj_id);
+bool Inv_HasAttachment(LARA_GUN_TYPE gun_type);
 void Inv_SetItemCount(OBJECT_ID obj_id, int32_t qty);
 bool Inv_AddItem(OBJECT_ID obj_id);
 // Puts one of something in, and no more than one however often it is asked

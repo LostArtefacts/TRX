@@ -177,6 +177,13 @@ void Inv_State_SetAmmo(
         (INVENTORY_AMMO) { .gun_type = gun_type, .rounds = rounds };
 }
 
+void Inv_State_CopyAttachments(
+    INVENTORY_STATE *const dst, const INVENTORY_STATE *const src)
+{
+    memcpy(dst->attached, src->attached, sizeof(dst->attached));
+    dst->attached_count = src->attached_count;
+}
+
 // Every weapon here takes one kind of ammunition.
 void Inv_State_FillAmmo(
     INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,

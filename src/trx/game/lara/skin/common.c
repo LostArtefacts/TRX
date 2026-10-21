@@ -286,6 +286,17 @@ static void M_SetEquipment(
     equipment->data = data;
     switch (type) {
     case EQUIPMENT_TYPE_WEAPON: {
+        // A weapon that carries its attachment is held as the attachment's
+        // object draws it, as the original draws the laser sight.
+        const OBJECT_ID attached_id =
+            mesh == LM_HAND_R ? Gun_GetAttachedAnimObject(data) : NO_OBJECT;
+        if (attached_id != NO_OBJECT) {
+            const OBJECT *const attached_obj = Object_Get(attached_id);
+            equipment->mesh =
+                Object_GetMesh(attached_obj->mesh_idx + LM_HAND_R);
+            equipment->offset = (XYZ_16) {};
+            break;
+        }
         // Use the weapon's object when it provides one. This keeps its model
         // the same under every outfit.
         const WEAPON_INFO *const weapon = Gun_Registry_Get(data);

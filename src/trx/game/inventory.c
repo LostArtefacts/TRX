@@ -57,6 +57,10 @@ static void M_SetCount(
         Inv_State_SetAmmo(
             state, gun_type, qty > 0 ? Gun_GetInitialRounds(gun_type) : 0);
     }
+    // A weapon that goes takes its attachment with it.
+    if (gun_type != LGT_UNARMED && qty <= 0) {
+        Inv_State_SetAttachment(state, gun_type, false);
+    }
 
     const int32_t idx = M_FindEntryIndex(state, object_id);
     if (qty <= 0) {
@@ -204,6 +208,67 @@ static void M_AddKindAmmo(
     Inv_SetKindAmmo(gun_type, kind, Inv_GetKindAmmo(gun_type, kind) + rounds);
 }
 
+// The weapon an entry draws, and LGT_UNARMED for any other entry.
+static LARA_GUN_TYPE M_GetEntryGunType(const OBJECT_ID entry_id)
+{
+    return Gun_GetType(Inv_GetItemPickup(entry_id));
+}
+
+// The entry of the attachment a weapon takes, or NO_OBJECT for a weapon that
+// takes none.
+static OBJECT_ID M_GetAttachmentEntry(const LARA_GUN_TYPE gun_type)
+{
+    if (gun_type == LGT_UNARMED || !Gun_Registry_IsValidType(gun_type)) {
+        return NO_OBJECT;
+    }
+    const OBJECT_ID object_id =
+        Gun_Registry_Get(gun_type)->attachment.object_id;
+    return object_id == NO_OBJECT ? NO_OBJECT : M_GetEntryID(object_id);
+}
+
+// Whether a weapon of the inventory carries the attachment an entry is.
+static bool M_IsAttachmentCarried(
+    const INVENTORY_STATE *const state, const OBJECT_ID entry_id)
+{
+    for (int32_t i = 0; i < state->attached_count; i++) {
+        if (M_GetAttachmentEntry(state->attached[i]) == entry_id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool M_IsAttachment(const OBJECT_ID entry_id)
+{
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
+        if (M_GetAttachmentEntry(gun_type) == entry_id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Whether a weapon and an attachment of the inventory can be put together.
+static bool M_CanAttach(
+    const LARA_GUN_TYPE gun_type, const OBJECT_ID attachment_entry_id)
+{
+    return M_GetAttachmentEntry(gun_type) == attachment_entry_id
+        && Inv_HasItem(Gun_GetGunObject(gun_type))
+        && Inv_HasItem(attachment_entry_id) && !Inv_HasAttachment(gun_type);
+}
+
+// Draws the weapon in Lara's hand again where she holds it, as it changes
+// with its attachment.
+static void M_RefreshHeldWeapon(const LARA_GUN_TYPE gun_type)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->gun_type == gun_type && lara->gun_status != LGS_ARMLESS
+        && lara->gun_status != LGS_HANDS_BUSY) {
+        Gun_SetLaraHandRMesh(gun_type);
+    }
+}
+
 bool Inv_HasAmmoSlot(const LARA_GUN_TYPE gun_type)
 {
     return M_GetAmmoOwner(gun_type) != LGT_UNARMED;
@@ -293,6 +358,52 @@ void Inv_State_SetAmmo(
 void Inv_State_ClearAmmo(INVENTORY_STATE *const state)
 {
     state->ammo_count = 0;
+}
+
+bool Inv_State_HasAttachment(
+    const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
+{
+    for (int32_t i = 0; i < state->attached_count; i++) {
+        if (state->attached[i] == gun_type) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Inv_State_SetAttachment(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
+    const bool attached)
+{
+    for (int32_t i = 0; i < state->attached_count; i++) {
+        if (state->attached[i] == gun_type) {
+            if (!attached) {
+                state->attached[i] = state->attached[--state->attached_count];
+            }
+            return;
+        }
+    }
+    if (attached
+        && state->attached_count < (int32_t)ARRAY_SIZE(state->attached)) {
+        state->attached[state->attached_count++] = gun_type;
+    }
+}
+
+void Inv_State_ClearAttachments(INVENTORY_STATE *const state)
+{
+    state->attached_count = 0;
+}
+
+void Inv_State_CopyAttachments(
+    INVENTORY_STATE *const dst, const INVENTORY_STATE *const src)
+{
+    memcpy(dst->attached, src->attached, sizeof(dst->attached));
+    dst->attached_count = src->attached_count;
+}
+
+bool Inv_HasAttachment(const LARA_GUN_TYPE gun_type)
+{
+    return Inv_State_HasAttachment(&m_State, gun_type);
 }
 
 void Inv_State_CopyAmmo(
@@ -457,6 +568,23 @@ int32_t Inv_GetCombinePartners(
             partners[count++] = partner;
         }
     }
+
+    // An attachment combines with every weapon that takes it, and a weapon
+    // with the attachment it takes.
+    const LARA_GUN_TYPE gun_type = M_GetEntryGunType(entry_id);
+    if (gun_type != LGT_UNARMED) {
+        if (count < max_count
+            && M_CanAttach(gun_type, M_GetAttachmentEntry(gun_type))) {
+            partners[count++] = M_GetAttachmentEntry(gun_type);
+        }
+        return count;
+    }
+    for (int32_t i = 0; i < Gun_Registry_GetCount() && count < max_count; i++) {
+        const LARA_GUN_TYPE other = Gun_Registry_GetByIndex(i)->gun_type;
+        if (M_CanAttach(other, entry_id)) {
+            partners[count++] = M_GetEntryID(Gun_GetGunObject(other));
+        }
+    }
     return count;
 }
 
@@ -465,6 +593,24 @@ OBJECT_ID Inv_Combine(const OBJECT_ID object_id, const OBJECT_ID partner_id)
     if (object_id == partner_id || !Inv_HasItem(object_id)
         || !Inv_HasItem(partner_id)) {
         return NO_OBJECT;
+    }
+
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const OBJECT_ID partner_entry_id = M_GetEntryID(partner_id);
+    LARA_GUN_TYPE gun_type = M_GetEntryGunType(entry_id);
+    OBJECT_ID attachment_id = partner_entry_id;
+    if (gun_type == LGT_UNARMED) {
+        gun_type = M_GetEntryGunType(partner_entry_id);
+        attachment_id = entry_id;
+    }
+    if (gun_type != LGT_UNARMED) {
+        if (!M_CanAttach(gun_type, attachment_id)) {
+            return NO_OBJECT;
+        }
+        Inv_RemoveItem(attachment_id);
+        Inv_State_SetAttachment(&m_State, gun_type, true);
+        M_RefreshHeldWeapon(gun_type);
+        return M_GetEntryID(Gun_GetGunObject(gun_type));
     }
     const OBJECT_ID result = ObjectCombo_GetResult(object_id, partner_id);
     if (result == NO_OBJECT) {
@@ -476,11 +622,28 @@ OBJECT_ID Inv_Combine(const OBJECT_ID object_id, const OBJECT_ID partner_id)
     return result;
 }
 
+OBJECT_ID Inv_Separate(const OBJECT_ID object_id)
+{
+    const LARA_GUN_TYPE gun_type = M_GetEntryGunType(M_GetEntryID(object_id));
+    if (gun_type == LGT_UNARMED || !Inv_HasAttachment(gun_type)) {
+        return NO_OBJECT;
+    }
+    const OBJECT_ID attachment_id = M_GetAttachmentEntry(gun_type);
+    Inv_State_SetAttachment(&m_State, gun_type, false);
+    M_SetCount(&m_State, attachment_id, Inv_GetItemCount(attachment_id) + 1);
+    M_RefreshHeldWeapon(gun_type);
+    return attachment_id;
+}
+
 INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
 {
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const LARA_GUN_TYPE gun_type = M_GetEntryGunType(entry_id);
+    // Picking a weapon draws it, so a weapon combines with its attachment
+    // only where a menu offers that apart from picking it.
     OBJECT_ID partner;
-    const bool can_combine = Inv_GetCombinePartners(entry_id, &partner, 1) > 0;
+    const bool can_combine = gun_type == LGT_UNARMED
+        && Inv_GetCombinePartners(entry_id, &partner, 1) > 0;
     // The binoculars are a generic entry that Lara uses by herself rather
     // than on a lock or a vehicle.
     const bool leads_nowhere = entry_id != O_BINOCULARS_OPTION
@@ -492,7 +655,7 @@ INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
         .can_examine = g_Config.gameplay.enable_item_examining
             && Object_GetDescription(entry_id) != nullptr,
         .can_combine = can_combine,
-        .can_separate = false,
+        .can_separate = gun_type != LGT_UNARMED && Inv_HasAttachment(gun_type),
     };
 }
 
@@ -648,6 +811,14 @@ bool Inv_AddItem(const OBJECT_ID object_id)
 
     if (inv_object_id == O_BINOCULARS_OPTION
         && Inv_HasItem(O_BINOCULARS_ITEM)) {
+        return false;
+    }
+
+    // There is only one of an attachment, whether loose or on a weapon.
+    const OBJECT_ID attachment_entry_id = M_GetEntryID(object_id);
+    if (M_IsAttachment(attachment_entry_id)
+        && (Inv_HasItem(attachment_entry_id)
+            || M_IsAttachmentCarried(&m_State, attachment_entry_id))) {
         return false;
     }
 

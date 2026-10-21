@@ -178,6 +178,17 @@ bool Gun_IsAmmoKind(const LARA_GUN_TYPE gun_type, const OBJECT_ID obj_id)
     return false;
 }
 
+OBJECT_ID Gun_GetAttachedAnimObject(const LARA_GUN_TYPE gun_type)
+{
+    if (!Gun_Registry_IsValidType(gun_type) || !Inv_HasAttachment(gun_type)) {
+        return NO_OBJECT;
+    }
+    const OBJECT_ID object_id =
+        Gun_Registry_Get(gun_type)->attachment.anim_object_id;
+    return object_id != NO_OBJECT && Object_Get(object_id)->loaded ? object_id
+                                                                   : NO_OBJECT;
+}
+
 int32_t Gun_GetInitialRounds(const LARA_GUN_TYPE gun_type)
 {
     return M_GetRounds(

@@ -310,6 +310,20 @@ static void M_WriteAmmoList(
     JSONW_POP_AND_SET_NZ(io, "ammo");
 }
 
+// Writes the weapons that carry their attachment, such as the laser sight.
+static void M_WriteAttachments(
+    JSON_WRITE_IO *const io, const INVENTORY_STATE *const state)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < state->attached_count; i++) {
+        JSONW_PUSH_OBJECT(io);
+        SaveGame_WriteIdentity(
+            io, "gun_type", "gun_key", CATALOG_WEAPONS, state->attached[i]);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "attachments");
+}
+
 static void M_WriteLOT(JSON_WRITE_IO *const io, const LOT_INFO *const lot)
 {
     ASSERT(lot != nullptr);
@@ -368,6 +382,7 @@ static void M_WriteResumeInfo(
                 Gun_GetAmmoKind(info->gun_type, 0)));
     }
     M_WriteAmmoList(io, &resume->inv);
+    M_WriteAttachments(io, &resume->inv);
     JSONW_WRITE(
         io, "has_binoculars", Inv_State_Has(&resume->inv, O_BINOCULARS_ITEM));
 
@@ -692,6 +707,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
         }
     }
     M_WriteAmmoList(io, Inv_GetState());
+    M_WriteAttachments(io, Inv_GetState());
 
     if (lara->gun_item_num != NO_ITEM) {
         JSONW_PUSH_OBJECT(io);

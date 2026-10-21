@@ -222,6 +222,36 @@ The keys a weapon states on its own:
   </tr>
 </table>
 
+### `attachment`
+
+What the weapon can carry attached, as the TR4 revolver and crossbow carry the
+laser sight. The player combines the attachment with the weapon in the
+inventory, and separates it again. Lara carries one of each attachment at
+most, loose or on a weapon.
+
+<table>
+  <tr valign="top" align="left">
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr valign="top">
+    <td><code>object</code></td>
+    <td>String</td>
+    <td>The pickup that attaches.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>anim</code></td>
+    <td>String</td>
+    <td>The object that Lara's right hand is drawn from while she holds the weapon with the attachment.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>inventory_meshes</code></td>
+    <td>Integer</td>
+    <td>The meshes that the inventory draws the weapon with while the weapon carries the attachment, one bit each.</td>
+  </tr>
+</table>
+
 ### `aim`
 
 <table>

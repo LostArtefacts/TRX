@@ -197,6 +197,35 @@ static RESULT M_ReadAmmoList(
     return OK;
 }
 
+// Introduced in TRX 1.12. The list holds the weapons that carry their
+// attachment, such as the laser sight, and replaces what the inventory held
+// before the load.
+static RESULT M_ReadAttachments(
+    JSON_READ_IO *const io, INVENTORY_STATE *const state)
+{
+    Inv_State_ClearAttachments(state);
+    if (!JSON_ReadIO_HasKey(io, "attachments")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "attachments"));
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        MUST(JSON_PUSH_INDEX(io, i));
+        CATALOG_ID gun_type = NO_CATALOG_ID;
+        MUST(SaveGame_ReadIdentity(
+            io, "gun_type", "gun_key", CATALOG_WEAPONS, &gun_type));
+        if (gun_type == NO_CATALOG_ID || !Gun_Registry_IsValidType(gun_type)
+            || Gun_Registry_Get(gun_type)->attachment.object_id == NO_OBJECT) {
+            SaveGame_NoteDropped("attachment");
+        } else {
+            Inv_State_SetAttachment(state, gun_type, true);
+        }
+        MUST(JSON_POP(io));
+    }
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 static RESULT M_ReadXYZ32Array(
     JSON_READ_IO *const io, const char *const key, XYZ_32 *const target,
     const int32_t count)
@@ -332,6 +361,10 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
     MUST(JSON_READ(io, "flare_age", &lara->flare.age));
     MUST(JSON_READ(io, "flare_frame", &lara->flare.frame_num));
     MUST(JSON_READ(io, "flare_control_left", &lara->flare.control));
+
+    // Read before the equipment, which draws the weapon in Lara's hand by
+    // whether it carries its attachment.
+    MUST(M_ReadAttachments(io, Inv_GetState()));
 
     MUST(JSON_PUSH(io, "skin"));
     LARA_SKIN_TYPE skin_type = LARA_SKIN_TYPE_DEFAULT;
@@ -1298,6 +1331,7 @@ static RESULT M_ReadResumeInfo(
             &resume->inv, Gun_GetGunObject(info->gun_type), has_weapon ? 1 : 0);
     }
     MUST(M_ReadAmmoList(io, &resume->inv));
+    MUST(M_ReadAttachments(io, &resume->inv));
 
     // Introduced in TRX 1.9
     bool has_binoculars = false;

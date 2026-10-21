@@ -217,6 +217,11 @@
             "ammo": "revolver_ammo_item",
             "anim": "lara_revolver",
         },
+        "attachment": {
+            "object": "lasersight_item",
+            "anim": "lara_revolver_laser",
+            "inventory_meshes": 11,
+        },
         "ammo": {
             "initial_shots": 6,
             "box_shots": 6,
@@ -396,6 +401,11 @@
             "pickup": "crossbow_item",
             "ammo": "crossbow_ammo_1_item",
             "anim": "lara_crossbow",
+        },
+        "attachment": {
+            "object": "lasersight_item",
+            "anim": "lara_crossbow_laser",
+            "inventory_meshes": 11,
         },
         "ammo": {
             "initial_shots": 10,
