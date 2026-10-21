@@ -592,6 +592,19 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: boolean. Whether it slides.
 
+    - <a id="ui.Carousel.turn" name="ui.Carousel.turn"></a>[lua]`carousel:turn(by)`  
+      Selects the item some places away, and slides the row that way, wrapping
+      round at either end. Setting the selected signal slides the row the short
+      way round, which has no direction where the row holds two items.
+
+      Parameters:
+      - <a id="ui.Carousel.turn.by" name="ui.Carousel.turn.by"></a>**`by`** (integer). How many places to move, to the right where positive.
+
+      Example:
+      ```lua
+      carousel:turn(-1)
+      ```
+
 - <a id="ui.ListRow" name="ui.ListRow"></a>[lua]`trx.ui.ListRow`
 
     One entry of a [`trx.ui.widgets.List`](#ui.widgets.List).

@@ -1186,6 +1186,35 @@ test("a carousel wraps the short way round", function()
   ticks(6)
 end)
 
+-- Whether any item a carousel draws stands between two places across.
+local function stands_between(row, from, to)
+  for _, item in ipairs(row_of(row)) do
+    if item.middle > px(from) + 1 and item.middle < px(to) - 1 then
+      return true
+    end
+  end
+  return false
+end
+
+test("a carousel of two turns the way it is told", function()
+  fake.set_rate(1)
+  for _, case in ipairs({
+    { by = -1, from = 100, to = 200 },
+    { by = 1, from = 200, to = 300 },
+  }) do
+    local selected = trx.signal.new(1)
+    local row = carousel(selected, 2)
+    row:turn(case.by)
+    assert(selected:get() == 2, "the selection did not move")
+    ticks(4)
+    assert(
+      stands_between(row, case.from, case.to),
+      "the row went the wrong way"
+    )
+    ticks(4)
+  end
+end)
+
 test("a carousel keeps items beyond the neighbours out of sight", function()
   fake.set_rate(1)
   local row = carousel(trx.signal.new(1), 5)
