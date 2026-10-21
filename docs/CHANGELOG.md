@@ -81,6 +81,7 @@
 - Fixed item descriptions from one level showing on items in the levels after it (TRX1754)
 - Fixed the TR4 inventory showing ammunition with the wrong name, and with a wrong count or no count (TRX1654)
 - Fixed the statistics sometimes showing a huge total
+- Fixed the color editor looping around its sliders when scroll wrap is off (Graphic Options → UI → Scroll wrap)
 
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
