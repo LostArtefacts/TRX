@@ -20,10 +20,14 @@
 #include <trx/game/output/water.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
+#include <trx/game/stats.h>
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
+#define M_BLAST_DAMAGE 30
+#define M_BLAST_LARA_DAMAGE 50
 
 typedef struct {
     const WEAPON_INFO *weapon;
@@ -476,6 +480,36 @@ void Gun_HitTarget(
         default:
             break;
         }
+    }
+}
+
+void Gun_HitTargetWithBlast(ITEM *const item, const ITEM *const source)
+{
+    if (item->clear_body) {
+        return;
+    }
+
+    ITEM *const lara_item = Lara_GetItem();
+    if (item == lara_item) {
+        if (lara_item->hit_points <= 0) {
+            return;
+        }
+        Lara_TakeDamage(M_BLAST_LARA_DAMAGE, false);
+        if (!Room_Get(source->room_num)->flags.underwater
+            && lara_item->hit_points <= M_BLAST_LARA_DAMAGE) {
+            Lara_CatchFire();
+        }
+        return;
+    }
+
+    item->hit_status = true;
+    // TODO: TR4 spares Ahmet, which TRX lacks.
+    Gun_HitTarget(item, nullptr, nullptr, M_BLAST_DAMAGE);
+    Stats_AddAmmoHits();
+    // TODO: TR4 lets the baboons, which TRX lacks, die their own way.
+    if (item->hit_points <= 0 && Object_CanBeExploded(item)) {
+        Creature_Die(
+            Item_GetIndex(item), (CREATURE_DIE_ARGS) { .explode = true });
     }
 }
 
