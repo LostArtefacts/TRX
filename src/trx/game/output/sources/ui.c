@@ -49,6 +49,7 @@ typedef struct {
     VECTOR *scheduled_meshes;
     VECTOR *vertices;
     bool binocular_mask;
+    bool laser_sight_mask;
     GLuint vao;
     GLuint vbo;
 } M_PRIV;
@@ -537,12 +538,29 @@ static void M_DrawMeshes(const M_PRIV *const p)
     SceneCompositor_SetSamplerFilter(g_Config.rendering.ui_filter);
 }
 
+// Returns how wide the mask is drawn. The laser sight mask keeps the 4:3
+// shape of the original screen, so that its circle stays round on a wider
+// screen, and black bars fill the rest of it. The binocular mask spans the
+// whole viewport.
+static int32_t M_GetMaskWidth(
+    const VIEWPORT_RECT viewport, const bool laser_sight)
+{
+    return laser_sight ? MIN(viewport.w, viewport.h * 4 / 3) : viewport.w;
+}
+
 static void M_DrawBinocularMask(const M_PRIV *const p)
 {
-    const OBJECT *const obj = Object_Get(O_BINOCULAR_GFX);
+    const OBJECT *const obj =
+        Object_Get(p->laser_sight_mask ? O_TARGET_GFX : O_BINOCULAR_GFX);
     if (!obj->loaded) {
         return;
     }
+    // The original maps each mesh to a 512x240 screen through a pre-scale
+    // of its own (see tomb4's InitBinoculars and InitTarget): x*32/96,
+    // y*30/224 for the binoculars, and x*80/96, y*60/224 for the laser
+    // sight.
+    const int64_t scale_x = p->laser_sight_mask ? 80 : 32;
+    const int64_t scale_y = p->laser_sight_mask ? 60 : 30;
 
     Output_MeshShader_Bind(Output_GetMeshShader());
     if (p->objects_source->render_begin != nullptr) {
@@ -563,11 +581,13 @@ static void M_DrawBinocularMask(const M_PRIV *const p)
 
     Matrix_PushUnit();
     Matrix_TranslateSet32(origin);
-    // The original game maps the mesh to a 512x240 screen through a x*32/96,
-    // y*30/224 pre-scale (see tomb4's InitBinoculars); combined, that
-    // stretches the raw mesh over the whole viewport. Flatten the depth.
-    Matrix_ScaleX((1 << W2V_SHIFT) * viewport.w / 1536);
-    Matrix_ScaleY((1 << W2V_SHIFT) * viewport.h / 1792);
+    // Combined with the pre-scale, the mapping stretches the raw mesh over
+    // the whole viewport. Flatten the depth.
+    const int32_t mask_w = M_GetMaskWidth(viewport, p->laser_sight_mask);
+    Matrix_ScaleX(
+        (int32_t)(((int64_t)1 << W2V_SHIFT) * mask_w * scale_x / (512 * 96)));
+    Matrix_ScaleY((int32_t)(((int64_t)1 << W2V_SHIFT) * viewport.h * scale_y
+                            / (240 * 224)));
     Matrix_ScaleZ((1 << W2V_SHIFT) / 64);
 
     Object_DrawMesh(obj->mesh_idx, CLIP_FULLY_VISIBLE, false);
@@ -601,6 +621,7 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
     Vector_Clear(p->scheduled_meshes);
     Vector_Clear(p->vertices);
     p->binocular_mask = false;
+    p->laser_sight_mask = false;
 }
 
 static void M_RenderPass(
@@ -778,10 +799,46 @@ void OutputSource_UI_StageMesh(const OUTPUT_UI_MESH mesh)
     Vector_Add(p->scheduled_meshes, &mesh);
 }
 
-void OutputSource_UI_StageBinocularMask(void)
+void OutputSource_UI_StageBinocularMask(const bool laser_sight)
 {
     M_PRIV *const p = &m_Priv;
     p->binocular_mask = true;
+    p->laser_sight_mask = laser_sight;
+
+    const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
+    const int32_t bar_w =
+        (viewport.w - M_GetMaskWidth(viewport, laser_sight)) / 2;
+    if (bar_w <= 0) {
+        return;
+    }
+    const RGBA_8888 black = { .r = 0, .g = 0, .b = 0, .a = 255 };
+    const int32_t y0 = viewport.y;
+    const int32_t y1 = viewport.y + viewport.h;
+    // The bars reach a pixel into the mask, so that no seam shows between.
+    const int32_t left_x1 = viewport.x + bar_w + 1;
+    const int32_t right_x0 = viewport.x + viewport.w - bar_w - 1;
+    OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
+        .x0 = viewport.x,
+        .y0 = y0,
+        .x1 = left_x1,
+        .y1 = y1,
+        .z = OUTPUT_UI_NEAR_Z,
+        .tl = black,
+        .tr = black,
+        .bl = black,
+        .br = black,
+    });
+    OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
+        .x0 = right_x0,
+        .y0 = y0,
+        .x1 = viewport.x + viewport.w,
+        .y1 = y1,
+        .z = OUTPUT_UI_NEAR_Z,
+        .tl = black,
+        .tr = black,
+        .bl = black,
+        .br = black,
+    });
 }
 
 void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)

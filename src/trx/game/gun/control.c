@@ -88,26 +88,6 @@ static void M_CheckSmashablesBehindTarget(
     Gun_SmashItems(follow_start, follow_end, nullptr, NO_OBJECT);
 }
 
-// Gives the shot to the nearest shatterable static in its path. Returns whether
-// a static took it. Smashables in front of the static still take the shot
-// first.
-static bool M_ShootStatic(const GAME_VECTOR start, const GAME_VECTOR target)
-{
-    GAME_VECTOR static_pos;
-    const STATIC_MESH *const mesh =
-        LOS_FindShatterableStatic(&start, &target, &static_pos);
-    if (mesh == nullptr) {
-        return false;
-    }
-
-    if (Gun_SmashItems(start, static_pos, nullptr, NO_OBJECT)
-        != PROJECTILE_HIT_STOP) {
-        Gun_ShatterStatic(mesh, static_pos);
-        Spawn_RicochetRay(start, static_pos, 8, false);
-    }
-    return true;
-}
-
 static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
 {
     const WEAPON_INFO *const info = Gun_Registry_Get(gun_type);
@@ -365,8 +345,9 @@ static void M_UpdateGunState(void)
 
 static void M_RequestCombatCamera(void)
 {
+    // The laser sight view keeps the weapon ready and owns the camera.
     if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK
-        && !Camera_IsLocked(g_Camera.num)) {
+        && !Camera_IsLocked(g_Camera.num) && !Camera_Binoculars_IsActive()) {
         g_Camera.type = CAM_COMBAT;
     }
 }
@@ -575,7 +556,7 @@ int32_t Gun_FireWeapon(
             };
         Room_GetSector(hit_pos.pos, &hit_pos.room_num);
         const bool object_on_los = LOS_Check(&start, &hit_pos, true);
-        if (M_ShootStatic(start, hit_pos)) {
+        if (Gun_ShootStatic(start, hit_pos)) {
             return -1;
         }
         if (Gun_SmashItems(start, hit_pos, &hit_pos.pos, NO_OBJECT)
@@ -596,7 +577,7 @@ int32_t Gun_FireWeapon(
         .room_num = start.room_num,
     };
     Room_GetSector(hit_pos.pos, &hit_pos.room_num);
-    if (M_ShootStatic(start, hit_pos)) {
+    if (Gun_ShootStatic(start, hit_pos)) {
         return 1;
     }
     Gun_SmashItems(start, hit_pos, nullptr, NO_OBJECT);

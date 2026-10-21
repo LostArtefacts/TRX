@@ -112,6 +112,8 @@ typedef struct {
     OBJECT_ID object_id;
     OBJECT_ID anim_object_id;
     int32_t inventory_meshes;
+    // The ticks between two shots through the laser sight view.
+    int32_t fire_delay;
 } WEAPON_ATTACHMENT_INFO;
 
 typedef struct {

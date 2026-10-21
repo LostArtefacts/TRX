@@ -6,6 +6,7 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/spawn.h>
 
 #define M_STATIC_DEBRIS_FACES 128
 
@@ -60,6 +61,23 @@ void Gun_ShatterStatic(const STATIC_MESH *const mesh, const GAME_VECTOR hit_pos)
     FX_Debris_ShatterStatic(mesh, M_STATIC_DEBRIS_FACES, hit_pos.room_num, 0);
     Sound_Effect(SFX_HIT_ROCK, &mesh->pos, SPM_NORMAL);
     Room_ShatterStatic(mesh);
+}
+
+bool Gun_ShootStatic(const GAME_VECTOR start, const GAME_VECTOR target)
+{
+    GAME_VECTOR static_pos;
+    const STATIC_MESH *const mesh =
+        LOS_FindShatterableStatic(&start, &target, &static_pos);
+    if (mesh == nullptr) {
+        return false;
+    }
+
+    if (Gun_SmashItems(start, static_pos, nullptr, NO_OBJECT)
+        != PROJECTILE_HIT_STOP) {
+        Gun_ShatterStatic(mesh, static_pos);
+        Spawn_RicochetRay(start, static_pos, 8, false);
+    }
+    return true;
 }
 
 PROJECTILE_HIT Gun_SmashItems(

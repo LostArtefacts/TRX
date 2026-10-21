@@ -1271,6 +1271,10 @@
             "title": "\\{review}Activer les blocs-poussoirs mortels",
             "description": "\\{review}Si activé, lorsqu'un bloc-poussoir tombe de l'air et atterrit sur Lara, il la tuera immédiatement. Sinon, Lara se retrouvera coincée sur le dessus du bloc et survivra.",
         },
+        "gameplay.enable_laser_sight_toggle": {
+            "title": "\\{review}Viseur laser à bascule",
+            "description": "\\{review}La touche regarder ouvre la vue du viseur laser et la referme à la pression suivante. Si désactivé, la touche doit rester enfoncée pour garder la vue ouverte, comme dans le jeu original.",
+        },
         "gameplay.enable_lean_jumping": {
             "title": "Contrôle du saut sur place",
             "description": "\\{review}Permet à Lara d'avancer ou de reculer pendant les sauts sur place lorsque la touche correspondante est enfoncée, comme possible depuis TR2. Dans le TR1 d'origine, elle avance quand même, quelle que soit la touche, mais bien plus lentement.",

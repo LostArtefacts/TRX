@@ -1271,6 +1271,10 @@
             "title": "Zabójcze bloki",
             "description": "Kiedy ta opcja jest włączona, spadające z wysokości bloki natychmiast zabijają Larę. W przeciwnym razie Lara stanie na powierzchni bloku i przeżyje (tak jak w oryginalnych grach).",
         },
+        "gameplay.enable_laser_sight_toggle": {
+            "title": "\\{review}Przełączanie celownika laserowego",
+            "description": "\\{review}Klawisz rozglądania otwiera widok celownika laserowego i zamyka go przy kolejnym naciśnięciu. Gdy wyłączone, klawisz trzeba przytrzymać, aby widok pozostał otwarty, jak w oryginalnej grze.",
+        },
         "gameplay.enable_lean_jumping": {
             "title": "Dalekie skoki w miejscu",
             "description": "\\{review}Pozwala Larze na przesuwanie się do przodu lub do tyłu dalej podczas wykonywania skoków w miejscu z wciśniętym odpowiednim klawiszem (tak jak w TR2+). W oryginalnym TR1 przesuwa się do przodu niezależnie od wciśniętego klawisza, ale znacznie wolniej.",

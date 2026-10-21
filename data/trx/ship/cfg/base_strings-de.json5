@@ -1271,6 +1271,10 @@
             "title": "\\{review}Tödliche Schiebeblöcke aktivieren",
             "description": "Aktiviert, dass Lara sofort stirbt, wenn ein Schiebeblock von oben auf Lara herab fällt. Andernfalls wird Lara oben auf dem Block hängen bleiben und überleben.",
         },
+        "gameplay.enable_laser_sight_toggle": {
+            "title": "\\{review}Laservisier umschalten",
+            "description": "\\{review}Die Umsehen-Taste öffnet die Laservisier-Ansicht und schließt sie beim nächsten Drücken wieder. Wenn deaktiviert, muss die Taste gehalten werden, damit die Ansicht offen bleibt, wie im Originalspiel.",
+        },
         "gameplay.enable_lean_jumping": {
             "title": "Schmales Springen",
             "description": "\\{review}Erlaubt Lara, sich weiter voran oder rückwärts zu tasten, wenn man eine der Richtungstasten gedrückt hält, während sie einen neutralen Sprung ausführt. Das gibt es ab TR2; im originalen TR1 tastet sie sich unabhängig von der Eingabe nur nach vorn, und das viel langsamer.",

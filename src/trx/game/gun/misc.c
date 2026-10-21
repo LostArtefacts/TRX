@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/game/camera/binoculars.h>
 #include <trx/game/creature.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/flare.h>
@@ -483,6 +484,14 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const old_target = lara->target;
+
+    // The laser sight aims where its view points, so Lara holds no target
+    // and the direction keys turn the view, as in TR4.
+    if (Camera_Binoculars_IsLaserSight()) {
+        lara->target = nullptr;
+        Gun_TargetInfo(weapon);
+        return;
+    }
 
     // Preserve OG targeting behavior.
     if (g_Config.gameplay.target_mode == TARGET_LOCK_MODE_FULL

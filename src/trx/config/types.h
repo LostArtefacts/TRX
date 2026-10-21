@@ -236,6 +236,7 @@ typedef struct {
         M16_AIM_MODE m16_aim_mode;
         bool enable_walk_to_items;
         bool enable_snap_interactions;
+        bool enable_laser_sight_toggle;
         bool enable_fast_pickups;
         bool enable_multiple_pickups;
         bool enable_continuous_pushblocks;
