@@ -117,6 +117,13 @@ test("a weapon fires one kind of ammunition, and counts each apart", function()
   trx.inventory.set_shots(SHOTGUN, 0)
 end)
 
+test("a weapon carries no attachment until one is put on it", function()
+  assert(not trx.inventory.has_attachment(UZIS), "the uzis carry one")
+  assert(trx.weapons.uzis.attachment == nil, "the uzis take one")
+  assert(not trx.inventory.actions(KEY).separate, "a key separates")
+  assert(trx.inventory.separate(KEY) == nil, "a key gave something back")
+end)
+
 test("a weapon goes in and comes back out", function()
   local uzi_item = trx.weapons.object(UZIS)
 

@@ -53,6 +53,7 @@ static int32_t m_PartnerCount;
 static OBJECT_ID m_Combined[2];
 // Whether every entry can be examined.
 static bool m_Examinable;
+static bool m_Separable;
 // Whether every entry leads nowhere, as an entry with no lock to use it on.
 static bool m_Unusable;
 
@@ -67,6 +68,7 @@ static void M_Reset(void)
 {
     m_Override = (GF_COMMAND) { .action = GF_NOOP };
     m_PartnerCount = 0;
+    m_Separable = false;
     m_Combined[0] = NO_OBJECT;
     m_Combined[1] = NO_OBJECT;
     m_GlobeCount = 0;
@@ -217,6 +219,13 @@ static int M_L_SetTRVersion(lua_State *const L)
 static int M_L_SetExaminable(lua_State *const L)
 {
     m_Examinable = lua_toboolean(L, 1);
+    return 0;
+}
+
+// fake.set_separable(bool) - whether every entry carries an attachment.
+static int M_L_SetSeparable(lua_State *const L)
+{
+    m_Separable = lua_toboolean(L, 1);
     return 0;
 }
 
@@ -708,6 +717,19 @@ OBJECT_ID Inv_Combine(const OBJECT_ID obj_id, const OBJECT_ID partner_id)
     return NO_OBJECT;
 }
 
+// Separates an entry where the fake says entries carry an attachment, and
+// hands back the entry itself as the attachment, so that a test sees what was
+// asked for.
+OBJECT_ID Inv_Separate(const OBJECT_ID obj_id)
+{
+    FAKE_RECORD("separate", FV(obj_id));
+    if (!m_Separable) {
+        return NO_OBJECT;
+    }
+    m_Separable = false;
+    return obj_id;
+}
+
 void Lara_UseItem(const OBJECT_ID object_id)
 {
     FAKE_RECORD("use_item", FV(object_id));
@@ -719,6 +741,7 @@ INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
     return (INV_ITEM_ACTIONS) {
         .can_use = !m_Unusable && m_PartnerCount == 0,
         .can_examine = m_Examinable,
+        .can_separate = m_Separable,
         .can_combine = m_PartnerCount > 0,
     };
 }
@@ -747,6 +770,8 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "set_combine_partners");
     lua_pushcfunction(L, M_L_SetExaminable);
     lua_setfield(L, -2, "set_examinable");
+    lua_pushcfunction(L, M_L_SetSeparable);
+    lua_setfield(L, -2, "set_separable");
     lua_pushcfunction(L, M_L_SetUnusable);
     lua_setfield(L, -2, "set_unusable");
     lua_pushcfunction(L, M_L_SetTRVersion);

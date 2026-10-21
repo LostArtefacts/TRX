@@ -160,6 +160,15 @@ end
 
       Returns: boolean. True for any count above 0.
 
+    - <a id="inventory.Inventory.has_attachment" name="inventory.Inventory.has_attachment"></a>[lua]`inventory:has_attachment(weapon)`  
+      Whether the weapon carries its attachment, such as the laser sight on the
+      TR4 revolver. [`trx.weapons.Weapon.attachment`](WEAPONS.md#weapons.Weapon.attachment) says what the weapon takes.
+
+      Parameters:
+      - <a id="inventory.Inventory.has_attachment.weapon" name="inventory.Inventory.has_attachment.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+
+      Returns: boolean. True where the weapon carries its attachment.
+
     - <a id="inventory.Inventory.has_weapon" name="inventory.Inventory.has_weapon"></a>[lua]`inventory:has_weapon(weapon)`  
       Whether the weapon itself is in it, which is not the same as having
       ammunition for it.
@@ -223,6 +232,7 @@ end
     Properties:
     - <a id="inventory.Actions.combine" name="inventory.Actions.combine"></a>**`combine`**: boolean. Whether Lara carries something it combines with, so that choosing it combines rather than uses it.
     - <a id="inventory.Actions.examine" name="inventory.Actions.examine"></a>**`examine`**: boolean. Whether it can be examined, which the player's settings and its description decide.
+    - <a id="inventory.Actions.separate" name="inventory.Actions.separate"></a>**`separate`**: boolean. Whether it is a weapon that carries its attachment, which [`trx.inventory.separate`](#inventory.separate) takes off.
     - <a id="inventory.Actions.use" name="inventory.Actions.use"></a>**`use`**: boolean. Whether choosing it uses it.
 
 ### Functions
@@ -326,6 +336,14 @@ end
 
   Returns: boolean. True where the weapon itself is in it.
 
+- <a id="inventory.has_attachment" name="inventory.has_attachment"></a>[lua]`trx.inventory.has_attachment(weapon)`  
+  Asks [`trx.inventory.Inventory:has_attachment`](#inventory.Inventory.has_attachment) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.has_attachment.weapon" name="inventory.has_attachment.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+
+  Returns: boolean. True where the weapon carries its attachment.
+
 - <a id="inventory.entry" name="inventory.entry"></a>[lua]`trx.inventory.entry(object_id)`  
   Asks [`trx.inventory.Inventory:entry`](#inventory.Inventory.entry) of what Lara carries.
 
@@ -385,6 +403,20 @@ end
   local made = trx.inventory.combine(item, partner)
   ```
 
+- <a id="inventory.separate" name="inventory.separate"></a>[lua]`trx.inventory.separate(object_id)`  
+  Takes the attachment off a weapon Lara carries, such as the laser sight off
+  the TR4 revolver, and gives it back to her.
+
+  Parameters:
+  - <a id="inventory.separate.object_id" name="inventory.separate.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The weapon's pickup, or the inventory icon it goes into.
+
+  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The icon the attachment went into, or `nil`, changing nothing, where the weapon carries none.
+
+  Example:
+  ```lua
+  trx.inventory.separate(trx.catalog.objects.REVOLVER_OPTION)
+  ```
+
 - <a id="inventory.icon_of" name="inventory.icon_of"></a>[lua]`trx.inventory.icon_of(object)`  
   Returns the inventory icon for a pickup, whether or not Lara has one.
 
@@ -407,8 +439,8 @@ end
   ```
 
 - <a id="inventory.actions" name="inventory.actions"></a>[lua]`trx.inventory.actions(object_id)`  
-  What the inventory ring offers for an entry: using, examining or combining
-  it.
+  What the inventory ring offers for an entry: using, examining, combining or
+  separating it.
 
   Parameters:
   - <a id="inventory.actions.object_id" name="inventory.actions.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.

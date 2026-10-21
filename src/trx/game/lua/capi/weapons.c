@@ -461,6 +461,28 @@ static int M_L_WeaponGetObject(lua_State *const L)
     return 1;
 }
 
+// trxc.weapons.get_attachment(weapon: trx.catalog.weapons): { object: trx.catalog.objects, anim: trx.catalog.objects?, inventory_meshes: integer }?
+static int M_L_WeaponGetAttachment(lua_State *const L)
+{
+    const LARA_GUN_TYPE gun_type = M_GetWeapon(L, 1);
+    const WEAPON_ATTACHMENT_INFO *const attachment =
+        &Gun_Registry_Get(gun_type)->attachment;
+    if (attachment->object_id == NO_OBJECT) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_createtable(L, 0, 3);
+    lua_pushinteger(L, attachment->object_id);
+    lua_setfield(L, -2, "object");
+    if (attachment->anim_object_id != NO_OBJECT) {
+        lua_pushinteger(L, attachment->anim_object_id);
+        lua_setfield(L, -2, "anim");
+    }
+    lua_pushinteger(L, attachment->inventory_meshes);
+    lua_setfield(L, -2, "inventory_meshes");
+    return 1;
+}
+
 // trxc.weapons.get_ammo_object(weapon: trx.catalog.weapons): trx.catalog.objects?
 static int M_L_WeaponGetAmmoObject(lua_State *const L)
 {
@@ -624,6 +646,7 @@ static const luaL_Reg m_Module[] = {
     { "is_available", M_L_WeaponIsAvailable },
     { "get_object", M_L_WeaponGetObject },
     { "get_ammo_object", M_L_WeaponGetAmmoObject },
+    { "get_attachment", M_L_WeaponGetAttachment },
     { "get_ammo_objects", M_L_WeaponGetAmmoObjects },
     { "rounds_per_shot", M_L_WeaponRoundsPerShot },
     { "ammo_icon", M_L_WeaponAmmoIcon },

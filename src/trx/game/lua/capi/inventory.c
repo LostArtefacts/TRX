@@ -305,6 +305,14 @@ static int M_L_InvHasWeapon(lua_State *const L)
     return 1;
 }
 
+// inventory:has_attachment(weapon) -> bool
+static int M_L_InvHasAttachment(lua_State *const L)
+{
+    const INVENTORY_STATE *const state = M_CheckInventory(L, 1);
+    lua_pushboolean(L, Inv_State_HasAttachment(state, M_GetWeapon(L, 2)));
+    return 1;
+}
+
 // inventory:entry_at(n) -> INVENTORY_ENTRY handle or nil
 static int M_L_InvEntryAt(lua_State *const L)
 {
@@ -406,6 +414,7 @@ static const luaL_Reg m_InventoryMethods[] = {
     { "ammo_kind", M_L_InvAmmoKind },
     { "set_ammo_kind", M_L_InvSetAmmoKind },
     { "has_weapon", M_L_InvHasWeapon },
+    { "has_attachment", M_L_InvHasAttachment },
     { "entry", M_L_InvEntry },
     { "entry_at", M_L_InvEntryAt },
     { "entry_count", M_L_InvEntryCount },
@@ -440,6 +449,18 @@ static int M_L_InvCombine(lua_State *const L)
     return 1;
 }
 
+// trxc.inventory.separate(object: trx.catalog.objects): trx.catalog.objects?
+static int M_L_InvSeparate(lua_State *const L)
+{
+    const OBJECT_ID result = Inv_Separate(LUA_CheckObjectID(L, 1));
+    if (result == NO_OBJECT) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushinteger(L, result);
+    return 1;
+}
+
 // trxc.inventory.icon_of(object: trx.catalog.objects): trx.catalog.objects?
 static int M_L_InvIconOf(lua_State *const L)
 {
@@ -464,13 +485,15 @@ static int M_L_InvActions(lua_State *const L)
 {
     const INV_ITEM_ACTIONS actions =
         Inv_GetItemActions(LUA_CheckObjectID(L, 1));
-    lua_createtable(L, 0, 3);
+    lua_createtable(L, 0, 4);
     lua_pushboolean(L, actions.can_use);
     lua_setfield(L, -2, "use");
     lua_pushboolean(L, actions.can_examine);
     lua_setfield(L, -2, "examine");
     lua_pushboolean(L, actions.can_combine);
     lua_setfield(L, -2, "combine");
+    lua_pushboolean(L, actions.can_separate);
+    lua_setfield(L, -2, "separate");
     return 1;
 }
 
@@ -481,6 +504,7 @@ static const luaL_Reg m_Module[] = {
     { "get_current", M_L_InvGetCurrent },
     { "get", M_L_InvGetLevel },
     { "icon_of", M_L_InvIconOf },
+    { "separate", M_L_InvSeparate },
     { "use", M_L_InvUse },
     { nullptr, nullptr },
 };

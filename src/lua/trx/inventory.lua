@@ -138,6 +138,14 @@ function Inventory:has_weapon(weapon)
   return h.native()
 end
 
+---Whether the weapon carries its attachment, such as the laser sight on the
+---TR4 revolver. `trx.weapons.Weapon.attachment` says what the weapon takes.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return boolean # True where the weapon carries its attachment.
+function Inventory:has_attachment(weapon)
+  return h.native()
+end
+
 ---The entry something is drawn as, or `nil` where there is none of it.
 ---
 ---Several pickups share one entry - the scion whether or not she holds it, a
@@ -264,6 +272,13 @@ function M.has_weapon(weapon)
   return raw.get_current():has_weapon(weapon)
 end
 
+---Asks `trx.inventory.Inventory:has_attachment` of what Lara carries.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return boolean # True where the weapon carries its attachment.
+function M.has_attachment(weapon)
+  return raw.get_current():has_attachment(weapon)
+end
+
 ---Asks `trx.inventory.Inventory:entry` of what Lara carries.
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@return trx.inventory.Entry? # The entry, or `nil` where there is none of it.
@@ -315,6 +330,17 @@ M.combine_partners = raw.combine_partners
 ---@type fun(object_id: trx.catalog.objects, partner_id: trx.catalog.objects): trx.catalog.objects?
 M.combine = raw.combine
 
+---Takes the attachment off a weapon Lara carries, such as the laser sight off
+---the TR4 revolver, and gives it back to her.
+---
+---```lua
+---trx.inventory.separate(trx.catalog.objects.REVOLVER_OPTION)
+---```
+---@param object_id trx.catalog.objects The weapon's pickup, or the inventory icon it goes into.
+---@return trx.catalog.objects? # The icon the attachment went into, or `nil`, changing nothing, where the weapon carries none.
+---@type fun(object_id: trx.catalog.objects): trx.catalog.objects?
+M.separate = raw.separate
+
 ---Returns the inventory icon for a pickup, whether or not Lara has one.
 ---@param object trx.catalog.objects The pickup to check.
 ---@return trx.catalog.objects? # The icon's object id, or `nil` for a pickup that has none.
@@ -338,9 +364,10 @@ M.use = raw.use
 ---@field use boolean Whether choosing it uses it.
 ---@field examine boolean Whether it can be examined, which the player's settings and its description decide.
 ---@field combine boolean Whether Lara carries something it combines with, so that choosing it combines rather than uses it.
+---@field separate boolean Whether it is a weapon that carries its attachment, which `trx.inventory.separate` takes off.
 
----What the inventory ring offers for an entry: using, examining or combining
----it.
+---What the inventory ring offers for an entry: using, examining, combining or
+---separating it.
 ---
 ---```lua
 ---if trx.inventory.actions(object).examine then

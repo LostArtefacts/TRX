@@ -317,6 +317,7 @@ trxc = {}
 ---@field get fun(level_num: trx.game.LevelNum): trx.inventory.Inventory?
 ---@field get_current fun(): trx.inventory.Inventory
 ---@field icon_of fun(object: trx.catalog.objects): trx.catalog.objects?
+---@field separate fun(object: trx.catalog.objects): trx.catalog.objects?
 ---@field use fun(object: trx.catalog.objects)
 
 ---@class (exact) trxc.items
@@ -591,6 +592,7 @@ trxc = {}
 ---@field get_ammo_object fun(weapon: trx.catalog.weapons): trx.catalog.objects?
 ---@field get_ammo_objects fun(weapon: trx.catalog.weapons): trx.catalog.objects[]
 ---@field get_anim fun(weapon: trx.weapons.Weapon): trx.weapons.Anim
+---@field get_attachment fun(weapon: trx.catalog.weapons): { object: trx.catalog.objects, anim: trx.catalog.objects?, inventory_meshes: integer }?
 ---@field get_flash fun(weapon: trx.weapons.Weapon): trx.weapons.Flash
 ---@field get_flash_pos fun(flash: trx.weapons.Flash): trx.weapons.HandPos
 ---@field get_glow fun(weapon: trx.weapons.Weapon): trx.weapons.Glow

@@ -386,6 +386,7 @@
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
 - Added `trx.inventory.use`, which uses an entry as choosing it in the inventory ring does, and `trx.inventory.actions`, which says whether the ring offers to use, examine or combine it
 - Added `trx.inventory.ammo_kind` and `trx.inventory.set_ammo_kind`, which read and set the kind of ammunition a weapon fires, and a kind to `trx.inventory.shots` and `trx.inventory.set_shots`, which count and set the shots of one kind
+- Added `trx.inventory.separate`, which takes an attachment such as the laser sight off a weapon, `trx.inventory.has_attachment`, `separate` to `trx.inventory.Actions`, and `attachment` to `trx.weapons.Weapon`
 - Added fade layers, which the game draws over its interface, below the console or over it, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
 - Added `trx.events.on_screen_change`, `trx.events.on_exit` and the `holds_screen` setting of `trx.ui.layers.fade`, which let a script run the change from one screen to the next and the fade as the game exits

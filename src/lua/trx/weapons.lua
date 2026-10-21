@@ -65,6 +65,14 @@ local HandPos = h.handle("weapons.HandPos", "WEAPON_HAND_POS", {
   writable = { "right", "left" },
 })
 
+---What a weapon can carry attached, such as the laser sight on the TR4
+---revolver. The player combines it with the weapon in the inventory.
+---@trx.record
+---@class trx.weapons.Attachment
+---@field object trx.catalog.objects The pickup that attaches.
+---@field anim trx.catalog.objects? The object Lara's right hand is drawn from while she holds the weapon with the attachment.
+---@field inventory_meshes integer The meshes the inventory draws the weapon with while it carries the attachment, one bit each.
+
 ---What the weapon is fed. A shot is one pull of the trigger, which for the
 ---shotgun spends six rounds; the flare counts a flare where a weapon counts a
 ---shot.
@@ -154,6 +162,7 @@ local Anim = h.handle("weapons.Anim", "WEAPON_ANIM_INFO", {
 ---@field fire_overlay_pitch integer The pitch at which to play the overlay sample.
 ---@field object trx.catalog.objects? The pickup the weapon is, for handing it to `trx.inventory.give`. `nil` where this game has no such weapon.
 ---@field ammo_object trx.catalog.objects? The box of ammunition it takes, or `nil` where it takes none.
+---@field attachment trx.weapons.Attachment? What the weapon can carry attached, such as the laser sight on the TR4 revolver, or `nil` where it takes nothing. `trx.inventory.has_attachment` says whether it carries it.
 ---@field ammo_objects trx.catalog.objects[] Every kind of ammunition it takes, each named by its box, in the order the inventory lists them. The first is `trx.weapons.Weapon.ammo_object`, and the list is empty where the weapon takes none. Only the TR4 shotgun, grenade gun and crossbow take more than one.
 ---@field has_infinite_ammo boolean Whether the weapon never runs dry. The pistols do in most games, and a level or a script may say so of any weapon. A count of shots left means nothing in this context.
 ---@field ammo_icon string? The markup drawn beside the ammunition count in TR1. Later games count without one, and a weapon that carries no icon answers with `nil`.
@@ -209,6 +218,9 @@ local Weapon = h.handle("weapons.Weapon", "WEAPON_INFO", {
     end,
     ammo_objects = function(weapon)
       return raw.get_ammo_objects(weapon.id)
+    end,
+    attachment = function(weapon)
+      return raw.get_attachment(weapon.id)
     end,
     has_infinite_ammo = function(weapon)
       return raw.has_infinite_ammo(weapon.id)
