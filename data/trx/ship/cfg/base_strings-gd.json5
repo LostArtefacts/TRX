@@ -1990,6 +1990,17 @@
             "title": "Modh camara",
             "description": "Taghaidh seo giùlan camara dè an geama a thèid a chleachdadh.\n\n- TR1: leanaidh an camara-tòrachd bogsaichean lorg-slighe na h-ìre.\n- TR2: an aon rud, le crìochan tòrachd is seallaidh eadar-dhealaichte agus dòigh eile air camarathan suidhichte a làimhseachadh.\n- TR3: cleachdaidh an camara-tòrachd loidhne-seallaidh an àite nam bogsaichean lorg-slighe.\n- TR4: mar TR3, agus freagraidh an camara cuideachd nuair a ghluaiseas gnìomh sealladh Lara, mar a bhith a' togail nì no a' dol timcheall oisean 'na crochadh.",
         },
+        "visuals.controls_model": {
+            "description": "\\{review}Dè am modail a sheallas nì an smachd san tasgadh. Seallaidh Fèin-obrachail ceap-smachd fhad 's a tha an smachd air Rianadair, agus am meur-chlàr air dhòigh eile. Seallaidh Tùsail am modail a tha aig gach ìre.",
+            "title": "\\{review}Modail an smachd",
+            "values": {
+                "auto": "\\{review}Fèin-obrachail",
+                "keyboard": "\\{review}Meur-chlàr",
+                "original": "\\{review}Tùsail",
+                "ps1": "\\{review}Ceap PlayStation",
+                "saturn": "\\{review}Ceap Sega Saturn",
+            }
+        },
         "visuals.enable_3d_pickups": {
             "title": "Togail 3D",
             "description": "Cuiridh seo modailean 3D an àite spraidean airson nithean togail.",

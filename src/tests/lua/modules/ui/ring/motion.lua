@@ -97,4 +97,32 @@ test("a ring wholly below the camera leaves by a small tilt", function()
   )
 end)
 
+test("an entry given new poses rests as they say", function()
+  local view = motion.new({ entries = { { x_rot_nosel = 5632 } } })
+  local entry = view.entries[1]
+  local function settle()
+    while view:is_moving() do
+      view:tick()
+    end
+  end
+  view:start(motion.Motion.SELECT)
+  settle()
+  view:start(motion.Motion.DESELECT)
+  settle()
+  view:respec(1, { x_rot_sel = 1536 })
+  assert(
+    entry.x_rot:get() == 0,
+    ("the entry rests at %d"):format(entry.x_rot:get())
+  )
+end)
+
+test("a picked entry given new poses stays picked", function()
+  local view = motion.new({ entries = { { x_rot_sel = -2560 } } })
+  local entry = view.entries[1]
+  view:start(motion.Motion.SELECT)
+  view:respec(1, { x_rot_sel = 1536, z_trans_sel = 352 })
+  assert(entry.x_rot:target() == 1536, "the entry kept the old tilt")
+  assert(entry.z_trans:target() == 352, "the entry did not come forward")
+end)
+
 return h.report()

@@ -1990,6 +1990,17 @@
             "title": "Mode caméra",
             "description": "\\{review}Choisit le comportement de caméra à utiliser.\n\n- TR1 : la caméra de poursuite suit les boîtes de navigation du niveau.\n- TR2 : la même, avec des limites de poursuite et de regard différentes et une autre gestion des caméras fixes.\n- TR3 : la caméra de poursuite utilise la ligne de vue plutôt que les boîtes de navigation.\n- TR4 : comme TR3, et la caméra réagit aussi quand une action déplace la vue de Lara, par exemple ramasser un objet ou contourner un angle en suspension.",
         },
+        "visuals.controls_model": {
+            "description": "\\{review}Le modèle que montre l'objet des commandes dans l'inventaire. Automatique montre une manette tant que les commandes sont réglées sur Manette, et le clavier sinon. Original montre le modèle que fournit chaque niveau.",
+            "title": "\\{review}Modèle des commandes",
+            "values": {
+                "auto": "\\{review}Automatique",
+                "keyboard": "\\{review}Clavier",
+                "original": "\\{review}Original",
+                "ps1": "\\{review}Manette PlayStation",
+                "saturn": "\\{review}Manette Sega Saturn",
+            }
+        },
         "visuals.enable_3d_pickups": {
             "title": "Objets à ramasser 3D",
             "description": "Affiche les objets à ramasser en 3D au lieu de les afficher en sprites.",

@@ -178,6 +178,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── colosseum_ps1_blend.bin
 │   │   │   ├── colosseum_skybox.bin
 │   │   │   ├── colosseum_textures.bin
+│   │   │   ├── controls_models.bin
 │   │   │   ├── crystal.bin
 │   │   │   ├── cut1_ps1_blend.bin
 │   │   │   ├── cut1_setup.bin
@@ -560,6 +561,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── coldwar_textures.bin
 │   │   │   ├── common_pickup_meshes.bin
 │   │   │   ├── common_pickup_meshes_gm.bin
+│   │   │   ├── controls_models.bin
 │   │   │   ├── crystal.bin
 │   │   │   ├── cut2_setup.bin
 │   │   │   ├── cut2_textures.bin
@@ -1076,6 +1078,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── compound_fd.bin
 │   │   │   ├── compound_patrol.bin
 │   │   │   ├── compound_textures.bin
+│   │   │   ├── controls_models.bin
 │   │   │   ├── crash_animating_bounds.bin
 │   │   │   ├── crash_pickup_meshes.bin
 │   │   │   ├── crash_sky.bin
@@ -1347,6 +1350,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── angkor_textures.bin
 │   │   │   ├── burial_animating_bounds.bin
 │   │   │   ├── burial_textures.bin
+│   │   │   ├── controls_models.bin
 │   │   │   ├── font.bin
 │   │   │   ├── guide_gun.bin
 │   │   │   ├── henchman_jeep.bin
@@ -1504,6 +1508,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── attachment.lua
 │   │   ├── captions.lua
 │   │   ├── compass.lua
+│   │   ├── controls_model.lua
 │   │   ├── delete_save.lua
 │   │   ├── fade.lua
 │   │   ├── level_start.lua
@@ -1737,6 +1742,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── colosseum_ps1_blend.bin
     │   │   │   │   ├── colosseum_skybox.bin
     │   │   │   │   ├── colosseum_textures.bin
+    │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── crystal.bin
     │   │   │   │   ├── cut1_ps1_blend.bin
     │   │   │   │   ├── cut1_setup.bin
@@ -2119,6 +2125,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── coldwar_textures.bin
     │   │   │   │   ├── common_pickup_meshes.bin
     │   │   │   │   ├── common_pickup_meshes_gm.bin
+    │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── crystal.bin
     │   │   │   │   ├── cut2_setup.bin
     │   │   │   │   ├── cut2_textures.bin
@@ -2635,6 +2642,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── compound_fd.bin
     │   │   │   │   ├── compound_patrol.bin
     │   │   │   │   ├── compound_textures.bin
+    │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── crash_animating_bounds.bin
     │   │   │   │   ├── crash_pickup_meshes.bin
     │   │   │   │   ├── crash_sky.bin
@@ -2906,6 +2914,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── angkor_textures.bin
     │   │   │   │   ├── burial_animating_bounds.bin
     │   │   │   │   ├── burial_textures.bin
+    │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── guide_gun.bin
     │   │   │   │   ├── henchman_jeep.bin
@@ -3063,6 +3072,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── attachment.lua
     │   │   │   ├── captions.lua
     │   │   │   ├── compass.lua
+    │   │   │   ├── controls_model.lua
     │   │   │   ├── delete_save.lua
     │   │   │   ├── fade.lua
     │   │   │   ├── level_start.lua

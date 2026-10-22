@@ -1990,6 +1990,17 @@
             "title": "Modalità telecamera",
             "description": "Consente di scegliere quale comportamento della telecamera utilizzare.\n\n- TR1: la telecamera segue i riquadri di navigazione del livello.\n- TR2: come TR1, ma con diversi limiti nel controllo della visuale e una diversa gestione delle telecamere fisse.\n- TR3: la telecamera utilizza la linea di vista invece dei riquadri di navigazione.\n- TR4: come TR3, ma in aggiunta la telecamera reagisce quando un'azione sposta la visuale di Lara, come raccogliere un oggetto o girare un angolo mentre si è appesi su una sporgenza.",
         },
+        "visuals.controls_model": {
+            "description": "\\{review}Quale modello mostra l'oggetto dei controlli nell'inventario. Automatico mostra un controller finché i controlli sono impostati su Controller, altrimenti la tastiera. Originale mostra il modello che ogni livello include.",
+            "title": "\\{review}Modello dei controlli",
+            "values": {
+                "auto": "\\{review}Automatico",
+                "keyboard": "\\{review}Tastiera",
+                "original": "\\{review}Originale",
+                "ps1": "\\{review}Controller PlayStation",
+                "saturn": "\\{review}Controller Sega Saturn",
+            }
+        },
         "visuals.enable_3d_pickups": {
             "title": "Oggetti 3D",
             "description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D.",

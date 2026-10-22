@@ -601,6 +601,48 @@
     },
 
     {
+        "object_id": "controls_option_saturn",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 5504,
+        "x_rot_sel": 1536,
+        "z_trans_sel": 352,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 203,
+    },
+
+    {
+        "object_id": "controls_option_keys",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 5504,
+        "x_rot_sel": -12500,
+        "z_trans_sel": 352,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 203,
+    },
+
+    {
+        "object_id": "controls_option_ps1",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 5504,
+        "x_rot_sel": -2560,
+        "x_rot_nosel": 5632,
+        "y_rot_sel": 13312,
+        "y_trans_sel": 46,
+        "z_trans_sel": 508,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 203,
+    },
+
+    {
         "object_id": "photo_option",
         "frames_total": 1,
         "anim_direction": 1,

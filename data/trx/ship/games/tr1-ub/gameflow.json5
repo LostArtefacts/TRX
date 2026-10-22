@@ -20,6 +20,7 @@
         "pickup_aid.bin",
         "sprite_alignment.bin",
         "pda_model.bin",
+        "controls_models.bin",
         "font.bin",
         "winston_model.bin",
         "misc_sprites.bin",
@@ -44,6 +45,7 @@
         "inherit_injections": false,
         "injections": [
             "pda_model.bin",
+            "controls_models.bin",
             "font.bin",
             "title_textures.bin",
             "misc_sprites.bin",

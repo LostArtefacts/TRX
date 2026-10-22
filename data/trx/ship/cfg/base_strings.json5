@@ -1990,6 +1990,17 @@
             "title": "Camera mode",
             "description": "Chooses which game's camera behavior to use.\n\n- TR1: the chase camera follows the level's pathfinding boxes.\n- TR2: the same, with different chase and look limits, and different handling of fixed cameras.\n- TR3: the chase camera uses line of sight rather than the pathfinding boxes.\n- TR4: as TR3, and the camera also responds when an action moves Lara's view, such as picking up an item or shimmying around a corner.",
         },
+        "visuals.controls_model": {
+            "description": "Which model the controls item of the inventory shows. Automatic shows a pad while the controls are set to a controller, and the keyboard otherwise. Original shows the model that each level ships.",
+            "title": "Controls model",
+            "values": {
+                "auto": "Automatic",
+                "keyboard": "Keyboard",
+                "original": "Original",
+                "ps1": "PlayStation pad",
+                "saturn": "Sega Saturn pad",
+            }
+        },
         "visuals.enable_3d_pickups": {
             "title": "3D pickups",
             "description": "Enables 3D models to be rendered in place of the sprites for pickup items.",
