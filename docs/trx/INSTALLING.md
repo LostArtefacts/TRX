@@ -1508,6 +1508,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── metrics.lua
 │   │   ├── ring_hints.lua
 │   │   ├── scroll.lua
+│   │   ├── title_page.lua
 │   │   └── value.lua
 │   ├── inv_ring.lua
 │   ├── ngplus.lua
@@ -3061,6 +3062,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── metrics.lua
     │   │   │   ├── ring_hints.lua
     │   │   │   ├── scroll.lua
+    │   │   │   ├── title_page.lua
     │   │   │   └── value.lua
     │   │   ├── inv_ring.lua
     │   │   ├── ngplus.lua

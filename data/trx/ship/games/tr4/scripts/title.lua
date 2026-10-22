@@ -1,8 +1,11 @@
 local fade = require("common.ui.fade")
 local logo = require("tr4.logo")
+local title_page = require("common.ui.title_page")
 
 -- The logo sits across the top of the menu at the width the original engine
--- gives it, and as tall as the picture's shape makes it.
+-- gives it, and as tall as the picture's shape makes it. It shows only on the
+-- main menu, so the lists and dialogs that the menu opens have the whole
+-- screen.
 local LOGO_WIDTH = 512
 
 local LOGO_HOLD_TICKS = 16
@@ -22,6 +25,7 @@ local function show_logo()
       path = logo.path,
       w = LOGO_WIDTH,
       opacity = logo_opacity,
+      visible = title_page.shows_main,
     })
   )
 end

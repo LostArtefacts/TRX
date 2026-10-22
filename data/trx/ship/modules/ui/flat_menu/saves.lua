@@ -222,6 +222,10 @@ function M.push(ctx, kind, on_done)
     end
   end
 
+  -- The rows follow the room they show in, which grows as the title screen
+  -- hides its logo.
+  local layout = trx.ui.signals.layout:on(follow)
+
   ---@type trx.ui.StackLayer
   local layer
   layer = ctx:push({
@@ -233,6 +237,9 @@ function M.push(ctx, kind, on_done)
     }),
     place = function()
       return 0, 0
+    end,
+    on_close = function()
+      layout:detach()
     end,
     on_input = function(_, keys)
       local step = keys:pressed(Role.MENU_UP) and -1
