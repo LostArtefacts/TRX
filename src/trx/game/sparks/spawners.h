@@ -22,6 +22,9 @@ void Sparks_TriggerExplosionBubble(XYZ_32 pos, int16_t room_num);
 void Sparks_TriggerExplosionSparks(
     XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num);
 void Sparks_TriggerExplosionSmoke(XYZ_32 pos, bool uw, int16_t room_num);
+// Releases a puff of the bright smoke that a TR4 flash grenade gives off, or
+// a burst of bubbles under water.
+void Sparks_TriggerFlashSmoke(XYZ_32 pos, int16_t room_num);
 void Sparks_TriggerExplosionSmokeEnd(XYZ_32 pos, bool uw, int16_t room_num);
 
 void Sparks_TriggerFireFlame(XYZ_32 pos, int32_t body_part, int32_t type);

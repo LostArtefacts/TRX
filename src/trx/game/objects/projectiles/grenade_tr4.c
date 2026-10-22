@@ -8,7 +8,9 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
+#include <trx/game/lara.h>
 #include <trx/game/objects/projectiles/blast.h>
+#include <trx/game/output/flash.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
@@ -21,8 +23,13 @@
 // A fragment flies until it meets the floor, the ceiling or water.
 #define M_FRAGMENT_FUSE    3000
 #define M_FRAGMENT_SPEED   64
-// How many ticks a super grenade keeps throwing fragments after its blast.
+// How many ticks a super grenade keeps throwing fragments after its blast,
+// and a flash grenade keeps flashing.
 #define M_SUPER_AFTERMATH  4
+#define M_FLASH_AFTERMATH  16
+// How long the last flash of a flash grenade blinds the enemies that react
+// to it, in ticks.
+#define M_FLASH_BLIND_TIME 120
 // clang-format on
 
 typedef struct {
@@ -159,6 +166,24 @@ static void M_ThrowFragment(const ITEM *const item)
         Room_Get(fragment->room_num)->flags.underwater ? 1 : M_FRAGMENT_FUSE;
 }
 
+// Flashes the screen and gives off smoke for a tick after a flash grenade
+// goes off: a flicker of white at first, then a full white flash that
+// blinds the enemies that react to it.
+static void M_Flash(const ITEM *const item, const bool last)
+{
+    if (last) {
+        Output_Flash_Trigger(COLOR_RGB_888_WHITE);
+        Lara_GetLaraInfo()->blind_timer = M_FLASH_BLIND_TIME;
+    } else {
+        const uint8_t r = (Random_GetControl() & 0x1F) + 224;
+        const uint8_t g = r - (Random_GetControl() & 0x1F);
+        Output_Flash_Trigger((RGB_888) { .r = r, .g = g, .b = g });
+    }
+    for (int32_t i = 0; i < 2; i++) {
+        Sparks_TriggerFlashSmoke(item->pos, item->room_num);
+    }
+}
+
 // Runs a tick of what follows the blast, while the grenade stays behind
 // unseen.
 static void M_ControlAftermath(const int16_t item_num)
@@ -170,7 +195,9 @@ static void M_ControlAftermath(const int16_t item_num)
         Item_Destroy(item_num);
         return;
     }
-    if (p->kind == GRENADE_TR4_KIND_SUPER) {
+    if (p->kind == GRENADE_TR4_KIND_FLASH) {
+        M_Flash(item, p->aftermath == 1);
+    } else {
         M_ThrowFragment(item);
     }
 }
@@ -226,8 +253,9 @@ static void M_Control(const int16_t item_num)
 
     // A grenade that touches anything goes off, and looks again with the
     // reach of its blast. As in the original, a grenade whose fuse runs out
-    // deals its blast on both looks.
-    for (int32_t i = 0; i < 2; i++) {
+    // deals its blast on both looks. A flash grenade deals no blast.
+    const bool is_flash = p->kind == GRENADE_TR4_KIND_FLASH;
+    for (int32_t i = 0; i < 2 && (!is_flash || !exploded); i++) {
         COLLIDED_OBJECTS found;
         Collide_GetCollidedObjects(item, radius, true, true, &found);
         if (exploded) {
@@ -244,10 +272,18 @@ static void M_Control(const int16_t item_num)
     if (!exploded) {
         return;
     }
-    Blast_Explode(item, old_pos.pos);
-    if (p->kind == GRENADE_TR4_KIND_SUPER) {
+    if (is_flash) {
+        Output_Flash_Trigger(COLOR_RGB_888_WHITE);
+        for (int32_t i = 0; i < 2; i++) {
+            Sparks_TriggerFlashSmoke(item->pos, item->room_num);
+        }
+        Blast_SoundOff(item);
+    } else {
+        Blast_Explode(item, old_pos.pos);
+    }
+    if (p->kind == GRENADE_TR4_KIND_SUPER || is_flash) {
         item->mesh_bits = 0;
-        p->aftermath = M_SUPER_AFTERMATH;
+        p->aftermath = is_flash ? M_FLASH_AFTERMATH : M_SUPER_AFTERMATH;
     } else {
         Item_Destroy(item_num);
     }

@@ -1113,6 +1113,71 @@ void Sparks_TriggerExplosionSmoke(
     Sparks_FinishSetup(spark);
 }
 
+void Sparks_TriggerFlashSmoke(const XYZ_32 pos, const int16_t room_num)
+{
+    const ROOM *const room = Room_Get(room_num);
+    const bool uw = room->flags.underwater;
+    if (uw) {
+        Sparks_TriggerExplosionBubble(pos, room_num);
+    }
+
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_SMOKE);
+    if (spark == nullptr) {
+        return;
+    }
+
+    spark->src_color = (RGB_888) { 0, 0, 0 };
+    spark->dst_color = (RGB_888) { 128, 128, 128 };
+    // TR4 makes this a smoke spark, which loses two points of life per tick
+    // and draws at a scalar of 2. The life and the fades are therefore half
+    // of the original values.
+    spark->col_fade_speed = 2;
+    spark->fade_to_black = 8;
+    spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
+    spark->dynamic = -1;
+    spark->life = (uint8_t)((Random_GetControl() & 7) + 32);
+    spark->s_life = spark->life;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+    if (uw) {
+        spark->vel.x = (Random_GetControl() & 0x3FF) - 512;
+        spark->vel.y = (Random_GetControl() & 0x3FF) - 512;
+        spark->vel.z = (Random_GetControl() & 0x3FF) - 512;
+        spark->friction = 0x44;
+    } else {
+        spark->vel.x = 2 * (Random_GetControl() & 0x3FF) - 1024;
+        spark->vel.y = -512 - (Random_GetControl() & 0x3FF);
+        spark->vel.z = 2 * (Random_GetControl() & 0x3FF) - 1024;
+        spark->friction = 0x55;
+    }
+
+    spark->flags =
+        SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    if (room->flags.wind) {
+        spark->flags |= SPARK_F_OUTSIDE;
+    }
+    spark->rot_angle = Random_GetControl() & 0xFFF;
+    if ((Random_GetControl() & 1) != 0) {
+        spark->rot_add = -16 - (Random_GetControl() & 0xF);
+    } else {
+        spark->rot_add = (Random_GetControl() & 0xF) + 16;
+    }
+
+    spark->scalar = 2;
+    spark->gravity = 0;
+    spark->max_y_vel = 0;
+    const uint8_t size = (uint8_t)((Random_GetControl() & 0x1F) + 64);
+    spark->size.width = size;
+    spark->size.height = size;
+    spark->src_size = spark->size;
+    spark->dst_size.width = (uint8_t)((size + 4) << 1);
+    spark->dst_size.height = spark->dst_size.width;
+    Sparks_FinishSetup(spark);
+}
+
 void Sparks_TriggerExplosionSmokeEnd(
     const XYZ_32 pos, const bool uw, const int16_t room_num)
 {

@@ -15,3 +15,7 @@ void Blast_HitObjects(
 // Sets off a TR4 blast at the source: a fireball and a shockwave out of
 // water, or a burst of bubbles in it, with the sound of the explosion.
 void Blast_Explode(ITEM *source, XYZ_32 old_pos);
+
+// Plays the sound of a TR4 explosion at the source, and alerts the guards
+// nearby.
+void Blast_SoundOff(const ITEM *source);
