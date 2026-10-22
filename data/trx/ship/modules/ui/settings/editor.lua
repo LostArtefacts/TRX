@@ -11,6 +11,7 @@
 --   local tab = editor.new({ title = "Volume", keys = keys, editing = editing,
 --     width = width, dialog_width = dialog_width, push = push })
 
+local accent = require("common.ui.accent")
 local metrics = require("common.ui.metrics")
 local scroll = require("common.ui.scroll")
 local rows = require("common.ui.settings.rows")
@@ -291,7 +292,7 @@ local function value_widget(key, changed)
           return v.bar == false
         end),
         text = state:map(function(v)
-          return v.value
+          return accent.text(v.value)
         end),
       }),
       color.swatch({
@@ -392,6 +393,7 @@ local function slot_widget(self, index, settings)
             return l.right
           end),
           child = value_widget(key, changed),
+          accent = true,
         })
       ),
     },

@@ -131,4 +131,34 @@ test("the tab measures its widest row", function()
   tab:close()
 end)
 
+test("the value and its arrows show in orange in TR4 only", function()
+  trx.config.set("visuals.fov", 80)
+  local function text_op(pattern)
+    for _, op in ipairs(fake.scene()) do
+      local text = op:match("^text .- text=(.*)$")
+      if text ~= nil and text:find(pattern, 1, true) then
+        return text
+      end
+    end
+    return nil
+  end
+  for _, case in ipairs({ { version = 4, orange = true }, { version = 1 } }) do
+    fake.set_tr_version(case.version)
+    local tab = make({ "visuals.fov" })
+    tab.scroll:select(1)
+    local layer = on_layer(tab)
+    for _, part in ipairs({ "80", "\\{button left}", "\\{button right}" }) do
+      local text = text_op(part)
+      assert(text ~= nil, part .. " is missing")
+      local orange = text:find("\\{color 6}", 1, true) ~= nil
+      assert(
+        orange == (case.orange == true),
+        ("TR%d shows %s"):format(case.version, text)
+      )
+    end
+    layer:close()
+    tab:close()
+  end
+end)
+
 return h.report()

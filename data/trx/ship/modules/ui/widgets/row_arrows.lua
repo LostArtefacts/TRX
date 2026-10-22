@@ -6,6 +6,7 @@
 --   local row_arrows = require("common.ui.widgets.row_arrows")
 --   local arrows = row_arrows.new({ child = label, left = can_left })
 
+local accent = require("common.ui.accent")
 local value = require("common.ui.value")
 
 local M = {}
@@ -22,11 +23,15 @@ M.Spacing = {
 ---@field left? any Whether to show the left arrow, or a signal that holds it. `false` by default.
 ---@field right? any Whether to show the right arrow, or a signal that holds it. `false` by default.
 ---@field spacing? number The gap on each side of the widget. `common.ui.widgets.row_arrows.Spacing.MEDIUM` by default.
+---@field accent? boolean Whether to draw the arrows in the accent colour of the menus. `false` by default.
 
 -- Creates the arrows around a widget.
 ---@param settings common.ui.RowArrows.settings
 ---@return trx.ui.Widget
 function M.new(settings)
+  local function arrow(text)
+    return settings.accent and accent.text(text) or text
+  end
   return trx.ui.widgets.Stack({
     orientation = trx.ui.Orientation.HORIZONTAL,
     align = trx.ui.HAlign.DISTRIBUTE,
@@ -35,12 +40,12 @@ function M.new(settings)
     children = {
       trx.ui.widgets.Blank({
         when = ~value.signal(settings.left or false),
-        child = trx.ui.widgets.Label({ text = "\\{button left}" }),
+        child = trx.ui.widgets.Label({ text = arrow("\\{button left}") }),
       }),
       settings.child,
       trx.ui.widgets.Blank({
         when = ~value.signal(settings.right or false),
-        child = trx.ui.widgets.Label({ text = "\\{button right}" }),
+        child = trx.ui.widgets.Label({ text = arrow("\\{button right}") }),
       }),
     },
   })

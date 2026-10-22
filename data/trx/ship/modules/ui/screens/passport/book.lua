@@ -4,6 +4,7 @@
 -- is a layer above it. A choice that leaves the passport runs as a game flow
 -- command once the ring has closed.
 
+local accent = require("common.ui.accent")
 local delete_save = require("common.ui.delete_save")
 local metrics = require("common.ui.metrics")
 local pages = require("common.ui.screens.passport.pages")
@@ -165,7 +166,7 @@ end
 -- Every list rests on the same line, whatever its height.
 local function list_req(rows, title, footer)
   local req = requester.new({
-    title = title,
+    title = title ~= nil and accent.text(title) or nil,
     rows = rows,
     min_w = PASSPORT_WIDTH,
     reserve = true,
@@ -180,7 +181,7 @@ end
 -- Creates a list as wide as its rows, with wider row padding.
 local function modes_req(rows, title)
   local req = requester.new({
-    title = title,
+    title = title ~= nil and accent.text(title) or nil,
     rows = rows,
     row_pad = metrics.CHOICE_ROW_PAD,
     arrows = false,

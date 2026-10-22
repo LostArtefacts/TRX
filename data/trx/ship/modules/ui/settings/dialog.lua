@@ -11,6 +11,7 @@
 --   })
 --   ctx:push({ root = settings_dialog.widget, place = dialog.PLACE })
 
+local accent = require("common.ui.accent")
 local metrics = require("common.ui.metrics")
 local scroll = require("common.ui.scroll")
 local editor = require("common.ui.settings.editor")
@@ -343,15 +344,17 @@ function M.new(settings)
     }),
   })
 
+  local title = settings.title
+  if type(title) == "function" then
+    title = self.changed:map(title)
+  end
   self.widget = trx.ui.widgets.Fit({
     child = trx.ui.widgets.Stack({
       spacing = FOOTER_SPACING,
       align = trx.ui.HAlign.SPAN,
       children = {
         window.new({
-          title = type(settings.title) == "function" and self.changed:map(
-            settings.title
-          ) or settings.title,
+          title = accent.signal(title),
           scroll = active_scroll(self.active, self.tabs),
           reserve_scroll = true,
           header = trx.ui.widgets.Stack({

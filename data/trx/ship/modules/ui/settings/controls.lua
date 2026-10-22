@@ -8,6 +8,7 @@
 --   local controls = require("common.ui.settings.controls")
 --   local layer, close = controls.open({ push = push, finish = finish })
 
+local accent = require("common.ui.accent")
 local ammo = require("common.ui.ammo")
 local metrics = require("common.ui.metrics")
 local scroll = require("common.ui.scroll")
@@ -598,7 +599,7 @@ local function row_widget(index, view, size, blink)
       return s.label
     end),
     part(function(r)
-      return r.label
+      return accent.text(r.label)
     end),
     part(function(r)
       return framed(r.focused)
@@ -781,7 +782,9 @@ function M.editor(settings)
       align = trx.ui.HAlign.SPAN,
       children = {
         window.new({
-          title = trx.locale.get("general/settings/controls/customize"),
+          title = accent.text(
+            trx.locale.get("general/settings/controls/customize")
+          ),
           scroll = self.scroll,
           reserve_scroll = true,
           header = trx.ui.widgets.Stack({
@@ -852,7 +855,7 @@ function M.open(settings)
   local choosing = trx.signal.new(true)
   local available = available_backends()
   local req = requester.new({
-    title = trx.locale.get("general/settings/controls/customize"),
+    title = accent.text(trx.locale.get("general/settings/controls/customize")),
     place = chooser_place,
   })
 
