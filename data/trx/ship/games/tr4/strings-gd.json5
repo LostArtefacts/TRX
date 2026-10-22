@@ -1,0 +1,1013 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "Uidheamaich Lannsair Grenèad",
+            "equip_uzis": "Uidheamaich Uzi",
+        }
+    },
+    "objects": {
+        "crossbow_ammo_1_item": {
+            "name": "Saighdean àbhaisteach a' bhogha-fhèich",
+        },
+        "crossbow_ammo_2_item": {
+            "name": "Saighdean puinnseanta a' bhogha-fhèich",
+        },
+        "crossbow_ammo_3_item": {
+            "name": "Saighdean-spreadhaidh a' bhogha-fhèich",
+        },
+        "flare_item": {
+            "name": "Lòchrain chomharran",
+        },
+        "grenade_ammo_2_item": {
+            "name": "Armachd chumhachdach an lannsair-ghrenàd",
+        },
+        "grenade_ammo_3_item": {
+            "name": "Armachd-dallachaidh an lannsair-ghrenàd",
+        },
+        "grenade_ammo_item": {
+            "name": "Armachd àbhaisteach an lannsair-ghrenàd",
+        },
+        "grenade_gun_item": {
+            "name": "Lannsair-ghrenàd",
+        },
+        "pistols_ammo_item": {
+            "name": "Armachd a' phiostail",
+        },
+        "quest_item_1": {
+            "name": "Amulet Horus",
+        },
+        "shotgun_ammo_2_item": {
+            "name": "Armachd leathann an ghunna-shaighead",
+        },
+        "shotgun_ammo_item": {
+            "name": "Armachd àbhaisteach an ghunna-shaighead",
+        },
+        "uzis_ammo_item": {
+            "name": "Armachd an Uzi",
+        },
+        "uzis_item": {
+            "name": "Uzi",
+        }
+    },
+    "cutscenes": [],
+    "levels": [
+        {
+            "title": "Angkor Wat",
+            "general": {
+                "legend": "Cambòid, 1984",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Claigeann Òir",
+                }
+            }
+        },
+        {
+            "title": "Rèis an Iris",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Claigeann Òir",
+                }
+            }
+        },
+        {
+            "title": "Uaigh Shèth",
+            "general": {
+                "legend": "An Èiphit, an latha an-diugh",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Sùil Horus",
+                },
+                "puzzle_item_2": {
+                    "name": "Gaineamh gun Ùine",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Pìos Sùla",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Pìos Sùla",
+                }
+            }
+        },
+        {
+            "title": "Seòmraichean-adhlacaidh",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Làmh Orion",
+                },
+                "puzzle_item_2": {
+                    "name": "Làmh Sirius",
+                },
+                "puzzle_item_3": {
+                    "name": "Talaisman an Sgarab",
+                },
+                "puzzle_item_4": {
+                    "name": "An Nathair Òir",
+                }
+            }
+        },
+        {
+            "title": "Gleann nan Rìghean",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Iuchair an Jeep",
+                }
+            }
+        },
+        {
+            "title": "KV5",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Iuchair an Jeep",
+                }
+            }
+        },
+        {
+            "title": "Teampall Karnak",
+            "objects": {
+                "key_item_2": {
+                    "name": "Iuchair an Talla Hypostyle",
+                },
+                "puzzle_item_1": {
+                    "name": "Talaisman na Grèine",
+                },
+                "puzzle_item_2": {
+                    "name": "Soitheach Canopic 1",
+                },
+                "puzzle_item_3": {
+                    "name": "Soitheach Canopic 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Diosg na Grèine",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Ban-dia na Grèine",
+                }
+            }
+        },
+        {
+            "title": "An Talla Mhòr Hypostyle",
+            "objects": {
+                "key_item_2": {
+                    "name": "Iuchair an Talla Hypostyle",
+                },
+                "puzzle_item_1": {
+                    "name": "Talaisman na Grèine",
+                },
+                "puzzle_item_2": {
+                    "name": "Soitheach Canopic 1",
+                },
+                "puzzle_item_3": {
+                    "name": "Soitheach Canopic 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Diosg na Grèine",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Ban-dia na Grèine",
+                }
+            }
+        },
+        {
+            "title": "Loch Naomh",
+            "objects": {
+                "key_item_2": {
+                    "name": "Iuchair an Talla Hypostyle",
+                },
+                "puzzle_item_1": {
+                    "name": "Talaisman na Grèine",
+                },
+                "puzzle_item_2": {
+                    "name": "Soitheach Canopic 1",
+                },
+                "puzzle_item_3": {
+                    "name": "Soitheach Canopic 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Diosg na Grèine",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Ban-dia na Grèine",
+                }
+            }
+        },
+        {
+            "title": "Loch 2",
+        },
+        {
+            "title": "Uaigh Semerkhet",
+            "objects": {
+                "puzzle_item_4": {
+                    "name": "Cartùs Ba",
+                },
+                "puzzle_item_5": {
+                    "name": "Cartùs Ra",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Pìos Cartùis 1",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Pìos Cartùis 2",
+                },
+                "examine_item_2": {
+                    "name": "Riaghailtean Senet",
+                    "description": "Gus an geama a bhuannachadh, thoir na pìosan agad uile far a' bhùird le bhith gan cur air a' cheàrnag ankh mu dheireadh. Nuair a thig do chothrom, tilg na maidean. 'S e an àireamh de thaobhan geala a tha a' sealltainn an sgòr agad-sa.\n\nMura h-eil taobh geal sam bith a' sealltainn, 's e sia an sgòr a th' agad. Ma gheibheas tu sia no ma thig thu air ceàrnag ankh, gheibh thu cothrom eile as asgaidh. Ma thig thu air pìos neach-dùbhlain, thèid am pìos sin a thilleadh chun an àite-tòiseachaidh.",
+                }
+            }
+        },
+        {
+            "title": "Neach-dìon Semerkhet",
+            "objects": {
+                "puzzle_item_6": {
+                    "name": "Vraeus Òir",
+                },
+                "puzzle_item_7": {
+                    "name": "Iuchair an Neach-dìona",
+                }
+            }
+        },
+        {
+            "title": "Rèile an Fhàsaich",
+        },
+        {
+            "title": "Alexandria",
+            "objects": {
+                "key_item_1": {
+                    "name": "Comharra",
+                },
+                "key_item_10": {
+                    "name": "Iuchair a' Gheata",
+                },
+                "puzzle_item_1": {
+                    "name": "Trì-fhiacail",
+                },
+                "puzzle_item_2": {
+                    "name": "Sgrola Ciùil",
+                },
+                "puzzle_item_3": {
+                    "name": "Rionnag Òir",
+                },
+                "puzzle_item_4": {
+                    "name": "Dubhan is Slat",
+                },
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_6": {
+                    "name": "Seud an Eachraidh",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "Colbh Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Dubhan Balla",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Làmh bhriste",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                }
+            }
+        },
+        {
+            "title": "Tobhtaichean na Cladaich",
+            "objects": {
+                "key_item_1": {
+                    "name": "Comharra",
+                },
+                "key_item_10": {
+                    "name": "Iuchair a' Gheata",
+                },
+                "puzzle_item_1": {
+                    "name": "Trì-fhiacail",
+                },
+                "puzzle_item_2": {
+                    "name": "Sgrola Ciùil",
+                },
+                "puzzle_item_3": {
+                    "name": "Rionnag Òir",
+                },
+                "puzzle_item_4": {
+                    "name": "Dubhan is Slat",
+                },
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_6": {
+                    "name": "Seud an Eachraidh",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "Colbh Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Dubhan Balla",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Làmh bhriste",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                }
+            }
+        },
+        {
+            "title": "Pharos, Teampall Isis",
+            "objects": {
+                "key_item_1": {
+                    "name": "Comharra",
+                },
+                "key_item_10": {
+                    "name": "Iuchair a' Gheata",
+                },
+                "puzzle_item_1": {
+                    "name": "Trì-fhiacail",
+                },
+                "puzzle_item_2": {
+                    "name": "Sgrola Ciùil",
+                },
+                "puzzle_item_3": {
+                    "name": "Rionnag Òir",
+                },
+                "puzzle_item_4": {
+                    "name": "Dubhan is Slat",
+                },
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_6": {
+                    "name": "Seud an Eachraidh",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "Colbh Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Dubhan Balla",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Làmh bhriste",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                }
+            }
+        },
+        {
+            "title": "Lùchairtean Cleopatra",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                }
+            }
+        },
+        {
+            "title": "Catacomaichean",
+            "objects": {
+                "key_item_1": {
+                    "name": "Comharra",
+                },
+                "key_item_10": {
+                    "name": "Iuchair a' Gheata",
+                },
+                "puzzle_item_1": {
+                    "name": "Trì-fhiacail",
+                },
+                "puzzle_item_2": {
+                    "name": "Sgrola Ciùil",
+                },
+                "puzzle_item_3": {
+                    "name": "Rionnag Òir",
+                },
+                "puzzle_item_4": {
+                    "name": "Dubhan is Slat",
+                },
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_6": {
+                    "name": "Seud an Eachraidh",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "Colbh Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                }
+            }
+        },
+        {
+            "title": "Teampall Poseidon",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Trì-fhiacail",
+                },
+                "puzzle_item_2": {
+                    "name": "Sgrola Ciùil",
+                },
+                "puzzle_item_3": {
+                    "name": "Rionnag Òir",
+                },
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_6": {
+                    "name": "Seud an Eachraidh",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "Colbh Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                }
+            }
+        },
+        {
+            "title": "An Leabharlann Caillte",
+            "objects": {
+                "puzzle_item_2": {
+                    "name": "Sgrola Ciùil",
+                },
+                "puzzle_item_3": {
+                    "name": "Rionnag Òir",
+                },
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_6": {
+                    "name": "Seud an Eachraidh",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "Colbh Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                },
+                "examine_item_3": {
+                    "name": "Sgrola Cearcall an Teine",
+                    "description": "Gus am bi na nathraichean beò, feumaidh iad uile a bhith sàmhach an toiseach. Brosnaich iad aon às dèidh a chèile, agus lasaidh an cearcall gu lèir.",
+                }
+            }
+        },
+        {
+            "title": "Talla Demetrius",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "Neach-dìon a' Phortail",
+                },
+                "puzzle_item_10": {
+                    "name": "Snaidhm Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "Colbh Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "Daolag Dhubh",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Làmh Sgeadaichte",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Ìomhaigh Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Daolag Bhriste",
+                },
+                "pickup_item_2": {
+                    "name": "Speuclairean Briste",
+                }
+            }
+        },
+        {
+            "title": "Baile nam Marbh",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Inneal-solair Nitrous Oxide",
+                },
+                "puzzle_item_2": {
+                    "name": "Seaca Càr",
+                },
+                "puzzle_item_4": {
+                    "name": "Iuchair a' Mhullaich",
+                },
+                "puzzle_item_5": {
+                    "name": "Iuchair Còd an Airm",
+                },
+                "puzzle_item_8": {
+                    "name": "Inneal-spreadhaidh a' Mhèinn",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Pìob na Bhalbha",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Soitheach Nitrous Oxide",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Corp an t-Seaca Càir",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Làmh",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Corp Inneal-spreadhaidh na Mèinne",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Dàta Suidheachaidh na Mèinne",
+                }
+            }
+        },
+        {
+            "title": "Na Trainnsichean",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Inneal-solair Nitrous Oxide",
+                },
+                "puzzle_item_2": {
+                    "name": "Seaca Càr",
+                },
+                "puzzle_item_4": {
+                    "name": "Iuchair a' Mhullaich",
+                },
+                "puzzle_item_5": {
+                    "name": "Iuchair Còd an Airm",
+                },
+                "puzzle_item_8": {
+                    "name": "Inneal-spreadhaidh a' Mhèinn",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Pìob na Bhalbha",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Soitheach Nitrous Oxide",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Corp an t-Seaca Càir",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Làmh",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Corp Inneal-spreadhaidh na Mèinne",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Dàta Suidheachaidh na Mèinne",
+                }
+            }
+        },
+        {
+            "title": "Seòmraichean Tulun",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Inneal-solair Nitrous Oxide",
+                },
+                "puzzle_item_2": {
+                    "name": "Seaca Càr",
+                },
+                "puzzle_item_4": {
+                    "name": "Iuchair a' Mhullaich",
+                },
+                "puzzle_item_5": {
+                    "name": "Iuchair Còd an Airm",
+                },
+                "puzzle_item_8": {
+                    "name": "Inneal-spreadhaidh a' Mhèinn",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Pìob na Bhalbha",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Soitheach Nitrous Oxide",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Corp an t-Seaca Càir",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Làmh",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Corp Inneal-spreadhaidh na Mèinne",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Dàta Suidheachaidh na Mèinne",
+                }
+            }
+        },
+        {
+            "title": "Sràid a' Mhargaidh",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Inneal-solair Nitrous Oxide",
+                },
+                "puzzle_item_2": {
+                    "name": "Seaca Càr",
+                },
+                "puzzle_item_4": {
+                    "name": "Iuchair a' Mhullaich",
+                },
+                "puzzle_item_5": {
+                    "name": "Iuchair Còd an Airm",
+                },
+                "puzzle_item_8": {
+                    "name": "Inneal-spreadhaidh a' Mhèinn",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Pìob na Bhalbha",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Soitheach Nitrous Oxide",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Corp an t-Seaca Càir",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Làmh",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Corp Inneal-spreadhaidh na Mèinne",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Dàta Suidheachaidh na Mèinne",
+                }
+            }
+        },
+        {
+            "title": "Geata na Daingnich",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Inneal-solair Nitrous Oxide",
+                },
+                "puzzle_item_2": {
+                    "name": "Seaca Càr",
+                },
+                "puzzle_item_4": {
+                    "name": "Iuchair a' Mhullaich",
+                },
+                "puzzle_item_5": {
+                    "name": "Iuchair Còd an Airm",
+                },
+                "puzzle_item_8": {
+                    "name": "Inneal-spreadhaidh a' Mhèinn",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Pìob na Bhalbha",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Soitheach Nitrous Oxide",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Corp an t-Seaca Càir",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Làmh",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Corp Inneal-spreadhaidh na Mèinne",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Dàta Suidheachaidh na Mèinne",
+                }
+            }
+        },
+        {
+            "title": "An Daingneach",
+        },
+        {
+            "title": "Ionad na Sphinx",
+            "objects": {
+                "key_item_1": {
+                    "name": "Iuchair Airgid",
+                },
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_1": {
+                    "name": "Sluasaid",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Lann Meatailt",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Làmh-fhiodha",
+                }
+            }
+        },
+        {
+            "title": "Teampall a' Ghlinne",
+        },
+        {
+            "title": "Fo na Sphinx",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_1": {
+                    "name": "Clach Maat",
+                },
+                "puzzle_item_2": {
+                    "name": "Clach Khepri",
+                },
+                "puzzle_item_3": {
+                    "name": "Clach Atum",
+                },
+                "puzzle_item_4": {
+                    "name": "Clach Re",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                },
+                "examine_item_1": {
+                    "name": "Pìos Pàipeir",
+                    "description": "",
+                }
+            }
+        },
+        {
+            "title": "Pioramaid Menkaure",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                }
+            }
+        },
+        {
+            "title": "Taobh a-staigh Pioramaid Menkaure",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                }
+            }
+        },
+        {
+            "title": "Na Mastabas",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                },
+                "puzzle_item_7": {
+                    "name": "Iuchair Slat a Tuath",
+                },
+                "puzzle_item_8": {
+                    "name": "Iuchair Slat a Deas",
+                },
+                "pickup_item_1": {
+                    "name": "Poca Gaineimh",
+                },
+                "pickup_item_2": {
+                    "name": "Canastair Peatrail",
+                }
+            }
+        },
+        {
+            "title": "Am Pioramaid Mòr",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                },
+                "puzzle_item_7": {
+                    "name": "Iuchair Slat a Tuath",
+                },
+                "puzzle_item_8": {
+                    "name": "Iuchair Slat a Deas",
+                }
+            }
+        },
+        {
+            "title": "Pioramaidean Banrighrean Khufu",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                },
+                "puzzle_item_7": {
+                    "name": "Iuchair Slat a Tuath",
+                },
+                "puzzle_item_8": {
+                    "name": "Iuchair Slat a Deas",
+                },
+                "puzzle_item_9": {
+                    "name": "Iuchair Slat an Ear",
+                }
+            }
+        },
+        {
+            "title": "Taobh a-staigh a' Phioramaid Mhòir",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                },
+                "puzzle_item_6": {
+                    "name": "Iuchair Slat an Iar",
+                },
+                "puzzle_item_7": {
+                    "name": "Iuchair Slat a Tuath",
+                },
+                "puzzle_item_8": {
+                    "name": "Iuchair Slat a Deas",
+                },
+                "puzzle_item_9": {
+                    "name": "Iuchair Slat an Ear",
+                }
+            }
+        },
+        {
+            "title": "Teampall Horus",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                },
+                "puzzle_item_5": {
+                    "name": "Sgriobtar Naomh",
+                }
+            }
+        },
+        {
+            "title": "Teampall Horus",
+            "objects": {
+                "key_item_11": {
+                    "name": "Iuchair an Armachd-thaigh",
+                },
+                "key_item_12": {
+                    "name": "Iuchraichean nan Geàrdan",
+                }
+            }
+        }
+    ]
+}

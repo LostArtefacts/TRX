@@ -1426,6 +1426,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── gameflow.json5
 │   │   ├── inv_ring.json5
 │   │   ├── strings-de.json5
+│   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings.json5
 │   │   └── weapons.json5
@@ -2991,6 +2992,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── gameflow.json5
     │   │   │   ├── inv_ring.json5
     │   │   │   ├── strings-de.json5
+    │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings.json5
     │   │   │   └── weapons.json5
