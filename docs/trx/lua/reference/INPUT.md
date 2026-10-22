@@ -53,7 +53,7 @@ buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
 
 ### Enums
 
-- <a id="input.Role" name="input.Role"></a>[lua]`trx.input.Role` - 79 names
+- <a id="input.Role" name="input.Role"></a>[lua]`trx.input.Role` - 80 names
 
     A game action the player can bind to a key or button. In text, `\{input
     ...}` draws its current binding.
@@ -63,8 +63,8 @@ buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
 
     `ACTION`, `BACK`, `CAMERA_BACK`, `CAMERA_DOWN`, `CAMERA_FORWARD`,
     `CAMERA_LEFT`, `CAMERA_RESET`, `CAMERA_RIGHT`, `CAMERA_UP`, `CHANGE_OUTFIT`,
-    `CHANGE_TARGET`, `CROUCH`, `CYCLE_LIGHTING_MODEL`, `DRAW`, `ENTER_CONSOLE`,
-    `EQUIP_AUTOS`, `EQUIP_CROSSBOW`, `EQUIP_DESERT_EAGLE`,
+    `CHANGE_TARGET`, `CROUCH`, `CYCLE_AMMO`, `CYCLE_LIGHTING_MODEL`, `DRAW`,
+    `ENTER_CONSOLE`, `EQUIP_AUTOS`, `EQUIP_CROSSBOW`, `EQUIP_DESERT_EAGLE`,
     `EQUIP_GRENADE_LAUNCHER`, `EQUIP_HARPOON`, `EQUIP_M16`, `EQUIP_MAGNUMS`,
     `EQUIP_MP5`, `EQUIP_PISTOLS`, `EQUIP_REVOLVER`, `EQUIP_ROCKET_LAUNCHER`,
     `EQUIP_SHOTGUN`, `EQUIP_UZIS`, `FAST_FORWARD_CHEAT`, `FLY_CHEAT`, `FORWARD`,

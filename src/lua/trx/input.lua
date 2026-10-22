@@ -111,6 +111,7 @@ local Role = {
   USE_BIG_MEDI = h.IntegerConstant,
   USE_FLARE = h.IntegerConstant,
   USE_BINOCULARS = h.IntegerConstant,
+  CYCLE_AMMO = h.IntegerConstant,
   PAUSE = h.IntegerConstant,
   TOGGLE_PHOTO_MODE = h.IntegerConstant,
   TOGGLE_UI = h.IntegerConstant,

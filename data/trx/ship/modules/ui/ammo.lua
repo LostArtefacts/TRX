@@ -64,6 +64,24 @@ function M.caption(weapon, kind)
   return trx.locale.get("general/ammo/count_fmt"):format(shots, name)
 end
 
+-- Returns the next kind after the one the weapon fires that Lara has shots
+-- of, going back to the first after the last, or nil where there is none.
+---@param weapon trx.weapons.Weapon
+---@return trx.catalog.objects?
+function M.next_kind(weapon)
+  local kinds = weapon.ammo_objects
+  local fired = M.fired_index(weapon)
+  for step = 1, #kinds - 1 do
+    local kind = kinds[(fired + step - 1) % #kinds + 1]
+    if
+      weapon.has_infinite_ammo or trx.inventory.shots(weapon.id, kind) > 0
+    then
+      return kind
+    end
+  end
+  return nil
+end
+
 -- Makes a kind the one the weapon fires.
 ---@param weapon trx.weapons.Weapon
 ---@param kind trx.catalog.objects
