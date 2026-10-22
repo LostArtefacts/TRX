@@ -221,8 +221,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->rope.index = NO_ROPE;
     lara_info->poison.value = 0;
     lara_info->poison.target = 0;
-    lara_info->tr3_smoke_count_l = 0;
-    lara_info->tr3_smoke_count_r = 0;
+    lara_info->smoke_count_l = 0;
+    lara_info->smoke_count_r = 0;
     lara_info->mesh_pos_matrices_valid = false;
     lara_info->blind_timer = 0;
 

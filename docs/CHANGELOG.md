@@ -211,6 +211,7 @@
 - Added a key that switches the weapon in Lara's hands to its next kind of ammunition, and shows the name of the kind on the ammo counter (TRX1846)
 - Added super grenades, which throw burning fragments that explode where they land, and which the enemy jeep fires as well (TRX1821)
 - Added flash grenades, which flash the screen white and blind enemies that cover their eyes (TRX1822)
+- Added gun smoke to the pistols, uzis, revolver, shotgun and grenade gun, as in the original game (TRX1864)
 - Changed grenades to explode as in the original game, with a shockwave, shattering what breaks around them and hurting Lara when she is caught in the blast
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it

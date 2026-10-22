@@ -1770,9 +1770,17 @@ void Sparks_TriggerGunSmokeDirected(
     spark->col_fade_speed = 4;
     spark->fade_to_black = 32 - (initial << 4);
     spark->life = (Random_GetControl() & 3) + 40;
+    // TR4 ages gun smoke by two each frame, so it lasts half as long.
+    if (g_TRVersion == 4) {
+        spark->col_fade_speed >>= 1;
+        spark->fade_to_black >>= 1;
+        spark->life = (spark->life + 1) >> 1;
+    }
     spark->s_life = spark->life;
 
-    if (Gun_IsDualPistolType(weapon) && spark->dst_color.r > 64) {
+    const bool is_pistol = Gun_IsDualPistolType(weapon)
+        || (g_TRVersion == 4 && Gun_IsSinglePistolType(weapon));
+    if (is_pistol && spark->dst_color.r > 64) {
         spark->dst_color.r = 64;
         spark->dst_color.g = 64;
         spark->dst_color.b = 64;

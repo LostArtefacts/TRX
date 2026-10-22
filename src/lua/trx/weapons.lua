@@ -156,7 +156,7 @@ local Anim = h.handle("weapons.Anim", "WEAPON_ANIM_INFO", {
 ---@field gun_height trx.math.Distance How far above Lara's feet the shot leaves the barrel. It also decides how deep she can wade and still fire.
 ---@field damage integer Hit points one shot takes off what it hits.
 ---@field target_dist trx.math.Distance How far the weapon reaches, both for auto-aim and for the shot itself, in world units. A spec says the same thing in sectors, as `aim.target_dist`, and `trx.math.from_sectors` converts. <!--noref: aim.target_dist-->
----@field smoke_count integer How many puffs of smoke a shot leaves at the muzzle, in TR3. `0` for none.
+---@field smoke_count integer How many puffs of smoke a shot leaves at the muzzle, in TR3 and TR4. `0` for none.
 ---@field fire_sample trx.catalog.samples The sample a shot plays. One this game has no sound for is silent.
 ---@field fire_overlay_sample trx.catalog.samples The overlay sample a shot plays. One this game has no sound for is silent.
 ---@field fire_overlay_pitch integer The pitch at which to play the overlay sample.
