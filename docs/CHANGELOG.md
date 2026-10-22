@@ -83,6 +83,7 @@
 - Fixed the statistics sometimes showing a huge total
 - Fixed the color editor looping around its sliders when scroll wrap is off (Graphic Options → UI → Scroll wrap)
 - Fixed the controls dialog looping around its key columns when scroll wrap is off (Graphic Options → UI → Scroll wrap)
+- Fixed the change outfit key changing Lara's outfit in the inventory, pause, save and load screens (TRX1854, regression from 1.2)
 
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
