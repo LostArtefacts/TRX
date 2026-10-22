@@ -9,6 +9,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/objects/projectiles/blast.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 
@@ -17,10 +18,18 @@
 // the first two, so that it clears the gun.
 #define M_FUSE             120
 #define M_ARMED            (M_FUSE - 2)
+// A fragment flies until it meets the floor, the ceiling or water.
+#define M_FRAGMENT_FUSE    3000
+#define M_FRAGMENT_SPEED   64
+// How many ticks a super grenade keeps throwing fragments after its blast.
+#define M_SUPER_AFTERMATH  4
 // clang-format on
 
 typedef struct {
     GRENADE_TR4_KIND kind;
+    // The ticks left after the blast, while the grenade stays behind unseen
+    // to throw its fragments, or zero while it flies.
+    int16_t aftermath;
 } M_PRIV;
 
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -29,6 +38,7 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     int32_t kind = GRENADE_TR4_KIND_NORMAL;
     MUST(JSON_READ_OPT(io, "kind", &kind));
     p->kind = (GRENADE_TR4_KIND)kind;
+    MUST(JSON_READ_OPT(io, "aftermath", &p->aftermath));
     return OK;
 }
 
@@ -36,12 +46,14 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "kind", (int32_t)p->kind);
+    JSONW_WRITE_NZ(io, "aftermath", p->aftermath);
 }
 
 static void M_Initialise(const int16_t item_num)
 {
     M_PRIV *const p = Item_Get(item_num)->priv;
     p->kind = GRENADE_TR4_KIND_NORMAL;
+    p->aftermath = 0;
 }
 
 // Tumbles the grenade as it flies, faster in air than in water, and slows
@@ -70,13 +82,26 @@ static void M_Tumble(ITEM *const item, const bool underwater)
 }
 
 // Moves the grenade along its heading, which it keeps in goal_anim_state as
-// it tumbles, and bounces it off what it meets.
+// it tumbles, and bounces it off what it meets. A fragment flies through and
+// is set to go off on the next tick where it meets the floor or ceiling.
 static void M_Move(ITEM *const item, const GAME_VECTOR old_pos)
 {
     XYZ_32 vel =
         XYZ_32_RotateYaw((XYZ_32) { .z = item->speed }, item->goal_anim_state);
     vel.y = item->fall_speed;
     item->pos = XYZ_32_Add(item->pos, vel);
+
+    const M_PRIV *const p = item->priv;
+    if (p->kind == GRENADE_TR4_KIND_FRAGMENT) {
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+        if (Room_GetHeight(sector, item->pos) < item->pos.y
+            || Room_GetCeiling(sector, item->pos) > item->pos.y) {
+            item->hit_points = 1;
+        }
+        Item_UpdateRoom(Item_GetIndex(item), room_num);
+        return;
+    }
 
     const int16_t y_rot = item->rot.y;
     item->rot.y = item->goal_anim_state;
@@ -111,9 +136,53 @@ static void M_SplashIntoWater(const ITEM *const item)
     });
 }
 
+// Throws one of a super grenade's fragments from where it went off.
+static void M_ThrowFragment(const ITEM *const item)
+{
+    const XYZ_32 pos = {
+        .x = item->pos.x + (Random_GetControl() & 0x1FF) - 256,
+        .y = item->pos.y - 256,
+        .z = item->pos.z + (Random_GetControl() & 0x1FF) - 256,
+    };
+    const XYZ_16 rot = {
+        .x = (Random_GetControl() & 0x3FFF) + 0x2000,
+        .y = (int16_t)(Random_GetControl() * 2),
+    };
+    const int16_t fragment_num = Grenade_TR4_Fire(
+        pos, item->room_num, rot, M_FRAGMENT_SPEED, GRENADE_TR4_KIND_FRAGMENT);
+    if (fragment_num == NO_ITEM) {
+        return;
+    }
+    ITEM *const fragment = Item_Get(fragment_num);
+    fragment->is_visible = false;
+    fragment->hit_points =
+        Room_Get(fragment->room_num)->flags.underwater ? 1 : M_FRAGMENT_FUSE;
+}
+
+// Runs a tick of what follows the blast, while the grenade stays behind
+// unseen.
+static void M_ControlAftermath(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->aftermath--;
+    if (p->aftermath == 0) {
+        Item_Destroy(item_num);
+        return;
+    }
+    if (p->kind == GRENADE_TR4_KIND_SUPER) {
+        M_ThrowFragment(item);
+    }
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    if (p->aftermath > 0) {
+        M_ControlAftermath(item_num);
+        return;
+    }
     const GAME_VECTOR old_pos = {
         .pos = item->pos,
         .room_num = item->room_num,
@@ -135,6 +204,12 @@ static void M_Control(const int16_t item_num)
     M_Move(item, old_pos);
     if (Room_Get(item->room_num)->flags.underwater && !was_underwater) {
         M_SplashIntoWater(item);
+        if (p->kind == GRENADE_TR4_KIND_FRAGMENT) {
+            item->hit_points = 1;
+        }
+    }
+    if (p->kind == GRENADE_TR4_KIND_FRAGMENT) {
+        Sparks_TriggerFireFlame(item->pos, -1, 1);
     }
 
     bool exploded = false;
@@ -166,8 +241,14 @@ static void M_Control(const int16_t item_num)
         radius = BLAST_RADIUS;
     }
 
-    if (exploded) {
-        Blast_Explode(item, old_pos.pos);
+    if (!exploded) {
+        return;
+    }
+    Blast_Explode(item, old_pos.pos);
+    if (p->kind == GRENADE_TR4_KIND_SUPER) {
+        item->mesh_bits = 0;
+        p->aftermath = M_SUPER_AFTERMATH;
+    } else {
         Item_Destroy(item_num);
     }
 }
