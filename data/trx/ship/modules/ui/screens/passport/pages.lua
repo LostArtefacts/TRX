@@ -85,7 +85,8 @@ function M.each_slot(fn)
   end
 end
 
-local function has_saves()
+-- Returns whether any slot holds a save, quick saves included.
+function M.has_saves()
   local found = false
   M.each_slot(function(slot_num, pool)
     found = found or not trx.savegame.is_free(slot_num, pool)
@@ -148,7 +149,7 @@ function M.determine_pages(mode)
     pages[slot] = { role = role, available = available }
   end
 
-  local saves = has_saves() and M.saving_enabled()
+  local saves = M.has_saves() and M.saving_enabled()
   local can_restart = trx.game.can_restart_level()
 
   if mode == trx.ui.MenuMode.TITLE then

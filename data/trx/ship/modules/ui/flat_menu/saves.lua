@@ -94,12 +94,14 @@ end
 
 -- Shows the list over a screen and runs it until the player picks a slot or
 -- backs out. A load leaves for the game it loads, and a save stays in the
--- menu the list was opened from.
+-- menu the list was opened from. With `stays` set, the list stays on screen
+-- after a load and closes with the screen.
 ---@param ctx trx.ui.ScreenContext
 ---@param kind common.ui.flat_menu.saves.Kind
 ---@param on_done fun(done: boolean) Runs with `true` once a game is saved or loaded.
+---@param stays? boolean
 ---@return trx.ui.StackLayer
-function M.push(ctx, kind, on_done)
+function M.push(ctx, kind, on_done, stays)
   local slots = all_slots()
   local count = #slots
   -- A save cannot go into a quick save slot, so a save opens on the first
@@ -125,9 +127,14 @@ function M.push(ctx, kind, on_done)
       end
     end
   end
-  ---@type { selected: integer, first: number, rows: table[], is_asking: boolean }
-  local state =
-    { selected = selected or 1, first = 1, rows = {}, is_asking = false }
+  ---@type { selected: integer, first: number, rows: table[], is_asking: boolean, is_loaded: boolean }
+  local state = {
+    selected = selected or 1,
+    first = 1,
+    rows = {},
+    is_asking = false,
+    is_loaded = false,
+  }
   local button = delete_save.button()
 
   local heading = colored(
@@ -300,6 +307,9 @@ function M.push(ctx, kind, on_done)
       footer:close()
     end,
     on_input = function(_, keys)
+      if state.is_loaded then
+        return
+      end
       local slot = slots[state.selected]
       if button:control(keys, delete_save.is_deletable(slot)) then
         confirm_delete(slot)
@@ -325,7 +335,11 @@ function M.push(ctx, kind, on_done)
           sound("no")
           return
         end
-        layer:close()
+        if kind == M.Kind.LOAD and stays then
+          state.is_loaded = true
+        else
+          layer:close()
+        end
         if kind == M.Kind.LOAD then
           trx.savegame.load(slot.slot_num, slot.pool)
         else

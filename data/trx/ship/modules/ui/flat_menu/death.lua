@@ -29,16 +29,6 @@ local BLACK_HOLD_TICKS = 1
 local ALONE_TICKS = 300
 local ALONE_SKIP_TICKS = 150
 
--- Whether a slot that the list of saves shows holds a save.
-local function has_saves()
-  for slot_num = 1, trx.savegame.slot_count() do
-    if not trx.savegame.is_free(slot_num) then
-      return true
-    end
-  end
-  return false
-end
-
 -- Opens the menu.
 ---@param ctx trx.ui.MenuContext
 ---@return trx.ui.StackLayer
@@ -74,17 +64,18 @@ function M.open(ctx)
   end
 
   local function load_game()
-    if not has_saves() then
+    if not pages.has_saves() then
       sound("no")
       return
     end
     state.is_away = true
     saves.push(ctx, saves.Kind.LOAD, function(done)
-      state.is_away = false
       if done then
         leave()
+      else
+        state.is_away = false
       end
-    end)
+    end, true)
   end
 
   local rows = {}
