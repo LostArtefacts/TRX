@@ -1990,6 +1990,17 @@
             "title": "Kamera-Modus",
             "description": "\\{review}Legt fest, welchem Spiel das Kameraverhalten folgt.\n\n- TR1: Die Verfolgerkamera richtet sich nach den Wegfindungsboxen des Levels.\n- TR2: Dasselbe, mit anderen Verfolgungs- und Blickgrenzen und einer anderen Behandlung fester Kameras.\n- TR3: Die Verfolgerkamera nutzt die Sichtlinie statt der Wegfindungsboxen.\n- TR4: Wie TR3, zusätzlich reagiert die Kamera, wenn eine Aktion Laras Blick bewegt, etwa beim Aufheben eines Gegenstands oder beim Hangeln um eine Ecke.",
         },
+        "visuals.controls_model": {
+            "description": "\\{review}Welches Modell der Steuerungsgegenstand im Inventar zeigt. Automatisch zeigt ein Gamepad, solange die Steuerung auf Kontroller eingestellt ist, und sonst die Tastatur. Original zeigt das Modell, das jedes Level mitbringt.",
+            "title": "\\{review}Steuerungsmodell",
+            "values": {
+                "auto": "\\{review}Automatisch",
+                "keyboard": "\\{review}Tastatur",
+                "original": "\\{review}Original",
+                "ps1": "\\{review}PlayStation-Gamepad",
+                "saturn": "\\{review}Sega-Saturn-Gamepad",
+            }
+        },
         "visuals.enable_3d_pickups": {
             "title": "3D-Pickups",
             "description": "Aktiviert die Darstellung von 3D-Modellen für Pickups anstatt der üblichen Sprites.",

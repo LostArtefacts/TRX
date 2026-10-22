@@ -544,3 +544,6 @@
 # 458: ANIMATING16_MIP
 # 460: SKY_GRAPHICS
 # 464: MISC_SPRITES
+543, controls_option_saturn
+544, controls_option_keys
+545, controls_option_ps1

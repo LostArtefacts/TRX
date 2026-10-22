@@ -129,6 +129,26 @@ local function leave_pitch(view)
   return math.floor(half_view + highest - aim)
 end
 
+-- Returns where an entry stands out of the ring once the player picks it.
+local function picked_pose(spec)
+  return {
+    x_rot_pt = spec.x_rot_pt_sel or 0,
+    x_rot = spec.x_rot_sel or 0,
+    y_trans = spec.y_trans_sel or 0,
+    z_trans = spec.z_trans_sel or 0,
+  }
+end
+
+-- Returns where an entry stands on the ring.
+local function rest_pose(spec)
+  return {
+    x_rot_pt = 0,
+    x_rot = spec.x_rot_nosel or 0,
+    y_trans = 0,
+    z_trans = 0,
+  }
+end
+
 -- Each motion takes the view, the ticks it runs for, and the entry it moves,
 -- which is the one the ring rests on.
 M.MOTIONS = {
@@ -178,23 +198,22 @@ M.MOTIONS = {
   },
   [M.Motion.SELECT] = {
     ticks = 8,
+    picked = true,
     run = function(view, ticks, entry)
-      local spec = entry.spec
       view.rot:to(view:nearest_rest_angle(), ticks)
-      entry.x_rot_pt:to(spec.x_rot_pt_sel or 0, ticks)
-      entry.x_rot:to(spec.x_rot_sel or 0, ticks)
-      entry.y_trans:to(spec.y_trans_sel or 0, ticks)
-      entry.z_trans:to(spec.z_trans_sel or 0, ticks)
+      for key, value in pairs(picked_pose(entry.spec)) do
+        entry[key]:to(value, ticks)
+      end
     end,
   },
   [M.Motion.DESELECT] = {
     ticks = 8,
+    picked = false,
     run = function(view, ticks, entry)
       view.rot:to(view:nearest_rest_angle(), ticks)
-      entry.x_rot_pt:to(0, ticks)
-      entry.x_rot:to(entry.spec.x_rot_nosel or 0, ticks)
-      entry.y_trans:to(0, ticks)
-      entry.z_trans:to(0, ticks)
+      for key, value in pairs(rest_pose(entry.spec)) do
+        entry[key]:to(value, ticks)
+      end
     end,
   },
 }
@@ -257,6 +276,7 @@ end
 ---@field base_pitch integer
 ---@field left_by integer
 ---@field private left integer
+---@field private picked boolean Whether the player picked the entry the ring rests on.
 ---@field private turning? { from: integer, to: integer, left: integer, start: number, by: number }
 local View = {}
 View.__index = View
@@ -286,7 +306,27 @@ end
 function View:start(name)
   local motion = M.MOTIONS[name]
   self.left = motion.ticks
+  if motion.picked ~= nil then
+    self.picked = motion.picked
+  end
   motion.run(self, motion.ticks, self.entries[self.current])
+end
+
+-- Gives an entry other poses, such as those of another model drawn in its
+-- place. The entry moves to the pose that matches where it is headed: out of
+-- the ring if the player picked it, and back on the ring otherwise.
+function View:respec(index, spec)
+  local entry = self.entries[index]
+  entry.spec = spec
+  local picked = index == self.current and self.picked
+  local pose = picked and picked_pose(spec) or rest_pose(spec)
+  for key, value in pairs(pose) do
+    if entry[key]:is_moving() and self.left > 0 then
+      entry[key]:to(value, self.left)
+    else
+      entry[key]:set(value)
+    end
+  end
 end
 
 -- Whether a motion is under way.
@@ -646,6 +686,7 @@ function M.new(settings)
     base_pitch = pitch,
     left_by = 0,
     left = 0,
+    picked = false,
   }, View)
 end
 

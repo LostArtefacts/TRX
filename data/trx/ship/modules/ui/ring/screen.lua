@@ -12,6 +12,7 @@
 
 local attachment = require("common.ui.attachment")
 local compass = require("common.ui.compass")
+local controls_model = require("common.ui.controls_model")
 local weapon_choice = require("common.ui.ring.weapon")
 local entries = require("common.ui.ring.entries")
 local fade = require("common.ui.fade")
@@ -355,9 +356,9 @@ local function stopwatch_bones()
   }
 end
 
--- The object an entry draws now: the passport opens out of its closed cover
--- once the player picks it.
-local function drawn_object(state, index)
+-- The object an entry stands for now: the passport opens out of its closed
+-- cover once the player picks it.
+local function entry_object(state, index)
   local content = state.list[index]
   if
     content.object == objects.PASSPORT_CLOSED
@@ -367,6 +368,12 @@ local function drawn_object(state, index)
     return objects.PASSPORT_OPTION
   end
   return content.object
+end
+
+-- The object an entry draws now: what it stands for, or the model that the
+-- controls item shows in its place.
+local function drawn_object(state, index)
+  return state.list[index].model or entry_object(state, index)
 end
 
 local function paint_entry(state, index)
@@ -447,11 +454,12 @@ end
 -- model fills.
 local function motion_spec(content)
   local spec = content.spec
-  local info = trx.objects[content.object]
+  local object = content.model or content.object
+  local info = trx.objects[object]
   local min_x, min_y, min_z, max_x, max_y, max_z
   if info ~= nil and info.loaded then
     min_x, min_y, min_z, max_x, max_y, max_z =
-      trx.ui.primitive.mesh_bounds(content.object)
+      trx.ui.primitive.mesh_bounds(object)
   end
   local bounds = nil
   if min_x ~= nil then
@@ -487,6 +495,21 @@ end
 ---@field direction integer
 ---@field count integer
 
+-- Makes the controls item draw the model that the player picks, posed as that
+-- model is declared, in the place of the controls item.
+local function dress(content)
+  if content.object ~= objects.CONTROLS_OPTION then
+    return
+  end
+  local model = controls_model.object()
+  content.model = model
+  local spec = model ~= content.object and entries.item(model) or nil
+  if spec ~= nil then
+    spec.inv_pos = content.spec.inv_pos
+    content.spec = spec
+  end
+end
+
 -- Puts a ring of a type on show, resting on an entry, with the camera where
 -- the ring before it left it. Each entry keeps its animation frame and its
 -- turn about its own axis until the ring closes, as it moves between rings.
@@ -501,6 +524,9 @@ local function fill(state, ring_type, current)
     end
   end
   local list = entries.contents(ring_type, state.mode)
+  for _, content in ipairs(list) do
+    dress(content)
+  end
   local specs = {}
   ---@type common.ui.ring.Anim[]
   local anims = {}
@@ -530,6 +556,19 @@ local function fill(state, ring_type, current)
   state.list = list
   state.anims = anims
   state.view = view
+end
+
+-- Swaps the model that the controls item draws as soon as the setting or the
+-- controls ask for another one, such as from the controls dialog open on it.
+-- The entry keeps its place on the ring and takes the pose of the new model.
+local function redress(state)
+  for i, content in ipairs(state.list) do
+    if content.model ~= nil and content.model ~= controls_model.object() then
+      content.spec = entries.item(content.object)
+      dress(content)
+      state.view:respec(i, motion_spec(content))
+    end
+  end
 end
 
 -- Rests the ring on the entry a script asked for, where the ring holds it
@@ -746,7 +785,7 @@ local function say(state)
   end
 
   local content = state.list[view.current]
-  caption(state, name_of(drawn_object(state, view.current)))
+  caption(state, name_of(entry_object(state, view.current)))
   ring.show_health_bar(
     content.object == objects.SMALL_MEDIPACK_OPTION
       or content.object == objects.LARGE_MEDIPACK_OPTION
@@ -1090,7 +1129,7 @@ local function offer(state)
     return
   end
   local screen = SCREEN_OF[state.action]
-  local object = drawn_object(state, state.view.current)
+  local object = entry_object(state, state.view.current)
   ---@type trx.ui.ScreenContext?
   local ctx
   ctx = trx.ui.screens.open(screen, { object = object }, function(confirmed)
@@ -1348,6 +1387,8 @@ local function run(state)
       swing_needle(view.entries[index])
     end
   end
+
+  redress(state)
 
   if state.status ~= Status.DONE then
     if SHOWN[state.status] then

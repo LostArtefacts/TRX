@@ -192,6 +192,101 @@ test("a screen open on an entry keeps the hints it shows", function()
   finish()
 end)
 
+test("the controls item opens its screen whatever model it shows", function()
+  require("common.ui.controls_model").setup()
+  local model =
+    trx.catalog.mint(trx.catalog.Context.OBJECTS, "controls_option_keys")
+  declare(objects.CONTROLS_OPTION, 203)
+  declare(model, 203)
+  fake.set_loaded(model, true)
+  trx.config.set("visuals.controls_model", "keyboard")
+  local opened = false
+  trx.ui.screens.define(trx.ui.Screen.RING_ENTRY, function()
+    opened = true
+  end, { object = objects.CONTROLS_OPTION })
+  open(MenuMode.TITLE, objects.CONTROLS_OPTION)
+  local wanted = ("^world_model obj=%d "):format(model)
+  local drawn = false
+  for _, op in ipairs(fake.scene()) do
+    drawn = drawn or op:match(wanted) ~= nil
+  end
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  trx.config.set("visuals.controls_model", "original")
+  assert(drawn, "the ring did not draw the chosen model")
+  assert(opened, "the controls screen did not open")
+  finish()
+end)
+
+test("the controls item swaps its model while the ring rests", function()
+  local keys = trx.catalog.objects.controls_option_keys
+  local saturn =
+    trx.catalog.mint(trx.catalog.Context.OBJECTS, "controls_option_saturn")
+  declare(saturn, 203)
+  fake.set_loaded(keys, true)
+  fake.set_loaded(saturn, true)
+  trx.config.set("visuals.controls_model", "keyboard")
+  open(MenuMode.TITLE, objects.CONTROLS_OPTION)
+  local function draws(object)
+    local wanted = ("^world_model obj=%d "):format(object)
+    for _, op in ipairs(fake.scene()) do
+      if op:match(wanted) then
+        return true
+      end
+    end
+    return false
+  end
+  local before = models()
+  assert(draws(keys), "the ring did not draw the keyboard")
+  trx.config.set("visuals.controls_model", "saturn")
+  ticks(1)
+  local swapped = draws(saturn) and not draws(keys)
+  local after = models()
+  trx.config.set("visuals.controls_model", "original")
+  assert(swapped, "the ring kept the old model")
+  assert(after == before, "the ring lost entries")
+  finish()
+end)
+
+test(
+  "the controls item follows the controls while its dialog is open",
+  function()
+    local keys = trx.catalog.objects.controls_option_keys
+    local saturn = trx.catalog.objects.controls_option_saturn
+    fake.set_loaded(keys, true)
+    fake.set_loaded(saturn, true)
+    trx.config.set("visuals.controls_model", "auto")
+    trx.config.set("input.backend", "keyboard")
+    trx.ui.screens.define(trx.ui.Screen.RING_ENTRY, function(ctx)
+      return ctx:push({
+        root = trx.ui.widgets.Spacer(),
+        on_input = function() end,
+      })
+    end, { object = objects.CONTROLS_OPTION, override = true })
+    open(MenuMode.TITLE, objects.CONTROLS_OPTION)
+    press(Role.MENU_CONFIRM)
+    ticks(SETTLE_TICKS)
+    local function draws(object)
+      local wanted = ("^world_model obj=%d "):format(object)
+      for _, op in ipairs(fake.scene()) do
+        if op:match(wanted) then
+          return true
+        end
+      end
+      return false
+    end
+    local before = draws(keys)
+    trx.config.set("input.backend", "controller")
+    ticks(1)
+    local after = draws(saturn) and not draws(keys)
+    trx.config.set("input.backend", "keyboard")
+    trx.config.set("visuals.controls_model", "original")
+    assert(before, "the dialog did not open over the keyboard")
+    assert(after, "the model waited for the dialog to close")
+    finish()
+  end
+)
+
 test("a picked entry holds still until its animation runs", function()
   carry()
   open(MenuMode.GAME, objects.SMALL_MEDIPACK_OPTION)
