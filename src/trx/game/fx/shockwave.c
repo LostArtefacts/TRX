@@ -1,5 +1,8 @@
 #include <trx/game/fx/shockwave.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/log.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/fx/common.h>
@@ -224,6 +227,67 @@ static void M_Draw(void)
     }
 }
 
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_SHOCKWAVES; i++) {
+        const M_SHOCKWAVE *const wave = &m_Shockwaves[i];
+        if (wave->life == 0) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", wave->pos);
+        JSONW_WRITE(io, "inner_radius", wave->inner_radius);
+        JSONW_WRITE(io, "outer_radius", wave->outer_radius);
+        JSONW_WRITE(io, "prev_inner_radius", wave->prev_inner_radius);
+        JSONW_WRITE(io, "prev_outer_radius", wave->prev_outer_radius);
+        JSONW_WRITE(io, "speed", wave->speed);
+        JSONW_WRITE(io, "x_rot", wave->x_rot);
+        JSONW_WRITE(io, "color", wave->color);
+        JSONW_WRITE(io, "life", wave->life);
+        JSONW_WRITE(io, "flags", (int32_t)wave->flags);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "shockwaves");
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    if (!JSON_ReadIO_HasKey(io, "shockwaves")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "shockwaves"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_SHOCKWAVES) {
+            LOG_WARNING(
+                "Malformed save: too many shockwaves. Extra shockwaves will "
+                "be ignored.");
+            break;
+        }
+
+        M_SHOCKWAVE *const wave = &m_Shockwaves[i];
+        int32_t flags = 0;
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &wave->pos));
+        MUST(JSON_READ(io, "inner_radius", &wave->inner_radius));
+        MUST(JSON_READ(io, "outer_radius", &wave->outer_radius));
+        MUST(JSON_READ(io, "prev_inner_radius", &wave->prev_inner_radius));
+        MUST(JSON_READ(io, "prev_outer_radius", &wave->prev_outer_radius));
+        MUST(JSON_READ(io, "speed", &wave->speed));
+        MUST(JSON_READ(io, "x_rot", &wave->x_rot));
+        MUST(JSON_READ(io, "color", &wave->color));
+        MUST(JSON_READ(io, "life", &wave->life));
+        MUST(JSON_READ(io, "flags", &flags));
+        MUST(JSON_POP(io));
+        wave->flags = flags;
+    }
+
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 void FX_Shockwave_Create(const FX_SHOCKWAVE_SETUP *const setup)
 {
     M_SHOCKWAVE *wave = nullptr;
@@ -256,6 +320,9 @@ static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
     .reset_func = M_Reset,
+    .save_key = "shockwaves",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)
