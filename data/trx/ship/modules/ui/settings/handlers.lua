@@ -305,8 +305,10 @@ local HANDLERS = {
   },
   ["gameplay.fix_free_flare_glitch"] = { available = flare },
   ["gameplay.enable_bouncy_grenades"] = {
+    -- TR4 grenades always bounce, as in the original game.
     available = function()
-      return weapon_available(trx.catalog.weapons.GRENADE)
+      return trx.game.version < 4
+        and weapon_available(trx.catalog.weapons.GRENADE)
     end,
   },
   ["gameplay.harpoon_recoil"] = {

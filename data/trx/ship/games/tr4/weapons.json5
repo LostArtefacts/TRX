@@ -470,7 +470,7 @@
         "is_remembered": true,
         "is_launcher": true,
         "wants_combat_camera": true,
-        "fire": "grenade",
+        "fire": "grenade_tr4",
         "objects": {
             "pickup": "grenade_gun_item",
             "ammo": "grenade_ammo_item",

@@ -802,6 +802,7 @@ common_sources = [
   'trx/game/objects/projectiles/crossbow_bolt.c',
   'trx/game/objects/projectiles/dart.c',
   'trx/game/objects/projectiles/grenade.c',
+  'trx/game/objects/projectiles/grenade_tr4.c',
   'trx/game/objects/projectiles/harpoon_bolt.c',
   'trx/game/objects/projectiles/missile.c',
   'trx/game/objects/projectiles/natla_gun.c',

@@ -14,6 +14,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/projectiles/crossbow_bolt.h>
+#include <trx/game/objects/projectiles/grenade_tr4.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -28,6 +29,7 @@
 #define M_HARPOON_BOLT_SPEED_TR12 150
 #define M_HARPOON_BOLT_SPEED_TR3 256
 #define M_GRENADE_SPEED 200
+#define M_GRENADE_SPEED_TR4 128
 
 typedef enum {
     LA_G_AIM = 0,
@@ -357,6 +359,47 @@ static void M_FireCrossbowFromSight(
         target.x - start.x, target.y - start.y, target.z - start.z, angles);
     CrossbowBolt_Fire(
         start.pos, start.room_num, (XYZ_16) { .x = angles[1], .y = angles[0] });
+}
+
+// Fires a grenade from Lara's arm, aimed by the arm, as TR4 does.
+static void M_FireGrenadeTR4(
+    const LARA_GUN_TYPE weapon_type, const bool running)
+{
+    if (running || !Gun_HasRoundsLeft(weapon_type)) {
+        return;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    XYZ_32 pos = { .x = 0, .y = 276, .z = 80 };
+    Lara_GetJointAbsPosition(&pos, LM_UARM_L);
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    if (Room_GetHeight(sector, pos) < pos.y) {
+        pos.x = lara_item->pos.x;
+        pos.z = lara_item->pos.z;
+        room_num = lara_item->room_num;
+    }
+
+    XYZ_16 rot = {
+        .x = lara->left_arm.rot.x + lara_item->rot.x,
+        .y = lara->left_arm.rot.y + lara_item->rot.y,
+    };
+    if (!lara->left_arm.lock) {
+        rot.x += lara->torso_rot.x;
+        rot.y += lara->torso_rot.y;
+    }
+
+    if (Grenade_TR4_Fire(
+            pos, room_num, rot, M_GRENADE_SPEED_TR4,
+            Grenade_TR4_GetLoadedKind())
+        == NO_ITEM) {
+        return;
+    }
+    lara->has_fired = true;
+    Gun_SpendRound(weapon_type);
+    Stats_AddAmmoUsed();
+    Gun_Smoke_OnFire(weapon_type, true);
 }
 
 static void M_FireGrenade(const LARA_GUN_TYPE weapon_type, const bool running)
@@ -884,6 +927,7 @@ REGISTER_GUN_ROUTINE(Fire, "m16", M_FireM16)
 REGISTER_GUN_ROUTINE(Fire, "crossbow", M_FireCrossbow)
 REGISTER_GUN_ROUTINE(SightFire, "crossbow", M_FireCrossbowFromSight)
 REGISTER_GUN_ROUTINE(Fire, "grenade", M_FireGrenade)
+REGISTER_GUN_ROUTINE(Fire, "grenade_tr4", M_FireGrenadeTR4)
 REGISTER_GUN_ROUTINE(Fire, "rocket", M_FireRocket)
 REGISTER_GUN_ROUTINE(Fire, "harpoon", M_FireHarpoon)
 REGISTER_GUN_ROUTINE(Flash, "m16", M_GetM16Flash)
