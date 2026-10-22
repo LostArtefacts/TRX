@@ -85,6 +85,7 @@ static void M_HitItems(
     const ITEM *const item, const GAME_VECTOR old_pos,
     const COLLIDED_OBJECTS *const collided)
 {
+    const M_PRIV *const p = item->priv;
     const GAME_VECTOR hit_pos = {
         .pos = item->pos,
         .room_num = item->room_num,
@@ -93,11 +94,14 @@ static void M_HitItems(
         ITEM *const target = collided->items[i];
         // TODO: TR4 bolts also trip the shootable switches and break the
         // skeletons, which TRX lacks.
-        if (Object_Get(target->object_id)->intelligent
-            && Item_CanBeProjectileTarget(target)) {
-            Gun_HitTarget(
-                target, &old_pos, &hit_pos,
-                Gun_Registry_Get(LGT_CROSSBOW)->damage);
+        if (!Object_Get(target->object_id)->intelligent
+            || !Item_CanBeProjectileTarget(target)) {
+            continue;
+        }
+        Gun_HitTarget(
+            target, &old_pos, &hit_pos, Gun_Registry_Get(LGT_CROSSBOW)->damage);
+        if (p->kind == M_KIND_POISON && Item_CanTakeDamage(target)) {
+            target->is_poisoned = true;
         }
     }
 }
