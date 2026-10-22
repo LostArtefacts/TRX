@@ -138,36 +138,69 @@ local function confirm(push, preset, changes)
     - window.chrome_width()
   local width = math.min(natural + 1, math.max(budget, CONFIRM_MIN_W))
 
-  -- The list scrolls a line at a time, so each wrapped line is a row.
-  local lines = {}
-  for _, text in ipairs(texts) do
-    for _, line in ipairs(lines_of(wrap(text, width))) do
-      lines[#lines + 1] = line
-    end
-  end
   local wrapped_title = wrap(title, width)
   local wrapped_description = wrap(description, width)
   local wrapped_note = wrap(note, width)
-  local fixed = (
-    #lines_of(wrapped_title)
-    + 1
-    + #lines_of(wrapped_description)
-    + 3
-    + #lines_of(wrapped_note)
+  local line_height = metrics.line_height()
+  local area = trx.ui.safe_area_for(
+    (width + window.chrome_width() + 2 * CONFIRM_PAD) * trx.ui.text_scale
   )
-      * metrics.line_height()
-    + window.chrome_height({ title = true, hints = true })
-    + 2 * CONFIRM_PAD
-  local room = trx.ui.safe_area.height / trx.ui.text_scale
-  local visible =
-    math.floor((room - fixed) / (metrics.line_height() + CONFIRM_ROW_SPACING))
+  local room = area.height / trx.ui.text_scale
+    - window.chrome_height({ title = true, hints = true })
+    - 2 * CONFIRM_PAD
+  local function rows_in(fixed_lines)
+    return math.floor(
+      (room - fixed_lines * line_height) / (line_height + CONFIRM_ROW_SPACING)
+    )
+  end
+
+  -- Where the full dialog leaves too few rows, such as under the logo of the
+  -- title screen, the description and the note scroll with the settings, and
+  -- only the heading and the choice stay in place.
+  local title_lines = #lines_of(wrapped_title)
+  local visible = rows_in(
+    title_lines
+      + 1
+      + #lines_of(wrapped_description)
+      + 3
+      + #lines_of(wrapped_note)
+  )
+  local compact = visible < CONFIRM_MIN_ROWS
+  if compact then
+    visible = rows_in(title_lines + 2)
+  end
   visible = math.max(CONFIRM_MIN_ROWS, math.min(visible, CONFIRM_MAX_ROWS))
+
+  -- The list scrolls a line at a time, so each wrapped line is a row. An empty
+  -- line is a gap of one line.
+  local lines = {}
+  local function add(text)
+    for _, line in ipairs(lines_of(text)) do
+      lines[#lines + 1] = line
+    end
+  end
+  if compact then
+    add(wrapped_description)
+    add("")
+  end
+  for _, text in ipairs(texts) do
+    add(wrap(text, width))
+  end
+  if compact then
+    add("")
+    add(wrapped_note)
+  end
   local list = scroll.new({ count = #lines, visible = visible })
 
   local line_rows = {}
   for i, line in ipairs(lines) do
-    line_rows[i] =
-      trx.ui.widgets.Label({ text = line, visible = list:shows(i) })
+    if line == "" then
+      line_rows[i] =
+        trx.ui.widgets.Spacer({ h = line_height, visible = list:shows(i) })
+    else
+      line_rows[i] =
+        trx.ui.widgets.Label({ text = line, visible = list:shows(i) })
+    end
   end
 
   local choice = trx.signal.new(1)
@@ -180,13 +213,13 @@ local function confirm(push, preset, changes)
         heavy = true,
         scroll = list,
         reserve_scroll = true,
-        header = trx.ui.widgets.Stack({
+        header = not compact and trx.ui.widgets.Stack({
           align = trx.ui.HAlign.SPAN,
           children = {
             label(wrapped_description),
-            trx.ui.widgets.Spacer({ h = metrics.line_height() }),
+            trx.ui.widgets.Spacer({ h = line_height }),
           },
-        }),
+        }) or nil,
         content = trx.ui.widgets.Stack({
           align = trx.ui.HAlign.SPAN,
           spacing = CONFIRM_ROW_SPACING,
@@ -195,9 +228,12 @@ local function confirm(push, preset, changes)
         footer = trx.ui.widgets.Stack({
           align = trx.ui.HAlign.SPAN,
           children = {
-            trx.ui.widgets.Spacer({ h = metrics.line_height() }),
-            label(wrapped_note),
-            trx.ui.widgets.Spacer({ h = metrics.line_height() }),
+            trx.ui.widgets.Spacer({ h = line_height, visible = not compact }),
+            trx.ui.widgets.Label({
+              text = wrapped_note,
+              visible = not compact,
+            }),
+            trx.ui.widgets.Spacer({ h = line_height }),
             centered(trx.ui.widgets.Stack({
               orientation = trx.ui.Orientation.HORIZONTAL,
               v_align = trx.ui.VAlign.CENTER,
