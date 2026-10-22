@@ -652,6 +652,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     }
     Rope_DrawAll();
     Output_LensFlares_Draw();
+    Output_Flash_Draw();
 }
 
 bool Room_IsSkyVisible(void)

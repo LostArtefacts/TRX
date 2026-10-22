@@ -874,6 +874,7 @@ common_sources = [
   'trx/game/output/binocular_mask.c',
   'trx/game/output/common.c',
   'trx/game/output/draw.c',
+  'trx/game/output/flash.c',
   'trx/game/output/func.c',
   'trx/game/output/lens_flares.c',
   'trx/game/output/lights/common.c',

@@ -3,6 +3,7 @@
 #include <trx/game/output/common.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/draw.h>
+#include <trx/game/output/flash.h>
 #include <trx/game/output/func.h>
 #include <trx/game/output/lens_flares.h>
 #include <trx/game/output/lights.h>

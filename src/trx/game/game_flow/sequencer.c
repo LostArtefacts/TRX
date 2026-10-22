@@ -131,6 +131,7 @@ void GF_ResetLevelSetup(const GF_SEQUENCE_CONTEXT seq_ctx)
     Output_SetSunsetEnabled(false);
     Output_Sky_Reset();
     Output_LensFlares_Reset();
+    Output_Flash_Reset();
     Output_SetUVRotateSpeed(0);
     Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
