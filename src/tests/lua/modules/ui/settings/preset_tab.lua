@@ -87,6 +87,26 @@ test("going back from the question changes nothing", function()
   layer:close()
 end)
 
+test("the question fits a short room by scrolling its text", function()
+  trx.config.set("ui.enable_wraparound", true)
+  local tab, pushed, layer = make({ WRAP_OFF })
+  local safe_area_for = trx.ui.safe_area_for
+  trx.ui.safe_area_for = function(width)
+    local area = safe_area_for(width)
+    area.height = 200
+    return area
+  end
+  tab.scroll:select(1)
+  press(Role.MENU_CONFIRM)
+  assert(#pushed == 1 and pushed[1].is_open)
+  press(Role.MENU_DOWN)
+  press(Role.MENU_BACK)
+  assert(not pushed[1].is_open)
+  assert(trx.config.get("ui.enable_wraparound") == true)
+  trx.ui.safe_area_for = safe_area_for
+  layer:close()
+end)
+
 test("a preset with nothing to change says so", function()
   trx.config.set("ui.enable_wraparound", false)
   local tab, pushed, layer = make({ WRAP_OFF })
