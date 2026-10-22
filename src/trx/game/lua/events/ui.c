@@ -15,8 +15,8 @@ static bool m_HoldingScreen = false;
 static float m_Layout[9] = {};
 
 // Tells scripts when the room the interface lays out in has changed since
-// the last tick: the canvas, the safe and working areas, or the text and bar
-// scales.
+// they were last told: the canvas, the safe and working areas, or the text
+// and bar scales.
 static void M_CheckLayout(void)
 {
     const float layout[] = {
@@ -98,6 +98,9 @@ static void M_Paint(const UI_LAYER layer)
 void LUA_UI_EndScene(void)
 {
     UI_Region_Layout();
+    // Reports a change of the safe area at once, so that scripts lay out
+    // again in this frame rather than one frame after the regions changed.
+    M_CheckLayout();
     M_Paint(UI_LAYER_BACKDROP);
     M_Paint(UI_LAYER_UNDER);
     M_Paint(UI_LAYER_FADE);
