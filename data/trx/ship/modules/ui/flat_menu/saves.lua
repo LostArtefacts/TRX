@@ -1,10 +1,13 @@
 -- The list of save slots that the original TR4 shows to save or to load a
 -- game: a heading at the top, and a line for each slot with the number of the
 -- save and the level it was made in. The quick saves come first, as the
--- passport lists them, and can be loaded but not saved over.
+-- passport lists them, and can be loaded but not saved over. A save can be
+-- deleted as in the passport, with the button held under the list.
 
 local arrows = require("common.ui.flat_menu.arrows")
+local delete_save = require("common.ui.delete_save")
 local pages = require("common.ui.screens.passport.pages")
+local requester = require("common.ui.widgets.requester")
 local sound = require("common.ui.flat_menu.sound").play
 local scroll = require("common.ui.scroll")
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
@@ -122,8 +125,10 @@ function M.push(ctx, kind, on_done)
       end
     end
   end
-  ---@type { selected: integer, first: number, rows: table[] }
-  local state = { selected = selected or 1, first = 1, rows = {} }
+  ---@type { selected: integer, first: number, rows: table[], is_asking: boolean }
+  local state =
+    { selected = selected or 1, first = 1, rows = {}, is_asking = false }
+  local button = delete_save.button()
 
   local heading = colored(
     COLOR_HEADING,
@@ -144,11 +149,14 @@ function M.push(ctx, kind, on_done)
   end
 
   -- How many rows show at once: as many as fit between the first row and the
-  -- foot of the safe area. A list that does not fit gives its last line to
-  -- the arrow that says it goes on.
+  -- delete button. A list that does not fit gives its last line to the arrow
+  -- that says it goes on.
   local function visible()
     local safe = trx.ui.safe_area
-    local fit = math.floor((safe.y + safe.height - top()) / line())
+    local bottom = safe.y
+      + safe.height
+      - delete_save.button_height() * trx.ui.text_scale
+    local fit = math.floor((bottom - top()) / line())
     if count > fit then
       fit = fit - 1
     end
@@ -178,6 +186,9 @@ function M.push(ctx, kind, on_done)
   end
 
   local function paint()
+    if state.is_asking then
+      return
+    end
     local primitive = trx.ui.primitive
     local w = trx.ui.canvas.width
     local height = line()
@@ -226,6 +237,52 @@ function M.push(ctx, kind, on_done)
   -- hides its logo.
   local layout = trx.ui.signals.layout:on(follow)
 
+  -- Shows a dialog in place of the list until the player closes it.
+  local function ask(root, place, on_input)
+    state.is_asking = true
+    button:set_enabled(false)
+    ctx:push({
+      root = root,
+      place = place,
+      on_input = on_input,
+      on_close = function()
+        state.is_asking = false
+      end,
+    })
+  end
+
+  local function show_message(text)
+    ask(requester.message(text), { y = 0.5 }, function(message, keys)
+      if keys:pressed(Role.MENU_CONFIRM) or keys:pressed(Role.MENU_BACK) then
+        message:close()
+      end
+    end)
+  end
+
+  local function confirm_delete(slot)
+    local req = delete_save.confirm_req({ y = 0.5 })
+    ask(req.widget, req.place, function(dialog, keys)
+      local picked, cancelled = req.list:control(keys)
+      if picked == nil and not cancelled then
+        return
+      end
+      dialog:close()
+      if
+        picked ~= nil
+        and delete_save.is_yes(req.rows[picked])
+        and delete_save.delete(slot.slot_num, slot.pool, show_message)
+      then
+        follow()
+      end
+    end)
+  end
+
+  ---@type trx.ui.StackLayer
+  local footer = ctx:push({
+    root = button.widget,
+    place = { x = 1, y = 1 },
+  })
+
   ---@type trx.ui.StackLayer
   local layer
   layer = ctx:push({
@@ -240,8 +297,14 @@ function M.push(ctx, kind, on_done)
     end,
     on_close = function()
       layout:detach()
+      footer:close()
     end,
     on_input = function(_, keys)
+      local slot = slots[state.selected]
+      if button:control(keys, delete_save.is_deletable(slot)) then
+        confirm_delete(slot)
+        return
+      end
       local step = keys:pressed(Role.MENU_UP) and -1
         or keys:pressed(Role.MENU_DOWN) and 1
         or nil
@@ -251,7 +314,6 @@ function M.push(ctx, kind, on_done)
         sound("move")
         follow()
       elseif keys:pressed(Role.MENU_CONFIRM) then
-        local slot = slots[state.selected]
         if
           slot == nil
           or not can_take(slot)

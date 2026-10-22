@@ -560,6 +560,57 @@ test("the list of saves saves over no quick save", function()
   finish()
 end)
 
+-- Opens the list of saves on its first slot, a quick save, and holds the
+-- delete button until it asks.
+local function hold_delete()
+  local SAVE_LOAD = trx.ui.Screen.SAVE_LOAD
+  trx.config.set("ui.menu_system", "flat")
+  trx.config.set("ui.enable_wraparound", false)
+  assert(fake.offer(SAVE_LOAD, { mode = MenuMode.LOAD }), "no list opened")
+  ticks(2)
+  for _ = 1, 100 do
+    press(Role.MENU_UP)
+  end
+  fake.hold(Role.UNBIND_KEY, true)
+  ticks(45)
+  fake.hold(Role.UNBIND_KEY, false)
+  fake.tick()
+end
+
+local function shows(text)
+  for _, op in ipairs(fake.scene()) do
+    if op:find(text, 1, true) ~= nil then
+      return true
+    end
+  end
+  return false
+end
+
+test("holding the delete button asks before a save goes", function()
+  hold_delete()
+  assert(
+    shows(trx.locale.get("general/passport/delete_save_confirm")),
+    "the question was not asked"
+  )
+  -- The cursor rests on No, so the first row is a step up.
+  press(Role.MENU_UP)
+  press(Role.MENU_CONFIRM)
+  assert(fake.calls().delete.count == 1, "the save was not deleted")
+  assert(fake.calls().load.count == 0, "the save was loaded")
+  assert(shows("QS "), "the list did not come back")
+  fake.release(trx.ui.Screen.SAVE_LOAD)
+  finish()
+end)
+
+test("backing out of the question keeps the save", function()
+  hold_delete()
+  press(Role.MENU_BACK)
+  assert(fake.calls().delete.count == 0, "the save was deleted")
+  assert(shows("QS "), "the list did not come back")
+  fake.release(trx.ui.Screen.SAVE_LOAD)
+  finish()
+end)
+
 test("the ring draws the menu unless the flat menu is picked", function()
   carry()
   trx.config.set("ui.menu_system", "ring")
