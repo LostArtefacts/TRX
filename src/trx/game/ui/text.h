@@ -30,6 +30,10 @@ void UI_Text_Draw(
 void UI_Text_Measure(
     const char *text, float *out_w, float *out_h, UI_TEXT_SETTINGS settings);
 
+// Returns the distance from the top of a line of text to its baseline, in the
+// units of UI_Text_Measure.
+float UI_Text_GetBaseline(UI_TEXT_SETTINGS settings);
+
 // Wrap a text into multiple lines to fit a specific width in pixels.
 char *UI_Text_WordWrap(
     const char *text, const float scale, const float max_width);
