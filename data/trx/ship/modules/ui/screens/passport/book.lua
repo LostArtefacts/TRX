@@ -4,7 +4,7 @@
 -- is a layer above it. A choice that leaves the passport runs as a game flow
 -- command once the ring has closed.
 
-local hold_button = require("common.ui.widgets.hold_button")
+local delete_save = require("common.ui.delete_save")
 local metrics = require("common.ui.metrics")
 local pages = require("common.ui.screens.passport.pages")
 local requester = require("common.ui.widgets.requester")
@@ -132,7 +132,7 @@ end
 
 -- Includes the gap between the button and the list.
 local function delete_footer_height()
-  return 3.0 + hold_button.height()
+  return 3.0 + delete_save.button_height()
 end
 
 local function is_deletable(page)
@@ -143,10 +143,7 @@ local function is_deletable(page)
   then
     return false
   end
-  local row = page.req:selected_row()
-  return row ~= nil
-    and row.slot_num ~= nil
-    and trx.savegame.info(row.slot_num, row.pool) ~= nil
+  return delete_save.is_deletable(page.req:selected_row())
 end
 
 function Passport:sync_delete()
@@ -291,19 +288,8 @@ function Passport:show_message(text)
 end
 
 function Passport:push_confirm_delete(row)
-  local req = requester.new({
-    title = trx.locale.get("general/passport/delete_save_confirm"),
-    rows = {
-      {
-        text = trx.locale.get("general/passport/delete_save_yes"),
-        yes = true,
-      },
-      { text = trx.locale.get("general/passport/delete_save_no") },
-    },
-    arrows = false,
-    place = { y = pages.is_title() and 0.69 or 0.55 },
-  })
-  req.list:select(2)
+  local req =
+    delete_save.confirm_req({ y = pages.is_title() and 0.69 or 0.55 })
   self:push_list(List.CONFIRM_DELETE, req, { slot = row })
 end
 
@@ -333,10 +319,7 @@ function Passport:open_page(role)
     end
     req = modes_req(choices, trx.locale.get("general/passport/select_mode"))
   elseif role == pages.Page.LOAD_GAME or role == pages.Page.SAVE_GAME then
-    page.delete = hold_button.new({
-      words = trx.locale.get("general/passport/delete_save"),
-      align = trx.ui.HAlign.RIGHT,
-    })
+    page.delete = delete_save.button()
     req = list_req(
       rows.slot_rows(),
       trx.locale.get(pages.CAPTIONS[role]),
@@ -546,17 +529,15 @@ function Passport:choose(entry, row)
   elseif role == List.CONFIRM_DELETE then
     local slot = entry.slot
     entry.layer:close()
-    if row.yes then
-      if trx.savegame.delete(slot.slot_num, slot.pool) then
-        if self.page ~= nil then
-          self.page.req:set_rows(rows.slot_rows())
-          self:sync_delete()
-        end
-      else
-        self:show_message(
-          trx.locale.get("general/passport/delete_save_failed")
-        )
-      end
+    if
+      delete_save.is_yes(row)
+      and delete_save.delete(slot.slot_num, slot.pool, function(text)
+        self:show_message(text)
+      end)
+      and self.page ~= nil
+    then
+      self.page.req:set_rows(rows.slot_rows())
+      self:sync_delete()
     end
   elseif role == List.STORY_SLOT then
     trx.savegame.play_story(row.slot_num, row.pool)
