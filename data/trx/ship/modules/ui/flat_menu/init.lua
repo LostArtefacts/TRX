@@ -37,11 +37,13 @@ local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
 
 -- Where the original draws each part, as shares of the screen's height: the
 -- row of what Lara carries, the row of what an entry combines with, which is
--- also where a weapon's ammunition stands, and the name over each.
+-- also where a weapon's ammunition stands, and the baseline of the name over
+-- each and of the name of the ammunition.
 local MAIN_ROW = 42 / 240
 local COMBINE_ROW = 190 / 240
 local MAIN_NAME = 1 / 2 - 3 / 16
 local COMBINE_NAME = 1 / 2 + 3 / 16
+local AMMO_NAME = 336 / 480
 -- The compass stands at the left, level with the middle of the screen.
 local COMPASS_X = 60 / 512
 
@@ -324,12 +326,15 @@ end
 -- Text
 -------------------------------------------------------------------------------
 
--- Places a line of text, centred on a share of the screen's height.
+-- Places a line of text, centred across the screen, with its baseline at a
+-- share of the screen's height.
 local function push_line(ctx, text, row)
   return ctx:push({
     root = trx.ui.widgets.Label({ text = text, scale = TEXT_SCALE }),
     place = function(w)
-      return (trx.ui.canvas.width - w) / 2, trx.ui.canvas.height * row
+      local _, _, baseline = trx.ui.primitive.measure_text("", TEXT_SCALE)
+      return (trx.ui.canvas.width - w) / 2,
+        trx.ui.canvas.height * row - baseline
     end,
   })
 end
@@ -471,7 +476,7 @@ local function show_ammo(state)
     text:set(colored(COLOR_NAME, ammo.caption(weapon, kind)))
   end
   shown.follow()
-  shown.caption = push_line(state.ctx, text, COMBINE_NAME)
+  shown.caption = push_line(state.ctx, text, AMMO_NAME)
   state.ammo = shown
 end
 
