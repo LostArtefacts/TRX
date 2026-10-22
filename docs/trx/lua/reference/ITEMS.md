@@ -183,6 +183,7 @@ end
     Properties:
     - <a id="items.Item.anim_num" name="items.Item.anim_num"></a>**`anim_num`**: [trx.items.AnimNum](#items.AnimNum).
     - <a id="items.Item.anim_state" name="items.Item.anim_state"></a>**`anim_state`**: [trx.items.AnimState](#items.AnimState). The state the item is in.
+    - <a id="items.Item.can_take_damage" name="items.Item.can_take_damage"></a>**`can_take_damage`**: boolean. Whether weapons and explosions can damage the item right now. Some objects never take damage, such as Winston or the TR4 enemy jeep. *(read-only)*
     - <a id="items.Item.collidable" name="items.Item.collidable"></a>**`collidable`**: boolean. Whether Lara can collide with this item.
     - <a id="items.Item.fall_speed" name="items.Item.fall_speed"></a>**`fall_speed`**: integer. Vertical speed.
     - <a id="items.Item.frame_num" name="items.Item.frame_num"></a>**`frame_num`**: [trx.items.FrameNum](#items.FrameNum). Negative values count back from the end.

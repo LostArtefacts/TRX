@@ -297,6 +297,7 @@
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.fx.Spark.context` and `trx.fx.SparkContext`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
+- Added `trx.items.Item.can_take_damage`, which says whether weapons and explosions can damage an item (TRX1857)
 - Added `trx.items.EarthquakeMode`, the values that an earthquake's `mode` property takes
 - Added `trx.objects.Object:set_hit_effect()`, so a script can decide whether a bullet hit spawns blood, a ricochet, smoke or nothing (`trx.items.HitEffect`) (TRX1676)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)

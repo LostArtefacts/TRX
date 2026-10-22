@@ -254,9 +254,9 @@ end
 
 ---An item, also known as a moveable.
 ---@class (exact) trx.items.Item
----@trx.readonly is_alive, is_ally, is_hostile, is_in_play, is_killed,
----  is_present, is_simulated, is_targetable, is_triggered, max_hit_points,
----  num, object_id, room_num, touch_bits, was_hit
+---@trx.readonly can_take_damage, is_alive, is_ally, is_hostile, is_in_play,
+---  is_killed, is_present, is_simulated, is_targetable, is_triggered,
+---  max_hit_points, num, object_id, room_num, touch_bits, was_hit
 ---@field pos trx.math.Vec3 World position. Updating this also updates `trx.items.Item.room` and `trx.items.Item.room_num`.
 ---@field rot trx.math.Rot Orientation.
 ---@field anim_num trx.items.AnimNum
@@ -283,6 +283,7 @@ end
 ---@field collidable boolean Whether Lara can collide with this item.
 ---@field is_alive boolean Whether the item is a living creature with hit points remaining.
 ---@field is_targetable boolean Whether Lara's auto-aim can lock onto the item right now.
+---@field can_take_damage boolean Whether weapons and explosions can damage the item right now. Some objects never take damage, such as Winston or the TR4 enemy jeep.
 ---@field is_killed boolean Whether the item has already been killed.
 ---@field is_one_shot boolean Whether the item's trigger has been spent and will never fire again.
 ---@field is_hostile boolean Whether this item is a creature currently hostile to Lara.
@@ -323,6 +324,7 @@ local Item = h.handle("items.Item", "ITEM", {
     collidable = "is_collidable",
     is_alive = "is_alive",
     is_targetable = "is_targetable",
+    can_take_damage = "can_take_damage",
     is_killed = "is_killed",
     is_one_shot = "is_one_shot",
     is_hostile = "is_hostile",

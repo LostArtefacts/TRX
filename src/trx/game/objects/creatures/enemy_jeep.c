@@ -103,6 +103,12 @@ static bool M_IsTargetable(const ITEM *const item)
     return false;
 }
 
+// The jeep has no death of its own, so nothing may damage it.
+static bool M_CanTakeDamage(const ITEM *const item)
+{
+    return false;
+}
+
 static ITEM_HIT_EFFECT M_GetHitEffect(const ITEM *const item)
 {
     return ITEM_HIT_SMOKE;
@@ -415,6 +421,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->collision_func = Creature_Collision;
     obj->is_targetable_func = M_IsTargetable;
+    obj->can_take_damage_func = M_CanTakeDamage;
     obj->get_hit_effect_func = M_GetHitEffect;
     obj->control_func = M_Control;
 

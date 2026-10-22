@@ -1273,6 +1273,29 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'lua/commands/kill',
+  'bundles': [b_lua_surface, b_console, b_lua_math, b_lua_strings, b_lua_events],
+  'src': [
+    'fakes/level.c',
+    'fakes/camera.c',
+    'fakes/creatures.c',
+    'fakes/game.c',
+    'fakes/items.c',
+    'fakes/lara.c',
+    'fakes/sound.c',
+  ],
+  'engine': [
+    'game/lua/capi/catalog.c',
+    'game/lua/capi/creatures.c',
+    'game/lua/capi/game.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/lara.c',
+    'game/lua/capi/objects.c',
+    'game/lua/capi/sound.c',
+  ],
+}
+
+unit_tests += {
   'name': 'lua/commands/give',
   'bundles': [
     b_lua_surface, b_console, b_lua_math, b_lua_strings, b_lua_events,
