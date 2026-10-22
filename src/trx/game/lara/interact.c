@@ -109,8 +109,6 @@ void Lara_Interact_FinishControl(const LARA_INTERACT_MODE mode)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->head_rot.y = 0;
     lara->head_rot.x = 0;
-    lara->torso_rot.y = 0;
-    lara->torso_rot.x = 0;
     lara->gun_status = LGS_HANDS_BUSY;
 
     lara->interact_target.is_moving = false;
