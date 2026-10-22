@@ -56,10 +56,12 @@ local function cheat_kill(item)
   return true
 end
 
+-- Leaves out what cannot take damage, such as the TR4 enemy jeep, which has no
+-- death of its own. Only a kill by name reaches it.
 local function hostiles()
   local result = {}
   for _, item in ipairs(trx.items.query:matches()) do
-    if item.is_hostile then
+    if item.is_hostile and item.can_take_damage then
       result[#result + 1] = item
     end
   end

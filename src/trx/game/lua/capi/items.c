@@ -106,6 +106,15 @@ static bool M_GetIsTargetable(const void *const self, TRX_VALUE *const out)
     return true;
 }
 
+static bool M_GetCanTakeDamage(const void *const self, TRX_VALUE *const out)
+{
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
+        .as_bool = Item_CanTakeDamage(self),
+    };
+    return true;
+}
+
 static bool M_GetIsKilled(const void *const self, TRX_VALUE *const out)
 {
     const ITEM *const item = self;
@@ -259,6 +268,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_FN("is_ally",            TVT_BOOL, M_GetIsAlly,       nullptr),
     FIELD_FN("is_alive",           TVT_BOOL, M_GetIsAlive,      nullptr),
     FIELD_FN("is_targetable",      TVT_BOOL, M_GetIsTargetable, nullptr),
+    FIELD_FN("can_take_damage",    TVT_BOOL, M_GetCanTakeDamage, nullptr),
     FIELD_FN("is_killed",          TVT_BOOL, M_GetIsKilled,     nullptr),
     FIELD_FN("is_one_shot",        TVT_BOOL, M_GetIsOneShot,    M_SetIsOneShot),
 

@@ -41,6 +41,8 @@
 // further out still.
 void FakeItems_PlaceCrystal(void);
 void FakeItems_PlaceScion(void);
+// Puts a TR4 enemy jeep in the level, two sectors out.
+void FakeItems_PlaceEnemyJeep(void);
 // Gives an object a description, which is what makes it examinable.
 void FakeItems_SetDescription(OBJECT_ID obj_id, const char *text);
 // Marks whether an object's model is in the level.

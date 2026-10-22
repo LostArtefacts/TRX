@@ -117,6 +117,11 @@ static struct {
 } m_Descriptions[M_MAX_DESCRIPTIONS];
 static int32_t m_DescriptionCount;
 
+static bool M_CannotTakeDamage(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_AddFamilyByName(
     const OBJECT_ID object_id, const char *const family_key)
 {
@@ -352,6 +357,31 @@ void FakeItems_PlaceScion(void)
     m_Count++;
 }
 
+// An enemy jeep two sectors out: an intelligent object that is hostile to
+// Lara but has no death of its own.
+void FakeItems_PlaceEnemyJeep(void)
+{
+    m_Objects[O_ENEMY_JEEP] = (OBJECT) {
+        .loaded = true,
+        .intelligent = true,
+        .can_take_damage_func = M_CannotTakeDamage,
+        .anim_idx = 0,
+        .anim_count = 1,
+        .mesh_count = 1,
+    };
+    m_Used[m_Count] = true;
+    m_Items[m_Count] = (ITEM) {
+        .object_id = O_ENEMY_JEEP,
+        .room_num = 0,
+        .pos = { .x = 2 * 1024, .y = 0, .z = 0 },
+        .hit_points = 40,
+        .max_hit_points = 40,
+        .is_visible = true,
+        .is_present = true,
+    };
+    m_Count++;
+}
+
 FAKE_ON_RESET(M_Reset)
 
 // --- items ---
@@ -556,6 +586,15 @@ bool Item_IsAlive(const ITEM *const item)
 bool Item_IsTargetable(const ITEM *const item)
 {
     return item->hit_points > 0 && Item_IsInPlay(item);
+}
+
+bool Item_CanTakeDamage(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->can_take_damage_func != nullptr) {
+        return obj->can_take_damage_func(item);
+    }
+    return Item_IsAlive(item);
 }
 
 bool Item_SetName(const int16_t item_num, const char *const name)
