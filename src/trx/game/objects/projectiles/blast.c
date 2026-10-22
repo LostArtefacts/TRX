@@ -110,6 +110,11 @@ void Blast_Explode(ITEM *const source, const XYZ_32 old_pos)
             Sparks_TriggerExplosionSparks(old_pos, 3, -1, 0, source->room_num);
         }
     }
+    Blast_SoundOff(source);
+}
+
+void Blast_SoundOff(const ITEM *const source)
+{
     Creature_AlertNearbyGuards(source);
     Sound_Effect(SFX_EXPLOSION_1, &source->pos, 0x1800000 | SPM_PITCH);
     Sound_Effect(SFX_EXPLOSION_2, &source->pos, SPM_NORMAL);

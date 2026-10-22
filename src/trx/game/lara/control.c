@@ -1122,6 +1122,9 @@ void Lara_Control(void)
 
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
     Lara_Poison_Tick();
+    if (lara_info->blind_timer > 0) {
+        lara_info->blind_timer--;
+    }
     if (lara_info->electric != 0) {
         if (lara_info->electric < 16) {
             lara_info->electric++;
