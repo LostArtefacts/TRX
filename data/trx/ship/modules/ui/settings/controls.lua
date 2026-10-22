@@ -8,6 +8,7 @@
 --   local controls = require("common.ui.settings.controls")
 --   local layer, close = controls.open({ push = push, finish = finish })
 
+local ammo = require("common.ui.ammo")
 local metrics = require("common.ui.metrics")
 local scroll = require("common.ui.scroll")
 local timer = require("common.timer")
@@ -119,6 +120,7 @@ local GROUPS = {
       Role.EQUIP_GRENADE_LAUNCHER,
       Role.EQUIP_REVOLVER,
       Role.EQUIP_CROSSBOW,
+      Role.CYCLE_AMMO,
     },
   },
   {
@@ -219,11 +221,15 @@ local function unusable_roles()
   for role in pairs(WEAPONS) do
     result[role] = true
   end
+  result[Role.CYCLE_AMMO] = true
   for _, weapon in ipairs(trx.weapons.all) do
     local role = weapon.kind == trx.weapons.Kind.FLARE and Role.USE_FLARE
       or weapon.equip_key
     if role ~= nil then
       result[role] = not weapon.is_available
+    end
+    if weapon.is_available and ammo.is_choosable(weapon) then
+      result[Role.CYCLE_AMMO] = false
     end
   end
   local cheats = trx.config.get("gameplay.enable_cheats")

@@ -1511,6 +1511,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── scroll.lua
 │   │   ├── title_page.lua
 │   │   └── value.lua
+│   ├── ammo_cycle.lua
 │   ├── inv_ring.lua
 │   ├── ngplus.lua
 │   ├── save_crystal.lua
@@ -1522,6 +1523,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── bignasty
 │   │   ├── bfg.bin
 │   │   └── init.lua
+│   ├── ammo_cycle.lua
 │   ├── inv_ring.lua
 │   ├── secret_music.lua
 │   ├── ui.lua
@@ -3066,6 +3068,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── scroll.lua
     │   │   │   ├── title_page.lua
     │   │   │   └── value.lua
+    │   │   ├── ammo_cycle.lua
     │   │   ├── inv_ring.lua
     │   │   ├── ngplus.lua
     │   │   ├── save_crystal.lua
@@ -3077,6 +3080,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── bignasty
     │   │   │   ├── bfg.bin
     │   │   │   └── init.lua
+    │   │   ├── ammo_cycle.lua
     │   │   ├── inv_ring.lua
     │   │   ├── secret_music.lua
     │   │   ├── ui.lua

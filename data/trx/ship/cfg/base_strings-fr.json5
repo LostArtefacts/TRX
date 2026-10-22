@@ -801,6 +801,7 @@
             "change_outfit": "\\{review}Changer de tenue",
             "change_target": "Changer de cible",
             "crouch": "\\{review}S'accroupir",
+            "cycle_ammo": "\\{review}Changer de munitions",
             "cycle_lighting_model": "\\{review}Modèle d'éclairage en cycle",
             "draw": "Dégainer",
             "enter_console": "Console de développement",

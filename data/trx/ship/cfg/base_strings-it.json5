@@ -801,6 +801,7 @@
             "change_outfit": "Cambia Costume",
             "change_target": "Cambia Bersaglio",
             "crouch": "Accovacciati",
+            "cycle_ammo": "\\{review}Cambia Munizioni",
             "cycle_lighting_model": "Cambia Modello Illuminazione",
             "draw": "Estrai Arma",
             "enter_console": "Apri Console",

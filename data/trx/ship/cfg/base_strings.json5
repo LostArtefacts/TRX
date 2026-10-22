@@ -801,6 +801,7 @@
             "change_outfit": "Change Outfit",
             "change_target": "Change Target",
             "crouch": "Crouch",
+            "cycle_ammo": "Cycle Ammo",
             "cycle_lighting_model": "Cycle Lighting Model",
             "draw": "Draw Weapon",
             "enter_console": "Dev Console",
