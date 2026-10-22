@@ -1192,9 +1192,14 @@ void Sparks_TriggerExplosionSmokeEnd(
     spark->dst_size.width = (uint8_t)((Random_GetControl() & 0x1F) + 128);
     spark->size.width = (uint8_t)(spark->dst_size.width >> 2);
     spark->src_size.width = spark->size.width;
-    spark->dst_size.height =
-        (uint8_t)(spark->dst_size.width + (Random_GetControl() & 0x1F) + 32);
-    spark->size.height = (uint8_t)(spark->dst_size.height >> 3);
+    if (g_TRVersion == 4) {
+        spark->dst_size.height = spark->dst_size.width;
+        spark->size.height = spark->size.width;
+    } else {
+        spark->dst_size.height = (uint8_t)(spark->dst_size.width
+                                           + (Random_GetControl() & 0x1F) + 32);
+        spark->size.height = (uint8_t)(spark->dst_size.height >> 3);
+    }
     spark->src_size.height = spark->size.height;
     spark->room_num = (uint8_t)room_num;
     Sparks_FinishSetup(spark);
