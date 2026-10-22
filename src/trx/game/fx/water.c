@@ -296,9 +296,12 @@ static void M_Control(void)
         }
 
         if (set) {
-            splash->life--;
-            if (splash->life == 0U) {
+            const uint8_t step = g_TRVersion == 4 ? 2U : 1U;
+            if (splash->life <= step) {
+                splash->life = 0U;
                 splash->flags = 0U;
+            } else {
+                splash->life -= step;
             }
         }
     }
@@ -525,7 +528,7 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
     splash->pos.x = setup.pos.x;
     splash->pos.y = setup.pos.y;
     splash->pos.z = setup.pos.z;
-    splash->life = 63U;
+    splash->life = g_TRVersion == 4 ? 62U : 63U;
 
     FX_WATER_SPLASH_VERT *v = splash->v;
 
