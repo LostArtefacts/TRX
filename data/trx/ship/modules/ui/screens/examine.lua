@@ -149,7 +149,13 @@ local function open(ctx)
   listeners[#listeners + 1] = trx.ui.signals.layout:on(function()
     prepare(state)
   end)
-  return ctx:push({ root = state.dialog.widget, on_input = on_input })
+  -- The dialog stands in the middle of the screen, rather than of the room
+  -- above the hints at the foot.
+  return ctx:push({
+    root = state.dialog.widget,
+    place = { canvas = true },
+    on_input = on_input,
+  })
 end
 
 function M.setup()

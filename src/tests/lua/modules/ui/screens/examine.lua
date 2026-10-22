@@ -111,4 +111,25 @@ test("right turns to the next page", function()
   finish()
 end)
 
+test("the description keeps its place as the hint comes and goes", function()
+  local function top_of(text)
+    for _, op in ipairs(fake.scene()) do
+      local y, shown = op:match("^text x=%-?%d+ y=(%-?%d+) .- text=(.*)$")
+      if shown ~= nil and shown:find(text, 1, true) then
+        return tonumber(y)
+      end
+    end
+    return nil
+  end
+  require("common.ui.ring_hints").setup()
+  open("An old map of the caves.")
+  local hinted = top_of("An old map")
+  require("common.ui.ring").set_hint({})
+  fake.tick()
+  local bare = top_of("An old map")
+  assert(hinted ~= nil and bare ~= nil, "the description is missing")
+  assert(hinted == bare, ("it moved from %d to %d"):format(hinted, bare))
+  finish()
+end)
+
 return h.report()
