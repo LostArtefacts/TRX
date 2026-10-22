@@ -10,6 +10,28 @@ static double M_Now(void)
     return LUA_GetTick() - 1 + Interpolation_GetUIRate();
 }
 
+// The tick of the last frame drawn before the current tick. A move set during
+// a tick starts from there, so the frames of that tick already show it moving
+// on from what the screen last showed.
+static int32_t M_LastDrawn(void)
+{
+    return LUA_GetTick() - 1;
+}
+
+static float M_GetAt(const UI_TWEEN *const tween, const double now)
+{
+    const double elapsed = now - tween->start;
+    if (elapsed <= 0.0) {
+        return tween->from;
+    }
+    if (tween->ticks <= 0 || elapsed >= tween->ticks) {
+        return tween->to;
+    }
+    const float ratio =
+        UI_Ease_Apply(tween->ease, (float)(elapsed / tween->ticks));
+    return tween->from + (tween->to - tween->from) * ratio;
+}
+
 float UI_Ease_Apply(const UI_EASE ease, const float ratio)
 {
     switch (ease) {
@@ -43,25 +65,17 @@ void UI_Tween_To(
     UI_TWEEN *const tween, const float target, const int32_t ticks,
     const int32_t delay, const UI_EASE ease)
 {
-    tween->from = UI_Tween_Get(tween);
+    tween->from =
+        ticks <= 0 && delay <= 0 ? target : M_GetAt(tween, M_LastDrawn());
     tween->to = target;
-    tween->start = LUA_GetTick() + MAX(delay, 0);
+    tween->start = M_LastDrawn() + MAX(delay, 0);
     tween->ticks = ticks;
     tween->ease = ease;
 }
 
 float UI_Tween_Get(const UI_TWEEN *const tween)
 {
-    if (LUA_GetTick() < tween->start) {
-        return tween->from;
-    }
-    const double elapsed = M_Now() - tween->start;
-    if (tween->ticks <= 0 || elapsed >= tween->ticks) {
-        return tween->to;
-    }
-    const float ratio =
-        UI_Ease_Apply(tween->ease, (float)(MAX(elapsed, 0.0) / tween->ticks));
-    return tween->from + (tween->to - tween->from) * ratio;
+    return M_GetAt(tween, M_Now());
 }
 
 float UI_Tween_GetTarget(const UI_TWEEN *const tween)
