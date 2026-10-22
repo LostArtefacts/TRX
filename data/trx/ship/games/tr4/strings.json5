@@ -6,6 +6,12 @@
             "object_name_fmt": "\\{color 8}%s",
         }
     },
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "Equip Grenade Gun",
+            "equip_uzis": "Equip Uzi",
+        }
+    },
     "objects": {
         "crossbow_ammo_1_item": {
             "name": "Crossbow Normal Ammo",

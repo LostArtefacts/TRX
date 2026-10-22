@@ -6,6 +6,12 @@
             "object_name_fmt": "\\{color 8}%s",
         }
     },
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "\\{review}Equipaggia Lanciagranate",
+            "equip_uzis": "\\{review}Equipaggia Uzi",
+        }
+    },
     "objects": {
         "crossbow_ammo_1_item": {
             "name": "\\{review}Dardi Normali per Balestra",

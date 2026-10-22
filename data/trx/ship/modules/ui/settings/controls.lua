@@ -117,6 +117,8 @@ local GROUPS = {
       Role.EQUIP_MP5,
       Role.EQUIP_ROCKET_LAUNCHER,
       Role.EQUIP_GRENADE_LAUNCHER,
+      Role.EQUIP_REVOLVER,
+      Role.EQUIP_CROSSBOW,
     },
   },
   {
@@ -177,6 +179,23 @@ local CHEATS = {
   [Role.SLOW_MOTION_CHEAT] = true,
 }
 
+local WEAPONS = {
+  [Role.USE_FLARE] = true,
+  [Role.EQUIP_PISTOLS] = true,
+  [Role.EQUIP_SHOTGUN] = true,
+  [Role.EQUIP_MAGNUMS] = true,
+  [Role.EQUIP_AUTOS] = true,
+  [Role.EQUIP_DESERT_EAGLE] = true,
+  [Role.EQUIP_UZIS] = true,
+  [Role.EQUIP_HARPOON] = true,
+  [Role.EQUIP_M16] = true,
+  [Role.EQUIP_MP5] = true,
+  [Role.EQUIP_ROCKET_LAUNCHER] = true,
+  [Role.EQUIP_GRENADE_LAUNCHER] = true,
+  [Role.EQUIP_REVOLVER] = true,
+  [Role.EQUIP_CROSSBOW] = true,
+}
+
 local width_of = metrics.text_width
 
 -- The input sources that the player can pick.
@@ -197,6 +216,9 @@ end
 -- does not have or a cheat while cheats are off. Their rows are dimmed.
 local function unusable_roles()
   local result = {}
+  for role in pairs(WEAPONS) do
+    result[role] = true
+  end
   for _, weapon in ipairs(trx.weapons.all) do
     local role = weapon.kind == trx.weapons.Kind.FLARE and Role.USE_FLARE
       or weapon.equip_key

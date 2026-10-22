@@ -210,6 +210,7 @@
         "kind": "single_pistol",
         "damage": 21,
         "gun_height": 650,
+        "equip_key": "equip_revolver",
         "is_remembered": true,
         "wants_combat_camera": true,
         "objects": {
@@ -395,6 +396,7 @@
         "kind": "rifle",
         "damage": 5,
         "gun_height": 500,
+        "equip_key": "equip_crossbow",
         "is_remembered": true,
         "wants_combat_camera": true,
         "fire": "crossbow",

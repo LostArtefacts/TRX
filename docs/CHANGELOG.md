@@ -205,6 +205,7 @@
 - Added poison crossbow bolts, which slowly drain the health of the enemies they hit (TRX1824)
 - Added explosive crossbow bolts, which blow up where they land (TRX1825)
 - Added wideshot shotgun shells, which spread three times wider than normal shells, with both spreads as in the original game (TRX1820)
+- Added hotkeys for the revolver and crossbow, with the six weapons on keys 1 to 6 by default (TRX1258)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
