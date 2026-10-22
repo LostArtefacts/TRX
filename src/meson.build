@@ -797,6 +797,7 @@ common_sources = [
   'trx/game/objects/general/zipline.c',
   'trx/game/objects/links.c',
   'trx/game/objects/names.c',
+  'trx/game/objects/projectiles/blast.c',
   'trx/game/objects/projectiles/claw_mutant_plasma_ball.c',
   'trx/game/objects/projectiles/crossbow_bolt.c',
   'trx/game/objects/projectiles/dart.c',
