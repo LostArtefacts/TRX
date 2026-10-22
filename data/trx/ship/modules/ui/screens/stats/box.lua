@@ -2,6 +2,7 @@
 -- engine lays out its own, and shrunk to fit a screen that leaves too little
 -- room.
 
+local accent = require("common.ui.accent")
 local counts = require("common.ui.screens.stats.counts")
 local hold_button = require("common.ui.widgets.hold_button")
 local listing = require("common.ui.screens.stats.rows")
@@ -123,8 +124,9 @@ local function bare_text(state, text)
 end
 
 -- A row that names a counter and gives its value, either of which can be a
--- signal.
+-- signal. The value takes the accent colour of the menus.
 local function pair_widget(state, key, value, shown)
+  value = accent.signal(value)
   if listing.is_bare(state) then
     return trx.ui.widgets.Stack({
       orientation = trx.ui.Orientation.HORIZONTAL,
