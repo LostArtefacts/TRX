@@ -307,7 +307,7 @@
         "is_remembered": true,
         "wants_combat_camera": true,
         "unaims_on_release": true,
-        "fire": "generic",
+        "fire": "shotgun_tr4",
         "objects": {
             "pickup": "shotgun_item",
             "ammo": "shotgun_ammo_item",
