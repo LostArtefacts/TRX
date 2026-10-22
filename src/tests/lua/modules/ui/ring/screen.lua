@@ -259,19 +259,29 @@ test("Lara's Home fades the title to black before the gym loads", function()
   declare(objects.PHOTO_OPTION, 205)
   fake.set_gym_present(true)
   open(MenuMode.TITLE, objects.PHOTO_OPTION)
-  -- The fade draws as a black quad over the whole screen.
+  -- The fade draws as a black quad over the whole screen. It is read after
+  -- every tick, since the gym loads on the tick the screen turns black.
   local darkest = 0
-  for _ = 1, SETTLE_TICKS * 2 do
-    if fake.calls().play_gym.count > 0 then
-      break
-    end
+  local function tick()
+    fake.tick()
     for _, op in ipairs(fake.scene()) do
       local alpha = op:match("^quad x=0 y=0 .* color=000000(%x%x)$")
       if alpha ~= nil then
         darkest = math.max(darkest, tonumber(alpha, 16))
       end
     end
-    press(Role.MENU_CONFIRM)
+    return fake.calls().play_gym.count > 0
+  end
+  for _ = 1, SETTLE_TICKS * 2 do
+    fake.release_all()
+    fake.press(Role.MENU_CONFIRM)
+    if tick() then
+      break
+    end
+    fake.release_all()
+    if tick() then
+      break
+    end
   end
   assert(fake.calls().play_gym.count == 1, "the gym was not asked for")
   assert(darkest >= 0xC0, "the title did not fade to black before the gym")

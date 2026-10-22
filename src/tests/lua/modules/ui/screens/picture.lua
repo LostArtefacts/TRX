@@ -97,7 +97,7 @@ end)
 
 test("a picture fades out after its time and ends", function()
   open(false, false)
-  ticks(FADE_IN + DISPLAY + 2)
+  ticks(FADE_IN + DISPLAY)
   assert(black() ~= nil, "the picture did not start to fade out")
   ticks(FADE_OUT - 1)
   assert(black() == 0xFF, "the picture did not fade out to black")
@@ -145,9 +145,9 @@ end)
 -- Shows a loading picture for its time, until it asks to hand over.
 local function show_loading()
   open(true, false)
-  ticks(FADE_IN + 1)
+  ticks(FADE_IN)
   fake.scene()
-  ticks(DISPLAY + 1)
+  ticks(DISPLAY)
 end
 
 test("a loading picture hands over to the level once drawn", function()
