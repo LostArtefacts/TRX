@@ -207,6 +207,7 @@
 - Added wideshot shotgun shells, which spread three times wider than normal shells, with both spreads as in the original game (TRX1820)
 - Added hotkeys for the revolver and crossbow, with the six weapons on keys 1 to 6 by default (TRX1258)
 - Added a key that switches the weapon in Lara's hands to its next kind of ammunition, and shows the name of the kind on the ammo counter (TRX1846)
+- Changed grenades to explode as in the original game, with a shockwave, shattering what breaks around them and hurting Lara when she is caught in the blast
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement

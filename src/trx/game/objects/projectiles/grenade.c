@@ -12,6 +12,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/general/smashable.h>
+#include <trx/game/objects/projectiles/grenade_tr4.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
@@ -348,6 +349,10 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    if (g_TRVersion == 4) {
+        Grenade_TR4_Setup(obj);
+        return;
+    }
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->priv_size = sizeof(M_PRIV);
