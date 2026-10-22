@@ -54,21 +54,22 @@ static XYZ_32 M_GetSmokeTip(
 
 void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 {
-    if (g_TRVersion != 3) {
+    if (g_TRVersion < 3) {
         return;
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const int32_t count = Gun_Registry_Get(weapon_type)->smoke_count;
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
+    const int32_t count = weapon->smoke_count;
     if (count == 0) {
         return;
     }
 
-    lara->tr3_smoke_weapon = weapon_type;
+    lara->smoke_weapon = weapon_type;
     if (is_right_hand) {
-        lara->tr3_smoke_count_r = count;
+        lara->smoke_count_r = count;
     } else {
-        lara->tr3_smoke_count_l = count;
+        lara->smoke_count_l = count;
     }
 
     const LARA_MESH hand = is_right_hand ? LM_HAND_R : LM_HAND_L;
@@ -88,18 +89,20 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
             .z = muzzle_tip_pos.z - muzzle_pos.z,
         };
 
-        for (int32_t i = 0; i < 7; i++) {
+        for (int32_t i = 0; i < weapon->smoke_burst; i++) {
             Sparks_TriggerGunSmokeDirected(pos, vel, true, weapon_type, count);
         }
 
-        const XYZ_32 vel_sparks = {
-            .x = (muzzle_tip_pos.x - muzzle_pos.x) << 1,
-            .y = (muzzle_tip_pos.y - muzzle_pos.y) << 1,
-            .z = (muzzle_tip_pos.z - muzzle_pos.z) << 1,
-        };
-
-        for (int32_t i = 0; i < 12; i++) {
-            Sparks_TriggerShotgunSparks(muzzle_pos, vel_sparks);
+        // TR4 leaves out the sparks.
+        if (g_TRVersion == 3) {
+            const XYZ_32 vel_sparks = {
+                .x = (muzzle_tip_pos.x - muzzle_pos.x) << 1,
+                .y = (muzzle_tip_pos.y - muzzle_pos.y) << 1,
+                .z = (muzzle_tip_pos.z - muzzle_pos.z) << 1,
+            };
+            for (int32_t i = 0; i < 12; i++) {
+                Sparks_TriggerShotgunSparks(muzzle_pos, vel_sparks);
+            }
         }
     } else if (!M_EjectsShell(weapon_type, is_right_hand)) {
         Sparks_TriggerGunSmoke(pos, true, weapon_type, count);
@@ -108,43 +111,41 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 
 void Gun_Smoke_Control(void)
 {
-    if (g_TRVersion != 3) {
+    if (g_TRVersion < 3) {
         return;
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->tr3_smoke_count_l == 0 && lara->tr3_smoke_count_r == 0) {
+    if (lara->smoke_count_l == 0 && lara->smoke_count_r == 0) {
         return;
     }
 
-    const LARA_GUN_TYPE weapon_type = lara->tr3_smoke_weapon;
+    const LARA_GUN_TYPE weapon_type = lara->smoke_weapon;
 
-    // TR3 counts the smoke down at the end of the frame with the shot, so the
-    // first trailing puff already has one less.
-    if (lara->tr3_smoke_count_l > 0) {
-        lara->tr3_smoke_count_l--;
+    // The games count the smoke down at the end of the frame with the shot, so
+    // the first trailing puff already has one less.
+    if (lara->smoke_count_l > 0) {
+        lara->smoke_count_l--;
     }
-    if (lara->tr3_smoke_count_r > 0) {
-        lara->tr3_smoke_count_r--;
+    if (lara->smoke_count_r > 0) {
+        lara->smoke_count_r--;
     }
 
-    if (lara->tr3_smoke_count_l > 0) {
+    if (lara->smoke_count_l > 0) {
         const XYZ_32 muzzle_pos = M_GetHandAbsPosition(
             LM_HAND_L, M_GetMuzzleOffset(weapon_type, false));
         GAME_VECTOR pos = { .pos = muzzle_pos,
                             .room_num = Lara_GetItem()->room_num };
         Room_GetSector(pos.pos, &pos.room_num);
-        Sparks_TriggerGunSmoke(
-            pos, false, weapon_type, lara->tr3_smoke_count_l);
+        Sparks_TriggerGunSmoke(pos, false, weapon_type, lara->smoke_count_l);
     }
 
-    if (lara->tr3_smoke_count_r > 0) {
+    if (lara->smoke_count_r > 0) {
         const XYZ_32 muzzle_pos = M_GetHandAbsPosition(
             LM_HAND_R, M_GetMuzzleOffset(weapon_type, true));
         GAME_VECTOR pos = { .pos = muzzle_pos,
                             .room_num = Lara_GetItem()->room_num };
         Room_GetSector(pos.pos, &pos.room_num);
-        Sparks_TriggerGunSmoke(
-            pos, false, weapon_type, lara->tr3_smoke_count_r);
+        Sparks_TriggerGunSmoke(pos, false, weapon_type, lara->smoke_count_r);
     }
 }

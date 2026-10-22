@@ -436,6 +436,7 @@ static RESULT M_ReadSmoke(
     MUST(M_ReadXYZ(L, idx, "tip", &w->smoke_tip.right));
     MUST(M_ReadXYZ(L, idx, "tip_alt", &w->smoke_tip.left));
     M_INT(L, idx, "count", w->smoke_count);
+    M_INT(L, idx, "burst", w->smoke_burst);
     M_ROUTINE(L, idx, SmokeSize, "size", w->smoke_size_func);
     return OK;
 }

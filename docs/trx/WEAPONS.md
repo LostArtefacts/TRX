@@ -463,7 +463,7 @@ most, loose or on a weapon.
   <tr valign="top">
     <td><code>tip</code></td>
     <td>XYZ</td>
-    <td>The far end of the barrel. A weapon that names one drives its smoke along the barrel and throws sparks with it; one that does not lets the smoke drift.</td>
+    <td>The far end of the barrel. A weapon that names one drives its smoke along the barrel, and in TR3 throws sparks with it; one that does not lets the smoke drift.</td>
   </tr>
   <tr valign="top">
     <td><code>tip_alt</code></td>
@@ -474,6 +474,11 @@ most, loose or on a weapon.
     <td><code>count</code></td>
     <td>Integer</td>
     <td>How many smoke effect instances to spawn upon shooting.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>burst</code></td>
+    <td>Integer</td>
+    <td>How many puffs a shot drives along the barrel, for a weapon that names a <code>tip</code>.</td>
   </tr>
   <tr valign="top">
     <td><code>size</code></td>

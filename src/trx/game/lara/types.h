@@ -127,10 +127,10 @@ typedef struct {
     // levels, as in the original.
     uint8_t wet[LM_NUMBER_OF];
 
-    // TR3: persistent gun smoke spawned from muzzle after firing.
-    int32_t tr3_smoke_count_l;
-    int32_t tr3_smoke_count_r;
-    LARA_GUN_TYPE tr3_smoke_weapon;
+    // The smoke that keeps rising from the muzzle after a shot.
+    int32_t smoke_count_l;
+    int32_t smoke_count_r;
+    LARA_GUN_TYPE smoke_weapon;
     bool has_fired;
 
     // TR4: a countdown timer when using flash grenades, temporarily stunning

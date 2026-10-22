@@ -167,6 +167,9 @@ typedef struct {
     // setting governs.
     bool flash_is_optional;
     int32_t smoke_count;
+    // How many puffs a weapon that names a barrel end drives along the barrel
+    // as it fires.
+    int32_t smoke_burst;
     // The objects the weapon is made of: what Lara picks up, what its
     // ammunition arrives as, and the animations she holds it with.
     OBJECT_ID gun_object_id;

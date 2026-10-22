@@ -182,7 +182,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.is_machine_gun" name="weapons.Weapon.is_machine_gun"></a>**`is_machine_gun`**: boolean. Whether it keeps firing while the trigger is held. *(read-only)*
     - <a id="weapons.Weapon.kind" name="weapons.Weapon.kind"></a>**`kind`**: [trx.weapons.Kind](#weapons.Kind). How the engine holds and fires it.
     - <a id="weapons.Weapon.shot_accuracy" name="weapons.Weapon.shot_accuracy"></a>**`shot_accuracy`**: [trx.math.Angle](MATH.md#math.Angle). How wide a cone a shot may stray into, in engine units. `0` never misses. A spec says the same thing in degrees, as `aim.accuracy`.
-    - <a id="weapons.Weapon.smoke_count" name="weapons.Weapon.smoke_count"></a>**`smoke_count`**: integer. How many puffs of smoke a shot leaves at the muzzle, in TR3. `0` for none.
+    - <a id="weapons.Weapon.smoke_count" name="weapons.Weapon.smoke_count"></a>**`smoke_count`**: integer. How many puffs of smoke a shot leaves at the muzzle, in TR3 and TR4. `0` for none.
     - <a id="weapons.Weapon.target_dist" name="weapons.Weapon.target_dist"></a>**`target_dist`**: [trx.math.Distance](MATH.md#math.Distance). How far the weapon reaches, both for auto-aim and for the shot itself, in world units. A spec says the same thing in sectors, as `aim.target_dist`, and [`trx.math.from_sectors`](MATH.md#math.from_sectors) converts.
 
     Computed properties (derived, not stored on the object):
