@@ -929,6 +929,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   Returns:
   - number. The width, in canvas units.
   - number. The height, in canvas units.
+  - number. The distance from the top of the text to its baseline, in canvas units.
 
 - <a id="ui.primitive.wrap_text" name="ui.primitive.wrap_text"></a>[lua]`trx.ui.primitive.wrap_text(text, width, [scale])`  
   Breaks text into lines that fit a width, the way the game wraps its own

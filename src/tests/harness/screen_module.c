@@ -425,3 +425,8 @@ void UI_Text_Measure(
         *out_h = 15.0f * settings.scale;
     }
 }
+
+float UI_Text_GetBaseline(const UI_TEXT_SETTINGS settings)
+{
+    return 15.0f * settings.scale;
+}

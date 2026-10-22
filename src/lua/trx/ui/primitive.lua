@@ -61,7 +61,8 @@ primitive.slot_box = raw.slot_box
 ---@param scale? number Multiplies the text size. `1.0` by default.
 ---@return number # The width, in canvas units.
 ---@return number # The height, in canvas units.
----@type fun(text: string, scale?: number): number, number
+---@return number # The distance from the top of the text to its baseline, in canvas units.
+---@type fun(text: string, scale?: number): number, number, number
 primitive.measure_text = raw.measure_text
 
 ---Breaks text into lines that fit a width, the way the game wraps its own

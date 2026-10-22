@@ -648,17 +648,19 @@ static int M_L_UISlotBox(lua_State *const L)
     return 4;
 }
 
-// trxc.ui.measure_text(text: string, scale?: number): number, number
+// trxc.ui.measure_text(text: string, scale?: number): number, number, number
 static int M_L_UIMeasureText(lua_State *const L)
 {
     float w;
     float h;
-    UI_Text_Measure(
-        luaL_checkstring(L, 1), &w, &h,
-        (UI_TEXT_SETTINGS) { .scale = (float)luaL_optnumber(L, 2, 1.0) });
+    const UI_TEXT_SETTINGS settings = {
+        .scale = (float)luaL_optnumber(L, 2, 1.0),
+    };
+    UI_Text_Measure(luaL_checkstring(L, 1), &w, &h, settings);
     lua_pushnumber(L, w);
     lua_pushnumber(L, h);
-    return 2;
+    lua_pushnumber(L, UI_Text_GetBaseline(settings));
+    return 3;
 }
 
 // trxc.ui.wrap_text(text: string, width: number, scale?: number): string

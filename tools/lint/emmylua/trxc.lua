@@ -560,7 +560,7 @@ trxc = {}
 ---@field image_size fun(path: string): integer?, integer?
 ---@field interpolation_rate fun(): number
 ---@field line fun(x0: number, y0: number, x1: number, y1: number, z?: integer, width: number, color: trx.math.Color|table)
----@field measure_text fun(text: string, scale?: number): number, number
+---@field measure_text fun(text: string, scale?: number): number, number, number
 ---@field mesh_bounds fun(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
 ---@field panel fun(x: number, y: number, z?: integer, w: number, h: number, look: integer, fill: boolean, colors?: table)
 ---@field pop_text_scale fun()

@@ -879,6 +879,11 @@ void UI_Text_Measure(
         text, out_w, out_h, settings, 0.0f, 0.0f, M_ScaleNeutral, nullptr);
 }
 
+float UI_Text_GetBaseline(const UI_TEXT_SETTINGS settings)
+{
+    return M_ScaleNeutral(settings.scale * M_GetBaseline());
+}
+
 int32_t UI_Text_SetDefaultColor(const int32_t color_idx)
 {
     const int32_t previous = m_DefaultColor;
