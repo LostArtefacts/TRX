@@ -1,6 +1,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/projectiles/grenade_tr4.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -175,39 +176,25 @@ static M_TERRAIN M_DetectTerrain(ITEM *const item)
 
 static void M_FireGrenade(const ITEM *const item)
 {
-    const int16_t grenade_item_num = Item_Spawn(item, O_GRENADE);
-    if (grenade_item_num == NO_ITEM) {
-        return;
-    }
-
-    ITEM *const grenade_item = Item_Get(grenade_item_num);
-    grenade_item->shade.value_1 = -0x3DF0;
-    grenade_item->rot.z = 0;
-    grenade_item->rot.y += DEG_180;
-    grenade_item->pos =
-        XYZ_32_OffsetYaw(grenade_item->pos, grenade_item->rot.y, WALL_L);
-    grenade_item->pos.y -= STEP_L * 3;
+    const int16_t y_rot = item->rot.y + DEG_180;
+    XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, y_rot, WALL_L);
+    pos.y -= STEP_L * 3;
 
     for (int32_t i = 0; i < 5; i++) {
-        const GAME_VECTOR pos = {
+        const GAME_VECTOR smoke_pos = {
             .pos = item->pos,
             .room_num = item->room_num,
         };
-        Sparks_TriggerGunSmoke(pos, true, LGT_GRENADE, 32);
+        Sparks_TriggerGunSmoke(smoke_pos, true, LGT_GRENADE, 32);
     }
 
-    if ((Random_GetControl() & 3) == 0) {
-        // TODO: the grenade should be of "super" type
-    }
-
-    grenade_item->speed = STEP_L / 8;
-    grenade_item->fall_speed =
-        (-grenade_item->speed * Math_Sin(grenade_item->rot.x)) >> W2V_SHIFT;
-    grenade_item->current_anim_state = grenade_item->rot.x;
-    grenade_item->goal_anim_state = grenade_item->rot.y;
-    grenade_item->hit_points = 120;
-
-    Item_AddSimulated(grenade_item_num);
+    // The jeep fires a super grenade one time in four.
+    const GRENADE_TR4_KIND kind = (Random_GetControl() & 3) != 0
+        ? GRENADE_TR4_KIND_NORMAL
+        : GRENADE_TR4_KIND_SUPER;
+    Grenade_TR4_Fire(
+        pos, item->room_num, (XYZ_16) { .x = item->rot.x, .y = y_rot },
+        STEP_L / 8, kind);
 }
 
 static void M_Tilt(int16_t *const rot, const int16_t angle)

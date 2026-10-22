@@ -9,6 +9,8 @@ typedef enum {
     GRENADE_TR4_KIND_NORMAL,
     GRENADE_TR4_KIND_SUPER,
     GRENADE_TR4_KIND_FLASH,
+    // One of the burning pieces a super grenade throws once it goes off.
+    GRENADE_TR4_KIND_FRAGMENT,
 } GRENADE_TR4_KIND;
 
 // Sets the grenade object up to behave as in TR4.
