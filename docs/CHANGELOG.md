@@ -3,7 +3,7 @@
 **Lara's movement**
 - Added the ability for Lara to look up and down while idle on monkey bars, as per TR4+
 - Added an option to allow Lara to deflect off monkey bar edges when moving forward, as per TR4+ (Gameplay → Controls → Monkey bar deflect)
-- Improved Lara's torso rotation handling when going into a crouch and drawing/holstering guns while crouched (#6700)
+- Improved Lara's torso rotation handling when walking to interactive objects and when crouching, as well as drawing/holstering guns while crouched (#6700)
 - Improved the step glitch fix option to handle when Lara is walking as well as running (Gameplay → Fixes → Step glitch)
 - Changed the fix to prevent Lara from sprinting through wading-depth water to be optional (Gameplay → Fixes → Fix wading sprint) (#5868 / TRX699)
 - Changed the "Fixed" wall glitch mode to prevent Lara being voided when embedding into walls, similar to TR4+ (Gameplay → Fixes → Wall glitch mode)
