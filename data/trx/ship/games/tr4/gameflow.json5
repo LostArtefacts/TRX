@@ -244,6 +244,9 @@
                 {"type": "play_fmv", "fmv_id": 5},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "semerkhet_bolt.bin",
+            ],
         },
 
         // 12. Guardian of Semerkhet
