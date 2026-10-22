@@ -11,6 +11,7 @@ local pages = require("common.ui.screens.passport.pages")
 local rows = require("common.ui.screens.passport.rows")
 local saves = require("common.ui.flat_menu.saves")
 local sound = require("common.ui.flat_menu.sound").play
+local title_page = require("common.ui.title_page")
 
 local M = {}
 
@@ -63,6 +64,7 @@ function M.open(ctx)
   trx.overlay.show_version(true)
   ctx:on_end(function()
     trx.overlay.show_version(false)
+    title_page.shows_main:set(true)
   end)
 
   ---@return common.ui.flat_menu.List
@@ -70,8 +72,13 @@ function M.open(ctx)
     return state.pages[#state.pages]
   end
 
+  local function follow_main()
+    title_page.shows_main:set(#state.pages <= 1 and not state.is_away)
+  end
+
   local function push(next_page)
     state.pages[#state.pages + 1] = next_page
+    follow_main()
   end
 
   -- Goes to black and ends the menu, once the game knows where it goes next.
@@ -92,8 +99,10 @@ function M.open(ctx)
   local function go_away(open)
     local layer = open(ctx, function()
       state.is_away = false
+      follow_main()
     end)
     state.is_away = layer ~= nil
+    follow_main()
   end
 
   local function list_of(heading, entries)
@@ -336,6 +345,7 @@ function M.open(ctx)
         if #state.pages > 1 then
           sound("select")
           table.remove(state.pages)
+          follow_main()
         end
       elseif current:move(keys) then
         sound("move")

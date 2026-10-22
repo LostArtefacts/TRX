@@ -219,4 +219,31 @@ test("options open the settings and come back to the title", function()
   finish()
 end)
 
+test("the title shows the logo on its main menu alone", function()
+  local shows_main = require("common.ui.title_page").shows_main
+  fake.set_slot_count(trx.savegame.Pool.NORMAL, 1)
+  fake.set_slot_free(1, trx.savegame.Pool.NORMAL)
+  open()
+  assert(shows_main:get(), "the main menu hid the logo")
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  assert(not shows_main:get(), "the list of saves kept the logo")
+  press(Role.MENU_BACK)
+  ticks(SETTLE_TICKS)
+  assert(shows_main:get(), "the logo did not come back")
+  for _ = 1, 4 do
+    if shows("\\{color 1}" .. L("general/flat_menu/options")) then
+      break
+    end
+    press(Role.MENU_DOWN)
+  end
+  press(Role.MENU_CONFIRM)
+  assert(not shows_main:get(), "the options kept the logo")
+  press(Role.MENU_BACK)
+  assert(shows_main:get(), "the logo did not come back")
+  finish()
+  assert(shows_main:get(), "the closed menu hid the logo")
+end)
+
 return h.report()

@@ -18,6 +18,7 @@ local fade = require("common.ui.fade")
 local motion = require("common.ui.ring.motion")
 local ring = require("common.ui.ring")
 local timer = require("common.timer")
+local title_page = require("common.ui.title_page")
 
 local M = {}
 
@@ -762,6 +763,15 @@ end
 -- The ring's statuses
 -------------------------------------------------------------------------------
 
+-- Opens or closes the screen that an entry shows over the ring. On the title,
+-- the logo hides while a screen is open, as it does under the flat menu.
+local function set_screen(state, screen)
+  state.screen = screen
+  if state.mode == trx.ui.MenuMode.TITLE then
+    title_page.shows_main:set(screen == nil)
+  end
+end
+
 local function set_status(state, status, motion_name)
   state.status = status
   if motion_name ~= nil then
@@ -1060,13 +1070,13 @@ local function offer_weapon(state)
     if state.screen ~= frame then
       return
     end
-    state.screen = nil
+    set_screen(state, nil)
     state.rebuilds = rebuilds
     if state.status == Status.SELECTED then
       close_item(state, leaves_after_save(state.mode))
     end
   end)
-  state.screen = frame
+  set_screen(state, frame)
 end
 
 -- Offers the screen of what the player does with the entry, once.
@@ -1087,7 +1097,7 @@ local function offer(state)
     if state.screen ~= ctx then
       return
     end
-    state.screen = nil
+    set_screen(state, nil)
     if state.action == Action.EXAMINE then
       state.view:let_go()
     end
@@ -1107,7 +1117,7 @@ local function offer(state)
     state.left_by_screen = leaves
     close_item(state, leaves)
   end)
-  state.screen = ctx
+  set_screen(state, ctx)
   state.unhandled = ctx == nil
 end
 
@@ -1217,7 +1227,7 @@ local function run(state)
       state.chosen = state.list[view.current].object
       keep_place(state)
       local screen = state.screen
-      state.screen = nil
+      set_screen(state, nil)
       screen:cancel()
       close_item(state, true)
     end
@@ -1495,6 +1505,7 @@ local function open(ctx)
   ctx:on_end(function()
     ticking:cancel()
     exiting:detach()
+    title_page.shows_main:set(true)
     -- The engine ends the ring before it is done where something else, such
     -- as a console command, starts a level at once. The ring has had no time
     -- to fade out, so it fades to black as it goes. As the game exits, the
@@ -1508,7 +1519,7 @@ local function open(ctx)
     end
     if state.screen ~= nil then
       local screen = state.screen
-      state.screen = nil
+      set_screen(state, nil)
       screen:cancel()
     end
     local content = state.list[state.view.current]
