@@ -105,6 +105,29 @@ local function count_drawn(text)
   return count
 end
 
+test("a region that changes says so before the scene paints", function()
+  local shown = trx.signal.new(true)
+  local widget = trx.ui.widgets.Spacer({ w = 50, h = 40, visible = shown })
+  trx.ui.regions.place(trx.ui.Region.TOP_CENTER, widget)
+  fake.scene()
+  local log = {}
+  local layout = trx.ui.signals.layout:on(function()
+    log[#log + 1] = "layout"
+  end)
+  local paint = trx.ui.on_paint(function()
+    log[#log + 1] = "paint"
+  end)
+  shown:set(false)
+  fake.scene()
+  layout:detach()
+  paint:detach()
+  widget:release()
+  assert(
+    log[1] == "layout",
+    "painted before the layout: " .. table.concat(log, ", ")
+  )
+end)
+
 test("a widget placed twice moves rather than draws twice", function()
   local widget = label("twice")
   trx.ui.regions.place(trx.ui.Region.TOP_LEFT, widget)
