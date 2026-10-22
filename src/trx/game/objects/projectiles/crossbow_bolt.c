@@ -4,20 +4,17 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/game/collision/common.h>
-#include <trx/game/creature.h>
 #include <trx/game/fx/debris.h>
-#include <trx/game/fx/shockwave.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/registry.h>
-#include <trx/game/gun/smashing.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/projectiles/blast.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
-#include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 
@@ -25,19 +22,6 @@
 #define M_SPEED                 512
 #define M_MIN_SPEED_UW          64
 #define M_HIT_RADIUS            128
-#define M_BLAST_RADIUS          2048
-// The shockwaves of a blast, as TR4 sets them off: a big one at the bolt and
-// at each item it smashes, and a small one at each static it shatters.
-#define M_SHOCKWAVE_RISE        128
-#define M_BLAST_COLOR           ((RGB_888) { .r = 0x80, .g = 0x60, .b = 0x00 })
-#define M_BIG_SHOCKWAVE_INNER   48
-#define M_BIG_SHOCKWAVE_OUTER   304
-#define M_BIG_SHOCKWAVE_SPEED   96
-#define M_BIG_SHOCKWAVE_LIFE    24
-#define M_SMALL_SHOCKWAVE_INNER 40
-#define M_SMALL_SHOCKWAVE_OUTER 176
-#define M_SMALL_SHOCKWAVE_SPEED 64
-#define M_SMALL_SHOCKWAVE_LIFE  16
 #define M_SPLASH_COUNT          8
 // How many faces of a shattered static fly off as debris. A negative count
 // picks the faces at random.
@@ -136,79 +120,6 @@ static void M_HitStatics(
     }
 }
 
-// Sets off a shockwave at a place, a little above it, as TR4 explosions do.
-static void M_TriggerShockwave(
-    const XYZ_32 pos, const int16_t inner_radius, const int16_t outer_radius,
-    const int16_t speed, const uint8_t life)
-{
-    FX_Shockwave_Create(&(FX_SHOCKWAVE_SETUP) {
-        .pos = { .x = pos.x, .y = pos.y - M_SHOCKWAVE_RISE, .z = pos.z },
-        .inner_radius = inner_radius,
-        .outer_radius = outer_radius,
-        .speed = speed,
-        .color = M_BLAST_COLOR,
-        .life = life,
-    });
-}
-
-static void M_BlastItems(
-    const ITEM *const item, const COLLIDED_OBJECTS *const collided)
-{
-    for (int32_t i = 0; i < collided->item_count; i++) {
-        ITEM *const target = collided->items[i];
-        // TODO: TR4 blasts also trip the shootable switches, which TRX lacks.
-        if (Gun_GetSmashPolicy(target) != GUN_SMASH_POLICY_NONE) {
-            Sparks_TriggerExplosionSparks(
-                target->pos, 3, -2, 0, target->room_num);
-            M_TriggerShockwave(
-                target->pos, M_BIG_SHOCKWAVE_INNER, M_BIG_SHOCKWAVE_OUTER,
-                M_BIG_SHOCKWAVE_SPEED, M_BIG_SHOCKWAVE_LIFE);
-            Gun_SmashItem(Item_GetIndex(target));
-        } else if (
-            Object_Get(target->object_id)->intelligent
-            && Item_CanBeProjectileTarget(target)) {
-            Gun_HitTargetWithBlast(target, item);
-        }
-    }
-}
-
-static void M_BlastStatics(
-    const ITEM *const item, const COLLIDED_OBJECTS *const collided)
-{
-    for (int32_t i = 0; i < collided->static_count; i++) {
-        const STATIC_MESH *const mesh = collided->statics[i];
-        if (!Object_Get3DStatic(mesh->static_num)->shatter.by_shot) {
-            continue;
-        }
-        Sparks_TriggerExplosionSparks(mesh->pos, 3, -2, 0, item->room_num);
-        M_TriggerShockwave(
-            mesh->pos, M_SMALL_SHOCKWAVE_INNER, M_SMALL_SHOCKWAVE_OUTER,
-            M_SMALL_SHOCKWAVE_SPEED, M_SMALL_SHOCKWAVE_LIFE);
-        FX_Debris_ShatterStatic(mesh, M_STATIC_DEBRIS_FACES, item->room_num, 0);
-        Room_ShatterStatic(mesh);
-    }
-}
-
-// Sets off the bolt's own blast: a fireball and a shockwave out of water, or
-// a burst of bubbles in it.
-static void M_Explode(ITEM *const item, const XYZ_32 old_pos)
-{
-    if (Room_Get(item->room_num)->flags.underwater) {
-        Sparks_TriggerUnderwaterExplosion(item);
-    } else {
-        M_TriggerShockwave(
-            item->pos, M_BIG_SHOCKWAVE_INNER, M_BIG_SHOCKWAVE_OUTER,
-            M_BIG_SHOCKWAVE_SPEED, M_BIG_SHOCKWAVE_LIFE);
-        Sparks_TriggerExplosionSparks(old_pos, 3, -2, 0, item->room_num);
-        for (int32_t i = 0; i < 2; i++) {
-            Sparks_TriggerExplosionSparks(old_pos, 3, -1, 0, item->room_num);
-        }
-    }
-    Creature_AlertNearbyGuards(item);
-    Sound_Effect(SFX_EXPLOSION_1, &item->pos, 0x1800000 | SPM_PITCH);
-    Sound_Effect(SFX_EXPLOSION_2, &item->pos, SPM_NORMAL);
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -262,7 +173,7 @@ static void M_Control(const int16_t item_num)
     // An explosive bolt that touches anything explodes, and looks again
     // with the reach of its blast.
     bool collided = false;
-    int32_t radius = exploded ? M_BLAST_RADIUS : M_HIT_RADIUS;
+    int32_t radius = exploded ? BLAST_RADIUS : M_HIT_RADIUS;
     for (int32_t i = 0; i < 2; i++) {
         COLLIDED_OBJECTS found;
         Collide_GetCollidedObjects(item, radius, true, true, &found);
@@ -272,8 +183,7 @@ static void M_Control(const int16_t item_num)
         collided = true;
         if (p->kind != M_KIND_EXPLOSIVE || exploded) {
             if (exploded) {
-                M_BlastItems(item, &found);
-                M_BlastStatics(item, &found);
+                Blast_HitObjects(item, &found, false);
             } else {
                 M_HitItems(item, old_pos, &found);
                 M_HitStatics(item, &found);
@@ -281,11 +191,11 @@ static void M_Control(const int16_t item_num)
             break;
         }
         exploded = true;
-        radius = M_BLAST_RADIUS;
+        radius = BLAST_RADIUS;
     }
 
     if (exploded) {
-        M_Explode(item, old_pos.pos);
+        Blast_Explode(item, old_pos.pos);
     }
     if (collided || exploded) {
         M_Break(item_num);
