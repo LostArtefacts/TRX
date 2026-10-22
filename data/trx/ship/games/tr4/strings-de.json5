@@ -6,6 +6,12 @@
             "object_name_fmt": "\\{color 8}%s",
         }
     },
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "\\{review}Granatenwerfer ausrüsten",
+            "equip_uzis": "\\{review}Uzi ausrüsten",
+        }
+    },
     "objects": {
         "crossbow_ammo_1_item": {
             "name": "\\{review}Normale Armbrustbolzen",
