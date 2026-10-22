@@ -7,8 +7,10 @@
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
 #include <trx/game/console/common.h>
+#include <trx/game/game.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/photo_mode.h>
 #include <trx/game/screenshot.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
@@ -176,7 +178,7 @@ void Shell_ProcessInput(void)
         Clock_ReleaseTurboSpeed();
     }
 
-    if (g_InputDB.change_outfit) {
+    if (g_InputDB.change_outfit && (Game_IsPlaying() || PhotoMode_IsActive())) {
         Lara_Skin_CycleOutfit(g_Input.slow ? -1 : 1);
     }
 }
