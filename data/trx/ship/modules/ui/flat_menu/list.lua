@@ -37,6 +37,7 @@ end
 ---@field rows common.ui.flat_menu.list.Row[]
 ---@field selected integer
 ---@field first integer The row at the top of the room, as the list scrolls.
+---@field on_back? fun() Runs once the player backs out of the list.
 local List = {}
 List.__index = List
 
