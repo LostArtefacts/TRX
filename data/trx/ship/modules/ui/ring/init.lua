@@ -7,6 +7,7 @@
 --   ctx:on_end(function() resting:stop() end)
 --   ctx:push({ root = ..., on_input = ring.while_resting(control) })
 
+local accent = require("common.ui.accent")
 local entries = require("common.ui.ring.entries")
 
 local M = {}
@@ -191,12 +192,7 @@ end
 -- more than one.
 function M.show_count(count)
   if count > 1 then
-    M.set_count(
-      trx.locale
-        .get("general/inventory_ring/item_count_fmt")
-        :format("%d")
-        :format(count)
-    )
+    M.set_count(accent.text(count, accent.Role.COUNT))
   else
     M.set_count(nil)
   end

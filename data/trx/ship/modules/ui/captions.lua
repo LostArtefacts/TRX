@@ -67,7 +67,7 @@ local function follow_demos()
   local function show(flashing)
     trx.overlay.set_caption(
       trx.locale.get("general/misc/demo_mode"),
-      { plain = true, flashing = flashing }
+      { flashing = flashing }
     )
   end
   trx.events.on_game_start(function()

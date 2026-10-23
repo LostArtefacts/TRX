@@ -63,13 +63,10 @@
         },
         "inventory_ring": {
             "heading_adventure": "Przygoda",
-            "heading_fmt": "%s",
             "heading_game_over": "KONIEC GRY",
             "heading_inventory": "EKWIPUNEK",
             "heading_items": "PRZEDMIOTY",
             "heading_option": "OPCJE",
-            "item_count_fmt": "\\{small}%s",
-            "object_name_fmt": "%s",
         },
         "misc": {
             "demo_mode": "Tryb demo",
@@ -126,8 +123,6 @@
             "debug_position": "Pozycja: ",
             "debug_rotation": "Rotacja: ",
             "debug_speed": "Prędkość: ",
-            "item_count_fmt_pc": "\\{small}%s",
-            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
             "delete_save": "Usuń",

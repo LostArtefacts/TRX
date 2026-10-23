@@ -130,6 +130,17 @@ order: 3
     - `trx.overlay.signals.health_bar_forced` →
       `require("common.ui.ring").signals.health_bar`
 
+20. **The caption shows its text as given**
+    `trx.overlay.set_caption` no longer styles its text, and its `plain`
+    option is gone. The shipped `common.ui.accent` module styles text by
+    what it is: `accent.text(name, accent.Role.NAME)` gives the look of an
+    entry's name. These strings, which only styled other text, are gone:
+    - `general/inventory_ring/heading_fmt`
+    - `general/inventory_ring/object_name_fmt`
+    - `general/inventory_ring/item_count_fmt`
+    - `general/overlay/item_count_fmt_pc`
+    - `general/overlay/item_count_fmt_ps1`
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

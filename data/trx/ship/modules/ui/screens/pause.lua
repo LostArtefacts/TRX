@@ -4,6 +4,7 @@
 -- are sure. Each question is a layer, so backing out of the second one shows
 -- the first one as the player left it.
 
+local accent = require("common.ui.accent")
 local fade = require("common.ui.fade")
 local metrics = require("common.ui.metrics")
 local requester = require("common.ui.widgets.requester")
@@ -132,7 +133,9 @@ function M.open(ctx)
 
   local function wait()
     is_waiting = true
-    trx.overlay.set_caption(trx.locale.get("general/pause/paused"))
+    trx.overlay.set_caption(
+      accent.text(trx.locale.get("general/pause/paused"), accent.Role.NAME)
+    )
   end
 
   local backdrop = fades:enter({

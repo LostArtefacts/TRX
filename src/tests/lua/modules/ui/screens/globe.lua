@@ -10,8 +10,6 @@ local Arrow = trx.overlay.Arrow
 
 local CHOICE_NONE = 0
 
--- The caption is the area's name and nothing else, so it reads straight back.
-trx.locale.declare({ ["general/inventory_ring/object_name_fmt"] = "%s" })
 require("common.ui.screens.globe").setup()
 
 -- A tick, with the game's own clock moving on with it, which the screen's

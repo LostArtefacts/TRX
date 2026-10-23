@@ -63,13 +63,10 @@
         },
         "inventory_ring": {
             "heading_adventure": "Avventura",
-            "heading_fmt": "%s",
             "heading_game_over": "GAME OVER",
             "heading_inventory": "INVENTARIO",
             "heading_items": "OGGETTI",
             "heading_option": "OPZIONI",
-            "item_count_fmt": "\\{small}%s",
-            "object_name_fmt": "%s",
         },
         "misc": {
             "demo_mode": "Modalità Demo",
@@ -126,8 +123,6 @@
             "debug_position": "Posizione: ",
             "debug_rotation": "Rotazione: ",
             "debug_speed": "Velocità: ",
-            "item_count_fmt_pc": "\\{small}%s",
-            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
             "delete_save": "Elimina",
