@@ -1,6 +1,7 @@
 -- Examining an entry in the inventory ring: its description, a page at a time,
 -- and turning it by hand once the description is out of the way.
 
+local accent = require("common.ui.accent")
 local ring = require("common.ui.ring")
 local text_dialog = require("common.ui.widgets.text_dialog")
 
@@ -102,6 +103,10 @@ local function open(ctx)
   local object = trx.objects[ctx.object]
   local description = object ~= nil and object.description or nil
   local has_text = description ~= nil and description ~= ""
+  local entry = ring.item(ctx.object)
+  if description ~= nil and entry ~= nil and entry.text_color then
+    description = accent.color(description, entry.text_color)
+  end
   local resting = ring.resting()
   local hidden = trx.signal.new(false)
   local state = {
