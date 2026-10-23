@@ -114,7 +114,9 @@ static void M_SetStartLyingDown(ITEM *const item, const TRX_VALUE *const in)
 static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
-    M_SetInitialAnim(Item_Get(item_num), M_ANIM_ARMS_CROSSED);
+    ITEM *const item = Item_Get(item_num);
+    item->include_in_kill_stats = false;
+    M_SetInitialAnim(item, M_ANIM_ARMS_CROSSED);
 }
 
 static bool M_IsTargetable(const ITEM *const item)
