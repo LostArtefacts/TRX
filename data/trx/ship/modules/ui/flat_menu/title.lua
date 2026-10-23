@@ -147,47 +147,54 @@ function M.open(ctx)
   end
 
   -- Lists the saves that pass `filter`, and runs `on_slot` with the one the
-  -- player picks.
+  -- player picks. The list stays open where `on_slot` returns false.
   local function slot_list(filter, on_slot)
-    local entries = {}
-    for _, row in ipairs(rows.slot_rows(filter)) do
-      entries[#entries + 1] = {
-        text = row.text,
-        choose = function()
-          on_slot(row)
+    go_away(function(_, on_close)
+      return saves.pick(ctx, {
+        heading = trx.locale.get("general/passport/select_save"),
+        filter = filter,
+        on_pick = function(slot)
+          if not on_slot(slot) then
+            return false
+          end
+          on_close()
+          return true
         end,
-      }
-    end
-    return list_of(trx.locale.get("general/passport/select_save"), entries)
+        on_back = on_close,
+      })
+    end)
   end
 
   local function play_previous()
-    push(slot_list(function(info)
+    slot_list(function(info)
       return info ~= nil and info.can_select_level
     end, function(slot)
       local reached = trx.savegame.reached_levels(slot.slot_num, slot.pool)
       local level_rows = reached and rows.reached_level_rows(reached) or {}
       if #level_rows == 0 then
-        sound("no")
-        return
+        return false
       end
-      push(level_list(level_rows, function(level)
+      local levels = level_list(level_rows, function(level)
         trx.game.play_level(level.num, {
           select = true,
           from_save = { slot_num = slot.slot_num, pool = slot.pool },
         })
         leave()
-      end))
-    end))
+      end)
+      levels.on_back = play_previous
+      push(levels)
+      return true
+    end)
   end
 
   local function story()
-    push(slot_list(function(info)
+    slot_list(function(info)
       return info ~= nil and info.has_story
     end, function(slot)
       trx.savegame.play_story(slot.slot_num, slot.pool)
       leave()
-    end))
+      return true
+    end)
   end
 
   local function switch_mod()
@@ -344,8 +351,11 @@ function M.open(ctx)
       if keys:pressed(Role.MENU_BACK) then
         if #state.pages > 1 then
           sound("select")
-          table.remove(state.pages)
+          local left = table.remove(state.pages)
           follow_main()
+          if left.on_back ~= nil then
+            left.on_back()
+          end
         end
       elseif current:move(keys) then
         sound("move")

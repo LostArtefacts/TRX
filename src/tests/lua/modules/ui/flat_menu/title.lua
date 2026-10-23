@@ -204,6 +204,46 @@ test("the level select lists the levels and starts the one picked", function()
   finish()
 end)
 
+-- Moves down a list to the row that shows `text`, and picks it.
+local function choose(text)
+  for _ = 1, 8 do
+    if shows(accent.text(text, accent.Role.PICKED)) then
+      break
+    end
+    press(Role.MENU_DOWN)
+  end
+  press(Role.MENU_CONFIRM)
+end
+
+test("the saves to play previous levels from show their numbers", function()
+  trx.config.set("gameplay.enable_play_previous_levels", true)
+  open()
+  press(Role.MENU_CONFIRM)
+  choose(L("general/passport/play_previous_levels"))
+  assert(shows(L("general/passport/select_save")), "no list of saves")
+  assert(texts():find("}%d%d%d") ~= nil, "the saves show no numbers")
+  press(Role.MENU_CONFIRM)
+  assert(shows(L("general/passport/select_level")), "no level select")
+  press(Role.MENU_BACK)
+  assert(shows(L("general/passport/select_save")), "back left the saves")
+  press(Role.MENU_BACK)
+  assert(shows(L("general/passport/select_mode")), "back left the choices")
+  finish()
+end)
+
+test("the story so far plays the story of the save picked", function()
+  trx.config.set("gameplay.enable_play_previous_levels", true)
+  open()
+  press(Role.MENU_CONFIRM)
+  choose(L("general/passport/story_so_far"))
+  assert(shows(L("general/passport/select_save")), "no list of saves")
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  assert(fake.calls().play_story.count == 1, "no story played")
+  assert(fake.take_choice(MENU) == CHOICE_CONFIRM, "the menu stayed open")
+  finish()
+end)
+
 test("options open the settings and come back to the title", function()
   open()
   for _ = 1, 4 do

@@ -37,6 +37,12 @@ local DATE_FMT = "%04d-%02d-%02d %02d:%02d"
 ---@field slot_num integer
 ---@field pool integer
 
+---@class common.ui.flat_menu.saves.Pick
+---@field heading string
+---@field filter fun(info: trx.savegame.SlotInfo?): boolean Says whether the list shows a save.
+---@field on_pick fun(slot: common.ui.flat_menu.saves.Slot): boolean Runs with the save the player picks, and says whether the list closes.
+---@field on_back fun() Runs once the player backs out of the list.
+
 -- The slot the list was left on, which every list opens on again, as in the
 -- original.
 ---@type common.ui.flat_menu.saves.Slot?
@@ -46,6 +52,7 @@ local left_on = nil
 M.Kind = {
   SAVE = "save",
   LOAD = "load",
+  PICK = "pick",
 }
 
 local function colored(role, text)
@@ -59,13 +66,16 @@ local function across(x)
 end
 
 -- Returns every slot the list shows: the quick saves, then the numbered
--- slots.
+-- slots, or only those that pass `filter`.
+---@param filter? fun(info: trx.savegame.SlotInfo?): boolean
 ---@return common.ui.flat_menu.saves.Slot[]
-local function all_slots()
+local function all_slots(filter)
   ---@type common.ui.flat_menu.saves.Slot[]
   local slots = {}
   pages.each_slot(function(slot_num, pool)
-    slots[#slots + 1] = { slot_num = slot_num, pool = pool }
+    if filter == nil or filter(trx.savegame.info(slot_num, pool)) then
+      slots[#slots + 1] = { slot_num = slot_num, pool = pool }
+    end
   end)
   return slots
 end
@@ -89,22 +99,19 @@ local function slot_text(slot)
   return number, info.level_title or "", date
 end
 
--- Shows the list over a screen and runs it until the player picks a slot or
--- backs out. A load leaves for the game it loads, and a save stays in the
--- menu the list was opened from. With `stays` set, the list stays on screen
--- after a load and closes with the screen.
 ---@param ctx trx.ui.ScreenContext
 ---@param kind common.ui.flat_menu.saves.Kind
----@param on_done fun(done: boolean) Runs with `true` once a game is saved or loaded.
+---@param pick? common.ui.flat_menu.saves.Pick
+---@param on_done? fun(done: boolean)
 ---@param stays? boolean
 ---@return trx.ui.StackLayer
-function M.push(ctx, kind, on_done, stays)
-  local slots = all_slots()
+local function open(ctx, kind, pick, on_done, stays)
+  local slots = all_slots(pick and pick.filter)
   local count = #slots
   -- A save cannot go into a quick save slot, so a save opens on the first
   -- numbered slot unless it was left on another.
   local function can_take(slot)
-    return kind == M.Kind.LOAD or slot.pool == trx.savegame.Pool.NORMAL
+    return kind ~= M.Kind.SAVE or slot.pool == trx.savegame.Pool.NORMAL
   end
   local selected = nil
   for i, slot in ipairs(slots) do
@@ -136,7 +143,8 @@ function M.push(ctx, kind, on_done, stays)
 
   local heading = colored(
     accent.Role.MENU_HEADING,
-    kind == M.Kind.SAVE and trx.locale.get("general/passport/save_game")
+    pick ~= nil and pick.heading
+      or kind == M.Kind.SAVE and trx.locale.get("general/passport/save_game")
       or trx.locale.get("general/passport/load_game")
   )
 
@@ -282,11 +290,16 @@ function M.push(ctx, kind, on_done, stays)
     end)
   end
 
-  ---@type trx.ui.StackLayer
-  local footer = ctx:push({
-    root = button.widget,
-    place = { x = 1, y = 1 },
-  })
+  -- A pick lists only the saves that pass its filter, which a deleted save
+  -- no longer does, so it has no delete button.
+  ---@type trx.ui.StackLayer?
+  local footer = nil
+  if pick == nil then
+    footer = ctx:push({
+      root = button.widget,
+      place = { x = 1, y = 1 },
+    })
+  end
 
   ---@type trx.ui.StackLayer
   local layer
@@ -302,14 +315,18 @@ function M.push(ctx, kind, on_done, stays)
     end,
     on_close = function()
       layout:detach()
-      footer:close()
+      if footer ~= nil then
+        footer:close()
+      end
     end,
     on_input = function(_, keys)
       if state.is_loaded then
         return
       end
       local slot = slots[state.selected]
-      if button:control(keys, delete_save.is_deletable(slot)) then
+      if
+        footer ~= nil and button:control(keys, delete_save.is_deletable(slot))
+      then
         confirm_delete(slot)
         return
       end
@@ -322,6 +339,14 @@ function M.push(ctx, kind, on_done, stays)
         sound("move")
         follow()
       elseif keys:pressed(Role.MENU_CONFIRM) then
+        if pick ~= nil then
+          if slot ~= nil and pick.on_pick(slot) then
+            layer:close()
+          else
+            sound("no")
+          end
+          return
+        end
         if
           slot == nil
           or not can_take(slot)
@@ -346,12 +371,43 @@ function M.push(ctx, kind, on_done, stays)
         on_done(true)
       elseif keys:pressed(Role.OPTION) or keys:pressed(Role.MENU_BACK) then
         layer:close()
-        on_done(false)
+        if pick ~= nil then
+          pick.on_back()
+        else
+          on_done(false)
+        end
       end
     end,
   })
   follow()
   return layer
+end
+
+-- Shows the list over a screen and runs it until the player picks a slot or
+-- backs out. A load leaves for the game it loads, and a save stays in the
+-- menu the list was opened from. With `stays` set, the list stays on screen
+-- after a load and closes with the screen.
+---@param ctx trx.ui.ScreenContext
+---@param kind common.ui.flat_menu.saves.Kind
+---@param on_done fun(done: boolean) Runs with `true` once a game is saved or loaded.
+---@param stays? boolean
+---@return trx.ui.StackLayer
+function M.push(ctx, kind, on_done, stays)
+  return open(ctx, kind, nil, on_done, stays)
+end
+
+-- Shows the saves that pass the filter of `pick`, under its heading, and runs
+-- it until the player picks a save or backs out. Returns nil and plays the
+-- refusal sound where no save passes.
+---@param ctx trx.ui.ScreenContext
+---@param pick common.ui.flat_menu.saves.Pick
+---@return trx.ui.StackLayer?
+function M.pick(ctx, pick)
+  if #all_slots(pick.filter) == 0 then
+    sound("no")
+    return nil
+  end
+  return open(ctx, M.Kind.PICK, pick)
 end
 
 return M
