@@ -34,6 +34,7 @@
 - Added the PlayStation blending of faces such as water surfaces, glass and the snowmobile windshield to TR1 and TR2 (Graphic Options → Rendering → PlayStation blending)
 - Added an option to fill the screen with a borderless window, so that other windows and overlays can stay on top of the game (Graphic Options → Rendering → Borderless fullscreen) (#6968)
 - Improved the frame rate, as the game now draws solid surfaces faster
+- Improved the frame rate where many see-through textures are on screen, such as foliage and railings (TRX1740)
 - Changed rain to fall as far as the fog reaches, rather than only near Lara
 - Changed gun and flare flashes in TR1 and TR2 to turn semi-transparent with PlayStation blending rather than with gun glow
 - Changed blood in TR4 to keep its size, rather than growing in the distance and shrinking close up (TRX1832)
