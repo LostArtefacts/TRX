@@ -92,6 +92,7 @@
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
 - Fixed flyby and cutscene cameras rolling in steps at 60 FPS
+- Fixed flyby sequences that contain only one camera causing a crash when returning the view to Lara (TRX1879, regression from 1.9)
 - Fixed a visible jump in some cases when a flyby sequence returns the camera to normal view (TRX1636, regression from 1.9)
 - Fixed the view shifting slightly when entering photo mode (TRX1839, regression from 1.11)
 - Fixed holding the action button skipping a flyby sequence, such as the guide walking to the jeep in Valley of the Kings (TRX1859, regression from 1.11)
