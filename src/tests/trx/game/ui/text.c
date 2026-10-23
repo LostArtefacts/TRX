@@ -134,6 +134,7 @@ TEST(ui_text_color_names_its_shades)
     UI_InitText();
     M_SetUp();
 
+    CHECK(!UI_Text_IsColor("6"));
     CHECK(UI_Text_IsColor("#c08040"));
     CHECK(UI_Text_IsColor("#c08040 #401000"));
     CHECK(UI_Text_IsColor("#80808080 pulse"));
@@ -168,7 +169,7 @@ TEST(ui_text_color_marker_is_a_glyph)
 
     CHECK(
         M_Measure("A\\{color #c08040 #401000}B\\{/color}")
-        == M_Measure("A\\{color 2}B\\{/color}"));
+        == M_Measure("A\\{/color}B\\{/color}"));
 
     char *const kept = UI_Text_FilterGlyphs("A\\{color #c08040}B");
     CHECK(strcmp(kept, "A\\{color #c08040}B") == 0);

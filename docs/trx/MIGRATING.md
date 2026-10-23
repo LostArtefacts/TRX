@@ -143,6 +143,16 @@ order: 3
     - `general/stats/assault_best_time_fmt`
     - `general/stats/assault_other_times_fmt`
 
+21. **Text names its colours by their shades**
+    The numbered colours of the text markup and `\{dim}` are gone. A colour
+    is `#rrggbb` or `#rrggbbaa`, one for a flat colour or two for one that
+    grades from the top of a glyph to its bottom, with `pulse` for one that
+    brightens and dims. In TR4, a channel of `80` draws a glyph as it is:
+    - `\{color 6}` → `\{color #c08040 #401000}` in TR4
+    - `\{dim}…\{/dim}` → `\{color #808080}…\{/color}`, or `#404040` in TR4
+    The shipped `common.ui.accent` module names the colours each game uses:
+    `accent.text(text, accent.Role.DIM)`.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**
