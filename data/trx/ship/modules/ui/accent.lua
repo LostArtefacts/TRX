@@ -96,6 +96,15 @@ function M.text(text, role)
   return result
 end
 
+-- Returns the text in a colour of the font, by its index in the colour
+-- markup, for text that takes a colour of its own rather than a role.
+---@param text string
+---@param color integer
+---@return string
+function M.color(text, color)
+  return ("\\{color %d}%s"):format(color, text)
+end
+
 -- Returns a signal that holds the text styled as the role says, as the text
 -- or the signal that holds it changes.
 ---@param text string|trx.signal.Signal

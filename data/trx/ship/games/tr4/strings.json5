@@ -219,7 +219,7 @@
                 },
                 "examine_item_2": {
                     "name": "The Rules of Senet",
-                    "description": "\\{color 5}To win the game, get all your pieces off the board by landing them on the final ankh square. On your turn spin the sticks. Your throw is the number of white sides showing.\n\nIf no white sides show, your throw is a six. If you throw a six or land on an ankh square you get an extra turn. If you land on an opponent's piece, it is returned to the start.",
+                    "description": "To win the game, get all your pieces off the board by landing them on the final ankh square. On your turn spin the sticks. Your throw is the number of white sides showing.\n\nIf no white sides show, your throw is a six. If you throw a six or land on an ankh square you get an extra turn. If you land on an opponent's piece, it is returned to the start.",
                 }
             }
         },
@@ -560,7 +560,7 @@
                 },
                 "examine_item_3": {
                     "name": "Fire Circle Scroll",
-                    "description": "\\{color 8}For the serpents to live, all must first be stilled. Provoke each in turn, and the circle will burn complete.",
+                    "description": "For the serpents to live, all must first be stilled. Provoke each in turn, and the circle will burn complete.",
                 }
             }
         },

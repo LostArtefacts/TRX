@@ -205,7 +205,7 @@
                 },
                 "examine_item_2": {
                     "name": "Die Gesetze des Senet",
-                    "description": "\\{color 5}Sie gewinnen das Spiel, wenn Sie jeden Ihrer Brettsteine auf dem letzten Ankhfeld positionieren. Drehen Sie die Sticks, wenn Sie an der Reihe sind. Die Anzahl der weissen Flächen zeigt Ihre Wurfanzahl.\n\nWerden keine weissen Flächen gezeigt, haben Sie eine Sechs geworfen. Wenn Sie eine Sechs werfen, oder auf einem Ankhfeld landen, sind Sie nochmals am Zug. Landen Sie auf einem gegnerischen Stein, wird Ihrer an den Anfang zurückgesetzt.",
+                    "description": "Sie gewinnen das Spiel, wenn Sie jeden Ihrer Brettsteine auf dem letzten Ankhfeld positionieren. Drehen Sie die Sticks, wenn Sie an der Reihe sind. Die Anzahl der weissen Flächen zeigt Ihre Wurfanzahl.\n\nWerden keine weissen Flächen gezeigt, haben Sie eine Sechs geworfen. Wenn Sie eine Sechs werfen, oder auf einem Ankhfeld landen, sind Sie nochmals am Zug. Landen Sie auf einem gegnerischen Stein, wird Ihrer an den Anfang zurückgesetzt.",
                 }
             }
         },
@@ -546,7 +546,7 @@
                 },
                 "examine_item_3": {
                     "name": "Feuerzirkelrolle",
-                    "description": "\\{color 8}Damit die Schlangen leben können, muss ihr Hunger zuerst gestillt werden. Reize sie nacheinander, und der Kreis wird gänzlich brennen.",
+                    "description": "Damit die Schlangen leben können, muss ihr Hunger zuerst gestillt werden. Reize sie nacheinander, und der Kreis wird gänzlich brennen.",
                 }
             }
         },
