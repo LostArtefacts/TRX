@@ -1,11 +1,10 @@
 -- The ammunition count of the in-game overlay.
 
+local accent = require("common.ui.accent")
 local ammo = require("common.ui.ammo")
 local place = require("common.ui.hud.overlay.place")
 
 trx.locale.declare({
-  ["general/overlay/item_count_fmt_pc"] = "\\{small}%s",
-  ["general/overlay/item_count_fmt_ps1"] = "\\{small}%s",
   ["settings/ui.ammo_counter_location/title"] = "Ammo counter location",
   ["settings/ui.ammo_counter_location/description"] = "Location where the ammo counter is displayed.",
 })
@@ -94,12 +93,7 @@ function M.setup(state)
         inner = icon ~= nil and string.format("%6d %s", shots, icon)
           or string.format("%6d", shots)
       end
-      -- Both keys are named where they are used, so what carries them into the
-      -- shipped strings can see them.
-      if trx.config.get("ui.menu_style") == "ps1" then
-        return trx.locale.format("general/overlay/item_count_fmt_ps1", inner)
-      end
-      return trx.locale.format("general/overlay/item_count_fmt_pc", inner)
+      return accent.text(inner, accent.Role.COUNTER)
     end)
 
     place.at_setting(

@@ -66,16 +66,15 @@ local caption_flashing = trx.signal.new(false)
 
 ---@class (exact) trx.overlay.set_caption.opts
 ---@field flashing? boolean Whether the caption flashes, as it does while a demo plays. `false` by default.
----@field plain? boolean Whether the text shows as given. By default it takes the style that the `general/inventory_ring/object_name_fmt` string gives the name of an entry.
 
 ---Sets the caption at the bottom of the screen.
 ---
----The inventory ring uses it for the selected entry. The caption reduces the
----safe area. Passing no value removes it.
+---The inventory ring uses it for the selected entry. The text shows as given,
+---so the caller styles it. The caption reduces the safe area. Passing no value
+---removes it.
 ---
 ---```lua
 ---trx.overlay.set_caption(trx.locale.get("general/misc/demo_mode"), {
----  plain = true,
 ---  flashing = true,
 ---})
 ---```
@@ -83,10 +82,6 @@ local caption_flashing = trx.signal.new(false)
 ---@param opts? trx.overlay.set_caption.opts How it shows.
 function M.set_caption(text, opts)
   opts = opts or {}
-  if text ~= nil and not opts.plain then
-    text =
-      trx.locale.get("general/inventory_ring/object_name_fmt"):format(text)
-  end
   caption:set(text)
   caption_flashing:set(text ~= nil and opts.flashing == true)
 end

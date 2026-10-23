@@ -4,6 +4,7 @@
 -- each area the player can go to next, and the ring closes again once one is
 -- picked.
 
+local accent = require("common.ui.accent")
 local fade = require("common.ui.fade")
 local ring_ui = require("common.ui.ring")
 local motion = require("common.ui.ring.motion")
@@ -229,9 +230,7 @@ local function show_area(state)
     return
   end
   trx.overlay.set_caption(
-    trx.locale
-      .get("general/inventory_ring/object_name_fmt")
-      :format(area_name(state.selection))
+    accent.text(area_name(state.selection), accent.Role.NAME)
   )
 end
 
@@ -263,9 +262,10 @@ local function next_open(state, direction)
 end
 
 local function heading()
-  return trx.locale
-    .get("general/inventory_ring/heading_fmt")
-    :format(trx.locale.get("general/inventory_ring/heading_adventure"))
+  return accent.text(
+    trx.locale.get("general/inventory_ring/heading_adventure"),
+    accent.Role.HEADING
+  )
 end
 
 -- Names the area the globe is turned to, over the globe, while it is picked.

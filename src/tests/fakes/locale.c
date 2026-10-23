@@ -100,9 +100,6 @@ const char *GameString_Get(const char *const key)
     if (strcmp(key, "test/percent") == 0) {
         return "100% of the text";
     }
-    if (strcmp(key, "general/inventory_ring/object_name_fmt") == 0) {
-        return "%s";
-    }
     return nullptr;
 }
 

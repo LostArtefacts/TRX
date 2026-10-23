@@ -63,13 +63,10 @@
         },
         "inventory_ring": {
             "heading_adventure": "Cuairt-dànachd",
-            "heading_fmt": "%s",
             "heading_game_over": "GEAMA DEIREANNACH",
             "heading_inventory": "CLÀR-SEILBHE",
             "heading_items": "NITHEAN",
             "heading_option": "ROGHAINN",
-            "item_count_fmt": "\\{small}%s",
-            "object_name_fmt": "%s",
         },
         "misc": {
             "demo_mode": "Modh Taisbeanaidh",
@@ -126,8 +123,6 @@
             "debug_position": "Suidheachadh: ",
             "debug_rotation": "Cuairteachadh: ",
             "debug_speed": "Luas: ",
-            "item_count_fmt_pc": "\\{small}%s",
-            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
             "delete_save": "Sguab às",

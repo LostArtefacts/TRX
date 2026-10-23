@@ -92,12 +92,7 @@ local function page_at(frame)
 end
 
 function Passport:set_caption(key)
-  self.caption:set(
-    trx.locale.format(
-      "general/inventory_ring/object_name_fmt",
-      trx.locale.get(key)
-    )
-  )
+  self.caption:set(accent.text(trx.locale.get(key), accent.Role.NAME))
 end
 
 -- Shuts the book towards the nearer cover. A confirmed close leaves the ring;

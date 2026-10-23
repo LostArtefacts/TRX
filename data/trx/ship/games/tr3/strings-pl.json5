@@ -10,17 +10,8 @@
             "area_5": "Londyn",
             "area_6": "\\{Antarktyda",
         },
-        "inventory_ring": {
-            "heading_fmt": "\\{color 5}%s",
-            "item_count_fmt": "\\{color 3}%s",
-            "object_name_fmt": "\\{color 5}%s",
-        },
         "misc": {
             "empty_slot_fmt": "- Pusty Slot -",
-        },
-        "overlay": {
-            "item_count_fmt_pc": "%s",
-            "item_count_fmt_ps1": "\\{color 3}%s",
         },
         "pause": {
             "paused": "\\{color 5}Pauza",

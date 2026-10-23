@@ -63,13 +63,10 @@
         },
         "inventory_ring": {
             "heading_adventure": "\\{review}Приключение",
-            "heading_fmt": "%s",
             "heading_game_over": "Конец игры",
             "heading_inventory": "Инвентарь",
             "heading_items": "Предметы",
             "heading_option": "Настройки",
-            "item_count_fmt": "\\{small}%s",
-            "object_name_fmt": "%s",
         },
         "misc": {
             "demo_mode": "Демо режим",
@@ -126,8 +123,6 @@
             "debug_position": "Позиция: ",
             "debug_rotation": "Поворот: ",
             "debug_speed": "Скорость: ",
-            "item_count_fmt_pc": "\\{small}%s",
-            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
             "delete_save": "\\{review}Удалить",

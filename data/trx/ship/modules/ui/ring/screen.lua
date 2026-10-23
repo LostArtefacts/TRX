@@ -10,6 +10,7 @@
 -- Usage:
 --   require("common.ui.menu").setup()
 
+local accent = require("common.ui.accent")
 local attachment = require("common.ui.attachment")
 local compass = require("common.ui.compass")
 local controls_model = require("common.ui.controls_model")
@@ -593,8 +594,7 @@ end
 -------------------------------------------------------------------------------
 
 local function format_count(fmt, count)
-  local full = trx.locale.get("general/inventory_ring/item_count_fmt")
-  return full:format(fmt):format(count)
+  return accent.text(fmt:format(count), accent.Role.COUNT)
 end
 
 -- The weapon whose pickup or ammunition an entry is, if any.
@@ -716,15 +716,16 @@ local function show_heading(state, shown)
     ring.set_heading(nil)
     return
   end
-  local fmt = trx.locale.get("general/inventory_ring/heading_fmt")
-  ring.set_heading(fmt:format(heading_of(state)))
+  ring.set_heading(accent.text(heading_of(state), accent.Role.HEADING))
 end
 
 -- Sets the caption, where it changes.
 local function caption(state, text)
   if text ~= state.caption then
     state.caption = text
-    trx.overlay.set_caption(text)
+    trx.overlay.set_caption(
+      text ~= nil and accent.text(text, accent.Role.NAME) or nil
+    )
   end
 end
 

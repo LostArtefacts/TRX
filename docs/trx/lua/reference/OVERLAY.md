@@ -54,8 +54,9 @@ say what to draw.
 - <a id="overlay.set_caption" name="overlay.set_caption"></a>[lua]`trx.overlay.set_caption([text], [opts])`  
   Sets the caption at the bottom of the screen.
 
-  The inventory ring uses it for the selected entry. The caption reduces the
-  safe area. Passing no value removes it.
+  The inventory ring uses it for the selected entry. The text shows as given,
+  so the caller styles it. The caption reduces the safe area. Passing no value
+  removes it.
 
   Parameters:
   - <a id="overlay.set_caption.text" name="overlay.set_caption.text"></a>**`text`** (string, optional). Text to show. Omit this parameter to remove the caption.
@@ -63,12 +64,10 @@ say what to draw.
 
     Keys:
     - <a id="overlay.set_caption.opts.flashing" name="overlay.set_caption.opts.flashing"></a>**`flashing`** (boolean, optional). Whether the caption flashes, as it does while a demo plays. `false` by default.
-    - <a id="overlay.set_caption.opts.plain" name="overlay.set_caption.opts.plain"></a>**`plain`** (boolean, optional). Whether the text shows as given. By default it takes the style that the `general/inventory_ring/object_name_fmt` string gives the name of an entry.
 
   Example:
   ```lua
   trx.overlay.set_caption(trx.locale.get("general/misc/demo_mode"), {
-    plain = true,
     flashing = true,
   })
   ```

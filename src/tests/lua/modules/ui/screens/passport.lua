@@ -20,13 +20,6 @@ local CHOICE_CONFIRM = 2
 local OPEN_FRAME = 10
 local FRAME_COUNT = 30
 
--- The strings files are not loaded, so the caption and count formats fall
--- back to the shipped ones.
-trx.locale.declare({
-  ["general/inventory_ring/object_name_fmt"] = "%s",
-  ["general/inventory_ring/item_count_fmt"] = "\\{small}%s",
-})
-
 require("common.ui.screens.passport").setup()
 trx.ui.screens.define(
   trx.ui.Screen.SAVE_LOAD,
