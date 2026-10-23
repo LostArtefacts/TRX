@@ -212,7 +212,8 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
         Output_ApplyLevelSettings();
     }
 
-    if (L_CHANGED(rendering.enable_ps1_blending)) {
+    if (L_CHANGED(rendering.enable_ps1_blending)
+        || L_CHANGED(rendering.texture_filter)) {
         Output_RefreshObjectMeshes();
         Output_RefreshRoomMeshes();
     }

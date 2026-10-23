@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define M_TRANSPARENCY_CACHE_VERSION 1
+#define M_TRANSPARENCY_CACHE_VERSION 2
 #define M_WATERFALL_FACE_IDX 4
 
 // Use this many texels along each axis of the palette lookup cube. This keeps
@@ -75,6 +75,9 @@ static struct {
         bool *animated_sprites;
         OUTPUT_UV_SCROLL *uv_scroll;
         bool *has_transparency_objects;
+        // Whether an object texture has texels that are only partly
+        // transparent, rather than fully transparent or fully opaque.
+        bool *has_partial_alpha_objects;
 
         uint16_t *flags;
         uint16_t *flags_objects;
@@ -170,6 +173,9 @@ static bool M_TryLoadTransparencyCache(void)
         || cached_texture_count != texture_count
         || !File_TryReadData(
             file, m_Priv.uvws.has_transparency_objects,
+            sizeof(bool) * (size_t)texture_count)
+        || !File_TryReadData(
+            file, m_Priv.uvws.has_partial_alpha_objects,
             sizeof(bool) * (size_t)texture_count)) {
         File_Close(file);
         return false;
@@ -197,6 +203,9 @@ static void M_WriteTransparencyCache(void)
     File_WriteS32(file, texture_count);
     File_WriteData(
         file, m_Priv.uvws.has_transparency_objects,
+        sizeof(bool) * (size_t)texture_count);
+    File_WriteData(
+        file, m_Priv.uvws.has_partial_alpha_objects,
         sizeof(bool) * (size_t)texture_count);
     File_Close(file);
 }
@@ -528,24 +537,33 @@ static void M_PrepareUVWs(void)
     m_Priv.uvws.flags_sprites = m_Priv.uvws.flags + m_Priv.uvws.count_objects;
     m_Priv.uvws.has_transparency_objects =
         Memory_Alloc(m_Priv.uvws.count_objects * sizeof(bool));
+    m_Priv.uvws.has_partial_alpha_objects =
+        Memory_Alloc(m_Priv.uvws.count_objects * sizeof(bool));
     M_PrepareUVScroll();
     M_FillObjectUVWs();
     M_FillSpriteUVWs();
 }
 
-static bool M_ObjectTextureHasTransparency(const int32_t texture_idx)
+// Finds whether an object texture has texels that are not fully opaque, and
+// whether any of them are only partly transparent. A texture that cannot be
+// read counts as both.
+static void M_ScanObjectTextureAlpha(
+    const int32_t texture_idx, bool *const has_transparency,
+    bool *const has_partial_alpha)
 {
+    *has_transparency = true;
+    *has_partial_alpha = true;
     if (texture_idx < 0 || texture_idx >= Output_GetObjectTextureCount()
         || m_TexturePages32 == nullptr) {
-        return true;
+        return;
     }
 
     const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(texture_idx);
     if (texture == nullptr || texture->uv_count <= 0) {
-        return true;
+        return;
     }
     if (texture->tex_page >= m_TexturePageCount) {
-        return true;
+        return;
     }
 
     int32_t min_u = INT32_MAX;
@@ -577,25 +595,32 @@ static bool M_ObjectTextureHasTransparency(const int32_t texture_idx)
 
     const RGBA_8888 *const page = Output_GetTexturePage32(texture->tex_page);
     if (page == nullptr) {
-        return true;
+        return;
     }
 
+    *has_transparency = false;
+    *has_partial_alpha = false;
     for (int32_t y = py0; y <= py1; y++) {
         const int32_t row = y * TEXTURE_PAGE_WIDTH;
         for (int32_t x = px0; x <= px1; x++) {
-            if (page[row + x].a < 255) {
-                return true;
+            const uint8_t alpha = page[row + x].a;
+            if (alpha < 255) {
+                *has_transparency = true;
+            }
+            if (alpha > 0 && alpha < 255) {
+                *has_partial_alpha = true;
+                return;
             }
         }
     }
-    return false;
 }
 
 static void M_PrepareObjectTransparencyFlags(void)
 {
     for (int32_t i = 0; i < Output_GetObjectTextureCount(); i++) {
-        m_Priv.uvws.has_transparency_objects[i] =
-            M_ObjectTextureHasTransparency(i);
+        M_ScanObjectTextureAlpha(
+            i, &m_Priv.uvws.has_transparency_objects[i],
+            &m_Priv.uvws.has_partial_alpha_objects[i]);
     }
 }
 
@@ -984,6 +1009,7 @@ static void M_FreeLevelData(void)
     Memory_FreePointer(&m_Priv.uvws.uv_scroll);
     Memory_FreePointer(&m_Priv.uvws.flags);
     Memory_FreePointer(&m_Priv.uvws.has_transparency_objects);
+    Memory_FreePointer(&m_Priv.uvws.has_partial_alpha_objects);
     Memory_FreePointer(&m_Priv.atlas_sizes.data);
 
     memset(&m_Priv.uvws, 0, sizeof(m_Priv.uvws));
@@ -1186,8 +1212,17 @@ SCENE_PASS Output_Textures_GetObjectTextureScenePass(const int32_t texture_idx)
     case DRAW_REFLECTIVE_OPAQUE:
         return SCENE_PASS_OPAQUE;
     case DRAW_BLEND:
-        if (!m_Priv.uvws.animated_objects[texture_idx]
-            && !m_Priv.uvws.has_transparency_objects[texture_idx]) {
+        if (m_Priv.uvws.animated_objects[texture_idx]) {
+            return SCENE_PASS_TRANSPARENT;
+        }
+        if (!m_Priv.uvws.has_transparency_objects[texture_idx]) {
+            return SCENE_PASS_OPAQUE;
+        }
+        // Texels that are either fully transparent or fully opaque need no
+        // sorting while the texture filter does not blend them: they draw in
+        // the opaque pass, which discards the transparent ones.
+        if (!m_Priv.uvws.has_partial_alpha_objects[texture_idx]
+            && g_Config.rendering.texture_filter != TEXTURE_FILTER_BILINEAR) {
             return SCENE_PASS_OPAQUE;
         }
         return SCENE_PASS_TRANSPARENT;
