@@ -380,7 +380,7 @@ static void M_WriteResumeInfo(
             io, info->save_resume_ammo_key,
             Inv_State_GetKindAmmo(
                 &resume->inv, info->gun_type,
-                Gun_GetAmmoKind(info->gun_type, 0)));
+                Gun_GetAmmoObject(info->gun_type)));
     }
     M_WriteAmmoList(io, &resume->inv);
     M_WriteAttachments(io, &resume->inv);
@@ -704,7 +704,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
             M_WriteAmmo(
                 io, info->save_ammo_key,
                 Inv_GetKindAmmo(
-                    info->gun_type, Gun_GetAmmoKind(info->gun_type, 0)));
+                    info->gun_type, Gun_GetAmmoObject(info->gun_type)));
         }
     }
     M_WriteAmmoList(io, Inv_GetState());

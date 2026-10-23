@@ -25,11 +25,13 @@ LARA_GUN_TYPE Gun_GetTypeForObject(OBJECT_ID obj_id);
 // draws none.
 LARA_GUN_TYPE Gun_GetTypeForInputRole(INPUT_ROLE role);
 OBJECT_ID Gun_GetAmmoObject(LARA_GUN_TYPE gun_type);
-// The kinds of ammunition a weapon takes, each named by the pickup it arrives
-// as. The first kind is the weapon's own ammunition object. The others are
-// the further boxes the weapon links to, where this game has them.
-int32_t Gun_GetAmmoKindCount(LARA_GUN_TYPE gun_type);
-OBJECT_ID Gun_GetAmmoKind(LARA_GUN_TYPE gun_type, int32_t idx);
+// Writes the kinds of ammunition a weapon takes, each named by the pickup it
+// arrives as, and returns how many. The first kind is the weapon's own
+// ammunition object, as Gun_GetAmmoObject gives it. The others are the further
+// boxes the weapon links to, where this game has them, in the order the
+// inventory lists them.
+int32_t Gun_GetAmmoKinds(
+    LARA_GUN_TYPE gun_type, OBJECT_ID kinds[MAX_AMMO_KINDS]);
 bool Gun_IsAmmoKind(LARA_GUN_TYPE gun_type, OBJECT_ID obj_id);
 // The object Lara holds a weapon as while it carries its attachment, or
 // NO_OBJECT where it carries none or the level has no such object.

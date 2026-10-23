@@ -129,7 +129,7 @@ static OBJECT_ID M_GetAmmoKindOf(
 {
     const OBJECT_ID pickup_id = Inv_GetItemPickup(object_id);
     return Gun_IsAmmoKind(gun_type, pickup_id) ? pickup_id
-                                               : Gun_GetAmmoKind(gun_type, 0);
+                                               : Gun_GetAmmoObject(gun_type);
 }
 
 // How many boxes the rounds of one kind come to, which is what a box entry
@@ -199,7 +199,7 @@ static OBJECT_ID M_GetSelectedKind(
             return slot->kind;
         }
     }
-    return Gun_GetAmmoKind(owner, 0);
+    return Gun_GetAmmoObject(owner);
 }
 
 static void M_AddKindAmmo(
@@ -305,14 +305,14 @@ void Inv_State_FillAmmo(
     INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
     const int32_t rounds)
 {
-    const int32_t count = Gun_GetAmmoKindCount(gun_type);
+    OBJECT_ID kinds[MAX_AMMO_KINDS];
+    const int32_t count = Gun_GetAmmoKinds(gun_type, kinds);
     if (count == 0) {
         Inv_State_SetAmmo(state, gun_type, rounds);
         return;
     }
     for (int32_t i = 0; i < count; i++) {
-        Inv_State_SetKindAmmo(
-            state, gun_type, Gun_GetAmmoKind(gun_type, i), rounds);
+        Inv_State_SetKindAmmo(state, gun_type, kinds[i], rounds);
     }
 }
 
@@ -676,9 +676,10 @@ int32_t Inv_State_GetDrawnEntries(
         if (Inv_State_Has(state, Gun_GetGunObject(gun_type))) {
             continue;
         }
-        const int32_t kind_count = Gun_GetAmmoKindCount(gun_type);
+        OBJECT_ID kinds[MAX_AMMO_KINDS];
+        const int32_t kind_count = Gun_GetAmmoKinds(gun_type, kinds);
         for (int32_t j = 0; j < kind_count && count < max_count; j++) {
-            const OBJECT_ID kind = Gun_GetAmmoKind(gun_type, j);
+            const OBJECT_ID kind = kinds[j];
             const int32_t qty = M_GetAmmoBoxCount(state, gun_type, kind);
             if (qty > 0) {
                 entries[count++] = (INVENTORY_ENTRY) {

@@ -16,8 +16,7 @@ typedef enum {
 // Sets the grenade object up to behave as in TR4.
 void Grenade_TR4_Setup(OBJECT *obj);
 
-// Returns the kind of grenade the grenade gun is loaded with: the first,
-// second or third kind of ammunition it takes.
+// Returns the kind of grenade the grenade gun is loaded with.
 GRENADE_TR4_KIND Grenade_TR4_GetLoadedKind(void);
 
 // Fires a TR4 grenade of a kind from a place, flying the way rot points at a

@@ -499,10 +499,11 @@ static int M_L_WeaponGetAmmoObject(lua_State *const L)
 static int M_L_WeaponGetAmmoObjects(lua_State *const L)
 {
     const LARA_GUN_TYPE gun_type = M_GetWeapon(L, 1);
-    const int32_t count = Gun_GetAmmoKindCount(gun_type);
+    OBJECT_ID kinds[MAX_AMMO_KINDS];
+    const int32_t count = Gun_GetAmmoKinds(gun_type, kinds);
     lua_createtable(L, count, 0);
     for (int32_t i = 0; i < count; i++) {
-        lua_pushinteger(L, Gun_GetAmmoKind(gun_type, i));
+        lua_pushinteger(L, kinds[i]);
         lua_rawseti(L, -2, i + 1);
     }
     return 1;

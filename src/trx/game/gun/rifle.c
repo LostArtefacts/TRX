@@ -172,8 +172,8 @@ static void M_FireShotgunTR4(
     if (running) {
         return;
     }
-    const bool is_wideshot = Gun_GetAmmoKindCount(weapon_type) > 1
-        && Inv_GetAmmoKind(weapon_type) == Gun_GetAmmoKind(weapon_type, 1);
+    const bool is_wideshot =
+        Inv_GetAmmoKind(weapon_type) == O_SHOTGUN_AMMO_2_ITEM;
     M_FirePellets(
         weapon_type,
         is_wideshot ? M_WIDESHOT_PELLET_SCATTER_TR4
