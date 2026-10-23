@@ -257,8 +257,9 @@ local function list_paint(list, x, y, w)
         trx.ui.FrameStyle.SELECTED
       )
     end
-    if picked and not trx.ui.frames_shown then
-      local previous = raw.set_text_color(base.PICKED_COLOR)
+    local picked_color = trx.ui.picked_text_color
+    if picked and not trx.ui.frames_shown and picked_color ~= nil then
+      local previous = raw.set_text_color(picked_color)
       list_draw_row(list, row, x, top, w, scale)
       raw.set_text_color(previous)
     else

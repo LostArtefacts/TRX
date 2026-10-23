@@ -76,7 +76,7 @@ local declared = {}
 ---@field meshes_sel? integer Which of its meshes show, one bit each.
 ---@field meshes_drawn? integer Which of its meshes show at first, one bit each.
 ---@field inv_pos? integer Where it sits: the main ring from 0, the keys from 100, and the menu from 200.
----@field text_color? integer The colour its description shows in when examined, by its index in the font's colour markup. The text's own colour by default.
+---@field text_color? string The colour its description shows in when examined, as the text markup names a colour. The text's own colour by default.
 
 -- Declares how the ring draws an entry, or changes the fields named of one
 -- declared before.

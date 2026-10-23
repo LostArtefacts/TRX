@@ -414,6 +414,7 @@
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
 - Added colour markup that names its colours, as `\{color #c08040 #401000}`, for a flat colour or one that grades from the top of each glyph to its bottom, with `pulse` for one that brightens and dims
+- Added `trx.ui.text_color` and `trx.ui.picked_text_color`, the colours text is drawn in where it names none and where it marks the option the player is on
 - Changed `trx.config.declare` so that a value of a declared setting can carry a label of its own
 - Changed the inventory ring to be drawn by the shipped interface scripts, where a script declares the ring's entries through the `common.ui.ring` module
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)

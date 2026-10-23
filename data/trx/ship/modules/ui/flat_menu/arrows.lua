@@ -1,11 +1,12 @@
 -- The arrows that say a list of the flat menu system goes on past the room it
 -- has, as the original TR4 prints them beside its list of levels.
 
+local accent = require("common.ui.accent")
+
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
 
 local M = {}
 
-local COLOR = 6
 -- Where the original prints the arrows, across its 4:3 screen of 640 pixels.
 local LEFT_X = 32
 local RIGHT_X = 592
@@ -14,7 +15,7 @@ M.UP = "\\{button up}"
 M.DOWN = "\\{button down}"
 
 local function colored(glyph)
-  return ("\\{color %d}%s"):format(COLOR, glyph)
+  return accent.text(glyph, accent.Role.MENU_ACCENT)
 end
 
 -- Returns the x of a point the original gives across its 640-pixel screen.

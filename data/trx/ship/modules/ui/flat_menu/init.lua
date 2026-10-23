@@ -2,6 +2,7 @@
 -- carries stands in a row across the screen, and the entry in the middle
 -- names what can be done with it in a list.
 
+local accent = require("common.ui.accent")
 local ammo = require("common.ui.ammo")
 local attachment = require("common.ui.attachment")
 local compass_needle = require("common.ui.compass")
@@ -56,9 +57,6 @@ local function line_height()
 end
 
 -- The colours the original prints its text in.
-local COLOR_PICKED = 1
-local COLOR_OPTION = 5
-local COLOR_NAME = 8
 
 local FADE_TICKS = 12
 -- How long a weapon's row of ammunition takes to fade in or out.
@@ -98,8 +96,8 @@ local WATERSKINS = {
   },
 }
 
-local function colored(color, text)
-  return ("\\{color %d}%s"):format(color, text)
+local function colored(role, text)
+  return accent.text(text, role)
 end
 
 -- The action an option of the list takes.
@@ -344,7 +342,9 @@ local function name_line(state, row_strip, row)
   local text = trx.signal.new("")
   local function follow()
     local entry = row_strip:picked()
-    text:set(entry ~= nil and colored(COLOR_NAME, name_of(entry)) or "")
+    text:set(
+      entry ~= nil and colored(accent.Role.MENU_NAME, name_of(entry)) or ""
+    )
   end
   follow()
   return push_line(state.ctx, text, row), follow
@@ -357,7 +357,8 @@ local function option_lines(state)
   local function follow()
     local texts = {}
     for i, option in ipairs(state.options) do
-      local color = i == state.option and COLOR_PICKED or COLOR_OPTION
+      local color = i == state.option and accent.Role.PICKED
+        or accent.Role.MENU_OPTION
       local text = type(option) == "table" and option.name
         or OPTION_TEXT[option]()
       texts[#texts + 1] = colored(color, text)
@@ -473,7 +474,7 @@ local function show_ammo(state)
   }
   function shown.follow()
     local kind = kinds[row.current].kind
-    text:set(colored(COLOR_NAME, ammo.caption(weapon, kind)))
+    text:set(colored(accent.Role.MENU_NAME, ammo.caption(weapon, kind)))
   end
   shown.follow()
   shown.caption = push_line(state.ctx, text, AMMO_NAME)
@@ -711,7 +712,10 @@ local function start_combine(state)
     name_line(state, state.combine, COMBINE_NAME)
   state.combine_heading = push_line(
     state.ctx,
-    colored(COLOR_PICKED, trx.locale.get("general/flat_menu/combine_with")),
+    colored(
+      accent.Role.PICKED,
+      trx.locale.get("general/flat_menu/combine_with")
+    ),
     0.5 - line_height() / trx.ui.canvas.height / 2
   )
   state.options_layer:close()

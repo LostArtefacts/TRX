@@ -42,7 +42,9 @@ local themes = require("trx.internal.themes")
 ---@field text_scale number The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. <!--noref: ui.text_scale-->
 ---@field screen trx.ui.Area The whole screen, in canvas units. The canvas holds a whole number of units, so its right and bottom edges can stop short of the screen by a fraction of a unit; the screen reaches the edges. Something drawn from edge to edge, such as a frame around the screen, uses this area.
 ---@field safe_area trx.ui.Area The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there.
----@field frames_shown boolean Whether the game's frames are drawn: the boxes of dialogs, the strips of headings and the boxes around the option the player is on. A script that draws its menus flat turns them off, and the option the player is on then shows in the picked text colour instead. `true` by default.
+---@field frames_shown boolean Whether the game's frames are drawn: the boxes of dialogs, the strips of headings and the boxes around the option the player is on. A script that draws its menus flat turns them off, and the option the player is on then shows in `trx.ui.picked_text_color` instead. `true` by default.
+---@field text_color string? The colour text is drawn in where it names none, as the text markup names a colour, or `nil` for the font as it is drawn.
+---@field picked_text_color string? The colour the option the player is on shows in while `trx.ui.frames_shown` is off, as the text markup names a colour, or `nil` for the colour of the text around it.
 ---@field working_area trx.ui.Area The part of the canvas between the cinematic bars. It is the whole canvas while there are none, and follows the bars as they move in and out. The interface regions lay out inside it, so `trx.ui.safe_area` lies within it too.
 local M = h.module("ui")
 
@@ -221,8 +223,27 @@ M.BarType = h.coined_enum("ui.BarType", BarType)
 ---@field height number How tall it is.
 
 local frames_shown = true
+local text_color = nil
+local picked_text_color = nil
 
 h.properties(M, "ui", {
+  text_color = {
+    get = function()
+      return text_color
+    end,
+    set = function(color)
+      raw.set_text_color(color)
+      text_color = color
+    end,
+  },
+  picked_text_color = {
+    get = function()
+      return picked_text_color
+    end,
+    set = function(color)
+      picked_text_color = color
+    end,
+  },
   frames_shown = {
     get = function()
       return frames_shown

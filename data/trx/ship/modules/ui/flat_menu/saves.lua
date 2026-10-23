@@ -4,6 +4,7 @@
 -- passport lists them, and can be loaded but not saved over. A save can be
 -- deleted as in the passport, with the button held under the list.
 
+local accent = require("common.ui.accent")
 local arrows = require("common.ui.flat_menu.arrows")
 local delete_save = require("common.ui.delete_save")
 local pages = require("common.ui.screens.passport.pages")
@@ -32,10 +33,6 @@ local NAME_X = -270
 local DATE_X = 135
 local DATE_FMT = "%04d-%02d-%02d %02d:%02d"
 
-local COLOR_HEADING = 6
-local COLOR_PICKED = 1
-local COLOR_OTHER = 2
-
 ---@class common.ui.flat_menu.saves.Slot
 ---@field slot_num integer
 ---@field pool integer
@@ -51,8 +48,8 @@ M.Kind = {
   LOAD = "load",
 }
 
-local function colored(color, text)
-  return ("\\{color %d}%s"):format(color, text)
+local function colored(role, text)
+  return accent.text(text, role)
 end
 
 -- The x of a point the original gives across its 640-pixel screen.
@@ -138,7 +135,7 @@ function M.push(ctx, kind, on_done, stays)
   local button = delete_save.button()
 
   local heading = colored(
-    COLOR_HEADING,
+    accent.Role.MENU_HEADING,
     kind == M.Kind.SAVE and trx.locale.get("general/passport/save_game")
       or trx.locale.get("general/passport/load_game")
   )
@@ -182,7 +179,8 @@ function M.push(ctx, kind, on_done, stays)
     state.rows = {}
     for i = 1, shown do
       local index = state.first + i - 1
-      local color = index == state.selected and COLOR_PICKED or COLOR_OTHER
+      local color = index == state.selected and accent.Role.PICKED
+        or accent.Role.MENU_ROW
       local number, name, date = slot_text(slots[index])
       state.rows[i] = {
         number = number ~= nil and colored(color, number) or nil,
