@@ -301,16 +301,14 @@ void Grenade_TR4_Setup(OBJECT *const obj)
 
 GRENADE_TR4_KIND Grenade_TR4_GetLoadedKind(void)
 {
-    const OBJECT_ID ammo = Inv_GetAmmoKind(LGT_GRENADE);
-    if (Gun_GetAmmoKindCount(LGT_GRENADE) > 1
-        && ammo == Gun_GetAmmoKind(LGT_GRENADE, 1)) {
+    switch (Inv_GetAmmoKind(LGT_GRENADE)) {
+    case O_GRENADE_AMMO_2_ITEM:
         return GRENADE_TR4_KIND_SUPER;
-    }
-    if (Gun_GetAmmoKindCount(LGT_GRENADE) > 2
-        && ammo == Gun_GetAmmoKind(LGT_GRENADE, 2)) {
+    case O_GRENADE_AMMO_3_ITEM:
         return GRENADE_TR4_KIND_FLASH;
+    default:
+        return GRENADE_TR4_KIND_NORMAL;
     }
-    return GRENADE_TR4_KIND_NORMAL;
 }
 
 int16_t Grenade_TR4_Fire(

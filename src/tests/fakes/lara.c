@@ -210,26 +210,27 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 }
 
 // The shotgun takes a second kind, as the TR4 shotgun takes wideshot shells.
-int32_t Gun_GetAmmoKindCount(const LARA_GUN_TYPE gun_type)
+int32_t Gun_GetAmmoKinds(
+    const LARA_GUN_TYPE gun_type, OBJECT_ID kinds[MAX_AMMO_KINDS])
 {
-    if (FakeLara_AmmoObject(gun_type) == NO_OBJECT) {
+    const OBJECT_ID primary = FakeLara_AmmoObject(gun_type);
+    if (primary == NO_OBJECT) {
         return 0;
     }
-    return gun_type == LGT_SHOTGUN ? 2 : 1;
-}
-
-OBJECT_ID Gun_GetAmmoKind(const LARA_GUN_TYPE gun_type, const int32_t idx)
-{
-    if (idx < 0 || idx >= Gun_GetAmmoKindCount(gun_type)) {
-        return NO_OBJECT;
+    int32_t count = 0;
+    kinds[count++] = primary;
+    if (gun_type == LGT_SHOTGUN) {
+        kinds[count++] = O_SHOTGUN_AMMO_2_ITEM;
     }
-    return idx == 0 ? FakeLara_AmmoObject(gun_type) : O_SHOTGUN_AMMO_2_ITEM;
+    return count;
 }
 
 bool Gun_IsAmmoKind(const LARA_GUN_TYPE gun_type, const OBJECT_ID obj_id)
 {
-    for (int32_t i = 0; i < Gun_GetAmmoKindCount(gun_type); i++) {
-        if (Gun_GetAmmoKind(gun_type, i) == obj_id) {
+    OBJECT_ID kinds[MAX_AMMO_KINDS];
+    const int32_t count = Gun_GetAmmoKinds(gun_type, kinds);
+    for (int32_t i = 0; i < count; i++) {
+        if (kinds[i] == obj_id) {
             return true;
         }
     }
@@ -379,7 +380,7 @@ OBJECT_ID Inv_State_GetAmmoKind(
             return state->ammo[i].kind;
         }
     }
-    return Gun_GetAmmoKind(gun_type, 0);
+    return Gun_GetAmmoObject(gun_type);
 }
 
 void Inv_State_SelectAmmoKind(

@@ -154,7 +154,7 @@ static RESULT M_ReadAmmo(
     int32_t ammo = 0;
     MUST(JSON_PUSH(io, key));
     MUST(JSON_READ(io, "ammo", &ammo));
-    Inv_SetKindAmmo(gun_type, Gun_GetAmmoKind(gun_type, 0), ammo);
+    Inv_SetKindAmmo(gun_type, Gun_GetAmmoObject(gun_type), ammo);
     MUST(JSON_POP(io));
     return OK;
 }
@@ -182,7 +182,7 @@ static RESULT M_ReadAmmoList(
         MUST(JSON_READ(io, "rounds", &rounds));
         MUST(JSON_READ(io, "selected", &selected));
         if (gun_type == NO_CATALOG_ID || !Gun_Registry_IsValidType(gun_type)
-            || (kind != Gun_GetAmmoKind(gun_type, 0)
+            || (kind != Gun_GetAmmoObject(gun_type)
                 && !Gun_IsAmmoKind(gun_type, kind))) {
             SaveGame_NoteDropped("ammunition");
         } else {
@@ -1327,7 +1327,7 @@ static RESULT M_ReadResumeInfo(
             SHOULD(JSON_READ_OPT(io, info->save_resume_has_key, &has_weapon));
         }
         Inv_State_SetKindAmmo(
-            &resume->inv, info->gun_type, Gun_GetAmmoKind(info->gun_type, 0),
+            &resume->inv, info->gun_type, Gun_GetAmmoObject(info->gun_type),
             ammo);
         Inv_State_SetCount(
             &resume->inv, Gun_GetGunObject(info->gun_type), has_weapon ? 1 : 0);

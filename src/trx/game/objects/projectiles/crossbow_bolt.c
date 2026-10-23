@@ -202,20 +202,16 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-// Returns the kind of bolt the crossbow is loaded with: the first, second or
-// third kind of ammunition it takes.
 static M_KIND M_GetLoadedKind(void)
 {
-    const OBJECT_ID ammo = Inv_GetAmmoKind(LGT_CROSSBOW);
-    if (Gun_GetAmmoKindCount(LGT_CROSSBOW) > 1
-        && ammo == Gun_GetAmmoKind(LGT_CROSSBOW, 1)) {
+    switch (Inv_GetAmmoKind(LGT_CROSSBOW)) {
+    case O_CROSSBOW_AMMO_2_ITEM:
         return M_KIND_POISON;
-    }
-    if (Gun_GetAmmoKindCount(LGT_CROSSBOW) > 2
-        && ammo == Gun_GetAmmoKind(LGT_CROSSBOW, 2)) {
+    case O_CROSSBOW_AMMO_3_ITEM:
         return M_KIND_EXPLOSIVE;
+    default:
+        return M_KIND_NORMAL;
     }
-    return M_KIND_NORMAL;
 }
 
 static void M_Setup(OBJECT *const obj)
