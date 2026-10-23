@@ -1331,6 +1331,7 @@ void OutputSource_Overlay_Shutdown(void)
     for (int32_t i = 0; i < OUTPUT_OVERLAY_SNAPSHOT_SLOTS; i++) {
         M_CloseTexture(&p->snapshot.slots[i].texture);
         p->snapshot.slots[i].has_content = false;
+        p->snapshot.slot_in_use[i] = false;
     }
     M_CloseTexture(&p->solid_black_texture);
 
