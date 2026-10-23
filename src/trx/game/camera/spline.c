@@ -7,6 +7,10 @@ void Spline_SetupData(
     SPLINE_DATA *const data, const int32_t slot_idx, const int32_t camera_idx)
 {
     const FLYBY_CAMERA *const camera = Camera_GetFlybyCamera(camera_idx);
+    if (camera == nullptr) {
+        return;
+    }
+
     data->pos.x[slot_idx] = camera->pos.x;
     data->pos.y[slot_idx] = camera->pos.y;
     data->pos.z[slot_idx] = camera->pos.z;
