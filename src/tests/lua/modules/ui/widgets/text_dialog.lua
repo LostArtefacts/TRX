@@ -48,11 +48,11 @@ end)
 
 test("each page keeps the colour the text sets", function()
   local dialog = text_dialog.new()
-  dialog:set_text("T", "\\{color 5}" .. LONG, 1000, 2)
+  dialog:set_text("T", "\\{color #c08040}" .. LONG, 1000, 2)
   local pages = dialog.pages:get()
   for i, page in ipairs(pages) do
     assert(
-      page:find("\\{color 5}", 1, true) == 1,
+      page:find("\\{color #c08040}", 1, true) == 1,
       "page " .. i .. ": " .. page
     )
   end

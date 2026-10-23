@@ -1,4 +1,4 @@
--- Prints a swatch of every console text colour and markup, for eyeballing the
+-- Prints a swatch of the kinds of text colour and markup, for a look at the
 -- console renderer.
 --
 -- Usages:
@@ -8,14 +8,16 @@ trx.console.register({
   name = "test-text",
   run = function()
     local text = ""
-    for y = 0, 2 do
-      for x = 0, 3 do
-        local i = y * 4 + x
-        text = text .. string.format("\\{color %d}Color %d\\{/color}   ", i, i)
-      end
-      text = text .. "\n"
+    for _, color in ipairs({
+      "#ffffff",
+      "#c08040 #401000",
+      "#ff6060 #180000",
+      "#b6d164 #b62013",
+      "#ffffff80",
+      "#808080 pulse",
+    }) do
+      text = text .. ("\\{color %s}%s\\{/color}\n"):format(color, color)
     end
-    text = text .. "\\{dim}Dim\\{/dim}\n"
     text = text .. "Secrets: \\{secret 1}\\{secret 2}\\{secret 3}"
 
     trx.console.log(text)

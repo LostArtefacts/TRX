@@ -26,12 +26,8 @@
 
 #define M_LETTER_SPACING 0.5f
 #define M_WORD_SPACING 6.0f
-#define M_DIM_COLOR 12
-#define M_MAX_COLOR 13
-#define M_TR4_COLOR_COUNT 10
 #define M_TR4_SHADE_ROWS 16
 #define M_TR4_BASE_ROW 11
-#define M_TR4_PULSE_COLOR 1
 #define M_TR4_PULSE_FRAMES 32
 #define M_LINE_HEIGHT 15
 #define M_TR4_LINE_HEIGHT 29
@@ -61,8 +57,6 @@ typedef enum {
     GLYPH_REVIEW_MARKER,
     // Marker that toggles the visibility of the following text.
     GLYPH_VISIBILITY_MARKER,
-    // Marker that toggles the dimming of the following text.
-    GLYPH_DIM_MARKER,
     // Marker that changes the color of the following text.
     GLYPH_COLOR_MARKER,
     // Marker that changes the font of the following text.
@@ -131,62 +125,8 @@ OBJECT_ID m_FontObjects[M_FONT_COUNT] = {
     [M_FONT_SMALL] = O_ALPHABET_SMALL,
 };
 
-static RGB_888 m_ColorLight[M_MAX_COLOR] = {
-    // clang-format off
-    [0]  = { 0xFF, 0xFF, 0xFF },
-    [1]  = { 0xB0, 0xB0, 0x00 },
-    [2]  = { 0xA0, 0xA0, 0xA0 },
-    [3]  = { 0xFF, 0x60, 0x60 },
-    [4]  = { 0x80, 0x80, 0xFF },
-    [5]  = { 0xC0, 0x80, 0x40 },
-    [6]  = { 0xB6, 0xD1, 0x64 },
-    [7]  = { 0xC0, 0xFF, 0xC0 },
-    [8]  = { 0xFF, 0xFF, 0xFF },
-    [9]  = { 0xFF, 0x00, 0xFF },
-    [10] = { 0xFF, 0x00, 0xFF },
-    [11] = { 0xFF, 0x00, 0xFF },
-    [12] = { 0x80, 0x80, 0x80 },
-    // clang-format on
-};
-
-static RGB_888 m_ColorDark[M_MAX_COLOR] = {
-    // clang-format off
-    [0]  = { 0x80, 0x80, 0x80 },
-    [1]  = { 0x50, 0x50, 0x00 },
-    [2]  = { 0x18, 0x18, 0x18 },
-    [3]  = { 0x18, 0x00, 0x00 },
-    [4]  = { 0x00, 0x00, 0x18 },
-    [5]  = { 0x40, 0x10, 0x00 },
-    [6]  = { 0xB6, 0x20, 0x13 },
-    [7]  = { 0xC0, 0xFF, 0xC0 },
-    [8]  = { 0xFF, 0xFF, 0xFF },
-    [9]  = { 0x3F, 0x00, 0x3F },
-    [10] = { 0x3F, 0x00, 0x3F },
-    [11] = { 0x3F, 0x00, 0x3F },
-    [12] = { 0x80, 0x80, 0x80 },
-    // clang-format on
-};
-
-// The colours of the original TR4 font. Each grades from its first shade at
-// the top of a capital to its second one sixteen rows down, past the baseline.
-// A shade of 128 leaves the glyph as it is drawn.
-static const RGB_888 m_TR4Shades[M_TR4_COLOR_COUNT][2] = {
-    // clang-format off
-    { { 128, 128, 128 }, { 128, 128, 128 } },
-    { { 128, 128, 128 }, { 128, 128, 128 } },
-    { { 128, 128, 128 }, { 128, 128, 128 } },
-    { { 128,   0,   0 }, {  64,   0,   0 } },
-    { {   0,   0, 160 }, {   0,   0,  80 } },
-    { { 128, 128, 128 }, {  16,  16,  16 } },
-    { { 192, 128,  64 }, {  64,  16,   0 } },
-    { {  16,  16,  16 }, { 128, 128, 128 } },
-    { { 224, 192,   0 }, {  64,  32,   0 } },
-    { { 128,   0,   0 }, {  64,   0,   0 } },
-    // clang-format on
-};
-
 // The colours text has named, by the order they were first named in. The
-// numbered colours come first, at their own numbers.
+// plain colour comes first.
 static VECTOR *m_Colors = nullptr;
 static M_COLOR_MAP_ENTRY *m_ColorMap = nullptr;
 static int32_t m_DefaultColor = 0;
@@ -204,11 +144,6 @@ static float M_ScaleScreen(const float value)
 static float M_ScaleNeutral(const float value)
 {
     return value * UI_Scaler_GetTextScale();
-}
-
-static RGBA_8888 M_ToRGBA(const RGB_888 color)
-{
-    return (RGBA_8888) { .r = color.r, .g = color.g, .b = color.b, .a = 0xFF };
 }
 
 static const M_COLOR *M_GetColor(const int32_t color_idx)
@@ -847,16 +782,6 @@ static void M_Process(
             goto loop_end;
         }
 
-        if (glyph->role == GLYPH_DIM_MARKER) {
-            if (glyph->mesh_idx != 0) {
-                prev_color_idx = color_idx;
-                color_idx = M_DIM_COLOR;
-            } else {
-                color_idx = prev_color_idx;
-            }
-            goto loop_end;
-        }
-
         if (glyph->role == GLYPH_COLOR_MARKER) {
             if (glyph->mesh_idx != -1) {
                 prev_color_idx = color_idx;
@@ -945,14 +870,11 @@ static void M_Process(
 void UI_InitText(void)
 {
     m_Colors = Vector_Create(sizeof(M_COLOR));
-    for (int32_t i = 0; i < M_MAX_COLOR; i++) {
-        const M_COLOR color = {
-            .top = COLOR_RGBA_8888_WHITE,
-            .bottom = COLOR_RGBA_8888_WHITE,
-        };
-        Vector_Add(m_Colors, &color);
-        M_AddColorEntry(String_FormatStatic("%d", i), i);
-    }
+    const M_COLOR plain = {
+        .top = COLOR_RGBA_8888_WHITE,
+        .bottom = COLOR_RGBA_8888_WHITE,
+    };
+    Vector_Add(m_Colors, &plain);
     m_DefaultColor = 0;
     m_DefaultSpec = nullptr;
 
@@ -993,29 +915,12 @@ void UI_InitText(void)
 
 void UI_LoadText(void)
 {
-    for (int32_t i = 0; i < M_MAX_COLOR; i++) {
-        M_COLOR *const color = Vector_Get(m_Colors, i);
-        const bool shaded = g_TRVersion == 4 && i < M_TR4_COLOR_COUNT;
-        if (shaded) {
-            *color = (M_COLOR) {
-                .top = M_ToRGBA(m_TR4Shades[i][0]),
-                .bottom = M_ToRGBA(m_TR4Shades[i][1]),
-                .pulse = i == M_TR4_PULSE_COLOR,
-            };
-        } else if (g_TRVersion == 4) {
-            // The original draws its other colours unlit, at half of a shade.
-            const RGB_888 light = m_ColorLight[i];
-            const RGB_888 half = { light.r / 2, light.g / 2, light.b / 2 };
-            *color =
-                (M_COLOR) { .top = M_ToRGBA(half), .bottom = M_ToRGBA(half) };
-        } else {
-            *color = (M_COLOR) {
-                .top = M_ToRGBA(m_ColorLight[i]),
-                .bottom = M_ToRGBA(
-                    g_TRVersion == 3 ? m_ColorDark[i] : m_ColorLight[i]),
-            };
-        }
-    }
+    // The plain colour draws the font as it is: TR4 lights it at half.
+    const RGBA_8888 plain = g_TRVersion == 4
+        ? (RGBA_8888) { .r = 0x80, .g = 0x80, .b = 0x80, .a = 0xFF }
+        : COLOR_RGBA_8888_WHITE;
+    *(M_COLOR *)Vector_Get(m_Colors, 0) =
+        (M_COLOR) { .top = plain, .bottom = plain };
 
     for (M_FONT font = 0; font < M_FONT_COUNT; font++) {
         m_CapHeight[font] = 0;

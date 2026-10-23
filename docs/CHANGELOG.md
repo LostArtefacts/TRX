@@ -437,6 +437,7 @@
 - Removed `h_bars` from `trx.ui.widgets.Resize`, as a `trx.ui.widgets.Bar` already follows the player's bar scale
 - Removed `trx.signal.Signal:above` in favour of `trx.signal.Signal:map`
 - Removed `trx.overlay.signals.health_bar_forced` in favour of the `health_bar` signal of the shipped `common.ui.ring` module
+- Removed the numbered colours of the text markup and `\{dim}`, which a colour named by its shades replaces
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.ui.primitive.panel` and `trx.ui.widgets.Frame` drawing a frame a pixel away from where the game draws its own
 - Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes
