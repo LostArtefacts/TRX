@@ -23,7 +23,7 @@
         "pickup_aid.bin",
         "inventory_models.bin",
         "controls_models.bin",
-        "gun_shell.bin",
+        "shell_casings.bin",
     ],
 
     "title": {

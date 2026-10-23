@@ -252,7 +252,7 @@
 - Fixed the camera being thrown aggressively into pits when a jeep tips into one briefly (OG bug) (TRX1719)
 - Fixed z-fighting between pickups 21 and 22 in Valley of the Kings (OG bug, TRX1571)
 - Fixed crossbow bolts being invisible in Tomb of Semerkhet (OG bug) (TRX1858)
-- Fixed shell casings from the pistols, Uzis and revolver having open ends (OG bug) (TRX1336)
+- Fixed shell casings from the pistols, Uzis and revolver having open ends, and shotgun shell casings having misplaced textures (OG bug) (TRX1336, TRX1877)
 - Fixed the compass needle staying solid when Lara faces true north, unlike the original game (TRX1784)
 - Fixed the compass facing away in the inventory ring, and added the opening and closing of its lid, as in TR1 (TRX1802)
 - Fixed a mis-rotated texture in Angkor Wat room 3 (TRX1624)
