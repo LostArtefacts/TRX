@@ -1353,6 +1353,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── controls_models.bin
 │   │   │   ├── font.bin
 │   │   │   ├── guide_gun.bin
+│   │   │   ├── gun_shell.bin
 │   │   │   ├── henchman_jeep.bin
 │   │   │   ├── inventory_models.bin
 │   │   │   ├── karnak_fd.bin
@@ -2917,6 +2918,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── guide_gun.bin
+    │   │   │   │   ├── gun_shell.bin
     │   │   │   │   ├── henchman_jeep.bin
     │   │   │   │   ├── inventory_models.bin
     │   │   │   │   ├── karnak_fd.bin
