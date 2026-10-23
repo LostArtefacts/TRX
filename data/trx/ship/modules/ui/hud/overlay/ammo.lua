@@ -47,15 +47,19 @@ function M.setup(state)
 
     local shown = state.ui_enabled & state.playing
 
-    -- How long the count shows the name of a kind after the weapon in her
-    -- hands changes to it.
+    -- How long the count shows the name of a kind after the player cycles
+    -- the weapon in her hands to it.
     local CAPTION_TICKS = trx.game.LOGIC_FPS * 2
     local last_gun = nil
-    local last_kind = nil
     local caption_ticks = 0
     trx.events.on_level_unload(function()
       last_gun = nil
       caption_ticks = 0
+    end)
+    ammo.cycled:on(function(cycle)
+      if cycle ~= nil then
+        caption_ticks = CAPTION_TICKS
+      end
     end)
 
     -- What she is carrying is not a signal, so the count is read once a tick,
@@ -77,11 +81,8 @@ function M.setup(state)
       local kind = not from_vehicle and trx.inventory.ammo_kind(gun) or nil
       if gun ~= last_gun then
         caption_ticks = 0
-      elseif kind ~= last_kind then
-        caption_ticks = CAPTION_TICKS
       end
       last_gun = gun
-      last_kind = kind
 
       local inner
       if caption_ticks > 0 and kind ~= nil then

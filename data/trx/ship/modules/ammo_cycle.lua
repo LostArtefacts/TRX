@@ -20,10 +20,7 @@ function M.setup()
     if weapon == nil then
       return
     end
-    local kind = ammo.next_kind(weapon)
-    if kind ~= nil then
-      ammo.choose(weapon, kind)
-    end
+    ammo.cycle(weapon)
   end)
 end
 

@@ -89,4 +89,22 @@ function M.choose(weapon, kind)
   trx.inventory.set_ammo_kind(weapon.id, kind)
 end
 
+-- Says each time the player cycles a weapon on to its next kind, with the
+-- weapon and the kind it fires now.
+---@type trx.signal.Signal
+M.cycled = trx.signal.new(nil)
+
+-- Moves a weapon on to its next kind that Lara has shots of, as the cycle
+-- ammo key does, and says so through `M.cycled`. Does nothing where there is
+-- no other kind to move to.
+---@param weapon trx.weapons.Weapon
+function M.cycle(weapon)
+  local kind = M.next_kind(weapon)
+  if kind == nil then
+    return
+  end
+  M.choose(weapon, kind)
+  M.cycled:set({ weapon = weapon.id, kind = kind })
+end
+
 return M
