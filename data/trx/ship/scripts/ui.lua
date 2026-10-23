@@ -1,3 +1,6 @@
+-- The colours text is drawn in where it names none.
+require("common.ui.accent").setup()
+
 -- The fades the screens share, and how a level comes in.
 require("common.ui.fade").setup()
 require("common.ui.level_start").setup()

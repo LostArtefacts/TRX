@@ -243,7 +243,7 @@ local function unusable_roles()
 end
 
 local function dim(text, unusable)
-  return unusable and ("\\{dim}%s\\{/dim}"):format(text) or text
+  return unusable and accent.text(text, accent.Role.DIM) or text
 end
 
 local function framed(on)

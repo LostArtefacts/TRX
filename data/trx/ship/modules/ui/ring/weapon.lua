@@ -7,6 +7,7 @@
 -- kinds side by side and the shots of the one picked under them, and where
 -- it offers more actions than that, the actions under the shots.
 
+local accent = require("common.ui.accent")
 local ammo = require("common.ui.ammo")
 local ring = require("common.ui.ring")
 local scroll = require("common.ui.scroll")
@@ -34,8 +35,6 @@ local MODEL_SPACING = 0.0
 local HINT_SPACING = 20.0
 
 -- The colours of the action picked and of the others.
-local COLOR_PICKED = 1
-local COLOR_OTHER = 5
 
 local SPIN_PER_TICK = 4 * trx.math.DEG_1
 
@@ -205,8 +204,8 @@ local function action_lines(state)
     local text = trx.locale.get(ACTION_TEXT[action])
     lines[i] = trx.ui.widgets.Label({
       text = state.action:map(function(at)
-        local color = at == i and COLOR_PICKED or COLOR_OTHER
-        return ("\\{color %d}%s"):format(color, text)
+        local role = at == i and accent.Role.PICKED or accent.Role.MENU_OPTION
+        return accent.text(text, role)
       end),
     })
   end

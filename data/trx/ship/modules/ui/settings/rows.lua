@@ -7,6 +7,7 @@
 --     rows.change("audio.music_volume", 1)
 --   end
 
+local accent = require("common.ui.accent")
 local handlers = require("common.ui.settings.handlers")
 
 local M = {}
@@ -210,7 +211,7 @@ local function dim(text, on)
   if on then
     return text
   end
-  return "\\{dim}" .. text .. "\\{/dim}"
+  return accent.text(text, accent.Role.DIM)
 end
 
 -- What a row shows of each setting, kept as one signal per setting that every

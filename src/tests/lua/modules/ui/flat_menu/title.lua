@@ -1,6 +1,7 @@
 -- The title menu of the flat menu system: what it lists, and what each of its
 -- choices starts.
 
+local accent = require("common.ui.accent")
 local h = require("harness")
 local test = h.test
 
@@ -206,7 +207,9 @@ end)
 test("options open the settings and come back to the title", function()
   open()
   for _ = 1, 4 do
-    if shows("\\{color 1}" .. L("general/flat_menu/options")) then
+    if
+      shows(accent.text(L("general/flat_menu/options"), accent.Role.PICKED))
+    then
       break
     end
     press(Role.MENU_DOWN)
@@ -233,7 +236,9 @@ test("the title shows the logo on its main menu alone", function()
   ticks(SETTLE_TICKS)
   assert(shows_main:get(), "the logo did not come back")
   for _ = 1, 4 do
-    if shows("\\{color 1}" .. L("general/flat_menu/options")) then
+    if
+      shows(accent.text(L("general/flat_menu/options"), accent.Role.PICKED))
+    then
       break
     end
     press(Role.MENU_DOWN)

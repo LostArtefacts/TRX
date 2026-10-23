@@ -4,6 +4,7 @@
 -- these, the screen shows GAME OVER alone and leaves for the title screen on
 -- its own.
 
+local accent = require("common.ui.accent")
 local fade = require("common.ui.fade")
 local list = require("common.ui.flat_menu.list")
 local pages = require("common.ui.screens.passport.pages")
@@ -14,7 +15,6 @@ local M = {}
 
 local Role = trx.input.Role
 
-local COLOR_GAME_OVER = 3
 -- GAME OVER stands two lines above the first row.
 local GAME_OVER_GAP = 2
 
@@ -108,7 +108,7 @@ function M.open(ctx)
   end
   local menu = list.new({
     heading = trx.locale.get("general/inventory_ring/heading_game_over"),
-    heading_color = COLOR_GAME_OVER,
+    heading_role = accent.Role.MENU_WARNING,
     heading_gap = GAME_OVER_GAP,
     rows = rows,
   })

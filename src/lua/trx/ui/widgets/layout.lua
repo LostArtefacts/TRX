@@ -137,8 +137,9 @@ function widgets.Frame(settings)
   end, function(w, x, y, bw, bh)
     local style = value_of(w.style)
     if not trx.ui.frames_shown then
-      if style == trx.ui.FrameStyle.SELECTED then
-        local previous = raw.set_text_color(base.PICKED_COLOR)
+      local picked = trx.ui.picked_text_color
+      if style == trx.ui.FrameStyle.SELECTED and picked ~= nil then
+        local previous = raw.set_text_color(picked)
         w.child:paint(x, y, bw, bh)
         raw.set_text_color(previous)
       else

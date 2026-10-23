@@ -6,6 +6,7 @@ local test = h.test
 h.load_themes()
 
 local Role = trx.input.Role
+local accent = require("common.ui.accent")
 local editor = require("common.ui.settings.editor")
 
 local function press(role)
@@ -150,7 +151,9 @@ test("the value and its arrows show in orange in TR4 only", function()
     for _, part in ipairs({ "80", "\\{button left}", "\\{button right}" }) do
       local text = text_op(part)
       assert(text ~= nil, part .. " is missing")
-      local orange = text:find("\\{color 6}", 1, true) ~= nil
+      local value_color = accent.color_of(accent.Role.VALUE)
+      local orange = value_color ~= nil
+        and text:find(accent.color("", value_color), 1, true) ~= nil
       assert(
         orange == (case.orange == true),
         ("TR%d shows %s"):format(case.version, text)

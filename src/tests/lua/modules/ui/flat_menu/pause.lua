@@ -1,6 +1,7 @@
 -- The pause screen of the flat menu system: what it lists, and where each
 -- row of it leads.
 
+local accent = require("common.ui.accent")
 local h = require("harness")
 local test = h.test
 
@@ -184,11 +185,13 @@ test("the statistics of the flat pause screen show alone", function()
   assert(trx.ui.layers.count() > before, "no statistics opened")
   assert(not shows(L("general/flat_menu/options")), "the list still shows")
   assert(
-    shows("\\{color 6}" .. L("general/flat_menu/statistics")),
+    shows(
+      accent.text(L("general/flat_menu/statistics"), accent.Role.MENU_HEADING)
+    ),
     "the heading did not show"
   )
   assert(
-    shows("\\{color 2}" .. L("general/stats/time_taken")),
+    shows(accent.text(L("general/stats/time_taken"), accent.Role.MENU_ROW)),
     "the counters did not show"
   )
   press(Role.MENU_BACK)

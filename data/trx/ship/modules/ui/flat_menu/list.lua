@@ -4,6 +4,7 @@
 -- screen. A list longer than that room scrolls, and the selection wraps
 -- around where the player asks for it.
 
+local accent = require("common.ui.accent")
 local arrows = require("common.ui.flat_menu.arrows")
 local scroll = require("common.ui.scroll")
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
@@ -15,12 +16,8 @@ local Role = trx.input.Role
 -- The room between two rows of the list, in canvas units.
 local ROW_GAP = 2
 
-local COLOR_HEADING = 6
-local COLOR_PICKED = 1
-local COLOR_OTHER = 2
-
-local function colored(color, text)
-  return ("\\{color %d}%s"):format(color, text)
+local function colored(role, text)
+  return accent.text(text, role)
 end
 
 -- The height of a line of the list.
@@ -35,7 +32,7 @@ end
 
 ---@class common.ui.flat_menu.List
 ---@field heading? string
----@field heading_color integer
+---@field heading_role string
 ---@field heading_gap number How many lines above the first row the heading stands.
 ---@field rows common.ui.flat_menu.list.Row[]
 ---@field selected integer
@@ -45,7 +42,7 @@ List.__index = List
 
 ---@class common.ui.flat_menu.list.settings
 ---@field heading? string
----@field heading_color? integer The colour of the heading. 6 by default.
+---@field heading_role? string The role of the heading among `common.ui.accent.Role`. A flat menu heading by default.
 ---@field heading_gap? number How many lines above the first row the heading stands: a line and a half by default, as the original's pause menu has it.
 ---@field rows common.ui.flat_menu.list.Row[]
 ---@field selected? integer The row picked first. 1 by default.
@@ -56,7 +53,7 @@ List.__index = List
 function M.new(settings)
   local self = setmetatable({
     heading = settings.heading,
-    heading_color = settings.heading_color or COLOR_HEADING,
+    heading_role = settings.heading_role or accent.Role.MENU_HEADING,
     heading_gap = settings.heading_gap or 3 / 2,
     rows = settings.rows,
     selected = settings.selected or 1,
@@ -139,10 +136,11 @@ function List:paint()
   end
 
   if self.heading ~= nil then
-    centred(colored(self.heading_color, self.heading), y - above)
+    centred(colored(self.heading_role, self.heading), y - above)
   end
   for i = first, math.min(first + shown - 1, #self.rows) do
-    local color = i == self.selected and COLOR_PICKED or COLOR_OTHER
+    local color = i == self.selected and accent.Role.PICKED
+      or accent.Role.MENU_ROW
     centred(colored(color, self.rows[i].text), y + step * (i - first))
   end
   if shown > 0 and first > 1 then

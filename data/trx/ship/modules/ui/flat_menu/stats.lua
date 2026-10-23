@@ -2,6 +2,7 @@
 -- from its pause screen: the heading, the name of the level, and a line for
 -- each counter with its value to the right of its name.
 
+local accent = require("common.ui.accent")
 local stats = require("common.ui.screens.stats")
 local TEXT_SCALE = require("common.ui.flat_menu.text").SCALE
 
@@ -16,12 +17,8 @@ local ROW_GAP = 2
 local KEY_X = -240
 local VALUE_X = 80
 
-local COLOR_HEADING = 6
-local COLOR_KEY = 2
-local COLOR_VALUE = 6
-
-local function colored(color, text)
-  return ("\\{color %d}%s"):format(color, text)
+local function colored(role, text)
+  return accent.text(text, role)
 end
 
 -- The x of a point the original gives across its 640-pixel screen.
@@ -45,8 +42,10 @@ function M.push(ctx, on_close)
   if rows == nil then
     return nil
   end
-  local heading =
-    colored(COLOR_HEADING, trx.locale.get("general/flat_menu/statistics"))
+  local heading = colored(
+    accent.Role.MENU_HEADING,
+    trx.locale.get("general/flat_menu/statistics")
+  )
 
   local function paint()
     local primitive = trx.ui.primitive
@@ -73,19 +72,24 @@ function M.push(ctx, on_close)
     end
 
     centred(heading, top)
-    centred(colored(COLOR_KEY, title or ""), top + step * 2)
+    centred(colored(accent.Role.MENU_ROW, title or ""), top + step * 2)
     for i, row in ipairs(rows) do
       local y = top + step * (i + 2)
       if row.key ~= nil then
-        primitive.text(colored(COLOR_KEY, row.key), key_x, y, TEXT_SCALE)
         primitive.text(
-          colored(COLOR_VALUE, tostring(row.value)),
+          colored(accent.Role.MENU_ROW, row.key),
+          key_x,
+          y,
+          TEXT_SCALE
+        )
+        primitive.text(
+          colored(accent.Role.MENU_ACCENT, tostring(row.value)),
           value_x,
           y,
           TEXT_SCALE
         )
       else
-        centred(colored(COLOR_KEY, row.text), y)
+        centred(colored(accent.Role.MENU_ROW, row.text), y)
       end
     end
   end
