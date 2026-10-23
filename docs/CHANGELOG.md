@@ -413,6 +413,7 @@
 - Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.TimedContext`, which reports how long the view shows and fades
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
+- Added colour markup that names its colours, as `\{color #c08040 #401000}`, for a flat colour or one that grades from the top of each glyph to its bottom, with `pulse` for one that brightens and dims
 - Changed `trx.config.declare` so that a value of a declared setting can carry a label of its own
 - Changed the inventory ring to be drawn by the shipped interface scripts, where a script declares the ring's entries through the `common.ui.ring` module
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)

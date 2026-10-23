@@ -25,7 +25,7 @@ local FRAME_Z = 160
 
 -- The text colour that marks the option the player is on where no frame
 -- does: the colour the original TR4 pulses its picked entry in.
-local PICKED_COLOR = 1
+local PICKED_COLOR = "1"
 
 -- Removes a placed widget from its region. trx.ui.regions sets it, because
 -- the regions are built on top of the widgets.

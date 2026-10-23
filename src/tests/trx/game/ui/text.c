@@ -128,3 +128,55 @@ TEST(ui_text_input_falls_back_to_a_question_mark)
     FakeUI_ResetKeyName();
     UI_ShutdownText();
 }
+
+TEST(ui_text_color_names_its_shades)
+{
+    UI_InitText();
+    M_SetUp();
+
+    CHECK(UI_Text_IsColor("#c08040"));
+    CHECK(UI_Text_IsColor("#c08040 #401000"));
+    CHECK(UI_Text_IsColor("#80808080 pulse"));
+
+    CHECK(!UI_Text_IsColor(""));
+    CHECK(!UI_Text_IsColor("c08040"));
+    CHECK(!UI_Text_IsColor("#c0804"));
+    CHECK(!UI_Text_IsColor("#c08040 #401000 #000000"));
+    CHECK(!UI_Text_IsColor("pulse #c08040"));
+    CHECK(!UI_Text_IsColor("#gg8040"));
+
+    UI_ShutdownText();
+}
+
+TEST(ui_text_default_color_hands_back_the_one_it_replaces)
+{
+    UI_InitText();
+    M_SetUp();
+
+    CHECK(UI_Text_SetDefaultColor("#c08040 #401000") == nullptr);
+    CHECK(strcmp(UI_Text_SetDefaultColor(nullptr), "#c08040 #401000") == 0);
+    CHECK(UI_Text_SetDefaultColor("nope") == nullptr);
+    CHECK(UI_Text_SetDefaultColor(nullptr) == nullptr);
+
+    UI_ShutdownText();
+}
+
+TEST(ui_text_color_marker_is_a_glyph)
+{
+    UI_InitText();
+    M_SetUp();
+
+    CHECK(
+        M_Measure("A\\{color #c08040 #401000}B\\{/color}")
+        == M_Measure("A\\{color 2}B\\{/color}"));
+
+    char *const kept = UI_Text_FilterGlyphs("A\\{color #c08040}B");
+    CHECK(strcmp(kept, "A\\{color #c08040}B") == 0);
+    Memory_Free(kept);
+
+    char *const dropped = UI_Text_FilterGlyphs("A\\{color nope}B");
+    CHECK(strcmp(dropped, "AB") == 0);
+    Memory_Free(dropped);
+
+    UI_ShutdownText();
+}
