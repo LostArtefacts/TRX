@@ -12,14 +12,6 @@
         },
         "misc": {
             "empty_slot_fmt": "- Leerer Slot -",
-        },
-        "pause": {
-            "paused": "\\{color 5}Pause",
-        },
-        "stats": {
-            "assault_other_times_fmt": "\\{review}\\{color 2}%s",
-            "gym_assault_course": "\\{review}\\{color 5}Angriffskurs",
-            "gym_racetrack_course": "\\{review}\\{color 5}Rennstrecke",
         }
     },
     "objects": {

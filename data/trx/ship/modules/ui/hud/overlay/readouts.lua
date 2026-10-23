@@ -1,6 +1,8 @@
 -- The readouts of the in-game overlay: where Lara is and what she is doing,
 -- and the frames drawn in the last second.
 
+local accent = require("common.ui.accent")
+
 trx.locale.declare({
   ["general/overlay/debug_position"] = "Position: ",
   ["general/overlay/debug_rotation"] = "Rotation: ",
@@ -46,7 +48,9 @@ function M.setup(state)
 
     local function readout(shown, read)
       return ui.widgets.Label({
-        text = signal.polled_while(shown, read, ""),
+        text = signal.polled_while(shown, function()
+          return accent.text(read(), accent.Role.READOUT)
+        end, ""),
         visible = shown,
       })
     end
@@ -112,19 +116,13 @@ function M.setup(state)
     local values = {
       lara_readout(pos_shown, function(item)
         local x, y, z = tiles(item.pos)
-        return string.format(
-          "\\{small}%d, %d, %d / %d",
-          x,
-          y,
-          z,
-          item.room_num
-        )
+        return string.format("%d, %d, %d / %d", x, y, z, item.room_num)
       end),
 
       lara_readout(pos_shown, function(item)
         local r = item.rot
         return string.format(
-          "\\{small}%d\u{00B0}, %d\u{00B0}, %d\u{00B0}",
+          "%d\u{00B0}, %d\u{00B0}, %d\u{00B0}",
           r.x * 360 // 65536,
           r.y * 360 // 65536,
           r.z * 360 // 65536
@@ -133,12 +131,12 @@ function M.setup(state)
 
       lara_readout(pos_shown, function(item)
         local it = lara.vehicle or item
-        return string.format("\\{small}%d, %d", it.speed, it.fall_speed)
+        return string.format("%d, %d", it.speed, it.fall_speed)
       end),
 
       readout(pos_shown, function()
         return string.format(
-          "\\{small}%d / %d / %d",
+          "%d / %d / %d",
           lara.interact_item_num,
           lara.is_interact_moving and 1 or 0,
           lara.interact_move_count
@@ -146,12 +144,12 @@ function M.setup(state)
       end),
 
       lara_readout(anim_shown, function(item)
-        return string.format("\\{small}%d, %d", item.anim_num, item.frame_num)
+        return string.format("%d, %d", item.anim_num, item.frame_num)
       end),
 
       lara_readout(anim_shown, function(item)
         return string.format(
-          "\\{small}%d, %d (%d)",
+          "%d, %d (%d)",
           item.anim_state,
           item.goal_anim_state,
           trx.catalog.to_slot(
@@ -163,7 +161,7 @@ function M.setup(state)
 
       readout(anim_shown, function()
         return string.format(
-          "\\{small}%d, %d (%d)",
+          "%d, %d (%d)",
           lara.left_arm_anim_num,
           lara.left_arm_frame_num,
           lara.flare_control and 1 or 0
@@ -172,7 +170,7 @@ function M.setup(state)
 
       readout(anim_shown, function()
         return string.format(
-          "\\{small}%d, %d",
+          "%d, %d",
           lara.right_arm_anim_num,
           lara.right_arm_frame_num
         )
@@ -180,19 +178,13 @@ function M.setup(state)
 
       readout(camera_shown, function()
         local x, y, z = tiles(trx.camera.pos)
-        return string.format(
-          "\\{small}%d, %d, %d / %d",
-          x,
-          y,
-          z,
-          trx.camera.room_num
-        )
+        return string.format("%d, %d, %d / %d", x, y, z, trx.camera.room_num)
       end),
 
       readout(camera_shown, function()
         local x, y, z = tiles(trx.camera.target_pos)
         return string.format(
-          "\\{small}%d, %d, %d / %d",
+          "%d, %d, %d / %d",
           x,
           y,
           z,
@@ -205,22 +197,22 @@ function M.setup(state)
     local lines = {
       lara_readout(pos_shown, function(item)
         local p = item.pos
-        return string.format("\\{small}%d, %d, %d", p.x, p.y, p.z)
+        return string.format("%d, %d, %d", p.x, p.y, p.z)
       end),
 
       lara_readout(pos_shown, function(item)
         local r = item.rot
-        return string.format("\\{small}%d, %d, %d", r.x, r.y, r.z)
+        return string.format("%d, %d, %d", r.x, r.y, r.z)
       end),
 
       readout(camera_shown, function()
         local p = trx.camera.pos
-        return string.format("\\{small}%d, %d, %d", p.x, p.y, p.z)
+        return string.format("%d, %d, %d", p.x, p.y, p.z)
       end),
 
       readout(camera_shown, function()
         local p = trx.camera.target_pos
-        return string.format("\\{small}%d, %d, %d", p.x, p.y, p.z)
+        return string.format("%d, %d, %d", p.x, p.y, p.z)
       end),
 
       -- The mark that says nothing can hurt her.

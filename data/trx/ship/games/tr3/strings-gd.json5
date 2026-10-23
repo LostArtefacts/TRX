@@ -12,14 +12,6 @@
         },
         "misc": {
             "empty_slot_fmt": "- Slot Falamh -",
-        },
-        "pause": {
-            "paused": "\\{color 5}Air a stad",
-        },
-        "stats": {
-            "assault_other_times_fmt": "\\{color 2}%s",
-            "gym_assault_course": "\\{color 5}Cùrsa Ionnsaigh",
-            "gym_racetrack_course": "\\{color 5}Cùrsa Rèis",
         }
     },
     "objects": {
