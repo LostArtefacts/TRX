@@ -24,6 +24,11 @@ M.Role = {
   COUNT = "count",
   -- The ammunition count over the game.
   COUNTER = "counter",
+  -- Text that stands back from what is around it, such as a time that is not
+  -- the best one.
+  FAINT = "faint",
+  -- The numbers of the debug readouts over the game.
+  READOUT = "readout",
 }
 
 ---@class common.ui.accent.Style
@@ -36,10 +41,12 @@ local STYLES = {
   [1] = {
     count = { small = true },
     counter = { small = true },
+    readout = { small = true },
   },
   [2] = {
     count = { small = true },
     counter = { small = true },
+    readout = { small = true },
   },
   [3] = {
     heading = { color = 5 },
@@ -51,12 +58,15 @@ local STYLES = {
       end
       return {}
     end,
+    faint = { color = 2 },
+    readout = { small = true },
   },
   [4] = {
     value = { color = 6 },
     name = { color = 8 },
     count = { small = true },
     counter = { small = true },
+    readout = { small = true },
   },
 }
 

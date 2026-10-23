@@ -140,6 +140,8 @@ order: 3
     - `general/inventory_ring/item_count_fmt`
     - `general/overlay/item_count_fmt_pc`
     - `general/overlay/item_count_fmt_ps1`
+    - `general/stats/assault_best_time_fmt`
+    - `general/stats/assault_other_times_fmt`
 
 ### Version 1.10 to 1.11
 

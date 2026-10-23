@@ -12,14 +12,6 @@
         },
         "misc": {
             "empty_slot_fmt": "- Pusty Slot -",
-        },
-        "pause": {
-            "paused": "\\{color 5}Pauza",
-        },
-        "stats": {
-            "assault_other_times_fmt": "\\{color 2}%s",
-            "gym_assault_course": "\\{color 5}Tor Przeszkód",
-            "gym_racetrack_course": "\\{color 5}Tor Wyścigowy",
         }
     },
     "cutscenes": [

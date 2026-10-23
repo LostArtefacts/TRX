@@ -1,6 +1,7 @@
 -- The rows that the statistics screen lists, which the settings and the look
 -- of each game decide.
 
+local accent = require("common.ui.accent")
 local counts = require("common.ui.screens.stats.counts")
 local metrics = require("common.ui.metrics")
 
@@ -299,11 +300,10 @@ local function assault_rows(state)
       return
     end
     for i, record in ipairs(records) do
-      local time = trx.locale.format(
-        i == 1 and "general/stats/assault_best_time_fmt"
-          or "general/stats/assault_other_times_fmt",
-        counts.format_record_time(record.frames)
-      )
+      local time = counts.format_record_time(record.frames)
+      if i > 1 then
+        time = accent.text(time, accent.Role.FAINT)
+      end
       if trx.game.tr_version == 3 then
         add(centered(time))
       else
@@ -323,12 +323,26 @@ local function assault_rows(state)
   end
 
   if counts.has_quad() then
-    add(centered(trx.locale.get("general/stats/gym_assault_course")))
+    add(
+      centered(
+        accent.text(
+          trx.locale.get("general/stats/gym_assault_course"),
+          accent.Role.HEADING
+        )
+      )
+    )
   end
   track_rows(trx.assault.Track.COURSE)
   if counts.has_quad() then
     add(centered(" "))
-    add(centered(trx.locale.get("general/stats/gym_racetrack_course")))
+    add(
+      centered(
+        accent.text(
+          trx.locale.get("general/stats/gym_racetrack_course"),
+          accent.Role.HEADING
+        )
+      )
+    )
     track_rows(trx.assault.Track.QUAD)
   end
   -- The blank rows follow the room the screen leaves now, while the rows the

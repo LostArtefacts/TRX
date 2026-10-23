@@ -12,14 +12,6 @@
         },
         "misc": {
             "empty_slot_fmt": "- Emplacement vide -",
-        },
-        "pause": {
-            "paused": "\\{color 5}En pause",
-        },
-        "stats": {
-            "assault_other_times_fmt": "\\{color 2}%s",
-            "gym_assault_course": "\\{color 5}Entraînement",
-            "gym_racetrack_course": "\\{color 5}Course de quad",
         }
     },
     "objects": {

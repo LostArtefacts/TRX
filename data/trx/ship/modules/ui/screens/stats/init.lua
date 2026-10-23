@@ -33,8 +33,6 @@ trx.locale.declare({
   ["general/stats/assault_title"] = "BEST TIMES",
   ["general/stats/assault_no_times_set"] = "No Times Set",
   ["general/stats/assault_finish"] = "Finish",
-  ["general/stats/assault_best_time_fmt"] = "%s",
-  ["general/stats/assault_other_times_fmt"] = "%s",
   ["general/stats/gym_assault_course"] = "Assault Course",
   ["general/stats/gym_racetrack_course"] = "Race Track Course",
   ["general/stats/assault_reset_times"] = "Reset",
