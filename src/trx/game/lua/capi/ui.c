@@ -766,11 +766,23 @@ static UI_MENU_COLORS M_ReadMenuColors(
     return colors;
 }
 
-// trxc.ui.set_text_color(color: integer): integer
+// trxc.ui.set_text_color(color?: string): string?
+//
+// Sets the colour text is drawn in where it names none, as a colour marker
+// names it, or the plain colour where it names none. Returns the colour it
+// replaces, or nil for the plain colour.
 static int M_L_UISetTextColor(lua_State *const L)
 {
-    lua_pushinteger(
-        L, UI_Text_SetDefaultColor((int32_t)luaL_checkinteger(L, 1)));
+    const char *const spec = luaL_optstring(L, 1, nullptr);
+    if (spec != nullptr && !UI_Text_IsColor(spec)) {
+        return luaL_argerror(L, 1, "names no colour");
+    }
+    const char *const previous = UI_Text_SetDefaultColor(spec);
+    if (previous == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, previous);
+    }
     return 1;
 }
 

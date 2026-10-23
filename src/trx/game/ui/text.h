@@ -17,10 +17,17 @@ void UI_ShutdownText(void);
 // Observe level load to establish glyph widths.
 void UI_LoadText(void);
 
+// Reports whether text names a colour as a colour marker names it, such as
+// "#c08040 #401000" for a colour that grades from the top of a glyph to its
+// bottom.
+bool UI_Text_IsColor(const char *spec);
+
 // Sets the colour text is drawn in where it names none, until a colour marker
-// in the text changes it. Returns the colour it replaces. 0 is the plain
-// colour.
-int32_t UI_Text_SetDefaultColor(int32_t color_idx);
+// in the text changes it, as a colour marker names it. nullptr, or text that
+// names no colour, sets the plain colour. Returns the colour it replaces, as
+// it was named, or nullptr for the plain colour. The returned text lasts until
+// the text is shut down.
+const char *UI_Text_SetDefaultColor(const char *spec);
 
 // Draw the given text at screen coordinates (x, y) with specified settings.
 void UI_Text_Draw(

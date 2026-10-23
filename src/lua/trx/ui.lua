@@ -26,6 +26,12 @@ local themes = require("trx.internal.themes")
 ---Text carries the same markup the rest of the game uses, and it is part of
 ---this API: `\{small}` draws the rest of the line small, `\{arrow up}` draws an
 ---arrow, and `\{button left}` draws the button the player has bound.
+---`\{color #c08040 #401000}` draws what follows in a colour that grades from
+---the top of each glyph to its bottom, up to `\{/color}`. A colour is
+---`#rrggbb` or `#rrggbbaa`, one for a flat colour or two for a gradient, and
+---`pulse` after them makes it brighten and dim. In TR4, a channel of `80`
+---draws a glyph as it is, and higher values light it up, as the original
+---lights its font. <!--noref: pulse-->
 ---@trx.module 20 User interface
 ---@class (partial,exact) trx.ui
 ---@trx.readonly canvas, safe_area, screen, text_scale, working_area

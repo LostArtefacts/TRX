@@ -6,6 +6,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/clock/common.h>
 #include <trx/game/clock/const.h>
@@ -80,7 +81,25 @@ typedef struct {
         int32_t mesh_idx;
         INPUT_ROLE input_role; // for role == GLYPH_INPUT
     };
+    // Whether the glyph was made for a colour that a text names, rather than
+    // declared, so that it is freed with the colours.
+    bool is_made;
 } M_GLYPH_INFO;
+
+// A colour that text is drawn in: the shade at the top of a glyph, the shade at
+// its bottom, and whether it pulses. In TR4, a channel of 0x80 draws a glyph
+// as it is, as the original lights its font.
+typedef struct {
+    RGBA_8888 top;
+    RGBA_8888 bottom;
+    bool pulse;
+} M_COLOR;
+
+typedef struct {
+    char *spec;
+    int32_t idx;
+    UT_hash_handle hh;
+} M_COLOR_MAP_ENTRY;
 
 typedef struct {
     M_GLYPH_INFO *glyph;
@@ -166,8 +185,12 @@ static const RGB_888 m_TR4Shades[M_TR4_COLOR_COUNT][2] = {
     // clang-format on
 };
 
-static RGBA_F m_TextColor[M_MAX_COLOR][4] = {};
+// The colours text has named, by the order they were first named in. The
+// numbered colours come first, at their own numbers.
+static VECTOR *m_Colors = nullptr;
+static M_COLOR_MAP_ENTRY *m_ColorMap = nullptr;
 static int32_t m_DefaultColor = 0;
+static const char *m_DefaultSpec = nullptr;
 
 // The height of a capital in each font, in sprite units above the baseline,
 // which the TR4 shades are spread over.
@@ -183,14 +206,26 @@ static float M_ScaleNeutral(const float value)
     return value * UI_Scaler_GetTextScale();
 }
 
-static RGBA_F M_ToRGBA_F(const RGB_888 color)
+static RGBA_8888 M_ToRGBA(const RGB_888 color)
 {
-    return (RGBA_F) {
-        .r = color.r / 255.0f,
-        .g = color.g / 255.0f,
-        .b = color.b / 255.0f,
-        .a = 1.0f,
-    };
+    return (RGBA_8888) { .r = color.r, .g = color.g, .b = color.b, .a = 0xFF };
+}
+
+static const M_COLOR *M_GetColor(const int32_t color_idx)
+{
+    if (color_idx < 0 || color_idx >= m_Colors->count) {
+        return Vector_Get(m_Colors, 0);
+    }
+    return Vector_Get(m_Colors, color_idx);
+}
+
+// Returns how bright a pulsing colour is now, from 0 to 128. It brightens and
+// dims over 32 frames.
+static int32_t M_GetPulse(void)
+{
+    const int32_t frame =
+        (int32_t)(Clock_GetRealTime() * LOGIC_FPS) % M_TR4_PULSE_FRAMES;
+    return (uint8_t)((frame > 16 ? (uint8_t)-frame : frame) << 3);
 }
 
 // Doubles a TR4 shade, as the original lights a glyph: 128 and above draw at
@@ -200,26 +235,36 @@ static float M_TR4Light(const int32_t shade)
     return MIN(shade * 2, 255) / 255.0f;
 }
 
-// Returns a TR4 colour at a shade row. The pulsing colour brightens and dims
-// over 32 frames, the same at every row.
-static RGBA_F M_GetTR4Shade(const int32_t color_idx, const int32_t row)
+// Returns a colour at a TR4 shade row, between its top shade at the first row
+// and its bottom one sixteen rows down.
+static RGBA_F M_GetTR4Shade(const M_COLOR *const color, const int32_t row)
 {
-    if (color_idx == M_TR4_PULSE_COLOR) {
-        const int32_t frame =
-            (int32_t)(Clock_GetRealTime() * LOGIC_FPS) % M_TR4_PULSE_FRAMES;
-        const uint8_t pulse =
-            (uint8_t)((frame > 16 ? (uint8_t)-frame : frame) << 3);
-        const float light = M_TR4Light(pulse);
-        return (RGBA_F) { .r = light, .g = light, .b = light, .a = 1.0f };
-    }
-    const RGB_888 from = m_TR4Shades[color_idx][0];
-    const RGB_888 to = m_TR4Shades[color_idx][1];
     const int32_t rest = M_TR4_SHADE_ROWS - row;
+    const int32_t pulse = color->pulse ? M_GetPulse() : 128;
+    const RGBA_8888 from = color->top;
+    const RGBA_8888 to = color->bottom;
+#define L_SHADE(c)                                                             \
+    ((((to.c * row) >> 4) + ((from.c * rest) >> 4)) * pulse / 128)
+    const RGBA_F result = {
+        .r = M_TR4Light(L_SHADE(r)),
+        .g = M_TR4Light(L_SHADE(g)),
+        .b = M_TR4Light(L_SHADE(b)),
+        .a = (((to.a * row) >> 4) + ((from.a * rest) >> 4)) / 255.0f,
+    };
+#undef L_SHADE
+    return result;
+}
+
+// Returns a colour at the top or the bottom of a glyph outside TR4.
+static RGBA_F M_GetShade(const M_COLOR *const color, const bool bottom)
+{
+    const RGBA_8888 c = bottom ? color->bottom : color->top;
+    const float light = color->pulse ? M_GetPulse() / 128.0f : 1.0f;
     return (RGBA_F) {
-        .r = M_TR4Light(((to.r * row) >> 4) + ((from.r * rest) >> 4)),
-        .g = M_TR4Light(((to.g * row) >> 4) + ((from.g * rest) >> 4)),
-        .b = M_TR4Light(((to.b * row) >> 4) + ((from.b * rest) >> 4)),
-        .a = 1.0f,
+        .r = c.r * light / 255.0f,
+        .g = c.g * light / 255.0f,
+        .b = c.b * light / 255.0f,
+        .a = c.a / 255.0f,
     };
 }
 
@@ -258,24 +303,152 @@ static int32_t M_GetLinePitch(void)
     return g_TRVersion == 4 ? M_TR4_LINE_PITCH : M_LINE_HEIGHT;
 }
 
-static bool M_IsTR4Shaded(const int32_t color_idx)
+// Colours the corners of a sprite in a colour. TR4 shades a glyph by the rows
+// of the font that its sprite reaches, and the other games from the top of the
+// sprite to its bottom. `top_row` and `bottom_row` are the TR4 rows.
+static void M_ShadeCorners(
+    const int32_t color_idx, const int32_t top_row, const int32_t bottom_row,
+    RGBA_F out[4])
 {
-    return g_TRVersion == 4 && color_idx >= 0 && color_idx < M_TR4_COLOR_COUNT;
+    const M_COLOR *const color = M_GetColor(color_idx);
+    if (g_TRVersion == 4) {
+        out[0] = M_GetTR4Shade(color, top_row);
+        out[2] = M_GetTR4Shade(color, bottom_row);
+    } else {
+        out[0] = M_GetShade(color, false);
+        out[2] = M_GetShade(color, true);
+    }
+    out[1] = out[0];
+    out[3] = out[2];
 }
 
-// Colours a glyph in a TR4 colour, its top and its bottom at the rows its
-// sprite reaches.
-static void M_ShadeTR4Glyph(
+static void M_ShadeGlyph(
     const M_FONT font, const int32_t sprite_idx, const int32_t color_idx,
     RGBA_F out[4])
 {
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
-    const int32_t top_row = M_GetTR4Row(font, sprite->y0);
-    const int32_t bottom_row = M_GetTR4Row(font, sprite->y1);
-    out[0] = M_GetTR4Shade(color_idx, top_row);
-    out[1] = out[0];
-    out[2] = M_GetTR4Shade(color_idx, bottom_row);
-    out[3] = out[2];
+    M_ShadeCorners(
+        color_idx, M_GetTR4Row(font, sprite->y0), M_GetTR4Row(font, sprite->y1),
+        out);
+}
+
+static bool M_ParseHex(const char *const text, RGBA_8888 *const out)
+{
+    const size_t len = strlen(text);
+    if (text[0] != '#' || (len != 7 && len != 9)) {
+        return false;
+    }
+    for (size_t i = 1; i < len; i++) {
+        if (!isxdigit((unsigned char)text[i])) {
+            return false;
+        }
+    }
+    uint32_t r, g, b, a = 0xFF;
+    if (sscanf(text + 1, "%2x%2x%2x", &r, &g, &b) != 3) {
+        return false;
+    }
+    if (len == 9 && sscanf(text + 7, "%2x", &a) != 1) {
+        return false;
+    }
+    *out = (RGBA_8888) { .r = r, .g = g, .b = b, .a = a };
+    return true;
+}
+
+// Reads a colour as a text names it: one colour, or the colour at the top of a
+// glyph and the one at its bottom, each as `#rrggbb` or `#rrggbbaa`, followed
+// by `pulse` for a colour that pulses.
+static bool M_ParseColor(const char *const spec, M_COLOR *const out)
+{
+    char *const copy = Memory_DupStr(spec);
+    int32_t count = 0;
+    bool pulse = false;
+    bool ok = true;
+    RGBA_8888 colors[2] = {};
+    for (char *token = strtok(copy, " "); token != nullptr;
+         token = strtok(nullptr, " ")) {
+        if (strcmp(token, "pulse") == 0 && !pulse) {
+            pulse = true;
+        } else if (count < 2 && !pulse && M_ParseHex(token, &colors[count])) {
+            count++;
+        } else {
+            ok = false;
+            break;
+        }
+    }
+    Memory_Free(copy);
+    if (!ok || count == 0) {
+        return false;
+    }
+    *out = (M_COLOR) {
+        .top = colors[0],
+        .bottom = count == 2 ? colors[1] : colors[0],
+        .pulse = pulse,
+    };
+    return true;
+}
+
+static M_COLOR_MAP_ENTRY *M_AddColorEntry(
+    const char *const spec, const int32_t idx)
+{
+    M_COLOR_MAP_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
+    entry->spec = Memory_DupStr(spec);
+    entry->idx = idx;
+    HASH_ADD_KEYPTR(hh, m_ColorMap, entry->spec, strlen(entry->spec), entry);
+    return entry;
+}
+
+// Returns the colour that a text names, adding it where no text has named it
+// before, or nullptr for one that names no colour.
+static const M_COLOR_MAP_ENTRY *M_InternColor(const char *const spec)
+{
+    M_COLOR_MAP_ENTRY *entry;
+    HASH_FIND_STR(m_ColorMap, spec, entry);
+    if (entry != nullptr) {
+        return entry;
+    }
+    M_COLOR color;
+    if (!M_ParseColor(spec, &color)) {
+        return nullptr;
+    }
+    Vector_Add(m_Colors, &color);
+    return M_AddColorEntry(spec, m_Colors->count - 1);
+}
+
+// Finds the glyph that a piece of text stands for. A colour marker that names
+// its colour, as `\{color #c08040}` does, has a glyph made for it the first
+// time a text holds it.
+static const M_GLYPH_INFO *M_FindGlyph(const char *const key)
+{
+    M_GLYPH_MAP_ENTRY *entry;
+    HASH_FIND_STR(m_GlyphMap, key, entry);
+    if (entry != nullptr) {
+        return entry->glyph;
+    }
+
+    static const char prefix[] = "\\{color ";
+    const size_t prefix_len = sizeof(prefix) - 1;
+    const size_t len = strlen(key);
+    if (len <= prefix_len + 1 || strncmp(key, prefix, prefix_len) != 0
+        || key[len - 1] != '}') {
+        return nullptr;
+    }
+    char *const spec = String_Format(
+        "%.*s", (int32_t)(len - prefix_len - 1), key + prefix_len);
+    const M_COLOR_MAP_ENTRY *const color = M_InternColor(spec);
+    Memory_Free(spec);
+    if (color == nullptr) {
+        return nullptr;
+    }
+
+    M_GLYPH_INFO *const glyph = Memory_Alloc(sizeof(*glyph));
+    glyph->text = Memory_DupStr(key);
+    glyph->role = GLYPH_COLOR_MARKER;
+    glyph->mesh_idx = color->idx;
+    glyph->is_made = true;
+    entry = Memory_Alloc(sizeof(*entry));
+    entry->glyph = glyph;
+    HASH_ADD_KEYPTR(hh, m_GlyphMap, glyph->text, strlen(glyph->text), entry);
+    return glyph;
 }
 
 static int32_t M_HasGlyph(const M_FONT font, const M_GLYPH_INFO *const glyph)
@@ -341,11 +514,10 @@ static const M_GLYPH_INFO **M_Decompose(
         const size_t glyph_size = String_GetCharByteSize(content_ptr);
         const char *const key_buf =
             String_FormatStatic("%.*s", (int)glyph_size, content_ptr);
-        M_GLYPH_MAP_ENTRY *entry;
-        HASH_FIND_STR(m_GlyphMap, key_buf, entry);
+        const M_GLYPH_INFO *const glyph = M_FindGlyph(key_buf);
 
-        if (entry != nullptr) {
-            *glyph_ptr++ = entry->glyph;
+        if (glyph != nullptr) {
+            *glyph_ptr++ = glyph;
         } else {
             LOG_WARNING("Unknown glyph: %s", key_buf);
             glyph_count--;
@@ -619,12 +791,8 @@ static float M_DrawGlyph(
     if (renders && visible && draw_func != nullptr) {
         const OBJECT *const object = Object_Get(m_FontObjects[glyph_font]);
         const int32_t sprite_idx = object->mesh_idx + glyph->mesh_idx;
-        RGBA_F shaded[4];
-        const RGBA_F *colors = m_TextColor[color_idx];
-        if (M_IsTR4Shaded(color_idx)) {
-            M_ShadeTR4Glyph(glyph_font, sprite_idx, color_idx, shaded);
-            colors = shaded;
-        }
+        RGBA_F colors[4];
+        M_ShadeGlyph(glyph_font, sprite_idx, color_idx, colors);
         draw_func(x, y, z, scale, scale, sprite_idx, colors);
     }
 
@@ -729,9 +897,11 @@ static void M_Process(
             const float output_scale = scale_func(
                 UI_TEXT_BASE_SCALE * glyph->width[current_font] * input_scale);
             if (visible && draw_func != nullptr) {
+                RGBA_F colors[4];
+                M_ShadeCorners(color_idx, 0, M_TR4_BASE_ROW, colors);
                 draw_func(
                     x + scale_func(10), y, z, output_scale, output_scale,
-                    sprite_idx, m_TextColor[color_idx]);
+                    sprite_idx, colors);
             }
             x += glyph->width[current_font] * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
@@ -774,6 +944,18 @@ static void M_Process(
 
 void UI_InitText(void)
 {
+    m_Colors = Vector_Create(sizeof(M_COLOR));
+    for (int32_t i = 0; i < M_MAX_COLOR; i++) {
+        const M_COLOR color = {
+            .top = COLOR_RGBA_8888_WHITE,
+            .bottom = COLOR_RGBA_8888_WHITE,
+        };
+        Vector_Add(m_Colors, &color);
+        M_AddColorEntry(String_FormatStatic("%d", i), i);
+    }
+    m_DefaultColor = 0;
+    m_DefaultSpec = nullptr;
+
     // Convert the linear array coming from the .def macros to a hash lookup
     // table for faster text-to-glyph resolution.
     for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
@@ -812,19 +994,26 @@ void UI_InitText(void)
 void UI_LoadText(void)
 {
     for (int32_t i = 0; i < M_MAX_COLOR; i++) {
-        m_TextColor[i][0] = M_ToRGBA_F(m_ColorLight[i]);
-        m_TextColor[i][1] = M_ToRGBA_F(m_ColorLight[i]);
-        if (M_IsTR4Shaded(i)) {
-            m_TextColor[i][0] = M_GetTR4Shade(i, 0);
-            m_TextColor[i][1] = m_TextColor[i][0];
-            m_TextColor[i][2] = M_GetTR4Shade(i, M_TR4_BASE_ROW);
-            m_TextColor[i][3] = m_TextColor[i][2];
-        } else if (g_TRVersion == 3) {
-            m_TextColor[i][2] = M_ToRGBA_F(m_ColorDark[i]);
-            m_TextColor[i][3] = M_ToRGBA_F(m_ColorDark[i]);
+        M_COLOR *const color = Vector_Get(m_Colors, i);
+        const bool shaded = g_TRVersion == 4 && i < M_TR4_COLOR_COUNT;
+        if (shaded) {
+            *color = (M_COLOR) {
+                .top = M_ToRGBA(m_TR4Shades[i][0]),
+                .bottom = M_ToRGBA(m_TR4Shades[i][1]),
+                .pulse = i == M_TR4_PULSE_COLOR,
+            };
+        } else if (g_TRVersion == 4) {
+            // The original draws its other colours unlit, at half of a shade.
+            const RGB_888 light = m_ColorLight[i];
+            const RGB_888 half = { light.r / 2, light.g / 2, light.b / 2 };
+            *color =
+                (M_COLOR) { .top = M_ToRGBA(half), .bottom = M_ToRGBA(half) };
         } else {
-            m_TextColor[i][2] = M_ToRGBA_F(m_ColorLight[i]);
-            m_TextColor[i][3] = M_ToRGBA_F(m_ColorLight[i]);
+            *color = (M_COLOR) {
+                .top = M_ToRGBA(m_ColorLight[i]),
+                .bottom = M_ToRGBA(
+                    g_TRVersion == 3 ? m_ColorDark[i] : m_ColorLight[i]),
+            };
         }
     }
 
@@ -850,7 +1039,8 @@ void UI_ShutdownText(void)
         M_GLYPH_MAP_ENTRY *current, *tmp;
         HASH_ITER(hh, m_GlyphMap, current, tmp)
         {
-            if (current->glyph->role == GLYPH_INPUT) {
+            if (current->glyph->role == GLYPH_INPUT
+                || current->glyph->is_made) {
                 Memory_FreePointer(&current->glyph->text);
                 Memory_FreePointer(&current->glyph);
             }
@@ -869,6 +1059,20 @@ void UI_ShutdownText(void)
             Memory_FreePointer(&current);
         }
     }
+
+    {
+        M_COLOR_MAP_ENTRY *current, *tmp;
+        HASH_ITER(hh, m_ColorMap, current, tmp)
+        {
+            Memory_FreePointer(&current->spec);
+            HASH_DEL(m_ColorMap, current);
+            Memory_FreePointer(&current);
+        }
+    }
+    Vector_Free(m_Colors);
+    m_Colors = nullptr;
+    m_DefaultColor = 0;
+    m_DefaultSpec = nullptr;
 }
 
 void UI_Text_Measure(
@@ -884,10 +1088,18 @@ float UI_Text_GetBaseline(const UI_TEXT_SETTINGS settings)
     return M_ScaleNeutral(settings.scale * M_GetBaseline());
 }
 
-int32_t UI_Text_SetDefaultColor(const int32_t color_idx)
+bool UI_Text_IsColor(const char *const spec)
 {
-    const int32_t previous = m_DefaultColor;
-    m_DefaultColor = color_idx >= 0 && color_idx < M_MAX_COLOR ? color_idx : 0;
+    return M_InternColor(spec) != nullptr;
+}
+
+const char *UI_Text_SetDefaultColor(const char *const spec)
+{
+    const char *const previous = m_DefaultSpec;
+    const M_COLOR_MAP_ENTRY *const color =
+        spec != nullptr ? M_InternColor(spec) : nullptr;
+    m_DefaultColor = color != nullptr ? color->idx : 0;
+    m_DefaultSpec = color != nullptr ? color->spec : nullptr;
     return previous;
 }
 
@@ -930,9 +1142,7 @@ char *UI_Text_FilterGlyphs(const char *const text)
     while (*p != '\0') {
         const size_t sz = String_GetCharByteSize(p);
         const char *const key_buf = String_FormatStatic("%.*s", (int32_t)sz, p);
-        M_GLYPH_MAP_ENTRY *entry = nullptr;
-        HASH_FIND_STR(m_GlyphMap, key_buf, entry);
-        if (entry != nullptr) {
+        if (M_FindGlyph(key_buf) != nullptr) {
             memcpy(out + out_len, p, sz);
             out_len += sz;
         }
