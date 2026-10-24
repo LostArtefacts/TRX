@@ -178,6 +178,7 @@
 - Fixed the vultures at the beginning of Nevada Desert visibly shifting to the floor when triggered
 - Fixed the appearance of Lara's holstered Uzis not matching those in her hands (OG bug) (TRX1776)
 - Fixed the Shiva statues that drop scimitars in Temple Ruins keeping the hand of the dropped sword after they die (TRX1813, regression from 1.2)
+- Fixed a door looking too bright in the `HSC` cutscene (TRX31)
 
 **TR4**
 - Added Small Scorpion control (TRX1562)

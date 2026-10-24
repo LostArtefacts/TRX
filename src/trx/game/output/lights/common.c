@@ -3,7 +3,9 @@
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/camera/vars.h>
+#include <trx/game/collision.h>
 #include <trx/game/const.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/output/lights.h>
@@ -240,6 +242,15 @@ void Output_CalculateObjectLighting(
     if (item->shade.value_1 >= 0) {
         Output_CalculateStaticMeshLight(
             item->pos, item->shade, Room_Get(item->room_num));
+        return;
+    }
+
+    // Samples TR3 cutscene actors at their root joint, as the original does.
+    // A bounding box centre can fall in a brighter spot than the actor.
+    if (g_TRVersion == 3 && GF_GetCurrentLevel()->type == GFL_CUTSCENE) {
+        GAME_VECTOR sample_pos = { .room_num = item->room_num };
+        Collide_GetJointAbsPosition(item, &sample_pos.pos, 0);
+        Output_CalculateObjectLightingAt(item, sample_pos);
         return;
     }
 
