@@ -216,6 +216,8 @@ typedef struct MESH_BATCHER {
     // from the mesh buffers.
     struct {
         GLuint vao;
+        // The indices that the sorted pass writes out for its batches.
+        GLuint ebo;
         GLuint ubo;
         GLuint lights_ubo;
         // Buffer textures over vbo.geom, vbo.tex and vbo.shade as words, and
@@ -231,6 +233,7 @@ typedef struct MESH_BATCHER {
         int32_t max_vertices;
     } batch;
     M_DRAW_LIST batch_draws[M_RUN_COUNT];
+    VECTOR *batch_indices; // uint32_t
     VECTOR *batch_steps; // M_BATCH_STEP
     uint8_t *batch_slots;
     size_t batch_slots_size;
@@ -975,6 +978,25 @@ static void M_AddStaticFaces(
     M_AddDraw(batcher, open, run, index_start, index_count, base_vertex);
 }
 
+// Adds faces of an instance to run 0 of the open batch, by indices written
+// out for the batch alone, each holding the window and the slot. The indices
+// of a batch follow one another, so the batch draws them all at once.
+static void M_AddPackedFaces(
+    MESH_BATCHER *const batcher, M_BATCH_STEP *const open,
+    const MESH_INSTANCE *const inst, const M_MESH_BUF_BINDING *const bind,
+    const uint32_t *const indices, const int32_t index_count)
+{
+    const int32_t slot_idx = M_PlaceInBatch(batcher, open, inst, bind);
+    const uint32_t add = (uint32_t)(bind->vertex_start - open->vertex_base)
+        | (uint32_t)slot_idx << M_BATCH_VERTEX_BITS;
+    const int32_t index_start = batcher->batch_indices->count;
+    uint32_t *const out = Vector_Expand(batcher->batch_indices, index_count);
+    for (int32_t i = 0; i < index_count; i++) {
+        out[i] = indices[i] + add;
+    }
+    M_AddDraw(batcher, open, 0, index_start, index_count, 0);
+}
+
 static void M_ClearBatches(MESH_BATCHER *const batcher)
 {
     for (int32_t run = 0; run < M_RUN_COUNT; run++) {
@@ -982,6 +1004,7 @@ static void M_ClearBatches(MESH_BATCHER *const batcher)
         Vector_Clear(batcher->batch_draws[run].offsets);
         Vector_Clear(batcher->batch_draws[run].bases);
     }
+    Vector_Clear(batcher->batch_indices);
     Vector_Clear(batcher->batch_steps);
     batcher->batch_slots_size = 0;
     batcher->batch_lights_size = 0;
@@ -990,6 +1013,38 @@ static void M_ClearBatches(MESH_BATCHER *const batcher)
 static bool M_CanBatch(const MESH_BATCHER *const batcher)
 {
     return batcher->vertex_count <= batcher->batch.max_vertices;
+}
+
+// Lays the sorted pass out as steps: faces gathered into batches, with the
+// entries that a batch cannot hold, such as faded objects, kept in their place
+// between them.
+static void M_BuildSortedSteps(MESH_BATCHER *const batcher)
+{
+    M_ClearBatches(batcher);
+    const bool can_batch = M_CanBatch(batcher);
+    M_BATCH_STEP open = { .entry_idx = -1 };
+    for (int32_t i = 0; i < batcher->transparent_sort->count; i++) {
+        const M_FACE_SORT *const sort_ptr =
+            Vector_Get(batcher->transparent_sort, i);
+        if (!M_IsGroupEntry(sort_ptr) && sort_ptr->index_count == 0) {
+            continue;
+        }
+        if (!can_batch || M_IsGroupEntry(sort_ptr) || sort_ptr->baked) {
+            M_CloseBatch(batcher, &open);
+            Vector_Add(
+                batcher->batch_steps, &(M_BATCH_STEP) { .entry_idx = i });
+            continue;
+        }
+
+        const M_MESH_BUF_BINDING *const bind =
+            M_GetBinding(batcher, sort_ptr->inst->mesh);
+        ASSERT(bind != nullptr);
+        M_AddPackedFaces(
+            batcher, &open, sort_ptr->inst, bind,
+            (const uint32_t *)sort_ptr->face->vertex_indices,
+            sort_ptr->face->vertex_count);
+    }
+    M_CloseBatch(batcher, &open);
 }
 
 // Every batch binds a whole block, so the buffer reaches a block past where
@@ -1021,6 +1076,19 @@ static void M_UploadBatches(const MESH_BATCHER *const batcher, const GLuint ebo)
             batcher->batch.lights_ubo, batcher->batch_lights,
             batcher->batch_lights_size, batcher->batch_lights_capacity);
     }
+}
+
+static void M_UploadPackedIndices(const MESH_BATCHER *const batcher)
+{
+    if (batcher->batch_indices->count == 0) {
+        return;
+    }
+    glBindVertexArray(batcher->batch.vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->batch.ebo);
+    TRX_GL_TRACK_DATA(
+        glBufferData, GL_ELEMENT_ARRAY_BUFFER,
+        batcher->batch_indices->count * sizeof(uint32_t),
+        Vector_GetData(batcher->batch_indices), GL_STREAM_DRAW);
 }
 
 static void M_DrawBatch(
@@ -1192,19 +1260,31 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
     }
 
     M_UploadBaked(batcher);
+    M_BuildSortedSteps(batcher);
+    M_UploadBatches(batcher, batcher->batch.ebo);
+    M_UploadPackedIndices(batcher);
 
     GLuint bound_vao = 0;
     GLuint bound_ebo = 0;
 
     const MESH_INSTANCE *inst = nullptr;
 
-    for (int32_t i = 0; i < batcher->transparent_sort->count; i++) {
-        const M_FACE_SORT *const sort_ptr =
-            Vector_Get(batcher->transparent_sort, i);
-
-        if (!M_IsGroupEntry(sort_ptr) && sort_ptr->index_count == 0) {
+    for (int32_t step_idx = 0; step_idx < batcher->batch_steps->count;
+         step_idx++) {
+        const M_BATCH_STEP *const step =
+            Vector_Get(batcher->batch_steps, step_idx);
+        if (step->entry_idx < 0) {
+            M_DrawBatch(batcher, step, 0, SCENE_PASS_TRANSPARENT);
+            bound_vao = batcher->batch.vao;
+            bound_ebo = 0;
+            // The batch moved the depth offset, so the next entry puts its
+            // instance's state up again.
+            inst = nullptr;
             continue;
         }
+        Output_MeshShader_UnbindBatch(batcher->shader);
+        const M_FACE_SORT *const sort_ptr =
+            Vector_Get(batcher->transparent_sort, step->entry_idx);
 
         const GLuint vao = sort_ptr->baked ? batcher->baked.vao : batcher->vao;
         if (vao != bound_vao) {
@@ -1246,6 +1326,7 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
         g_TRX_GL_Metrics.trans_draw_count++;
     }
 
+    Output_MeshShader_UnbindBatch(batcher->shader);
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
@@ -1525,6 +1606,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     batcher->batch.max_vertices = M_IsBaseVertexInVertexID()
         ? max_texels / (int32_t)(sizeof(M_MESH_TEXTURE) / sizeof(uint32_t))
         : 0;
+    batcher->batch_indices = Vector_Create(sizeof(uint32_t));
     for (int32_t run = 0; run < M_RUN_COUNT; run++) {
         batcher->batch_draws[run] = (M_DRAW_LIST) {
             .counts = Vector_Create(sizeof(GLsizei)),
@@ -1541,6 +1623,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     // The batch draws read no attributes, so its vertex array holds the
     // indices alone.
     glGenVertexArrays(1, &batcher->batch.vao);
+    glGenBuffers(1, &batcher->batch.ebo);
     glGenBuffers(2, &batcher->batch.ubo);
     glGenTextures(4, &batcher->batch.geom_data);
     const GLuint textures[4] = {
@@ -1611,6 +1694,11 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
         glDeleteTextures(4, &batcher->batch.geom_data);
         batcher->batch.geom_data = 0;
     }
+    if (batcher->batch.ebo != 0) {
+        glDeleteBuffers(1, &batcher->batch.ebo);
+        batcher->batch.ebo = 0;
+    }
+    Vector_Free(batcher->batch_indices);
     for (int32_t run = 0; run < M_RUN_COUNT; run++) {
         Vector_Free(batcher->batch_draws[run].counts);
         Vector_Free(batcher->batch_draws[run].offsets);
