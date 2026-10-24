@@ -12,6 +12,7 @@
 --     end,
 --   })
 
+local accent = require("common.ui.accent")
 local metrics = require("common.ui.metrics")
 local scroll = require("common.ui.scroll")
 local presets = require("common.ui.settings.presets")
@@ -28,6 +29,7 @@ local CONFIRM_ROW_SPACING = 2
 local CONFIRM_MIN_ROWS = 4
 local CONFIRM_MAX_ROWS = 10
 local CHOICE_SPACING = 12
+local VALUE_SPACING = 12
 local CHOICE_PAD = 8
 
 local Role = trx.input.Role
@@ -72,7 +74,7 @@ local function show_message(push, title, message)
         x = CONFIRM_PAD,
         y = CONFIRM_PAD,
         child = window.new({
-          title = wrap(title, width),
+          title = accent.text(wrap(title, width)),
           heavy = true,
           content = trx.ui.widgets.Pad({
             x = CONFIRM_PAD,
@@ -122,20 +124,32 @@ local function confirm(push, preset, changes)
       + width_of(back_text)
       + 4 * CHOICE_PAD
   )
-  local texts = {}
-  for _, change in ipairs(changes) do
-    local value = ("  %s \\{button right} %s"):format(
-      change.current,
-      change.target
-    )
-    local name = rows.title(change.key)
-    natural = math.max(natural, width_of(name), width_of(value))
-    texts[#texts + 1] = name
-    texts[#texts + 1] = value
-  end
   local budget = trx.ui.safe_area.width / trx.ui.text_scale
     - 2 * CONFIRM_PAD
     - window.chrome_width()
+
+  -- Each setting shows its name with the change to its value on the right.
+  -- Where any setting is too wide for that, every name stands over its value.
+  local entries = {}
+  local paired = 0.0
+  for _, change in ipairs(changes) do
+    local name = rows.title(change.key)
+    local value = ("%s \\{button right} %s"):format(
+      change.current,
+      change.target
+    )
+    paired = math.max(paired, width_of(name) + VALUE_SPACING + width_of(value))
+    entries[#entries + 1] = { name = name, value = value }
+  end
+  local side_by_side = paired + 1 <= budget
+  if side_by_side then
+    natural = math.max(natural, paired)
+  else
+    for _, entry in ipairs(entries) do
+      entry.value = "  " .. entry.value
+      natural = math.max(natural, width_of(entry.name), width_of(entry.value))
+    end
+  end
   local width = math.min(natural + 1, math.max(budget, CONFIRM_MIN_W))
 
   local wrapped_title = wrap(title, width)
@@ -171,8 +185,9 @@ local function confirm(push, preset, changes)
   end
   visible = math.max(CONFIRM_MIN_ROWS, math.min(visible, CONFIRM_MAX_ROWS))
 
-  -- The list scrolls a line at a time, so each wrapped line is a row. An empty
-  -- line is a gap of one line.
+  -- The list scrolls a line at a time, so each wrapped line is a row, and so
+  -- is a setting that shows its value beside it. An empty line is a gap of
+  -- one line.
   local lines = {}
   local function add(text)
     for _, line in ipairs(lines_of(text)) do
@@ -183,8 +198,15 @@ local function confirm(push, preset, changes)
     add(wrapped_description)
     add("")
   end
-  for _, text in ipairs(texts) do
-    add(wrap(text, width))
+  for _, entry in ipairs(entries) do
+    if side_by_side then
+      lines[#lines + 1] = entry
+    else
+      add(wrap(entry.name, width))
+      for _, line in ipairs(lines_of(wrap(entry.value, width))) do
+        lines[#lines + 1] = accent.text(line)
+      end
+    end
   end
   if compact then
     add("")
@@ -192,15 +214,30 @@ local function confirm(push, preset, changes)
   end
   local list = scroll.new({ count = #lines, visible = visible })
 
+  local function line_widget(line)
+    if type(line) == "table" then
+      return trx.ui.widgets.Stack({
+        orientation = trx.ui.Orientation.HORIZONTAL,
+        align = trx.ui.HAlign.DISTRIBUTE,
+        spacing = VALUE_SPACING,
+        children = { label(line.name), label(accent.text(line.value)) },
+      })
+    elseif line == "" then
+      return trx.ui.widgets.Spacer({ h = line_height })
+    end
+    return label(line)
+  end
+
+  -- Every row is as wide as the dialog, so that the dialog keeps its width
+  -- whichever rows show as the list scrolls.
   local line_rows = {}
   for i, line in ipairs(lines) do
-    if line == "" then
-      line_rows[i] =
-        trx.ui.widgets.Spacer({ h = line_height, visible = list:shows(i) })
-    else
-      line_rows[i] =
-        trx.ui.widgets.Label({ text = line, visible = list:shows(i) })
-    end
+    line_rows[i] = trx.ui.widgets.Resize({
+      w = width,
+      scaled = true,
+      visible = list:shows(i),
+      child = line_widget(line),
+    })
   end
 
   local choice = trx.signal.new(1)
@@ -209,7 +246,7 @@ local function confirm(push, preset, changes)
       x = CONFIRM_PAD,
       y = CONFIRM_PAD,
       child = window.new({
-        title = wrapped_title,
+        title = accent.text(wrapped_title),
         heavy = true,
         scroll = list,
         reserve_scroll = true,

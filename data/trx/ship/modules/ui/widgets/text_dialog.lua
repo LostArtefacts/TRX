@@ -9,6 +9,7 @@
 --     dialog:control(keys)
 --   end })
 
+local accent = require("common.ui.accent")
 local metrics = require("common.ui.metrics")
 
 local M = {}
@@ -165,7 +166,9 @@ function M.frame(settings)
   if settings.title ~= nil then
     children[1] = trx.ui.widgets.Stack({
       align = trx.ui.HAlign.CENTER,
-      children = { trx.ui.widgets.Label({ text = settings.title }) },
+      children = {
+        trx.ui.widgets.Label({ text = accent.signal(settings.title) }),
+      },
     })
     children[2] = trx.ui.widgets.Spacer({ w = TITLE_MARGIN, h = TITLE_MARGIN })
   end
