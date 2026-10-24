@@ -38,6 +38,7 @@ end
 ---@field selected integer
 ---@field first integer The row at the top of the room, as the list scrolls.
 ---@field on_back? fun() Runs once the player backs out of the list.
+---@field build? fun(): common.ui.flat_menu.list.settings Makes the heading and the rows again, for a list made from a function.
 local List = {}
 List.__index = List
 
@@ -48,11 +49,18 @@ List.__index = List
 ---@field rows common.ui.flat_menu.list.Row[]
 ---@field selected? integer The row picked first. 1 by default.
 
--- Makes a list.
----@param settings common.ui.flat_menu.list.settings
+-- Makes a list. A list made from a function can be rebuilt, so that its text
+-- follows a change of the language.
+---@param settings common.ui.flat_menu.list.settings | fun(): common.ui.flat_menu.list.settings
 ---@return common.ui.flat_menu.List
 function M.new(settings)
+  local build = nil
+  if type(settings) == "function" then
+    build = settings
+    settings = build()
+  end
   local self = setmetatable({
+    build = build,
     heading = settings.heading,
     heading_role = settings.heading_role or accent.Role.MENU_HEADING,
     heading_gap = settings.heading_gap or 3 / 2,
@@ -92,6 +100,35 @@ function List:follow()
   elseif self.selected > self.first + shown - 1 then
     self.first = self.selected - shown + 1
   end
+end
+
+-- Makes the heading and the rows again, for a list made from a function. The
+-- selection stays on the same row, or on the last row where the list gets
+-- shorter.
+function List:rebuild()
+  if self.build == nil then
+    return
+  end
+  local settings = self.build()
+  self.heading = settings.heading
+  self.rows = settings.rows
+  self.selected = math.max(math.min(self.selected, #self.rows), 1)
+  self:follow()
+end
+
+-- Rebuilds each list in `lists` whenever a setting changes, until the screen
+-- that `ctx` holds ends.
+---@param ctx trx.ui.ScreenContext
+---@param lists common.ui.flat_menu.List[]
+function M.follow_settings(ctx, lists)
+  local follow = trx.config.signals.changed:on(function()
+    for _, each in ipairs(lists) do
+      each:rebuild()
+    end
+  end)
+  ctx:on_end(function()
+    follow:detach()
+  end)
 end
 
 -- Returns the row picked, or nil for an empty list.

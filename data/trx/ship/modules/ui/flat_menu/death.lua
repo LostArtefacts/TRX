@@ -78,40 +78,44 @@ function M.open(ctx)
     end, true)
   end
 
-  local rows = {}
-  if pages.saving_enabled() then
-    rows[#rows + 1] = {
-      text = trx.locale.get("general/passport/load_game"),
-      choose = load_game,
+  local function build()
+    local rows = {}
+    if pages.saving_enabled() then
+      rows[#rows + 1] = {
+        text = trx.locale.get("general/passport/load_game"),
+        choose = load_game,
+      }
+    end
+    if trx.game.can_restart_level() then
+      rows[#rows + 1] = {
+        text = trx.locale.get("general/passport/restart_level"),
+        choose = function()
+          trx.game.restart_level()
+          leave()
+        end,
+      }
+    end
+    -- The original offers the way back to the title screen only next to the
+    -- saves; alone, GAME OVER takes the player there by itself.
+    if #rows > 0 then
+      rows[#rows + 1] = {
+        text = trx.locale.get("general/passport/exit_to_title"),
+        choose = function()
+          trx.game.exit_to_title()
+          leave()
+        end,
+      }
+    end
+    return {
+      heading = trx.locale.get("general/inventory_ring/heading_game_over"),
+      heading_role = accent.Role.MENU_WARNING,
+      heading_gap = GAME_OVER_GAP,
+      rows = rows,
     }
   end
-  if trx.game.can_restart_level() then
-    rows[#rows + 1] = {
-      text = trx.locale.get("general/passport/restart_level"),
-      choose = function()
-        trx.game.restart_level()
-        leave()
-      end,
-    }
-  end
-  -- The original offers the way back to the title screen only next to the
-  -- saves; alone, GAME OVER takes the player there by itself.
-  local alone = #rows == 0
-  if not alone then
-    rows[#rows + 1] = {
-      text = trx.locale.get("general/passport/exit_to_title"),
-      choose = function()
-        trx.game.exit_to_title()
-        leave()
-      end,
-    }
-  end
-  local menu = list.new({
-    heading = trx.locale.get("general/inventory_ring/heading_game_over"),
-    heading_role = accent.Role.MENU_WARNING,
-    heading_gap = GAME_OVER_GAP,
-    rows = rows,
-  })
+  local menu = list.new(build)
+  local alone = #menu.rows == 0
+  list.follow_settings(ctx, { menu })
 
   return ctx:push({
     root = trx.ui.widgets.Custom({

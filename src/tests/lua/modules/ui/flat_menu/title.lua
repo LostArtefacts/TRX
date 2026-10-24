@@ -73,6 +73,49 @@ test("the flat title menu lists what the original lists", function()
   finish()
 end)
 
+-- The strings load nothing here, so declaring the text as the menu shows
+-- stands in for the player picking another language.
+test("the flat title menu follows the player's language", function()
+  local function listeners()
+    local count = 0
+    for _ in pairs(rawget(trx.config.signals.changed, "_listeners")) do
+      count = count + 1
+    end
+    return count
+  end
+  local before = listeners()
+  local options = L("general/flat_menu/options")
+  fake.set_slot_count(trx.savegame.Pool.NORMAL, 1)
+  fake.set_slot_free(1, trx.savegame.Pool.NORMAL)
+  open()
+  for _ = 1, 5 do
+    if shows(accent.text(options, accent.Role.PICKED)) then
+      break
+    end
+    press(Role.MENU_DOWN)
+  end
+  press(Role.MENU_CONFIRM)
+  assert(shows(options), "the options did not open")
+
+  trx.locale.declare({
+    ["general/passport/load_game"] = "Resume",
+    ["general/settings/graphic_settings/title"] = "Looks",
+  })
+  trx.config.set("audio.master_volume", 40)
+  fake.tick()
+  assert(shows("Looks"), "the options kept their old text")
+  press(Role.MENU_BACK)
+  assert(shows("Resume"), "the menu kept its old text")
+  assert(
+    shows(accent.text(options, accent.Role.PICKED)),
+    "the menu lost its selection"
+  )
+
+  trx.config.reset("audio.master_volume")
+  finish()
+  assert(listeners() == before, "the menu kept listening")
+end)
+
 test("the title menu stands in the middle of the free room", function()
   open()
   local top, bottom = math.huge, -math.huge
