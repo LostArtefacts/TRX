@@ -61,7 +61,7 @@
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Changed the inventory and pause screens in TR4 to no longer fade in and out by default, as in the original game (Graphic Options → UI)
 - Changed the TR4 inventory to open on the item it was left on by default, and to keep that item in saved games, as in the original game (Gameplay → General → Remember inventory position) (TRX1843)
-- Changed the names of the items in the TR4 inventory to show in gold, as in the original game
+- Changed the names and counts of the items in the TR4 inventory, and in its combine and ammo dialogs, to show in gold, as in the original game (TRX1890)
 - Changed the headings and values of the TR4 option dialogs, save lists, new game lists and statistics to show in orange, as in the original game (TRX1853)
 - Changed the TR4 font and arrows to look as in the original game (TRX1845)
 - Changed the texts of the examined items in TR4 to show in the colours of the original game (TRX484)

@@ -190,7 +190,10 @@ local function count_label(state)
   ---@type string[]
   local captions = {}
   for i, kind in ipairs(state.kinds) do
-    captions[i] = ammo.caption(state.choice.weapon, kind.kind)
+    captions[i] = accent.text(
+      ammo.caption(state.choice.weapon, kind.kind),
+      accent.Role.NAME
+    )
   end
   return steady_label(captions, function()
     return state.selected:get()

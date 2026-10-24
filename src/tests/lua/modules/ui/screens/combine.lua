@@ -4,6 +4,8 @@
 local h = require("harness")
 local test = h.test
 
+local accent = require("common.ui.accent")
+
 local Role = trx.input.Role
 local COMBINE = trx.ui.Screen.COMBINE
 local objects = trx.catalog.objects
@@ -247,6 +249,18 @@ test("the frame stays where it first shows", function()
   end
   assert(first ~= nil, "the frame never showed")
   finish()
+end)
+
+test("the frame names the entry in gold in TR4", function()
+  fake.set_tr_version(4)
+  open(PARTNERS)
+  local gold = accent.color("", accent.color_of(accent.Role.NAME))
+  assert(
+    texts():find(gold .. trx.objects[PARTNERS[1]].name, 1, true) ~= nil,
+    texts()
+  )
+  finish()
+  fake.set_tr_version(1)
 end)
 
 return h.report()

@@ -1,6 +1,7 @@
 -- Combining an entry in the inventory ring: what it combines with, in a row,
 -- slid along to the one wanted, in a frame that names it.
 
+local accent = require("common.ui.accent")
 local ring = require("common.ui.ring")
 
 local M = {}
@@ -80,7 +81,7 @@ local function dialog(state)
           state.row,
           trx.ui.widgets.Label({
             text = state.landed:map(function(at)
-              return name_of(partners[at])
+              return accent.text(name_of(partners[at]), accent.Role.NAME)
             end),
           }),
         },

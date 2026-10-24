@@ -133,7 +133,8 @@ static int32_t m_DefaultColor = 0;
 static const char *m_DefaultSpec = nullptr;
 
 // The height of a capital in each font, in sprite units above the baseline,
-// which the TR4 shades are spread over.
+// which the TR4 shades are spread over. A font with no capitals, such as the
+// TR4 small font, takes the height of its digits.
 static int32_t m_CapHeight[M_FONT_COUNT] = {};
 
 static float M_ScaleScreen(const float value)
@@ -867,6 +868,15 @@ static void M_Process(
     }
 }
 
+// Returns how far the sprite of a glyph reaches above the baseline.
+static int32_t M_GetGlyphTop(const M_FONT font, const M_GLYPH_INFO *const glyph)
+{
+    const OBJECT *const object = Object_Get(m_FontObjects[font]);
+    const SPRITE_TEXTURE *const sprite =
+        Output_GetSpriteTexture(object->mesh_idx + glyph->mesh_idx);
+    return -sprite->y0;
+}
+
 void UI_InitText(void)
 {
     m_Colors = Vector_Create(sizeof(M_COLOR));
@@ -923,18 +933,21 @@ void UI_LoadText(void)
         (M_COLOR) { .top = plain, .bottom = plain };
 
     for (M_FONT font = 0; font < M_FONT_COUNT; font++) {
-        m_CapHeight[font] = 0;
+        int32_t cap_height = 0;
+        int32_t digit_height = 0;
         for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
              glyph_ptr++) {
             glyph_ptr->width[font] = M_GetGlyphWidth(font, glyph_ptr);
-            if (glyph_ptr->width[font] > 0
-                && strcmp(glyph_ptr->text, "A") == 0) {
-                const OBJECT *const object = Object_Get(m_FontObjects[font]);
-                const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(
-                    object->mesh_idx + glyph_ptr->mesh_idx);
-                m_CapHeight[font] = -sprite->y0;
+            if (glyph_ptr->width[font] <= 0) {
+                continue;
+            }
+            if (strcmp(glyph_ptr->text, "A") == 0) {
+                cap_height = M_GetGlyphTop(font, glyph_ptr);
+            } else if (strcmp(glyph_ptr->text, "0") == 0) {
+                digit_height = M_GetGlyphTop(font, glyph_ptr);
             }
         }
+        m_CapHeight[font] = cap_height > 0 ? cap_height : digit_height;
     }
 }
 
