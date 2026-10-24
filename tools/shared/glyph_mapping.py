@@ -271,11 +271,11 @@ class LinkSource(BaseSource):
 
     ctx: ParserContext
     link_to: str
-    linked_source: BaseSource | None = None
+    linked_glyph: Glyph | None = None
     index: int | None = None
 
     def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
-        return self.linked_source.load(glyph)
+        return self.linked_glyph.source.load(self.linked_glyph)
 
 
 class CombineSource(BaseSource):
@@ -586,9 +586,9 @@ def resolve_links(glyphs: list[Glyph]) -> None:
     glyph_map = {(glyph.text, glyph.font_idx): glyph for glyph in glyphs}
     for glyph in glyphs:
         if isinstance(glyph.source, LinkSource):
-            glyph.source.linked_source = _lookup(
+            glyph.source.linked_glyph = _lookup(
                 glyph.source.link_to, glyph.font_idx
-            ).source
+            )
     for glyph in glyphs:
         if isinstance(glyph.source, CombineSource):
             glyph.source.glyph1_source = _lookup(
