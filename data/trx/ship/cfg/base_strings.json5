@@ -1998,6 +1998,10 @@
             "title": "3D pickups",
             "description": "Enables 3D models to be rendered in place of the sprites for pickup items.",
         },
+        "visuals.enable_all_upv_wakes": {
+            "title": "Wakes on every UPV",
+            "description": "Every UPV will leave wakes behind its handlebars. When disabled, only a UPV that a trigger activates leaves wakes, as in the PC version.",
+        },
         "visuals.enable_droplets": {
             "title": "Water droplets",
             "description": "Enables rendering of water droplets dripping off Lara after she leaves water.",

@@ -1998,6 +1998,10 @@
             "title": "Togail 3D",
             "description": "Cuiridh seo modailean 3D an àite spraidean airson nithean togail.",
         },
+        "visuals.enable_all_upv_wakes": {
+            "title": "\\{review}Lorg uisge air gach UPV",
+            "description": "\\{review}Fàgaidh gach UPV lorg uisge air cùl a làmhan-stiùiridh. Nuair a bhios seo dheth, chan fhàg ach UPV a chuir inneal-brosnachaidh an gnìomh lorg uisge, mar a tha san tionndadh PC.",
+        },
         "visuals.enable_droplets": {
             "title": "Boinnean uisge",
             "description": "Leigeas le boinnean uisge sileadh far Lara às dèidh dhi an t-uisge fhàgail.",

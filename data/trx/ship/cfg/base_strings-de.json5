@@ -1998,6 +1998,10 @@
             "title": "3D-Pickups",
             "description": "Aktiviert die Darstellung von 3D-Modellen für Pickups anstatt der üblichen Sprites.",
         },
+        "visuals.enable_all_upv_wakes": {
+            "title": "\\{review}Kielwasser bei jedem UPV",
+            "description": "\\{review}Jedes UPV hinterlässt Kielwasser hinter seinen Lenkgriffen. Wenn deaktiviert, hinterlässt nur ein UPV, das ein Auslöser aktiviert, Kielwasser, wie in der PC-Version.",
+        },
         "visuals.enable_droplets": {
             "title": "\\{review}Wassertropfen",
             "description": "\\{review}Aktiviert das Anzeigen von Wassertropfen, die von Lara tropfen, nachdem sie das Wasser verlassen hat.",

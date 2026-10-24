@@ -1,5 +1,6 @@
 #include <trx/game/objects/vehicles/upv.h>
 
+#include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
@@ -333,7 +334,7 @@ static bool M_Draw(const ITEM *const item)
 
 finish:
     Matrix_Pop();
-    if (Item_IsTriggerActiveRO(item)) {
+    if (g_Config.visuals.enable_all_upv_wakes || Item_IsTriggerActiveRO(item)) {
         for (int32_t side = 0; side < 2; side++) {
             XYZ_32 origin[2];
             M_GetWakeOrigin(item, side, origin);
@@ -876,7 +877,8 @@ static void M_Control(int16_t item_num)
     const int32_t time4 = Output_GetTimeInGame() * 4;
     if ((time4 & 0xF) == 0 && p->vel != 0) {
         for (int32_t side = 0; side < 2; side++) {
-            if (Item_IsTriggerActive(item)) {
+            const bool is_active = Item_IsTriggerActive(item);
+            if (g_Config.visuals.enable_all_upv_wakes || is_active) {
                 XYZ_32 wake_pos[2];
                 M_GetWakeOrigin(item, side, wake_pos);
                 FX_UPVWake_Spawn(item, side, wake_pos);

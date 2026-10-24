@@ -429,6 +429,11 @@ local HANDLERS = {
       return get("gameplay.save_crystal_mode") ~= "off"
     end,
   },
+  ["visuals.enable_all_upv_wakes"] = {
+    visible = function()
+      return trx.game.tr_version == 3
+    end,
+  },
   ["visuals.shadow_type"] = {
     offered = function(value)
       return value ~= "sprite" or loaded(trx.catalog.objects.SHADOW)

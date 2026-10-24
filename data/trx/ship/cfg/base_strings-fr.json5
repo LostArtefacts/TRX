@@ -1998,6 +1998,10 @@
             "title": "Objets à ramasser 3D",
             "description": "Affiche les objets à ramasser en 3D au lieu de les afficher en sprites.",
         },
+        "visuals.enable_all_upv_wakes": {
+            "title": "\\{review}Sillage sur chaque UPV",
+            "description": "\\{review}Chaque UPV laissera un sillage derrière ses poignées. Si désactivé, seul un UPV activé par un déclencheur laisse un sillage, comme dans la version PC.",
+        },
         "visuals.enable_droplets": {
             "title": "\\{review}Gouttes d'eau",
             "description": "\\{review}Active l'affichage des gouttes d'eau qui tombent de Lara après qu'elle est sortie de l'eau.",
