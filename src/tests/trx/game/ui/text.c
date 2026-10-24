@@ -6,6 +6,7 @@
 // margin reads as the next heading instead.
 
 #include <fakes/ui.h>
+#include <fakes/ui_draw.h>
 #include <harness/harness.h>
 
 #include <trx/config/vars.h>
@@ -179,5 +180,46 @@ TEST(ui_text_color_marker_is_a_glyph)
     CHECK(strcmp(dropped, "AB") == 0);
     Memory_Free(dropped);
 
+    UI_ShutdownText();
+}
+
+// Returns the colour at a corner of the first sprite drawn, as the draw fake
+// writes it, or nullptr where no sprite was drawn.
+static const char *M_GetSpriteCorner(const char *const corner)
+{
+    for (int32_t i = 0; i < FakeUIDraw_GetCount(); i++) {
+        const char *const line = FakeUIDraw_GetLine(i);
+        if (strncmp(line, "sprite idx=", 11) != 0) {
+            continue;
+        }
+        const char *const at = strstr(line, corner);
+        return at != nullptr ? at + strlen(corner) : nullptr;
+    }
+    return nullptr;
+}
+
+// The TR4 small font has digits and no capitals. Its glyphs still go from the
+// top shade of their colour to the bottom one, as the large ones do.
+TEST(ui_text_tr4_small_digits_take_both_shades)
+{
+    UI_InitText();
+    FakeUI_SetGame(4);
+    FakeUI_SetViewport(640, 480);
+    g_ConfigStorage.ui.text_scale = 1.0f;
+    UI_LoadText();
+    FakeUIDraw_Forget();
+
+    UI_Text_Draw(
+        "\\{small}\\{color #e0c000 #402000}0", 0.0f, 0.0f,
+        (UI_TEXT_SETTINGS) { .scale = 1.0f });
+    const char *const top = M_GetSpriteCorner(" tl=");
+    const char *const bottom = M_GetSpriteCorner(" bl=");
+    if (top == nullptr || bottom == nullptr) {
+        TEST_FAIL("the digit drew no sprite");
+    } else {
+        CHECK(strncmp(top, bottom, 8) != 0);
+    }
+
+    FakeUIDraw_Forget();
     UI_ShutdownText();
 }

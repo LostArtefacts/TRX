@@ -139,7 +139,7 @@ local STYLES = {
   [4] = {
     value = { color = "orange" },
     name = { color = "gold" },
-    count = { small = true },
+    count = { color = "gold", small = true },
     counter = { small = true },
     readout = { small = true },
     dim = { color = "dim" },

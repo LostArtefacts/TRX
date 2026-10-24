@@ -5,6 +5,7 @@
 local h = require("harness")
 local test = h.test
 
+local accent = require("common.ui.accent")
 local entries = require("common.ui.ring.entries")
 require("common.ui.menu").setup()
 
@@ -294,6 +295,24 @@ test("the count stays where it is as the hints go", function()
     ("the count moved from %d to %s"):format(before, after)
   )
   finish()
+end)
+
+-- Returns the gold that TR4 draws the names of entries in, as the text
+-- markup opens it.
+local function gold()
+  return accent.color("", accent.color_of(accent.Role.NAME))
+end
+
+test("the row and the ring name and count the shells in gold", function()
+  fake.set_tr_version(4)
+  carry()
+  open(SHOTGUN)
+  local count = require("common.ui.ring").signals.count:get()
+  assert(count ~= nil and count:find(gold(), 1, true), tostring(count))
+  open_row()
+  assert(shows(gold() .. "3 x "), "the kind is not named in gold")
+  finish()
+  fake.set_tr_version(1)
 end)
 
 return h.report()
