@@ -450,7 +450,7 @@ static void M_Stage(const OBJECT_MESH *const mesh)
             policy->adjust_light_info(&light_info);
         }
     }
-    Output_Lights_FillInstanceLight(&light_info, g_WMatrixPtr);
+    Output_Lights_FillInstanceLight(&light_info);
 
     const VIEWPORT_RECT *const scissor = Output_GetObjectScissor();
     OUTPUT_WATER_LINE water_line = {};

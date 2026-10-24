@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/output/lights.h>
+#include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/rooms.h>
 #include <trx/game/types.h>
@@ -62,14 +63,19 @@ typedef struct {
     void (*prepare_scene)(void); // nullable
     void (*animate)(int32_t num_frames); // nullable
     // Lets the model refine the light snapshot per staged mesh instance
-    // (TR4 resolves its light list relative to each mesh's world position).
-    void (*fill_instance_light)(
-        OUTPUT_LIGHT_INFO *info, const MATRIX *wmatrix); // nullable
+    // (TR4 resolves its light list for each staged instance).
+    void (*fill_instance_light)(OUTPUT_LIGHT_INFO *info); // nullable
 
-    void (*upload_cpu_light)(
-        const OUTPUT_UNIFORMS *uniforms, const OUTPUT_LIGHT_INFO *info);
-    void (*upload_own_light)(
-        const OUTPUT_UNIFORMS *uniforms, const OUTPUT_LIGHT_INFO *info);
+    // Writes the light of one instance into its slot: the light of the
+    // object, or the light that its own vertices carry where `own` is set. A
+    // model that lights from a list adds the lights to the draw's list,
+    // which has room for at least as many as get_slot_light_count returns.
+    void (*fill_slot_light)(
+        const OUTPUT_LIGHT_INFO *info, bool own, float out[7][4],
+        OUTPUT_MESH_LIGHT_LIST *lights);
+    // Returns how many lights fill_slot_light can add to a draw's list for
+    // one instance at most.
+    int32_t (*get_slot_light_count)(const OUTPUT_LIGHT_INFO *info); // nullable
 
     int32_t shader_variant;
 } LIGHTING_MODEL;
@@ -84,39 +90,11 @@ const LIGHTING_MODEL *Output_Lights_GetModel(void);
 void Output_Lights_TR3_AddDynamicLight(
     XYZ_32 pos, int32_t intensity, int32_t falloff);
 
-// Per-family LightSource UBO layouts (binding point 3). The GL buffer is
-// shared and sized to the largest layout; each family uploads only its own.
-#pragma pack(push, 4)
-typedef struct {
-    float adder;
-    float divider;
-    float _pad0[2];
-    float vector_view[4];
-} OUTPUT_UNIFORM_LS_TR12;
-
-typedef struct {
-    float ambient[4];
-    float dir_view[3][4];
-    float color[3][4];
-} OUTPUT_UNIFORM_LS_TR3;
-
 // 21 current + 21 previous room lights plus dynamics, truncated beyond.
 #define OUTPUT_TR4_MAX_STAGED_LIGHTS 48
 
-typedef struct {
-    float ambient[4]; // 0..1 scale where 128/255 is the OG neutral
-    int32_t num_lights;
-    int32_t _pad[3];
-    struct {
-        float pos[4]; // object space; w = type
-        float color[4]; // rgb 0..1; w = range
-        float dir[4]; // object space, where a spot points or a sun shines;
-                      // w = att1
-        float cone[4]; // x = cosine of a spot's cone edge
-    } lights[OUTPUT_TR4_MAX_STAGED_LIGHTS];
-} OUTPUT_UNIFORM_LS_TR4;
-
-// Binding point 4; OUTPUT_MAX_FOG_BULBS bulbs at once.
+#pragma pack(push, 4)
+// Binding point 3; OUTPUT_MAX_FOG_BULBS bulbs at once.
 typedef struct {
     int32_t count;
     int32_t _pad[3];
@@ -128,22 +106,6 @@ typedef struct {
     } bulbs[OUTPUT_MAX_FOG_BULBS];
 } OUTPUT_UNIFORM_FOG_BULBS;
 #pragma pack(pop)
-
-typedef enum {
-    LS_MODE_NONE = 0,
-    LS_MODE_FULL = 1,
-    LS_MODE_OWN = 2,
-} OUTPUT_LS_MODE;
-
-typedef struct {
-    OUTPUT_LIGHT_INFO last_info;
-    OUTPUT_LS_MODE mode;
-    int32_t last_own_adder;
-    RGB_F last_own_tr3_ambient;
-} OUTPUT_LS_CACHE;
-
-OUTPUT_LS_CACHE *Output_Lights_GetLSCache(void);
-size_t Output_Lights_GetLSBufferSize(void);
 
 // Shared light data accessors.
 const LIGHT_LEGACY_DATA *Output_Lights_GetLegacyData(const LIGHT *light);
@@ -158,10 +120,8 @@ int16_t Output_Lights_ShadeFromMul(float mul);
 void Output_Lights_SetScalarStaticLight(int16_t adder);
 
 // Model dispatch entry points for the render pipeline.
-void Output_Lights_UploadCPULight(const OUTPUT_LIGHT_INFO *info);
 void Output_Lights_UploadOwnLight(const OUTPUT_LIGHT_INFO *info);
-void Output_Lights_FillInstanceLight(
-    OUTPUT_LIGHT_INFO *info, const MATRIX *wmatrix);
+void Output_Lights_FillInstanceLight(OUTPUT_LIGHT_INFO *info);
 void Output_Lights_BeginScene(void);
 void Output_Lights_PrepareScene(void);
 void Output_Lights_ResetUploadCache(void);

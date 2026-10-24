@@ -9,6 +9,7 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/lights/fog_bulbs.h>
 #include <trx/game/output/lights/priv.h>
+#include <trx/game/output/shaders/mesh.h>
 #include <trx/game/random.h>
 #include <trx/version.h>
 
@@ -32,7 +33,6 @@ static bool m_IsSunsetEnabled = false;
 static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static M_ROOM_LIGHT_TABLE m_RoomLightTables[OUTPUT_LIGHT_CYCLE] = {};
 static VECTOR *m_DynamicLights = nullptr;
-static OUTPUT_LS_CACHE m_LSCache = {};
 
 static struct {
     int32_t count;
@@ -109,21 +109,8 @@ const LIGHTING_MODEL *Output_Lights_GetModel(void)
     return m_Models[g_TRVersion <= 2 ? 0 : (g_TRVersion == 3 ? 1 : 2)];
 }
 
-OUTPUT_LS_CACHE *Output_Lights_GetLSCache(void)
-{
-    return &m_LSCache;
-}
-
-size_t Output_Lights_GetLSBufferSize(void)
-{
-    return MAX(
-        MAX(sizeof(OUTPUT_UNIFORM_LS_TR12), sizeof(OUTPUT_UNIFORM_LS_TR3)),
-        sizeof(OUTPUT_UNIFORM_LS_TR4));
-}
-
 void Output_Lights_ResetUploadCache(void)
 {
-    memset(&m_LSCache, 0, sizeof(m_LSCache));
     Output_FogBulbs_ResetUploadCache();
 }
 
@@ -353,23 +340,20 @@ void Output_Lights_PrepareScene(void)
     }
 }
 
-void Output_Lights_FillInstanceLight(
-    OUTPUT_LIGHT_INFO *const info, const MATRIX *const wmatrix)
+void Output_Lights_FillInstanceLight(OUTPUT_LIGHT_INFO *const info)
 {
     const LIGHTING_MODEL *const model = Output_Lights_GetModel();
     if (model->fill_instance_light != nullptr) {
-        model->fill_instance_light(info, wmatrix);
+        model->fill_instance_light(info);
     }
-}
-
-void Output_Lights_UploadCPULight(const OUTPUT_LIGHT_INFO *const info)
-{
-    Output_Lights_GetModel()->upload_cpu_light(Output_GetUniforms(), info);
 }
 
 void Output_Lights_UploadOwnLight(const OUTPUT_LIGHT_INFO *const info)
 {
-    Output_Lights_GetModel()->upload_own_light(Output_GetUniforms(), info);
+    float light[7][4] = {};
+    OUTPUT_MESH_LIGHT_LIST lights = {};
+    Output_Lights_GetModel()->fill_slot_light(info, true, light, &lights);
+    Output_MeshShader_UploadLight(Output_GetMeshShader(), light);
 }
 
 void Output_ResetDynamicLights(void)

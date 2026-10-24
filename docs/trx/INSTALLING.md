@@ -100,7 +100,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── meshes_tr3.glsl
 │   │   ├── meshes_tr4.glsl
 │   │   ├── meshes_tr12.glsl
-│   │   └── ui.glsl
+│   │   ├── ui.glsl
+│   │   └── vertex_id.glsl
 │   ├── base_strings-de.json5
 │   ├── base_strings-en-gb.json5
 │   ├── base_strings-fr.json5
@@ -1664,7 +1665,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── meshes_tr3.glsl
     │   │   │   ├── meshes_tr4.glsl
     │   │   │   ├── meshes_tr12.glsl
-    │   │   │   └── ui.glsl
+    │   │   │   ├── ui.glsl
+    │   │   │   └── vertex_id.glsl
     │   │   ├── base_strings-de.json5
     │   │   ├── base_strings-en-gb.json5
     │   │   ├── base_strings-fr.json5

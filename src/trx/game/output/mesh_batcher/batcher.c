@@ -1,5 +1,6 @@
 #include <trx/game/output/mesh_batcher/batcher.h>
 
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
@@ -8,6 +9,7 @@
 #include <trx/game/output/uniforms.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
+#include <trx/game/rooms/enum.h>
 #include <trx/gl/utils.h>
 
 #include <uthash.h>
@@ -16,14 +18,27 @@
 // comparator returns, and a truncated difference orders qsort's input
 // inconsistently rather than merely imprecisely.
 #define M_COMPARE(a_, b_) (((a_) > (b_)) - ((a_) < (b_)))
+// How many vertices a batch can count from its vertex base; the bits of
+// gl_VertexID above them hold the slot.
+#define M_BATCH_VERTEX_BITS 24
+#define M_BATCH_VERTEX_MASK ((1u << M_BATCH_VERTEX_BITS) - 1)
+// How many runs of draws a batch holds. The opaque pass draws the faces that
+// need no alpha test as run 0 and the others as run 1.
+#define M_RUN_COUNT 2
+// The vertex that the startup check draws, and the base vertex it draws it
+// with.
+#define M_VERTEX_ID_TEST_INDEX 5
+#define M_VERTEX_ID_TEST_BASE (3 << M_BATCH_VERTEX_BITS)
 
 typedef float M_MESH_SHADE;
 
+// A batch reads these as 32-bit words, so each field starts on one, in the
+// order meshes.glsl reads them.
 typedef struct {
     XYZW_F pos;
     XYZW_F normal;
-    OUTPUT_USHORT flags;
     RGBA_8888 color;
+    OUTPUT_USHORT flags;
     float tint_factor;
 } M_MESH_GEOM;
 
@@ -35,12 +50,23 @@ typedef struct {
     float uv_scroll[2];
 } M_MESH_TEXTURE;
 
+static_assert(offsetof(M_MESH_GEOM, color) == 8 * sizeof(uint32_t));
+static_assert(offsetof(M_MESH_GEOM, flags) == 9 * sizeof(uint32_t));
+static_assert(offsetof(M_MESH_GEOM, tint_factor) == 10 * sizeof(uint32_t));
+static_assert(sizeof(M_MESH_GEOM) == 11 * sizeof(uint32_t));
+static_assert(offsetof(M_MESH_TEXTURE, texture_size) == 3 * sizeof(uint32_t));
+static_assert(
+    offsetof(M_MESH_TEXTURE, trapezoid_ratio) == 7 * sizeof(uint32_t));
+static_assert(offsetof(M_MESH_TEXTURE, reflectivity) == 9 * sizeof(uint32_t));
+static_assert(offsetof(M_MESH_TEXTURE, uv_scroll) == 10 * sizeof(uint32_t));
+static_assert(sizeof(M_MESH_TEXTURE) == 12 * sizeof(uint32_t));
+static_assert(sizeof(M_MESH_SHADE) == sizeof(uint32_t));
+
 typedef struct M_MESH_BUF_BINDING {
     OUTPUT_MESH *mesh;
     M_MESH_GEOM *geom_data;
     M_MESH_TEXTURE *tex_data;
     M_MESH_SHADE *shade_data;
-    bool needs_room_lights;
     bool needs_cpu_light;
     bool needs_object_light;
     bool needs_own_light;
@@ -80,6 +106,40 @@ typedef struct {
     int32_t group;
     bool baked;
 } M_FACE_SORT;
+
+// A run of the draws that a batch makes in one go, as a stretch of the draw
+// lists.
+typedef struct {
+    int32_t first_draw;
+    int32_t draw_count;
+    int32_t index_count;
+} M_BATCH_RUN;
+
+// The draws of the batches as glMultiDrawElementsBaseVertex takes them: a
+// stretch of an index buffer each, and the base vertex to add to its indices.
+typedef struct {
+    VECTOR *counts; // GLsizei
+    VECTOR *offsets; // const void *
+    VECTOR *bases; // GLint
+} M_DRAW_LIST;
+
+// One step of a batched pass, in the order it draws: either a batch, which
+// draws faces of several instances at once, or an entry, which draws on its
+// own.
+typedef struct {
+    // The entry, or -1 for a batch.
+    int32_t entry_idx;
+    M_BATCH_RUN runs[M_RUN_COUNT];
+    // Where the batch's indices count their vertices from.
+    int32_t vertex_base;
+    // Where the batch's slots start in the slot buffer, in bytes.
+    int32_t slot_offset;
+    int32_t slot_count;
+    // Where the batch's lights start in the light buffer, in bytes.
+    int32_t light_offset;
+    int32_t light_count;
+    float depth_adjust;
+} M_BATCH_STEP;
 
 // The solid part of one baked instance, contiguous in the baked buffers so it
 // draws in one go.
@@ -147,6 +207,41 @@ typedef struct MESH_BATCHER {
     // object is staged a mesh at a time, so a run of them at one coverage is
     // one object.
     const MESH_INSTANCE *bake_tail;
+
+    // The passes drawn in batches. A batch draws the faces of many instances
+    // in one call, so that instances that differ in their matrix, light or
+    // tint follow one another. Each vertex comes to the shader as a
+    // gl_VertexID that holds the vertex in the low M_BATCH_VERTEX_BITS and
+    // the slot of its instance above them, and the shader reads the vertex
+    // from the mesh buffers.
+    struct {
+        GLuint vao;
+        GLuint ubo;
+        GLuint lights_ubo;
+        // Buffer textures over vbo.geom, vbo.tex and vbo.shade as words, and
+        // over vbo.geom as bytes.
+        GLuint geom_data;
+        GLuint tex_data;
+        GLuint shade_data;
+        GLuint geom_colors;
+        int32_t max_slots;
+        int32_t max_lights;
+        int32_t slot_align;
+        // How many vertices the buffer textures reach.
+        int32_t max_vertices;
+    } batch;
+    M_DRAW_LIST batch_draws[M_RUN_COUNT];
+    VECTOR *batch_steps; // M_BATCH_STEP
+    uint8_t *batch_slots;
+    size_t batch_slots_size;
+    size_t batch_slots_capacity;
+    uint8_t *batch_lights;
+    size_t batch_lights_size;
+    size_t batch_lights_capacity;
+    // The instances of the open batch, by the slot each has.
+    const MESH_INSTANCE **batch_insts;
+    // The lights of the instance of a draw that holds one.
+    OUTPUT_MESH_LIGHT *single_lights;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -197,14 +292,58 @@ static void M_FillShade(
     *shade = vertex->shade;
 }
 
-static void M_SyncRoom(
-    const MESH_BATCHER *const batcher, const M_MESH_BUF_BINDING *const bind,
-    const ROOM *const room)
+static void M_FillSlot(
+    OUTPUT_MESH_SLOT *const slot, const MESH_INSTANCE *const inst,
+    const M_MESH_BUF_BINDING *const bind, OUTPUT_MESH_LIGHT_LIST *const lights)
 {
-    if (!bind->needs_room_lights) {
-        return;
+    *slot = (OUTPUT_MESH_SLOT) {};
+    Output_FillMatrix(slot->model, &inst->wmatrix);
+    slot->tint[0] = inst->tint.r;
+    slot->tint[1] = inst->tint.g;
+    slot->tint[2] = inst->tint.b;
+    slot->tint[3] = inst->tint.a;
+    slot->water[0] = inst->has_water_line ? 1.0f : 0.0f;
+    slot->water[1] = inst->water_line;
+    slot->water[2] = (float)inst->water_effect;
+    slot->water[3] = inst->wibble ? 1.0f : 0.0f;
+    Output_MeshShader_GetWaterEffectParams(
+        inst->water_effect, slot->water_params);
+    slot->submerged[0] = inst->submerged_ambient_delta.r;
+    slot->submerged[1] = inst->submerged_ambient_delta.g;
+    slot->submerged[2] = inst->submerged_ambient_delta.b;
+    slot->submerged[3] = inst->has_submerged_ambient ? 1.0f : 0.0f;
+    slot->ambient_span[0] = inst->ambient_span_from.r;
+    slot->ambient_span[1] = inst->ambient_span_from.g;
+    slot->ambient_span[2] = inst->ambient_span_from.b;
+    slot->ambient_span[3] = inst->has_ambient_span ? 1.0f : 0.0f;
+    slot->room[0] =
+        (float)(inst->room != nullptr ? inst->room->light_mode : RLM_SUNSET);
+
+    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
+    if (bind->needs_object_light) {
+        model->fill_slot_light(&inst->light_info, false, slot->light, lights);
+    } else if (bind->needs_own_light) {
+        model->fill_slot_light(&inst->light_info, true, slot->light, lights);
     }
-    Output_Uniforms_UploadRoomLights(Output_GetUniforms(), room);
+}
+
+// Puts the instance up in slot 0 for the draws that follow, placed by the
+// matrix given.
+static void M_UploadInstance(
+    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst,
+    const M_MESH_BUF_BINDING *const bind, const MATRIX *const matrix,
+    const bool wibble)
+{
+    OUTPUT_MESH_LIGHT_LIST lights = {
+        .data = batcher->single_lights,
+        .capacity = batcher->batch.max_lights,
+    };
+    OUTPUT_MESH_SLOT slot;
+    M_FillSlot(&slot, inst, bind, &lights);
+    Output_FillMatrix(slot.model, matrix);
+    slot.water[3] = wibble ? 1.0f : 0.0f;
+    Output_MeshShader_UploadSlot(
+        batcher->shader, &slot, lights.data, lights.count);
 }
 
 static void M_AnimateBinding(
@@ -356,21 +495,6 @@ static void M_DrawOpaqueInstance(
     ASSERT(bind != nullptr);
 
     Output_MeshShader_SetNoAlphaDiscard(batcher->shader, no_discard);
-    M_SyncRoom(batcher, bind, inst->room);
-    if (bind->needs_object_light) {
-        Output_Lights_UploadCPULight(&inst->light_info);
-    } else if (bind->needs_own_light) {
-        Output_Lights_UploadOwnLight(&inst->light_info);
-    }
-    Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
-    Output_MeshShader_UploadTint(batcher->shader, inst->tint);
-    Output_MeshShader_UploadWaterLine(
-        batcher->shader, inst->has_water_line, inst->water_line);
-    Output_MeshShader_UploadSubmergedAmbient(
-        batcher->shader, inst->has_submerged_ambient,
-        inst->submerged_ambient_delta);
-    Output_MeshShader_UploadAmbientSpan(
-        batcher->shader, inst->has_ambient_span, inst->ambient_span_from);
 
     if (inst->enable_scissor) {
         Output_EnableScissor(
@@ -378,14 +502,13 @@ static void M_DrawOpaqueInstance(
             inst->scissor.height);
     }
 
-    Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
     if (inst->wibble && inst->wibble_fill) {
-        Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
+        M_UploadInstance(batcher, inst, bind, &inst->wmatrix, false);
         glDepthMask(GL_FALSE);
         M_DrawOpaqueVertices(batcher, inst, no_discard);
         glDepthMask(GL_TRUE);
     }
-    Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
+    M_UploadInstance(batcher, inst, bind, &inst->wmatrix, inst->wibble);
     M_DrawOpaqueVertices(batcher, inst, no_discard);
 
     if (inst->enable_scissor) {
@@ -399,23 +522,7 @@ static void M_DrawBlendAddInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    M_SyncRoom(batcher, bind, inst->room);
-    if (bind->needs_object_light) {
-        Output_Lights_UploadCPULight(&inst->light_info);
-    } else if (bind->needs_own_light) {
-        Output_Lights_UploadOwnLight(&inst->light_info);
-    }
-    Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
-    Output_MeshShader_UploadTint(batcher->shader, inst->tint);
-    Output_MeshShader_UploadWaterLine(
-        batcher->shader, inst->has_water_line, inst->water_line);
-    Output_MeshShader_UploadSubmergedAmbient(
-        batcher->shader, inst->has_submerged_ambient,
-        inst->submerged_ambient_delta);
-    Output_MeshShader_UploadAmbientSpan(
-        batcher->shader, inst->has_ambient_span, inst->ambient_span_from);
-    Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
-    Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
+    M_UploadInstance(batcher, inst, bind, &inst->wmatrix, false);
 
     if (inst->enable_scissor) {
         Output_EnableScissor(
@@ -579,109 +686,27 @@ static void M_UploadBaked(const MESH_BATCHER *const batcher)
         Vector_GetData(batcher->baked_indices), GL_STREAM_DRAW);
 }
 
-static void M_OpaquePass(MESH_BATCHER *const batcher)
-{
-    VECTOR *const staged = batcher->staged[SCENE_PASS_OPAQUE];
-
-    glBindVertexArray(batcher->vao);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.opaque);
-    for (int32_t i = 0; i < staged->count; i++) {
-        MESH_INSTANCE *const inst = Vector_Get(staged, i);
-        const M_MESH_BUF_BINDING *const bind =
-            M_GetBinding(batcher, inst->mesh);
-
-        // Face opacity is fixed when the mesh is built, so the routing has to
-        // happen per instance: at partial coverage the whole instance is
-        // baked, and it leaves this pass entirely.
-        if (inst->tint.a < 1.0f) {
-            M_BakeInstance(batcher, bind, inst);
-            continue;
-        }
-
-        if (bind->opaque_nodiscard_count != 0) {
-            Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-            M_DrawOpaqueInstance(batcher, inst, true);
-        }
-
-        // Accumulate transparent polygons and faces.
-        for (int32_t j = 0; j < inst->mesh->transparent_faces->count; j++) {
-            Vector_Add(
-                batcher->transparent_sort,
-                &(M_FACE_SORT) {
-                    .inst = inst,
-                    .face = Vector_Get(inst->mesh->transparent_faces, j),
-                    .index_start = bind->transparent_index_start
-                        + bind->transparent_face_index_starts[j],
-                    .index_count = bind->transparent_face_index_counts[j],
-                });
-        }
-    }
-
-    for (int32_t i = 0; i < staged->count; i++) {
-        MESH_INSTANCE *const inst = Vector_Get(staged, i);
-        if (inst->tint.a < 1.0f) {
-            continue;
-        }
-        const M_MESH_BUF_BINDING *const bind =
-            M_GetBinding(batcher, inst->mesh);
-        if (bind->opaque_index_count - bind->opaque_nodiscard_count <= 0) {
-            continue;
-        }
-        Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-        M_DrawOpaqueInstance(batcher, inst, false);
-    }
-
-    Output_MeshShader_SetNoAlphaDiscard(batcher->shader, false);
-    Output_AdjustDepth(0.0f, 0.0f);
-}
-
 // Put an instance's state up. The bake took its matrix away, so an item's
-// instances of one object differ in nothing, and the uploads below drop what
-// they already hold.
+// instances of one object differ in nothing, and the upload drops what it
+// already holds.
 static void M_ApplyBakedState(
     MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst,
-    const M_MESH_BUF_BINDING *const bind, const MESH_INSTANCE **const prev)
+    const M_MESH_BUF_BINDING *const bind)
 {
-    if (*prev == nullptr
-        || memcmp(
-               &(*prev)->light_info, &inst->light_info,
-               sizeof(inst->light_info))
-            != 0) {
-        if (bind->needs_object_light) {
-            Output_Lights_UploadCPULight(&inst->light_info);
-        } else if (bind->needs_own_light) {
-            Output_Lights_UploadOwnLight(&inst->light_info);
-        }
-    }
-    if (*prev == nullptr || (*prev)->room != inst->room) {
-        M_SyncRoom(batcher, bind, inst->room);
-    }
-    Output_MeshShader_UploadModelMatrix(batcher->shader, &g_IDMatrix);
-    Output_MeshShader_UploadTint(batcher->shader, inst->tint);
-    Output_MeshShader_UploadWaterLine(
-        batcher->shader, inst->has_water_line, inst->water_line);
-    Output_MeshShader_UploadSubmergedAmbient(
-        batcher->shader, inst->has_submerged_ambient,
-        inst->submerged_ambient_delta);
-    Output_MeshShader_UploadAmbientSpan(
-        batcher->shader, inst->has_ambient_span, inst->ambient_span_from);
-    Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
-    Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
+    M_UploadInstance(batcher, inst, bind, &g_IDMatrix, inst->wibble);
     Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-    *prev = inst;
 }
 
 static void M_DrawBakedGroupRanges(
     MESH_BATCHER *const batcher, const M_BAKED_GROUP *const group)
 {
-    const MESH_INSTANCE *prev = nullptr;
     for (int32_t i = 0; i < group->range_count; i++) {
         const M_BAKED_RANGE *const range =
             Vector_Get(batcher->baked_ranges, group->range_start + i);
         const M_MESH_BUF_BINDING *const bind =
             M_GetBinding(batcher, range->inst->mesh);
         ASSERT(bind != nullptr);
-        M_ApplyBakedState(batcher, range->inst, bind, &prev);
+        M_ApplyBakedState(batcher, range->inst, bind);
         glDrawElements(
             GL_TRIANGLES, range->index_count, GL_UNSIGNED_INT,
             (void *)(intptr_t)(range->index_start * sizeof(uint32_t)));
@@ -765,6 +790,401 @@ static void M_BlendPass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
+// Closes the open batch, if any, as the next step of the pass.
+static void M_CloseBatch(MESH_BATCHER *const batcher, M_BATCH_STEP *const open)
+{
+    bool has_draws = false;
+    for (int32_t run = 0; run < M_RUN_COUNT; run++) {
+        has_draws |= open->runs[run].draw_count > 0;
+    }
+    if (open->slot_count > 0 && has_draws) {
+        Vector_Add(batcher->batch_steps, open);
+    }
+    open->slot_count = 0;
+}
+
+// Returns where a block's binding may start after what the buffer holds, and
+// leaves room for a whole block there.
+static size_t M_ReserveBlock(
+    uint8_t **const data, size_t *const size, size_t *const capacity,
+    const size_t align, const size_t block_size)
+{
+    const size_t offset = (*size + align - 1) / align * align;
+    const size_t need = offset + block_size;
+    if (need > *capacity) {
+        *capacity = MAX(need, *capacity * 2);
+        *data = Memory_Realloc(*data, *capacity);
+    }
+    *size = offset;
+    return offset;
+}
+
+// Starts a batch whose slots and lights begin where the blocks' bindings may
+// start.
+static void M_OpenBatch(
+    MESH_BATCHER *const batcher, M_BATCH_STEP *const open,
+    const float depth_adjust, const int32_t vertex_base)
+{
+    const size_t align = (size_t)batcher->batch.slot_align;
+    const size_t slot_offset = M_ReserveBlock(
+        &batcher->batch_slots, &batcher->batch_slots_size,
+        &batcher->batch_slots_capacity, align,
+        (size_t)batcher->batch.max_slots * sizeof(OUTPUT_MESH_SLOT));
+    size_t light_offset = 0;
+    if (batcher->batch.max_lights > 0) {
+        light_offset = M_ReserveBlock(
+            &batcher->batch_lights, &batcher->batch_lights_size,
+            &batcher->batch_lights_capacity, align,
+            (size_t)batcher->batch.max_lights * sizeof(OUTPUT_MESH_LIGHT));
+    }
+    *open = (M_BATCH_STEP) {
+        .entry_idx = -1,
+        .vertex_base = vertex_base,
+        .slot_offset = (int32_t)slot_offset,
+        .light_offset = (int32_t)light_offset,
+        .depth_adjust = depth_adjust,
+    };
+    for (int32_t run = 0; run < M_RUN_COUNT; run++) {
+        open->runs[run].first_draw = batcher->batch_draws[run].counts->count;
+    }
+}
+
+static int32_t M_GetSlotLightCount(
+    const MESH_INSTANCE *const inst, const M_MESH_BUF_BINDING *const bind)
+{
+    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
+    if (model->get_slot_light_count == nullptr || !bind->needs_object_light) {
+        return 0;
+    }
+    return model->get_slot_light_count(&inst->light_info);
+}
+
+static int32_t M_GetBatchSlot(
+    MESH_BATCHER *const batcher, M_BATCH_STEP *const open,
+    const MESH_INSTANCE *const inst, const M_MESH_BUF_BINDING *const bind)
+{
+    // Faces of one instance tend to sort near one another, so the search
+    // starts from the slot added last.
+    for (int32_t i = open->slot_count - 1; i >= 0; i--) {
+        if (batcher->batch_insts[i] == inst) {
+            return i;
+        }
+    }
+    if (open->slot_count == batcher->batch.max_slots
+        || open->light_count + M_GetSlotLightCount(inst, bind)
+            > batcher->batch.max_lights) {
+        return -1;
+    }
+    const int32_t slot_idx = open->slot_count++;
+    batcher->batch_insts[slot_idx] = inst;
+    OUTPUT_MESH_SLOT *const slot =
+        (OUTPUT_MESH_SLOT *)(batcher->batch_slots + open->slot_offset)
+        + slot_idx;
+    OUTPUT_MESH_LIGHT_LIST lights = {
+        .data = batcher->batch_lights != nullptr
+            ? (OUTPUT_MESH_LIGHT *)(batcher->batch_lights + open->light_offset)
+            : nullptr,
+        .count = open->light_count,
+        .capacity = batcher->batch.max_lights,
+    };
+    M_FillSlot(slot, inst, bind, &lights);
+    open->light_count = lights.count;
+    batcher->batch_slots_size =
+        open->slot_offset + open->slot_count * sizeof(OUTPUT_MESH_SLOT);
+    if (batcher->batch.max_lights > 0) {
+        batcher->batch_lights_size =
+            open->light_offset + open->light_count * sizeof(OUTPUT_MESH_LIGHT);
+    }
+    return slot_idx;
+}
+
+// Adds a draw to a run of the open batch. A draw that takes up where the last
+// draw of the run ends, with the same base vertex, extends that draw instead.
+static void M_AddDraw(
+    MESH_BATCHER *const batcher, M_BATCH_STEP *const open, const int32_t run,
+    const int32_t index_start, const int32_t index_count,
+    const GLint base_vertex)
+{
+    const M_DRAW_LIST *const list = &batcher->batch_draws[run];
+    M_BATCH_RUN *const batch_run = &open->runs[run];
+    const void *const offset =
+        (const void *)(intptr_t)(index_start * sizeof(uint32_t));
+    batch_run->index_count += index_count;
+    if (batch_run->draw_count > 0) {
+        const int32_t last = list->counts->count - 1;
+        GLsizei *const last_count = Vector_Get(list->counts, last);
+        const void *const *const last_offset = Vector_Get(list->offsets, last);
+        const GLint *const last_base = Vector_Get(list->bases, last);
+        if (*last_base == base_vertex
+            && (const uint8_t *)*last_offset + *last_count * sizeof(uint32_t)
+                == (const uint8_t *)offset) {
+            *last_count += index_count;
+            return;
+        }
+    }
+    const GLsizei count = index_count;
+    Vector_Add(list->counts, &count);
+    Vector_Add(list->offsets, &offset);
+    Vector_Add(list->bases, &base_vertex);
+    batch_run->draw_count++;
+}
+
+// Returns the slot of an instance in the open batch, and opens a new batch
+// where the open one cannot take the instance.
+static int32_t M_PlaceInBatch(
+    MESH_BATCHER *const batcher, M_BATCH_STEP *const open,
+    const MESH_INSTANCE *const inst, const M_MESH_BUF_BINDING *const bind)
+{
+    // A mesh lies in one window of vertices, as no mesh comes near the size
+    // of one, so the window of its first vertex holds all of it.
+    const int32_t vertex_base =
+        bind->vertex_start & ~(int32_t)M_BATCH_VERTEX_MASK;
+    ASSERT(
+        bind->vertex_start - vertex_base + bind->vertex_count
+        <= (int32_t)M_BATCH_VERTEX_MASK + 1);
+    if (open->slot_count > 0
+        && (open->depth_adjust != inst->depth_adjust
+            || open->vertex_base != vertex_base)) {
+        M_CloseBatch(batcher, open);
+    }
+    if (open->slot_count == 0) {
+        M_OpenBatch(batcher, open, inst->depth_adjust, vertex_base);
+    }
+    int32_t slot_idx = M_GetBatchSlot(batcher, open, inst, bind);
+    if (slot_idx < 0) {
+        M_CloseBatch(batcher, open);
+        M_OpenBatch(batcher, open, inst->depth_adjust, vertex_base);
+        slot_idx = M_GetBatchSlot(batcher, open, inst, bind);
+    }
+    return slot_idx;
+}
+
+// Adds faces of an instance to a run of the open batch, by where their
+// indices sit in a static index buffer. The indices count their vertices
+// from index_vertex, and the base vertex of the draw adds the window and the
+// slot.
+static void M_AddStaticFaces(
+    MESH_BATCHER *const batcher, M_BATCH_STEP *const open, const int32_t run,
+    const MESH_INSTANCE *const inst, const M_MESH_BUF_BINDING *const bind,
+    const int32_t index_start, const int32_t index_count,
+    const int32_t index_vertex)
+{
+    const int32_t slot_idx = M_PlaceInBatch(batcher, open, inst, bind);
+    const GLint base_vertex = index_vertex - open->vertex_base
+        + (GLint)((uint32_t)slot_idx << M_BATCH_VERTEX_BITS);
+    M_AddDraw(batcher, open, run, index_start, index_count, base_vertex);
+}
+
+static void M_ClearBatches(MESH_BATCHER *const batcher)
+{
+    for (int32_t run = 0; run < M_RUN_COUNT; run++) {
+        Vector_Clear(batcher->batch_draws[run].counts);
+        Vector_Clear(batcher->batch_draws[run].offsets);
+        Vector_Clear(batcher->batch_draws[run].bases);
+    }
+    Vector_Clear(batcher->batch_steps);
+    batcher->batch_slots_size = 0;
+    batcher->batch_lights_size = 0;
+}
+
+static bool M_CanBatch(const MESH_BATCHER *const batcher)
+{
+    return batcher->vertex_count <= batcher->batch.max_vertices;
+}
+
+// Every batch binds a whole block, so the buffer reaches a block past where
+// the last batch's part starts, but only the part in use is sent.
+static void M_UploadBlocks(
+    const GLuint ubo, const uint8_t *const data, const size_t size,
+    const size_t capacity)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+    glBufferData(GL_UNIFORM_BUFFER, capacity, nullptr, GL_STREAM_DRAW);
+    TRX_GL_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, size, data);
+}
+
+// Puts up the slots and lights of the batches, which draw their indices from
+// the index buffer given.
+static void M_UploadBatches(const MESH_BATCHER *const batcher, const GLuint ebo)
+{
+    if (batcher->batch_slots_size == 0) {
+        return;
+    }
+    glBindVertexArray(batcher->batch.vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+    M_UploadBlocks(
+        batcher->batch.ubo, batcher->batch_slots, batcher->batch_slots_size,
+        batcher->batch_slots_capacity);
+    if (batcher->batch.max_lights > 0) {
+        M_UploadBlocks(
+            batcher->batch.lights_ubo, batcher->batch_lights,
+            batcher->batch_lights_size, batcher->batch_lights_capacity);
+    }
+}
+
+static void M_DrawBatch(
+    MESH_BATCHER *const batcher, const M_BATCH_STEP *const step,
+    const int32_t run, const SCENE_PASS pass)
+{
+    const M_BATCH_RUN *const batch_run = &step->runs[run];
+    if (batch_run->draw_count == 0) {
+        return;
+    }
+    Output_MeshShader_BindBatch(
+        batcher->shader,
+        &(OUTPUT_MESH_BATCH) {
+            .slots = batcher->batch.ubo,
+            .slot_offset = step->slot_offset,
+            .lights = batcher->batch.lights_ubo,
+            .light_offset = step->light_offset,
+            .geom_data = batcher->batch.geom_data,
+            .tex_data = batcher->batch.tex_data,
+            .shade_data = batcher->batch.shade_data,
+            .geom_colors = batcher->batch.geom_colors,
+            .vertex_base = step->vertex_base,
+        });
+    glBindVertexArray(batcher->batch.vao);
+    Output_AdjustDepth(0.0f, step->depth_adjust * 2.0f / 0.005f);
+    const M_DRAW_LIST *const list = &batcher->batch_draws[run];
+    glMultiDrawElementsBaseVertex(
+        GL_TRIANGLES, Vector_Get(list->counts, batch_run->first_draw),
+        GL_UNSIGNED_INT, Vector_Get(list->offsets, batch_run->first_draw),
+        batch_run->draw_count, Vector_Get(list->bases, batch_run->first_draw));
+    if (pass == SCENE_PASS_OPAQUE) {
+        g_TRX_GL_Metrics.opaque_vert_count += batch_run->index_count;
+        g_TRX_GL_Metrics.opaque_draw_count++;
+    } else {
+        g_TRX_GL_Metrics.trans_vert_count += batch_run->index_count;
+        g_TRX_GL_Metrics.trans_draw_count++;
+    }
+}
+
+// Lays the opaque faces of the staged instances out as steps, in the order
+// the instances were staged: instances gathered into batches, with the
+// instances that need state of their own, such as a scissor, kept in their
+// place between them. Each batch holds the faces that need no alpha
+// test as run 0 and the others as run 1, so that both share its slots.
+static void M_BuildOpaqueSteps(MESH_BATCHER *const batcher)
+{
+    M_ClearBatches(batcher);
+    const bool can_batch = M_CanBatch(batcher);
+    const VECTOR *const staged = batcher->staged[SCENE_PASS_OPAQUE];
+    M_BATCH_STEP open = { .entry_idx = -1 };
+    for (int32_t i = 0; i < staged->count; i++) {
+        const MESH_INSTANCE *const inst = Vector_Get(staged, i);
+        if (inst->tint.a < 1.0f) {
+            continue;
+        }
+        const M_MESH_BUF_BINDING *const bind =
+            M_GetBinding(batcher, inst->mesh);
+        if (bind->opaque_index_count == 0) {
+            continue;
+        }
+        if (!can_batch || inst->enable_scissor
+            || (inst->wibble && inst->wibble_fill)) {
+            M_CloseBatch(batcher, &open);
+            Vector_Add(
+                batcher->batch_steps, &(M_BATCH_STEP) { .entry_idx = i });
+            continue;
+        }
+        const int32_t clean = bind->opaque_nodiscard_count;
+        const int32_t counts[M_RUN_COUNT] = {
+            clean,
+            bind->opaque_index_count - clean,
+        };
+        const int32_t starts[M_RUN_COUNT] = {
+            bind->opaque_index_start,
+            bind->opaque_index_start + clean,
+        };
+        for (int32_t run = 0; run < M_RUN_COUNT; run++) {
+            if (counts[run] > 0) {
+                M_AddStaticFaces(
+                    batcher, &open, run, inst, bind, starts[run], counts[run],
+                    bind->vertex_start);
+            }
+        }
+    }
+    M_CloseBatch(batcher, &open);
+}
+
+static void M_DrawOpaqueSteps(
+    MESH_BATCHER *const batcher, const bool no_discard)
+{
+    Output_MeshShader_SetNoAlphaDiscard(batcher->shader, no_discard);
+
+    const int32_t run = no_discard ? 0 : 1;
+    const VECTOR *const staged = batcher->staged[SCENE_PASS_OPAQUE];
+    bool is_vao_bound = false;
+    for (int32_t step_idx = 0; step_idx < batcher->batch_steps->count;
+         step_idx++) {
+        const M_BATCH_STEP *const step =
+            Vector_Get(batcher->batch_steps, step_idx);
+        if (step->entry_idx < 0) {
+            M_DrawBatch(batcher, step, run, SCENE_PASS_OPAQUE);
+            is_vao_bound = false;
+            continue;
+        }
+        const MESH_INSTANCE *const inst = Vector_Get(staged, step->entry_idx);
+        const M_MESH_BUF_BINDING *const bind =
+            M_GetBinding(batcher, inst->mesh);
+        const int32_t clean = bind->opaque_nodiscard_count;
+        const int32_t count =
+            no_discard ? clean : bind->opaque_index_count - clean;
+        if (count == 0) {
+            continue;
+        }
+        Output_MeshShader_UnbindBatch(batcher->shader);
+        if (!is_vao_bound) {
+            glBindVertexArray(batcher->vao);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.opaque);
+            is_vao_bound = true;
+        }
+        Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
+        M_DrawOpaqueInstance(batcher, inst, no_discard);
+    }
+    Output_MeshShader_UnbindBatch(batcher->shader);
+}
+
+static void M_OpaquePass(MESH_BATCHER *const batcher)
+{
+    VECTOR *const staged = batcher->staged[SCENE_PASS_OPAQUE];
+    for (int32_t i = 0; i < staged->count; i++) {
+        MESH_INSTANCE *const inst = Vector_Get(staged, i);
+        const M_MESH_BUF_BINDING *const bind =
+            M_GetBinding(batcher, inst->mesh);
+
+        // Face opacity is fixed when the mesh is built, so the routing has to
+        // happen per instance: at partial coverage the whole instance is
+        // baked, and it leaves this pass entirely.
+        if (inst->tint.a < 1.0f) {
+            M_BakeInstance(batcher, bind, inst);
+            continue;
+        }
+
+        // Accumulate transparent polygons and faces.
+        for (int32_t j = 0; j < inst->mesh->transparent_faces->count; j++) {
+            Vector_Add(
+                batcher->transparent_sort,
+                &(M_FACE_SORT) {
+                    .inst = inst,
+                    .face = Vector_Get(inst->mesh->transparent_faces, j),
+                    .index_start = bind->transparent_index_start
+                        + bind->transparent_face_index_starts[j],
+                    .index_count = bind->transparent_face_index_counts[j],
+                });
+        }
+    }
+
+    M_BuildOpaqueSteps(batcher);
+    M_UploadBatches(batcher, batcher->ebo.opaque);
+    M_DrawOpaqueSteps(batcher, true);
+    M_DrawOpaqueSteps(batcher, false);
+
+    Output_MeshShader_SetNoAlphaDiscard(batcher->shader, false);
+    Output_AdjustDepth(0.0f, 0.0f);
+}
+
 static void M_TransparentPass(MESH_BATCHER *const batcher)
 {
     if (batcher->transparent_sort->count == 0) {
@@ -811,28 +1231,10 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
             const M_MESH_BUF_BINDING *const bind =
                 M_GetBinding(batcher, inst->mesh);
             ASSERT(bind != nullptr);
-            if (bind->needs_object_light) {
-                Output_Lights_UploadCPULight(&inst->light_info);
-            } else if (bind->needs_own_light) {
-                Output_Lights_UploadOwnLight(&inst->light_info);
-            }
-            Output_MeshShader_UploadModelMatrix(
-                batcher->shader,
-                sort_ptr->baked ? &g_IDMatrix : &inst->wmatrix);
-            Output_MeshShader_UploadTint(batcher->shader, inst->tint);
-            Output_MeshShader_UploadWaterLine(
-                batcher->shader, inst->has_water_line, inst->water_line);
-            Output_MeshShader_UploadSubmergedAmbient(
-                batcher->shader, inst->has_submerged_ambient,
-                inst->submerged_ambient_delta);
-            Output_MeshShader_UploadAmbientSpan(
-                batcher->shader, inst->has_ambient_span,
-                inst->ambient_span_from);
-            Output_MeshShader_UploadWaterEffect(
-                batcher->shader, inst->water_effect);
-            Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
+            M_UploadInstance(
+                batcher, inst, bind,
+                sort_ptr->baked ? &g_IDMatrix : &inst->wmatrix, inst->wibble);
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-            M_SyncRoom(batcher, bind, inst->room);
         }
 
         // indices live in the EBO starting at index_start
@@ -985,6 +1387,94 @@ static void M_SetupVertexArray(
         OUTPUT_MESH_ATTR_SHADE, 1, GL_FLOAT, GL_FALSE, sizeof(M_MESH_SHADE), 0);
 }
 
+// Reports whether gl_VertexID includes the base vertex of an indexed draw, as
+// the batches need. The specification says that it does, but some drivers
+// have left it out. The check draws one point into a framebuffer of one
+// pixel and reads back whether the vertex shader saw the expected value.
+static bool M_IsBaseVertexInVertexID(void)
+{
+    OUTPUT_SHADER *shader = nullptr;
+    if (!SHOULD(Output_Shader_Create("vertex_id.glsl", &shader))) {
+        return false;
+    }
+
+    GLint prev_program = 0;
+    GLint prev_vao = 0;
+    GLint prev_fbo = 0;
+    GLint prev_texture = 0;
+    GLint prev_viewport[4] = {};
+    glGetIntegerv(GL_CURRENT_PROGRAM, &prev_program);
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prev_vao);
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prev_fbo);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prev_texture);
+    glGetIntegerv(GL_VIEWPORT, prev_viewport);
+    const GLenum caps[3] = { GL_BLEND, GL_DEPTH_TEST, GL_SCISSOR_TEST };
+    bool prev_caps[3];
+    for (int32_t i = 0; i < 3; i++) {
+        prev_caps[i] = glIsEnabled(caps[i]);
+        glDisable(caps[i]);
+    }
+
+    GLuint texture = 0;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+        nullptr);
+    GLuint fbo = 0;
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, 1, 1);
+    const GLfloat clear[4] = {};
+    glClearBufferfv(GL_COLOR, 0, clear);
+
+    GLuint vao = 0;
+    GLuint ebo = 0;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    const uint32_t index = M_VERTEX_ID_TEST_INDEX;
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER, sizeof(index), &index, GL_STATIC_DRAW);
+
+    Output_Shader_Bind(shader);
+    glUniform1i(
+        Output_Shader_LookupUniform(shader, "uExpected"),
+        M_VERTEX_ID_TEST_INDEX + M_VERTEX_ID_TEST_BASE);
+    glDrawElementsBaseVertex(
+        GL_POINTS, 1, GL_UNSIGNED_INT, nullptr, M_VERTEX_ID_TEST_BASE);
+    uint8_t pixel[4] = {};
+    glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+    TRX_GL_CheckError();
+
+    glBindVertexArray(prev_vao);
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &ebo);
+    glBindFramebuffer(GL_FRAMEBUFFER, prev_fbo);
+    glDeleteFramebuffers(1, &fbo);
+    glBindTexture(GL_TEXTURE_2D, prev_texture);
+    glDeleteTextures(1, &texture);
+    glViewport(
+        prev_viewport[0], prev_viewport[1], prev_viewport[2], prev_viewport[3]);
+    for (int32_t i = 0; i < 3; i++) {
+        if (prev_caps[i]) {
+            glEnable(caps[i]);
+        }
+    }
+    glUseProgram(prev_program);
+    Output_Shader_Free(shader);
+
+    const bool result = pixel[0] == 255;
+    if (!result) {
+        LOG_WARNING(
+            "gl_VertexID leaves out the base vertex; meshes draw unbatched");
+    }
+    return result;
+}
+
 MESH_BATCHER *MeshBatcher_Create(void)
 {
     MESH_BATCHER *const batcher = Memory_Alloc(sizeof(MESH_BATCHER));
@@ -1025,6 +1515,53 @@ MESH_BATCHER *MeshBatcher_Create(void)
         batcher->baked.vao, batcher->baked.geom, batcher->baked.tex,
         batcher->baked.shade);
 
+    batcher->batch.max_slots = Output_MeshShader_GetMaxSlots(batcher->shader);
+    batcher->batch.max_lights = Output_MeshShader_GetMaxLights(batcher->shader);
+    GLint slot_align = 1;
+    glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &slot_align);
+    batcher->batch.slot_align = MAX(slot_align, 1);
+    GLint max_texels = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &max_texels);
+    batcher->batch.max_vertices = M_IsBaseVertexInVertexID()
+        ? max_texels / (int32_t)(sizeof(M_MESH_TEXTURE) / sizeof(uint32_t))
+        : 0;
+    for (int32_t run = 0; run < M_RUN_COUNT; run++) {
+        batcher->batch_draws[run] = (M_DRAW_LIST) {
+            .counts = Vector_Create(sizeof(GLsizei)),
+            .offsets = Vector_Create(sizeof(const void *)),
+            .bases = Vector_Create(sizeof(GLint)),
+        };
+    }
+    batcher->batch_steps = Vector_Create(sizeof(M_BATCH_STEP));
+    batcher->batch_insts = Memory_Alloc(
+        sizeof(MESH_INSTANCE *) * MAX(batcher->batch.max_slots, 1));
+    batcher->single_lights = Memory_Alloc(
+        sizeof(OUTPUT_MESH_LIGHT) * MAX(batcher->batch.max_lights, 1));
+
+    // The batch draws read no attributes, so its vertex array holds the
+    // indices alone.
+    glGenVertexArrays(1, &batcher->batch.vao);
+    glGenBuffers(2, &batcher->batch.ubo);
+    glGenTextures(4, &batcher->batch.geom_data);
+    const GLuint textures[4] = {
+        batcher->batch.geom_data,
+        batcher->batch.tex_data,
+        batcher->batch.shade_data,
+        batcher->batch.geom_colors,
+    };
+    const GLuint sources[4] = {
+        batcher->vbo.geom,
+        batcher->vbo.tex,
+        batcher->vbo.shade,
+        batcher->vbo.geom,
+    };
+    const GLenum formats[4] = { GL_R32UI, GL_R32UI, GL_R32UI, GL_RGBA8 };
+    for (int32_t i = 0; i < 4; i++) {
+        glBindTexture(GL_TEXTURE_BUFFER, textures[i]);
+        glTexBuffer(GL_TEXTURE_BUFFER, formats[i], sources[i]);
+    }
+    glBindTexture(GL_TEXTURE_BUFFER, 0);
+
     return batcher;
 }
 
@@ -1062,6 +1599,28 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
         glDeleteBuffers(1, &batcher->baked.ebo);
         batcher->baked.ebo = 0;
     }
+    if (batcher->batch.vao != 0) {
+        glDeleteVertexArrays(1, &batcher->batch.vao);
+        batcher->batch.vao = 0;
+    }
+    if (batcher->batch.ubo != 0) {
+        glDeleteBuffers(2, &batcher->batch.ubo);
+        batcher->batch.ubo = 0;
+    }
+    if (batcher->batch.geom_data != 0) {
+        glDeleteTextures(4, &batcher->batch.geom_data);
+        batcher->batch.geom_data = 0;
+    }
+    for (int32_t run = 0; run < M_RUN_COUNT; run++) {
+        Vector_Free(batcher->batch_draws[run].counts);
+        Vector_Free(batcher->batch_draws[run].offsets);
+        Vector_Free(batcher->batch_draws[run].bases);
+    }
+    Vector_Free(batcher->batch_steps);
+    Memory_FreePointer(&batcher->batch_slots);
+    Memory_FreePointer(&batcher->batch_lights);
+    Memory_FreePointer(&batcher->batch_insts);
+    Memory_FreePointer(&batcher->single_lights);
     Vector_Free(batcher->baked_geom);
     Vector_Free(batcher->baked_tex);
     Vector_Free(batcher->baked_shade);
@@ -1127,9 +1686,6 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
         M_FillGeometry(&bind->geom_data[i], &vertices[i]);
         M_FillTexture(&bind->tex_data[i], &vertices[i]);
         M_FillShade(&bind->shade_data[i], &vertices[i]);
-        if ((vertices[i].flags & VERT_USE_DYNAMIC_LIGHT) != 0) {
-            bind->needs_room_lights = true;
-        }
         if ((vertices[i].flags & VERT_USE_OBJECT_LIGHT) != 0) {
             bind->needs_object_light = true;
             bind->needs_cpu_light = true;

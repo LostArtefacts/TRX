@@ -7,7 +7,6 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/lights/fog_bulbs.h>
 #include <trx/game/output/lights/priv.h>
-#include <trx/gl/utils.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -267,49 +266,20 @@ static void M_AddDynamicLight(
     Vector_Add(Output_GetDynamicLights(), &light);
 }
 
-static void M_UploadCPULight(
-    const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
+static void M_FillSlotLight(
+    const OUTPUT_LIGHT_INFO *const info, const bool own, float out[7][4],
+    OUTPUT_MESH_LIGHT_LIST *const lights)
 {
-    OUTPUT_LS_CACHE *const cache = Output_Lights_GetLSCache();
-    if (cache->mode == LS_MODE_FULL
-        && memcmp(&cache->last_info, info, sizeof(*info)) == 0) {
+    // An instance lit by its own light reads the adder alone.
+    out[0][0] = info->ls_adder;
+    if (own) {
         return;
     }
-    memcpy(&cache->last_info, info, sizeof(*info));
-    cache->last_own_adder = info->ls_adder;
-    cache->last_own_tr3_ambient = info->tr3_ambient;
-    cache->mode = LS_MODE_FULL;
-
-    OUTPUT_UNIFORM_LS_TR12 ls = {};
-    ls.adder = info->ls_adder;
-    ls.divider = info->ls_divider / (float)(1 << (W2V_SHIFT));
-    ls.vector_view[0] = info->ls_vector_view.x;
-    ls.vector_view[1] = info->ls_vector_view.y;
-    ls.vector_view[2] = info->ls_vector_view.z;
-    ls.vector_view[3] = 0;
-
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);
-    TRX_GL_CheckError();
-}
-
-static void M_UploadOwnLight(
-    const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
-{
-    OUTPUT_LS_CACHE *const cache = Output_Lights_GetLSCache();
-    if (cache->mode == LS_MODE_OWN && cache->last_own_adder == info->ls_adder) {
-        return;
-    }
-
-    const float light_adder = info->ls_adder;
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER,
-        offsetof(OUTPUT_UNIFORM_LS_TR12, adder), sizeof(light_adder),
-        &light_adder);
-    cache->last_own_adder = info->ls_adder;
-    cache->mode = LS_MODE_OWN;
+    out[0][1] = info->ls_divider / (float)(1 << (W2V_SHIFT));
+    out[1][0] = info->ls_vector_view.x;
+    out[1][1] = info->ls_vector_view.y;
+    out[1][2] = info->ls_vector_view.z;
+    out[1][3] = 0.0f;
 }
 
 const LIGHTING_MODEL g_LightingModelTR12 = {
@@ -318,8 +288,7 @@ const LIGHTING_MODEL g_LightingModelTR12 = {
     .calculate_static_light = M_CalculateStaticLight,
     .calculate_static_mesh_light = M_CalculateStaticMeshLight,
     .add_dynamic_light = M_AddDynamicLight,
-    .upload_cpu_light = M_UploadCPULight,
-    .upload_own_light = M_UploadOwnLight,
+    .fill_slot_light = M_FillSlotLight,
     .prepare_scene = Output_FogBulbs_PrepareScene,
     .shader_variant = 0,
 };

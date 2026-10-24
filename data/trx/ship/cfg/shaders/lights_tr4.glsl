@@ -4,24 +4,41 @@
 // and splits the excess into an additive overbright term (the OG
 // diffuse/specular split).
 
-#define MAX_TR4_LIGHTS 48
-
 #define TR4_LIGHT_POINT 0
 #define TR4_LIGHT_SPOT 1
 #define TR4_LIGHT_SUN 2
 
 struct TR4Light {
-    vec4 pos;   // object space; w = type
+    vec4 pos;   // w = type
     vec4 color; // rgb 0..1; w = range
-    vec4 dir;   // object space, where a spot points or a sun shines; w = att1
+    vec4 dir;   // where a spot points or a sun shines; w = att1
     vec4 cone;  // x = cosine of a spot's cone edge
 };
 
-layout(std140) uniform LightSource {
-    vec4 uTR4Ambient; // 0..1 where 128/255 is the OG neutral
-    int uTR4NumLights;
-    TR4Light uTR4Lights[MAX_TR4_LIGHTS];
+// The lights that the instances of a draw share, in world space. A slot
+// names the run of them that lights its instance.
+layout(std140) uniform InstanceLights {
+    TR4Light uInstanceLights[MAX_INSTANCE_LIGHTS];
 };
+
+#define I_TR4_AMBIENT I_LIGHT(0)
+#define I_TR4_ITEM_POS I_LIGHT(1).xyz
+#define I_TR4_FIRST_LIGHT int(I_LIGHT(2).x)
+#define I_TR4_NUM_LIGHTS int(I_LIGHT(2).y)
+
+// Returns a light of the instance in its object space. The lights are kept
+// in world space and carried over by the transpose of the model matrix, as
+// the retail game did on the CPU.
+TR4Light getLightTR4(int i)
+{
+    TR4Light light = uInstanceLights[I_TR4_FIRST_LIGHT + i];
+    mat3 toObject = transpose(mat3(I_MAT_MODEL));
+    if (int(light.pos.w) != TR4_LIGHT_SUN) {
+        light.pos.xyz = toObject * (light.pos.xyz - I_TR4_ITEM_POS);
+    }
+    light.dir.xyz = toObject * light.dir.xyz;
+    return light;
+}
 
 // Lights a vertex as the retail game's Direct3D lights did: in object space,
 // from the vertex itself, with the legacy attenuation att1 * (1 - d / range).
@@ -31,8 +48,8 @@ vec3 lightObjectsTR4(vec3 rawNormal, vec3 pos, vec3 ambient)
     vec3 N = safeNormalize(rawNormal);
 
     vec3 acc = ambient;
-    for (int i = 0; i < uTR4NumLights; i++) {
-        TR4Light light = uTR4Lights[i];
+    for (int i = 0; i < I_TR4_NUM_LIGHTS; i++) {
+        TR4Light light = getLightTR4(i);
         int type = int(light.pos.w);
         vec3 L;
         float atten = 1.0;
@@ -61,11 +78,11 @@ vec3 lightObjectsTR4(vec3 rawNormal, vec3 pos, vec3 ambient)
 
 // Port of the OG ProcessStaticMeshVertices' prelight modulation
 // (output.cpp:305): vertex prelight (13-bit shade) times the per-instance
-// shade multiplier carried in uTR4Ambient.
+// shade multiplier carried in the slot's ambient.
 vec3 lightOwnTR4(float shade)
 {
     float shade8 = clamp(floor((SHADE_MAX - shade) / 32.0), 0.0, 255.0);
-    return uTR4Ambient.rgb * (shade8 / 255.0) * (255.0 / 256.0);
+    return I_TR4_AMBIENT.rgb * (shade8 / 255.0) * (255.0 / 256.0);
 }
 
 // Port of the OG room dynamic lighting (drawroom.cpp:185-210). Returns the

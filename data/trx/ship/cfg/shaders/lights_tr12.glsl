@@ -1,17 +1,15 @@
 // TR1/TR2 lighting family: a single scalar shade derived from the brightest
 // room light, plus additive dynamic lights.
 
-layout(std140) uniform LightSource {
-    float uLightAdder;
-    float uLightDivider;
-    vec4 uLightVectorSource;
-};
+#define I_LIGHT_ADDER I_LIGHT(0).x
+#define I_LIGHT_DIVIDER I_LIGHT(0).y
+#define I_LIGHT_VECTOR_SOURCE I_LIGHT(1)
 
 float lightObjects(vec3 rawNormal, vec4 vertexPos)
 {
-    float lightAdder = uLightAdder;
-    if (uLightDivider != 0) {
-        vec3 L = mat3(transpose(uMatView * uMatModel)) * uLightVectorSource.xyz / uLightDivider;
+    float lightAdder = I_LIGHT_ADDER;
+    if (I_LIGHT_DIVIDER != 0) {
+        vec3 L = mat3(transpose(uMatView * I_MAT_MODEL)) * I_LIGHT_VECTOR_SOURCE.xyz / I_LIGHT_DIVIDER;
         lightAdder += dot(L, rawNormal.xyz / (1 << 14)) / 4;
         lightAdder = clamp(lightAdder, 0, SHADE_MAX);
     }
@@ -66,18 +64,18 @@ vec3 lightDynamicTR12RGB(vec4 vertexPos)
 float lightLumTR12(float shade, uint flags, vec3 normal, vec4 pos, float phase)
 {
     if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
-        shade = uLightAdder + shade;
+        shade = I_LIGHT_ADDER + shade;
     } else if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
         shade = lightObjects(normal, pos);
     } else {
         if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
             shade = lightDynamicTR12Lum(shade, pos);
-            shade += lightRoom(uRoomLightMode, uTimeInGame, phase);
+            shade += lightRoom(I_ROOM_LIGHT_MODE, uTimeInGame, phase);
         }
         shade = clamp(shade, 0, SHADE_MAX);
     }
 
-    if (uWaterEffect == 1) {
+    if (I_WATER_EFFECT == 1) {
         shade = lightWaterCaustics(shade, pos.xyz);
     }
 
