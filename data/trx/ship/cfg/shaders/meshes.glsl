@@ -1,30 +1,56 @@
 #include "common.glsl"
 
-uniform vec4 uTint;
-
 // How deep a band TR4 takes the water's color up over, in world units.
 #define WATER_LINE_FEATHER 16.0
 
-// World height of the water surface cutting the instance, and whether one
-// cuts it at all. A fragment below the line takes the tint; one above it
-// does not, so a mesh that straddles the surface is split where the water is
-// rather than taken whole.
-uniform bool uWaterLineEnabled;
-uniform float uWaterLine;
+// The values that change from one instance to the next, one slot per
+// instance. A batch holds many instances, and each of its vertices names the
+// slot of its own; every other draw holds its one instance in slot 0.
+struct Instance {
+    mat4 model;
+    vec4 tint;
+    // x = whether a water surface cuts the instance, y = the world height of
+    // that surface, z = the water effect, w = whether the water wibbles the
+    // instance. A fragment below the line takes the tint; one above it does
+    // not, so a mesh that straddles the surface is split where the water is
+    // rather than taken whole.
+    vec4 water;
+    vec4 waterParams; // x = choppy amp, y = shimmer amp, z = abs intensity
+    // xyz = how far the ambient light below the water line shifts, w =
+    // whether it shifts at all. A water room and a dry room differ in their
+    // ambient light alone, so the shift relights the submerged part and
+    // leaves the point lights and the texture as they are.
+    vec4 submerged;
+    // xyz = the ambient at the far end of a mesh that spans two rooms, w =
+    // whether one spans them at all. A joint's vertices carry how far they
+    // sit towards the mesh they reach for, so the light runs across the joint
+    // rather than stepping at the seam.
+    vec4 ambientSpan;
+    vec4 room; // x = light mode
+    // The light of the instance, laid out as its game's lighting family
+    // says.
+    vec4 light[7];
+};
 
-// How far the ambient light below the water line shifts, and whether it
-// shifts at all. A water room and a dry room differ in their ambient light
-// alone, so the shift relights the submerged part and leaves the point lights
-// and the texture as they are.
-uniform bool uSubmergedAmbientEnabled;
-uniform vec4 uSubmergedAmbientDelta;
+layout(std140) uniform Instances {
+    Instance uInstances[MAX_INSTANCES];
+};
 
-// The ambient at the far end of a mesh that spans two rooms, and whether one
-// spans them at all. A joint's vertices carry how far they sit towards the
-// mesh they reach for, so the light runs across the joint rather than
-// stepping at the seam.
-uniform bool uAmbientSpanEnabled;
-uniform vec4 uAmbientSpanFrom;
+int gSlot;
+
+#define I_MAT_MODEL uInstances[gSlot].model
+#define I_TINT uInstances[gSlot].tint
+#define I_WATER_LINE_ENABLED (uInstances[gSlot].water.x != 0.0)
+#define I_WATER_LINE uInstances[gSlot].water.y
+#define I_WATER_EFFECT int(uInstances[gSlot].water.z)
+#define I_WIBBLE_EFFECT (uInstances[gSlot].water.w != 0.0)
+#define I_WATER_EFFECT_PARAMS uInstances[gSlot].waterParams.xyz
+#define I_SUBMERGED_AMBIENT_ENABLED (uInstances[gSlot].submerged.w != 0.0)
+#define I_SUBMERGED_AMBIENT_DELTA vec4(uInstances[gSlot].submerged.xyz, 0.0)
+#define I_AMBIENT_SPAN_ENABLED (uInstances[gSlot].ambientSpan.w != 0.0)
+#define I_AMBIENT_SPAN_FROM vec4(uInstances[gSlot].ambientSpan.xyz, 1.0)
+#define I_ROOM_LIGHT_MODE int(uInstances[gSlot].room.x)
+#define I_LIGHT(n) uInstances[gSlot].light[n]
 
 // One definition of what the mesh stages hand each other. The geometry stage
 // is optional, so the vertex stage names its block after whichever stage reads
@@ -45,7 +71,8 @@ uniform vec4 uAmbientSpanFrom;
     vec3 colorSub;                \
     vec3 addSub;                  \
     flat float reflectivity;      \
-    noperspective vec4 affineUV;
+    noperspective vec4 affineUV;  \
+    flat int slot;
 
 #ifdef SUBDIVIDE
     #define MESH_VS_BLOCK VertexData
@@ -55,23 +82,111 @@ uniform vec4 uAmbientSpanFrom;
 
 #ifdef VERTEX
 
-uniform mat4 uMatModel;
-uniform bool uWibbleEffect;
-
 #include "billboard.glsl"
 #include "lights.glsl"
 
-layout(location = 0) in vec4 inPosition;
-layout(location = 1) in vec4 inNormal;
-layout(location = 2) in vec3 inUVW;
-layout(location = 3) in vec4 inTextureSize;
-layout(location = 4) in vec2 inTrapezoidRatios;
-layout(location = 5) in uint inFlags;
-layout(location = 6) in vec4 inColor;
-layout(location = 7) in float inShade;
-layout(location = 8) in float inReflectivity;
-layout(location = 9) in vec2 inUVScroll; // x = V per game frame, y = wrap
-layout(location = 10) in float inTintFactor;
+layout(location = 0) in vec4 aPosition;
+layout(location = 1) in vec4 aNormal;
+layout(location = 2) in vec3 aUVW;
+layout(location = 3) in vec4 aTextureSize;
+layout(location = 4) in vec2 aTrapezoidRatios;
+layout(location = 5) in uint aFlags;
+layout(location = 6) in vec4 aColor;
+layout(location = 7) in float aShade;
+layout(location = 8) in float aReflectivity;
+layout(location = 9) in vec2 aUVScroll; // x = V per game frame, y = wrap
+layout(location = 10) in float aTintFactor;
+
+// Where the draw takes its vertices from. A batch draws the faces of many
+// instances at once. Its gl_VertexID holds a vertex of the mesh buffers,
+// counted from uVertexBase, in the low 24 bits and the slot of its instance
+// in the high bits, and the vertex is read from the buffers rather than from
+// the attributes.
+uniform bool uPullVertices;
+uniform int uVertexBase;
+uniform usamplerBuffer uGeomData;
+// The same buffer as uGeomData, read as unsigned normalized bytes, so that
+// the color converts to float as the attribute would.
+uniform samplerBuffer uGeomColors;
+uniform usamplerBuffer uTexData;
+uniform usamplerBuffer uShadeData;
+
+// How many 32-bit words a vertex takes in each mesh buffer. Matches
+// M_MESH_GEOM, M_MESH_TEXTURE and M_MESH_SHADE in
+// src/trx/game/output/mesh_batcher/batcher.c.
+#define GEOM_WORDS 11
+#define TEX_WORDS 12
+#define SHADE_WORDS 1
+
+vec4 inPosition;
+vec4 inNormal;
+vec3 inUVW;
+vec4 inTextureSize;
+vec2 inTrapezoidRatios;
+uint inFlags;
+vec4 inColor;
+float inShade;
+float inReflectivity;
+vec2 inUVScroll;
+float inTintFactor;
+
+float fetchFloat(usamplerBuffer data, int word)
+{
+    return uintBitsToFloat(texelFetch(data, word).r);
+}
+
+vec2 fetchVec2(usamplerBuffer data, int word)
+{
+    return vec2(fetchFloat(data, word), fetchFloat(data, word + 1));
+}
+
+vec4 fetchVec4(usamplerBuffer data, int word)
+{
+    return vec4(
+        fetchFloat(data, word), fetchFloat(data, word + 1),
+        fetchFloat(data, word + 2), fetchFloat(data, word + 3));
+}
+
+void loadVertex(void)
+{
+    if (!uPullVertices) {
+        gSlot = 0;
+        inPosition = aPosition;
+        inNormal = aNormal;
+        inUVW = aUVW;
+        inTextureSize = aTextureSize;
+        inTrapezoidRatios = aTrapezoidRatios;
+        inFlags = aFlags;
+        inColor = aColor;
+        inShade = aShade;
+        inReflectivity = aReflectivity;
+        inUVScroll = aUVScroll;
+        inTintFactor = aTintFactor;
+        return;
+    }
+
+    uint id = uint(gl_VertexID);
+    gSlot = int(id >> 24u);
+    int vertex = uVertexBase + int(id & 0xFFFFFFu);
+
+    int geom = vertex * GEOM_WORDS;
+    inPosition = fetchVec4(uGeomData, geom);
+    inNormal = fetchVec4(uGeomData, geom + 4);
+    inColor = texelFetch(uGeomColors, geom + 8);
+    inFlags = texelFetch(uGeomData, geom + 9).r & 0xFFFFu;
+    inTintFactor = fetchFloat(uGeomData, geom + 10);
+
+    int tex = vertex * TEX_WORDS;
+    inUVW = vec3(
+        fetchFloat(uTexData, tex), fetchFloat(uTexData, tex + 1),
+        fetchFloat(uTexData, tex + 2));
+    inTextureSize = fetchVec4(uTexData, tex + 3);
+    inTrapezoidRatios = fetchVec2(uTexData, tex + 7);
+    inReflectivity = fetchFloat(uTexData, tex + 9);
+    inUVScroll = fetchVec2(uTexData, tex + 10);
+
+    inShade = fetchFloat(uShadeData, vertex * SHADE_WORDS);
+}
 
 out MESH_VS_BLOCK {
     MESH_VARYINGS
@@ -184,7 +299,9 @@ float ps1FogFactor(float dist)
 }
 
 void main(void) {
-    vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
+    loadVertex();
+    gOut.slot = gSlot;
+    vec4 worldPos = I_MAT_MODEL * vec4(inPosition.xyz, 1.0);
     vec4 lightWorldPos = worldPos;
 
     // Read before the choppy displacement below, so that a vertex the water
@@ -192,13 +309,13 @@ void main(void) {
     gOut.worldY = worldPos.y;
 
     if ((inFlags & VERT_MOVE) != 0u) {
-        float waterMul = (uWaterEffect != 0) ? 1.0 : 0.0;
+        float waterMul = (I_WATER_EFFECT != 0) ? 1.0 : 0.0;
         worldPos.y += effectChoppy(worldPos.xyz) * waterMul;
     }
 
     if ((inFlags & (VERT_ABS_SPRITE | VERT_BILLBOARD)) != 0u) {
         int lockMode = (inFlags & VERT_ABS_SPRITE) != 0u ? BILLBOARD_LOCK_NONE : uBillboardLockMode;
-        gOut.eyePos = offsetBillboard(inPosition.xyz, inNormal.xy, uMatView, uMatModel, uMatProj, lockMode);
+        gOut.eyePos = offsetBillboard(inPosition.xyz, inNormal.xy, uMatView, I_MAT_MODEL, uMatProj, lockMode);
     } else {
         gOut.eyePos = uMatView * worldPos;
     }
@@ -208,12 +325,12 @@ void main(void) {
     // the object instead. This is what the OG does for TR4, transforming the
     // mesh normals by the view matrix. Normalize because ours arrive as raw
     // int16s rather than the unit vectors the mapping expects.
-    gOut.normal = normalize(mat3(uMatView * uMatModel) * inNormal.xyz);
+    gOut.normal = normalize(mat3(uMatView * I_MAT_MODEL) * inNormal.xyz);
     gl_Position = uMatProj * gOut.eyePos;
     gl_Position.z += inPosition.w;
 
     // Apply water wibble effect only to non-sprite vertices
-    if (uWibbleEffect && (inFlags & (VERT_NO_WIBBLE | VERT_BILLBOARD)) == 0u) {
+    if (I_WIBBLE_EFFECT && (inFlags & (VERT_NO_WIBBLE | VERT_BILLBOARD)) == 0u) {
         gl_Position.xyz = waterWibble(worldPos, gl_Position);
     }
 
@@ -259,8 +376,8 @@ void main(void) {
     // Applies PlayStation water tint before the gamma curve and texture
     // modulation, where the GTE combines it with the light register.
     vec3 tintReg =
-        uLightingCurve == LIGHTING_CURVE_SATURATE && !uWaterLineEnabled
-        ? mix(vec3(1.0), uTint.rgb, tintWeight)
+        uLightingCurve == LIGHTING_CURVE_SATURATE && !I_WATER_LINE_ENABLED
+        ? mix(vec3(1.0), I_TINT.rgb, tintWeight)
         : vec3(1.0);
 
 #if TR_VERSION >= 4
@@ -279,10 +396,10 @@ void main(void) {
         if ((gOut.flags & VERT_USE_OBJECT_LIGHT) != 0u) {
             lightIn = lightObjectsTR4(
                 inNormal.xyz, inPosition.xyz,
-                uAmbientSpanEnabled
-                    ? mix(uAmbientSpanFrom.rgb, uTR4Ambient.rgb,
+                I_AMBIENT_SPAN_ENABLED
+                    ? mix(I_AMBIENT_SPAN_FROM.rgb, I_TR4_AMBIENT.rgb,
                           clamp(inTintFactor, 0.0, 1.0))
-                    : uTR4Ambient.rgb);
+                    : I_TR4_AMBIENT.rgb);
             // White for regular meshes; mesh policies may recolor vertices
             // (e.g. the skybox fog gradient faces are painted black).
             modulate = inColor.rgb;
@@ -305,12 +422,12 @@ void main(void) {
     // stage to take the submerged part from.
     gOut.colorSub = lit;
     gOut.addSub = add;
-    if (uSubmergedAmbientEnabled
+    if (I_SUBMERGED_AMBIENT_ENABLED
         && (gOut.flags & VERT_USE_OBJECT_LIGHT) != 0u) {
         gOut.colorSub = shadeTR4(
             lightObjectsTR4(
                 inNormal.xyz, inPosition.xyz,
-                uTR4Ambient.rgb + uSubmergedAmbientDelta.rgb), modulate,
+                I_TR4_AMBIENT.rgb + I_SUBMERGED_AMBIENT_DELTA.rgb), modulate,
             lr.add, tintReg, gamma_exp, gOut.flags, add);
         gOut.addSub = add;
     }
@@ -503,6 +620,7 @@ void emitAt(vec3 w)
         gIn[0].affineUV * w.x + gIn[1].affineUV * w.y + gIn[2].affineUV * w.z;
 
     // The flat members hold one value for the whole face.
+    gOut.slot = gIn[0].slot;
     gOut.flags = gIn[0].flags;
     gOut.texLayer = gIn[0].texLayer;
     gOut.atlasSize = gIn[0].atlasSize;
@@ -635,28 +753,29 @@ vec4 applyFogBulbs(vec4 color)
 }
 
 void main(void) {
+    gSlot = gIn.slot;
     // How much of the fragment lies under the water surface, from 0 above it
     // to 1 below it. Y grows downwards, so a fragment past the line is the
     // one under the water. Without a surface to cut it, the whole fragment
     // counts as under the water.
     float submerged = gIn.tintWeight;
-    if (uWaterLineEnabled) {
+    if (I_WATER_LINE_ENABLED) {
 #if TR_VERSION >= 4
         // TR4 takes the color up over a band about the surface rather than at
         // it, because a hard line reads as a seam against the water's own
         // movement.
         submerged = smoothstep(
-            uWaterLine - WATER_LINE_FEATHER * 0.5,
-            uWaterLine + WATER_LINE_FEATHER * 0.5, gIn.worldY);
+            I_WATER_LINE - WATER_LINE_FEATHER * 0.5,
+            I_WATER_LINE + WATER_LINE_FEATHER * 0.5, gIn.worldY);
 #else
-        submerged = step(uWaterLine, gIn.worldY);
+        submerged = step(I_WATER_LINE, gIn.worldY);
 #endif
         submerged *= gIn.tintWeight;
     }
 
     vec4 texColor = gIn.color;
     vec3 lightAdd = gIn.add;
-    if (uSubmergedAmbientEnabled) {
+    if (I_SUBMERGED_AMBIENT_ENABLED) {
         texColor.rgb = mix(texColor.rgb, gIn.colorSub, submerged);
         lightAdd = mix(lightAdd, gIn.addSub, submerged);
     }
@@ -761,16 +880,16 @@ void main(void) {
     // The framebuffer blend is premultiplied alpha, so the color carries the
     // coverage: fading a fragment out scales both, and the color a second time
     // by the alpha it is premultiplied against.
-    if (uWaterLineEnabled) {
-        texColor.rgb *= mix(vec3(1.0), uTint.rgb, submerged);
-        texColor.a *= uTint.a;
+    if (I_WATER_LINE_ENABLED) {
+        texColor.rgb *= mix(vec3(1.0), I_TINT.rgb, submerged);
+        texColor.a *= I_TINT.a;
     } else if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
-        texColor.a *= uTint.a;
+        texColor.a *= I_TINT.a;
     } else {
-        texColor.rgb *= mix(vec3(1.0), uTint.rgb, gIn.tintWeight);
-        texColor.a *= uTint.a;
+        texColor.rgb *= mix(vec3(1.0), I_TINT.rgb, gIn.tintWeight);
+        texColor.a *= I_TINT.a;
     }
-    texColor.rgb *= uTint.a;
+    texColor.rgb *= I_TINT.a;
 
     outColor = texColor;
 }

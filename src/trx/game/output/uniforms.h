@@ -25,7 +25,6 @@ typedef struct {
     GLuint general;
     GLuint matrices;
     GLuint lights;
-    GLuint ls;
     GLuint fog_bulbs;
     void *priv;
 } OUTPUT_UNIFORMS;
@@ -37,8 +36,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *uniforms);
 void Output_Uniforms_UploadOrthoMatrix(const OUTPUT_UNIFORMS *uniforms);
 void Output_Uniforms_UploadViewMatrix(
     const OUTPUT_UNIFORMS *uniforms, const MATRIX *matrix);
-void Output_Uniforms_UploadRoomLights(
-    const OUTPUT_UNIFORMS *uniforms, const ROOM *room);
+void Output_Uniforms_UploadDynamicLights(const OUTPUT_UNIFORMS *uniforms);
 
 void Output_Uniforms_UploadFogDistance(
     const OUTPUT_UNIFORMS *uniforms, float start, float end);

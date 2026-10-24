@@ -9,7 +9,6 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/lights/fog_bulbs.h>
 #include <trx/game/output/lights/priv.h>
-#include <trx/gl/utils.h>
 #include <trx/version.h>
 
 #include <math.h>
@@ -458,24 +457,18 @@ static void M_CalculateStaticMeshLight(
         Output_Lights_ShadeFromMul((ambient.r + ambient.g + ambient.b) / 3.0f));
 }
 
-static void M_UploadCPULight(
-    const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
+static void M_FillSlotLight(
+    const OUTPUT_LIGHT_INFO *const info, const bool own, float out[7][4],
+    OUTPUT_MESH_LIGHT_LIST *const lights)
 {
-    OUTPUT_LS_CACHE *const cache = Output_Lights_GetLSCache();
-    if (cache->mode == LS_MODE_FULL
-        && memcmp(&cache->last_info, info, sizeof(*info)) == 0) {
+    // An instance lit by its own light reads the ambient alone.
+    out[0][0] = info->tr3_ambient.r;
+    out[0][1] = info->tr3_ambient.g;
+    out[0][2] = info->tr3_ambient.b;
+    out[0][3] = 0.0f;
+    if (own) {
         return;
     }
-    memcpy(&cache->last_info, info, sizeof(*info));
-    cache->last_own_adder = info->ls_adder;
-    cache->last_own_tr3_ambient = info->tr3_ambient;
-    cache->mode = LS_MODE_FULL;
-
-    OUTPUT_UNIFORM_LS_TR3 ls = {};
-    ls.ambient[0] = info->tr3_ambient.r;
-    ls.ambient[1] = info->tr3_ambient.g;
-    ls.ambient[2] = info->tr3_ambient.b;
-    ls.ambient[3] = 0.0f;
     for (int32_t i = 0; i < 3; i++) {
         float x = (float)info->tr3_light_dir_view[i].x;
         float y = (float)info->tr3_light_dir_view[i].y;
@@ -487,45 +480,15 @@ static void M_UploadCPULight(
             y *= inv_len;
             z *= inv_len;
         }
-        ls.dir_view[i][0] = x;
-        ls.dir_view[i][1] = y;
-        ls.dir_view[i][2] = z;
-        ls.dir_view[i][3] = 0.0f;
-        ls.color[i][0] = info->tr3_light_color[i].r;
-        ls.color[i][1] = info->tr3_light_color[i].g;
-        ls.color[i][2] = info->tr3_light_color[i].b;
-        ls.color[i][3] = 0.0f;
+        out[1 + i][0] = x;
+        out[1 + i][1] = y;
+        out[1 + i][2] = z;
+        out[1 + i][3] = 0.0f;
+        out[4 + i][0] = info->tr3_light_color[i].r;
+        out[4 + i][1] = info->tr3_light_color[i].g;
+        out[4 + i][2] = info->tr3_light_color[i].b;
+        out[4 + i][3] = 0.0f;
     }
-
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);
-    TRX_GL_CheckError();
-}
-
-static void M_UploadOwnLight(
-    const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
-{
-    OUTPUT_LS_CACHE *const cache = Output_Lights_GetLSCache();
-    if (cache->mode == LS_MODE_OWN
-        && cache->last_own_tr3_ambient.r == info->tr3_ambient.r
-        && cache->last_own_tr3_ambient.g == info->tr3_ambient.g
-        && cache->last_own_tr3_ambient.b == info->tr3_ambient.b) {
-        return;
-    }
-
-    const float ambient[4] = {
-        info->tr3_ambient.r,
-        info->tr3_ambient.g,
-        info->tr3_ambient.b,
-        0.0f,
-    };
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER,
-        offsetof(OUTPUT_UNIFORM_LS_TR3, ambient), sizeof(ambient), ambient);
-    cache->last_own_tr3_ambient = info->tr3_ambient;
-    cache->mode = LS_MODE_OWN;
 }
 
 static void M_Init(void)
@@ -581,8 +544,7 @@ const LIGHTING_MODEL g_LightingModelTR3 = {
     .calculate_static_light_rgb_f = M_CalculateStaticLightRGB_F,
     .calculate_static_mesh_light = M_CalculateStaticMeshLight,
     .add_dynamic_light = Output_Lights_TR3_AddDynamicLight,
-    .upload_cpu_light = M_UploadCPULight,
-    .upload_own_light = M_UploadOwnLight,
+    .fill_slot_light = M_FillSlotLight,
     .prepare_scene = Output_FogBulbs_PrepareScene,
     .shader_variant = 1,
 };

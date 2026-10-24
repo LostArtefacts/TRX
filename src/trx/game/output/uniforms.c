@@ -9,7 +9,6 @@
 #include <trx/game/output.h>
 #include <trx/game/output/lights/priv.h>
 #include <trx/game/output/utils.h>
-#include <trx/game/rooms.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
@@ -66,8 +65,7 @@ typedef struct {
 
 typedef struct {
     int num_lights;
-    int room_light_mode;
-    int _pad[2];
+    int _pad[3];
     M_UNIFORM_LIGHT lights[OUTPUT_MAX_DYNAMIC_LIGHTS];
 } M_UNIFORM_LIGHTS;
 
@@ -218,18 +216,11 @@ void Output_Uniforms_UploadFogDistance(
         &fog_distance);
 }
 
-void Output_Uniforms_UploadRoomLights(
-    const OUTPUT_UNIFORMS *const uniforms, const ROOM *const room)
+void Output_Uniforms_UploadDynamicLights(const OUTPUT_UNIFORMS *const uniforms)
 {
     M_UNIFORM_LIGHTS lights = {};
 
-    // Only dynamic lights for now.
     M_UNIFORM_LIGHT *dst_light = lights.lights;
-    if (room == nullptr) {
-        lights.room_light_mode = RLM_SUNSET;
-    } else {
-        lights.room_light_mode = room->light_mode;
-    }
     VECTOR *const dynamic_lights = Output_GetDynamicLights();
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
         M_FillLight(dst_light, Vector_Get(dynamic_lights, i));
@@ -257,7 +248,9 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
 {
     OUTPUT_UNIFORMS *const uniforms =
         Memory_Alloc(sizeof(OUTPUT_UNIFORMS) + sizeof(M_PRIV));
-    glGenBuffers(5, &uniforms->general);
+    uniforms->priv = (char *)uniforms + sizeof(OUTPUT_UNIFORMS);
+    const M_PRIV *const p = uniforms->priv;
+    glGenBuffers(4, &uniforms->general);
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
     glBufferData(
         GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_GENERAL), nullptr, GL_DYNAMIC_DRAW);
@@ -269,26 +262,23 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
         GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uniforms->matrices);
 
+    // The buffer starts out as the upload cache holds it. Otherwise a first
+    // upload that matches the empty cache is skipped, and the shader reads
+    // the light count from uninitialized storage.
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->lights);
     glBufferData(
-        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_LIGHTS), nullptr, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, uniforms->lights);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-    glBufferData(
-        GL_UNIFORM_BUFFER, Output_Lights_GetLSBufferSize(), nullptr,
+        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_LIGHTS), &p->last_lights,
         GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, uniforms->lights);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->fog_bulbs);
     glBufferData(
         GL_UNIFORM_BUFFER, sizeof(OUTPUT_UNIFORM_FOG_BULBS), nullptr,
         GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 4, uniforms->fog_bulbs);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->fog_bulbs);
     TRX_GL_CheckError();
 
     Output_Lights_ResetUploadCache();
-    uniforms->priv = (char *)uniforms + sizeof(OUTPUT_UNIFORMS);
     return uniforms;
 }
 
@@ -298,11 +288,10 @@ void Output_Uniforms_Free(OUTPUT_UNIFORMS *const uniforms)
         return;
     }
     if (uniforms->general != 0) {
-        glDeleteBuffers(5, &uniforms->general);
+        glDeleteBuffers(4, &uniforms->general);
         uniforms->general = 0;
         uniforms->matrices = 0;
         uniforms->lights = 0;
-        uniforms->ls = 0;
         uniforms->fog_bulbs = 0;
     }
     Memory_Free(uniforms);

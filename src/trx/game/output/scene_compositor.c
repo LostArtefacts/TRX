@@ -126,7 +126,7 @@ static void M_PrepareScene(const M_PRIV *const p)
     }
 
     Output_Uniforms_UploadGeneral(Output_GetUniforms());
-    Output_Uniforms_UploadRoomLights(Output_GetUniforms(), nullptr);
+    Output_Uniforms_UploadDynamicLights(Output_GetUniforms());
     Output_SetCurrentRoom(nullptr);
 }
 

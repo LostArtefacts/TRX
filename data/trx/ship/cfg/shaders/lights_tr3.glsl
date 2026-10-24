@@ -1,28 +1,26 @@
 // TR3 lighting family: ambient + up to 3 directional lights (sun, brightest
 // bulb, brightest dynamic), resolved per item on the CPU.
 
-layout(std140) uniform LightSource {
-    vec4 uTR3Ambient;
-    vec4 uTR3LightDirView[3];
-    vec4 uTR3LightColor[3];
-};
+#define I_TR3_AMBIENT I_LIGHT(0)
+#define I_TR3_LIGHT_DIR_VIEW(n) I_LIGHT(1 + (n))
+#define I_TR3_LIGHT_COLOR(n) I_LIGHT(4 + (n))
 
 vec3 lightObjectsTR3(vec3 rawNormal)
 {
-    vec3 N = safeNormalize(mat3(uMatView * uMatModel) * (rawNormal.xyz / float(1 << 14)));
+    vec3 N = safeNormalize(mat3(uMatView * I_MAT_MODEL) * (rawNormal.xyz / float(1 << 14)));
 
-    vec3 L0 = uTR3LightDirView[0].xyz;
-    vec3 L1 = uTR3LightDirView[1].xyz;
-    vec3 L2 = uTR3LightDirView[2].xyz;
+    vec3 L0 = I_TR3_LIGHT_DIR_VIEW(0).xyz;
+    vec3 L1 = I_TR3_LIGHT_DIR_VIEW(1).xyz;
+    vec3 L2 = I_TR3_LIGHT_DIR_VIEW(2).xyz;
 
     float d0 = max(dot(N, L0), 0.0);
     float d1 = max(dot(N, L1), 0.0);
     float d2 = max(dot(N, L2), 0.0);
 
-    vec3 rgb = uTR3Ambient.rgb
-        + uTR3LightColor[0].rgb * d0
-        + uTR3LightColor[1].rgb * d1
-        + uTR3LightColor[2].rgb * d2;
+    vec3 rgb = I_TR3_AMBIENT.rgb
+        + I_TR3_LIGHT_COLOR(0).rgb * d0
+        + I_TR3_LIGHT_COLOR(1).rgb * d1
+        + I_TR3_LIGHT_COLOR(2).rgb * d2;
     return clamp(rgb, 0.0, 1.0);
 }
 
@@ -30,7 +28,7 @@ vec3 lightOwnTR3(float shade)
 {
     float shade8 = floor((SHADE_MAX - shade) / 32.0); // (0x1FFF - shade) >> 5
     shade8 = (shade8 <= 0.0) ? 255.0 : shade8;
-    return clamp(uTR3Ambient.rgb * (shade8 / 255.0), 0.0, 1.0);
+    return clamp(I_TR3_AMBIENT.rgb * (shade8 / 255.0), 0.0, 1.0);
 }
 
 vec3 lightDynamicTR3(vec4 vertexPos)
