@@ -79,7 +79,7 @@ local function dialog(state)
         children = {
           state.row,
           trx.ui.widgets.Label({
-            text = selected:map(function(at)
+            text = state.landed:map(function(at)
               return name_of(partners[at])
             end),
           }),
@@ -126,7 +126,7 @@ local function spin(state)
   for i, object in ipairs(state.partners) do
     local turn = state.turns[i]
     local at = turn:target()
-    if i == state.selected:get() then
+    if i == state.landed:get() then
       turn:to(at + SPIN_PER_TICK, 1)
     else
       local off = wrap(at - rest_turn(object))
@@ -141,8 +141,12 @@ local function control(ctx, state, keys)
     begin(ctx, state)
     return
   end
+  local sliding = state.row:is_sliding()
+  if not sliding then
+    state.landed:set(state.selected:get())
+  end
   spin(state)
-  if state.row:is_sliding() then
+  if sliding then
     return
   end
   local many = #state.partners > 1
@@ -167,6 +171,10 @@ local function open(ctx)
   local state = {
     partners = trx.inventory.combine_partners(ctx.object),
     selected = trx.signal.new(1),
+    -- The entry the row last came to rest on. The frame names it and spins
+    -- it until the next entry reaches the middle, where the selection moves
+    -- as soon as the row starts to slide.
+    landed = trx.signal.new(1),
     turns = {},
     shown = trx.signal.new(false),
   }

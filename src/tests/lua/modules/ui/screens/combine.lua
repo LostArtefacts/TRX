@@ -99,6 +99,39 @@ test("right and left slide the row", function()
   finish()
 end)
 
+test("the frame names the next entry once it reaches the middle", function()
+  open(PARTNERS)
+  press(Role.MENU_RIGHT)
+  assert(shows_name(PARTNERS[1]), "the name changed as the row started")
+  ticks(SLIDE_TICKS)
+  assert(shows_name(PARTNERS[2]), "the name did not follow the row")
+  finish()
+end)
+
+-- Returns how far the model of an object is turned, or nil where it is not
+-- drawn.
+local function turn_of(object)
+  for _, op in ipairs(fake.scene()) do
+    local drawn, rot_y = op:match("^model obj=(%d+) .- rot_y=(%-?%d+) ")
+    if drawn ~= nil and tonumber(drawn) == object then
+      return tonumber(rot_y)
+    end
+  end
+  return nil
+end
+
+test("the next entry starts to spin once it reaches the middle", function()
+  open(PARTNERS)
+  local rest = turn_of(PARTNERS[2])
+  assert(rest ~= nil, "the next entry is not drawn")
+  press(Role.MENU_RIGHT)
+  ticks(3)
+  assert(turn_of(PARTNERS[2]) == rest, "the next entry spun as it slid")
+  ticks(SLIDE_TICKS)
+  assert(turn_of(PARTNERS[2]) ~= rest, "the entry in the middle stood still")
+  finish()
+end)
+
 test("the row wraps round", function()
   open(PARTNERS)
   press(Role.MENU_LEFT)
