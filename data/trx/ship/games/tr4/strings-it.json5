@@ -3,49 +3,49 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "enums": {
         "input_role": {
-            "equip_grenade_launcher": "\\{review}Equipaggia Lanciagranate",
-            "equip_uzis": "\\{review}Equipaggia Uzi",
+            "equip_grenade_launcher": "Equipaggia Lanciagranate",
+            "equip_uzis": "Equipaggia Uzi",
         }
     },
     "objects": {
         "crossbow_ammo_1_item": {
-            "name": "\\{review}Dardi Normali per Balestra",
+            "name": "Dardi Normali per Balestra",
         },
         "crossbow_ammo_2_item": {
-            "name": "\\{review}Dardi Avvelenati per Balestra",
+            "name": "Dardi Avvelenati per Balestra",
         },
         "crossbow_ammo_3_item": {
-            "name": "\\{review}Dardi Esplosivi per Balestra",
+            "name": "Dardi Esplosivi per Balestra",
         },
         "flare_item": {
             "name": "Razzi di Segnalazione",
         },
         "grenade_ammo_2_item": {
-            "name": "\\{review}Granate Potenziate",
+            "name": "Granate Potenziate",
         },
         "grenade_ammo_3_item": {
-            "name": "\\{review}Granate Accecanti",
+            "name": "Granate Accecanti",
         },
         "grenade_ammo_item": {
-            "name": "\\{review}Granate Normali",
+            "name": "Granate Normali",
         },
         "grenade_gun_item": {
             "name": "Lanciagranate",
         },
         "pistols_ammo_item": {
-            "name": "\\{review}Munizioni per Pistole",
+            "name": "Caricatori per Pistole",
         },
         "quest_item_1": {
-            "name": "\\{review}Amuleto di Horus",
+            "name": "Amuleto di Horus",
         },
         "shotgun_ammo_2_item": {
-            "name": "\\{review}Munizioni a Rosa Larga per Fucile a Pompa",
+            "name": "Cartucce ad Ampia Dispersione per Fucile a Pompa",
         },
         "shotgun_ammo_item": {
-            "name": "\\{review}Munizioni Normali per Fucile a Pompa",
+            "name": "Cartucce Normali per Fucile a Pompa",
         },
         "uzis_ammo_item": {
-            "name": "\\{review}Munizioni per Uzi",
+            "name": "Caricatori per Uzi",
         }
     },
     "cutscenes": [],
@@ -552,7 +552,7 @@
                 },
                 "examine_item_3": {
                     "name": "Pergamena del Cerchio di Fuoco",
-                    "description": "Perché i serpenti possano vivere, prima tutti devono essere placati. Provocali uno alla volta e il cerchio sarà completo.",
+                    "description": "Affinché i serpenti possano vivere, prima tutti devono essere placati. Provocali uno alla volta e il cerchio sarà completo.",
                 }
             }
         },
