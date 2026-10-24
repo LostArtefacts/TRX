@@ -35,7 +35,7 @@ U+20AF:₯ 0 T render("OndineLTProRegular.TTF")
 # --------------------------------------------------
 # Unicode Block "Letterlike Symbols" (U+2100 to U+214F)
 # --------------------------------------------------
-U+2116:№ 0 T render("OndineLTProRegular.TTF")
+U+2116:№ 0 T render("Timesbd.ttf")
 U+2122:™ 0 T render("OndineLTProRegular.TTF")
 
 
