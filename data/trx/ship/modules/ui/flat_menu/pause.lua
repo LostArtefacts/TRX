@@ -96,32 +96,33 @@ function M.open(ctx)
 
   -- The statistics show only for a level that keeps them, and the way back
   -- to the title screen only where the screen can take it.
-  local rows = {}
-  local level = trx.game.current_level
-  if level ~= nil and level.stats ~= nil then
+  local function main()
+    local rows = {}
+    local level = trx.game.current_level
+    if level ~= nil and level.stats ~= nil then
+      rows[#rows + 1] = {
+        text = trx.locale.get("general/flat_menu/statistics"),
+        choose = function()
+          go_away(stats.push)
+        end,
+      }
+    end
     rows[#rows + 1] = {
-      text = trx.locale.get("general/flat_menu/statistics"),
+      text = options.title(),
       choose = function()
-        go_away(stats.push)
+        state.pages[#state.pages + 1] = options.page(go_away)
       end,
     }
+    if ctx.can_exit_to_title then
+      rows[#rows + 1] = {
+        text = trx.locale.get("general/flat_menu/exit_to_title"),
+        choose = exit,
+      }
+    end
+    return { heading = trx.locale.get("general/pause/paused"), rows = rows }
   end
-  rows[#rows + 1] = {
-    text = options.title(),
-    choose = function()
-      state.pages[#state.pages + 1] = options.page(go_away)
-    end,
-  }
-  if ctx.can_exit_to_title then
-    rows[#rows + 1] = {
-      text = trx.locale.get("general/flat_menu/exit_to_title"),
-      choose = exit,
-    }
-  end
-  state.pages[1] = list.new({
-    heading = trx.locale.get("general/pause/paused"),
-    rows = rows,
-  })
+  state.pages[1] = list.new(main)
+  list.follow_settings(ctx, state.pages)
 
   return ctx:push({
     root = trx.ui.widgets.Custom({

@@ -20,16 +20,18 @@ end
 ---@param open fun(push: fun(ctx: trx.ui.ScreenContext, on_close: fun()): trx.ui.StackLayer)
 ---@return common.ui.flat_menu.List
 function M.page(open)
-  local rows = {}
-  for _, entry in ipairs(settings.dialogs()) do
-    rows[#rows + 1] = {
-      text = entry.title,
-      choose = function()
-        open(entry.push)
-      end,
-    }
-  end
-  return list.new({ heading = M.title(), rows = rows })
+  return list.new(function()
+    local rows = {}
+    for _, entry in ipairs(settings.dialogs()) do
+      rows[#rows + 1] = {
+        text = entry.title,
+        choose = function()
+          open(entry.push)
+        end,
+      }
+    end
+    return { heading = M.title(), rows = rows }
+  end)
 end
 
 return M

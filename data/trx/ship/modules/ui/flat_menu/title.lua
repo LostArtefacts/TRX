@@ -105,8 +105,12 @@ function M.open(ctx)
     follow_main()
   end
 
-  local function list_of(heading, entries)
-    return list.new({ heading = heading, rows = entries })
+  -- Makes a list from `build`, which returns the heading and the rows.
+  local function list_of(build)
+    return list.new(function()
+      local heading, entries = build()
+      return { heading = heading, rows = entries }
+    end)
   end
 
   -- Starts a level from the level select, asking for the game mode first
@@ -117,33 +121,39 @@ function M.open(ctx)
       leave()
       return
     end
-    local entries = {}
-    for _, row in ipairs(rows.mode_rows()) do
-      entries[#entries + 1] = {
-        text = row.text,
-        choose = function()
-          trx.game.play_level(level.num, {
-            select = true,
-            ng_plus = row.choice == "new_game_plus",
-          })
-          leave()
-        end,
-      }
-    end
-    push(list_of(trx.locale.get("general/passport/select_mode"), entries))
+    push(list_of(function()
+      local entries = {}
+      for _, row in ipairs(rows.mode_rows()) do
+        entries[#entries + 1] = {
+          text = row.text,
+          choose = function()
+            trx.game.play_level(level.num, {
+              select = true,
+              ng_plus = row.choice == "new_game_plus",
+            })
+            leave()
+          end,
+        }
+      end
+      return trx.locale.get("general/passport/select_mode"), entries
+    end))
   end
 
+  -- Lists the levels that `level_rows` returns, and runs `on_level` with the
+  -- one the player picks.
   local function level_list(level_rows, on_level)
-    local entries = {}
-    for _, row in ipairs(level_rows) do
-      entries[#entries + 1] = {
-        text = row.text,
-        choose = function()
-          on_level(row.level)
-        end,
-      }
-    end
-    return list_of(trx.locale.get("general/passport/select_level"), entries)
+    return list_of(function()
+      local entries = {}
+      for _, row in ipairs(level_rows()) do
+        entries[#entries + 1] = {
+          text = row.text,
+          choose = function()
+            on_level(row.level)
+          end,
+        }
+      end
+      return trx.locale.get("general/passport/select_level"), entries
+    end)
   end
 
   -- Lists the saves that pass `filter`, and runs `on_slot` with the one the
@@ -170,8 +180,10 @@ function M.open(ctx)
       return info ~= nil and info.can_select_level
     end, function(slot)
       local reached = trx.savegame.reached_levels(slot.slot_num, slot.pool)
-      local level_rows = reached and rows.reached_level_rows(reached) or {}
-      if #level_rows == 0 then
+      local function level_rows()
+        return reached and rows.reached_level_rows(reached) or {}
+      end
+      if #level_rows() == 0 then
         return false
       end
       local levels = level_list(level_rows, function(level)
@@ -198,27 +210,28 @@ function M.open(ctx)
   end
 
   local function switch_mod()
-    local entries = {}
     local current = 1
-    for _, mod in ipairs(pages.switchable_mods()) do
-      local key = "dynamic/mods/" .. mod.name .. "/title"
-      local title = trx.locale.get(key)
-      if title == key then
-        title = mod.title or mod.name
+    local mods = list_of(function()
+      local entries = {}
+      for _, mod in ipairs(pages.switchable_mods()) do
+        local key = "dynamic/mods/" .. mod.name .. "/title"
+        local title = trx.locale.get(key)
+        if title == key then
+          title = mod.title or mod.name
+        end
+        entries[#entries + 1] = {
+          text = title,
+          choose = function()
+            trx.mod.switch(mod)
+            leave()
+          end,
+        }
+        if trx.mod.current ~= nil and mod.name == trx.mod.current.name then
+          current = #entries
+        end
       end
-      entries[#entries + 1] = {
-        text = title,
-        choose = function()
-          trx.mod.switch(mod)
-          leave()
-        end,
-      }
-      if trx.mod.current ~= nil and mod.name == trx.mod.current.name then
-        current = #entries
-      end
-    end
-    local mods =
-      list_of(trx.locale.get("general/passport/select_mod"), entries)
+      return trx.locale.get("general/passport/select_mod"), entries
+    end)
     mods.selected = current
     mods:follow()
     push(mods)
@@ -241,7 +254,7 @@ function M.open(ctx)
 
   local function new_game()
     if trx.config.get("flow.play_any_level") then
-      push(level_list(rows.all_level_rows(), start_level))
+      push(level_list(rows.all_level_rows, start_level))
       return
     end
     local choices = rows.new_game_rows()
@@ -249,14 +262,16 @@ function M.open(ctx)
       NEW_GAME[choices[1].choice]()
       return
     end
-    local entries = {}
-    for _, row in ipairs(choices) do
-      entries[#entries + 1] = {
-        text = row.text,
-        choose = NEW_GAME[row.choice],
-      }
-    end
-    push(list_of(trx.locale.get("general/passport/select_mode"), entries))
+    push(list_of(function()
+      local entries = {}
+      for _, row in ipairs(rows.new_game_rows()) do
+        entries[#entries + 1] = {
+          text = row.text,
+          choose = NEW_GAME[row.choice],
+        }
+      end
+      return trx.locale.get("general/passport/select_mode"), entries
+    end))
   end
 
   -- The list opens with no saves too, as the original shows its empty slots.
@@ -271,38 +286,44 @@ function M.open(ctx)
     end)
   end
 
-  local main = {
-    { text = trx.locale.get("general/passport/new_game"), choose = new_game },
-  }
-  if pages.saving_enabled() then
-    main[#main + 1] = {
-      text = trx.locale.get("general/passport/load_game"),
-      choose = load_game,
+  push(list_of(function()
+    local main = {
+      {
+        text = trx.locale.get("general/passport/new_game"),
+        choose = new_game,
+      },
     }
-  end
-  if trx.game.gym ~= nil then
+    if pages.saving_enabled() then
+      main[#main + 1] = {
+        text = trx.locale.get("general/passport/load_game"),
+        choose = load_game,
+      }
+    end
+    if trx.game.gym ~= nil then
+      main[#main + 1] = {
+        text = trx.locale.get("general/flat_menu/gym"),
+        choose = function()
+          trx.game.play_gym()
+          leave()
+        end,
+      }
+    end
     main[#main + 1] = {
-      text = trx.locale.get("general/flat_menu/gym"),
+      text = options.title(),
       choose = function()
-        trx.game.play_gym()
-        leave()
+        push(options.page(go_away))
       end,
     }
-  end
-  main[#main + 1] = {
-    text = options.title(),
-    choose = function()
-      push(options.page(go_away))
-    end,
-  }
-  main[#main + 1] = {
-    text = trx.locale.get("general/flat_menu/exit"),
-    -- The exit fade covers the menu, so the menu does not fade out itself.
-    choose = function()
-      trx.game.exit_game()
-    end,
-  }
-  push(list_of(nil, main))
+    main[#main + 1] = {
+      text = trx.locale.get("general/flat_menu/exit"),
+      -- The exit fade covers the menu, so the menu does not fade out itself.
+      choose = function()
+        trx.game.exit_game()
+      end,
+    }
+    return nil, main
+  end))
+  list.follow_settings(ctx, state.pages)
 
   -- Plays a demo once nobody has touched the title for a while.
   local function wait_for_player()
