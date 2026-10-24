@@ -213,6 +213,7 @@ local TABS = {
     "visuals.enable_ps1_crystals",
     "visuals.enable_ps1_rain",
     "visuals.enable_rain_splashes",
+    "visuals.enable_all_upv_wakes",
 
     "visuals.shadow_type",
     "visuals.enable_gun_lighting",

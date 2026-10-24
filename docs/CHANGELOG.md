@@ -160,6 +160,7 @@
 **TR3**
 - Added the Italian FMV names, so the Italian dub plays its FMVs without renaming them (#4618 / TRX1710)
 - Added the demos from the PS1 version, which play when the main menu is left idle (#6713 / TRX1601)
+- Added an option to make every UPV leave wakes, rather than only some of them (Graphic Options → Visuals → Wakes on every UPV) (TRX1894)
 - Fixed the assault course and quad bike timers showing tenths of a second instead of hundredths (#6704 / TRX1596)
 - Fixed the assault course and quad bike records in the stopwatch showing tenths of a second instead of hundredths (#6704 / TRX1596)
 - Fixed effects such as smoke and explosions breaking after an enemy exploded near Lara (TRX1576)

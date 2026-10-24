@@ -1998,6 +1998,10 @@
             "title": "Znajdźki 3D",
             "description": "Rysuje przedmioty do podniesienia jako trójwymiarowe modele zamiast płaskich grafik.",
         },
+        "visuals.enable_all_upv_wakes": {
+            "title": "\\{review}Kilwater każdego UPV",
+            "description": "\\{review}Każdy UPV będzie zostawiał kilwater za uchwytami. Po wyłączeniu kilwater zostawia tylko UPV aktywowany przez wyzwalacz, jak w wersji PC.",
+        },
         "visuals.enable_droplets": {
             "title": "\\{review}Krople wody",
             "description": "\\{review}Włącza wyświetlanie kropli wody skapujących z Lary po wyjściu z wody.",

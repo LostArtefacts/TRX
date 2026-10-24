@@ -1998,6 +1998,10 @@
             "title": "Oggetti 3D",
             "description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D.",
         },
+        "visuals.enable_all_upv_wakes": {
+            "title": "\\{review}Scia su ogni UPV",
+            "description": "\\{review}Ogni UPV lascerà una scia dietro le sue manopole. Se disabilitato, solo un UPV attivato da un trigger lascia la scia, come nella versione PC.",
+        },
         "visuals.enable_droplets": {
             "title": "Gocce d'acqua",
             "description": "Abilita la visualizzazione delle gocce d'acqua che cadono da Lara dopo che è uscita dall'acqua.",
