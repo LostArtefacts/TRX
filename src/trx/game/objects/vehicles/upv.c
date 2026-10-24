@@ -3,6 +3,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
+#include <trx/game/fx/upv_wake.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/input.h>
@@ -78,6 +79,17 @@ static const BITE m_UPVBites[6] = {
     { .pos = { .x = 128, .y = 0, .z = -64 }, .mesh_num = 2 },
     { .pos = { .x = 0, .y = 0, .z = -64 }, .mesh_num = 2 },
 };
+
+static void M_GetWakeOrigin(
+    const ITEM *const item, const int32_t side, XYZ_32 pos[2])
+{
+    for (int32_t i = 0; i < 2; i++) {
+        const BITE *const bite = &m_UPVBites[(side << 1) + 2 + i];
+        pos[i] = bite->pos;
+        Collide_GetJointAbsPosition(item, &pos[i], bite->mesh_num);
+        pos[i].y += 128;
+    }
+}
 
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -321,6 +333,13 @@ static bool M_Draw(const ITEM *const item)
 
 finish:
     Matrix_Pop();
+    if (Item_IsTriggerActiveRO(item)) {
+        for (int32_t side = 0; side < 2; side++) {
+            XYZ_32 origin[2];
+            M_GetWakeOrigin(item, side, origin);
+            FX_UPVWake_Draw(item, side, origin);
+        }
+    }
     return result;
 }
 
@@ -853,6 +872,18 @@ static void M_Control(int16_t item_num)
 
         Output_AddDynamicLightRGB(pos, 8 * i + 16, (RGB_888) { c, c, c });
     }
+
+    const int32_t time4 = Output_GetTimeInGame() * 4;
+    if ((time4 & 0xF) == 0 && p->vel != 0) {
+        for (int32_t side = 0; side < 2; side++) {
+            if (Item_IsTriggerActive(item)) {
+                XYZ_32 wake_pos[2];
+                M_GetWakeOrigin(item, side, wake_pos);
+                FX_UPVWake_Spawn(item, side, wake_pos);
+            }
+        }
+    }
+    FX_UPVWake_UpdateShade(item, p->vel != 0);
 
     if (p->weapon_timer > 0) {
         p->weapon_timer--;
