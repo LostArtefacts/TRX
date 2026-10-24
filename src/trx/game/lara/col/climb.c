@@ -41,10 +41,10 @@ static int32_t M_GetDestinationClearance(const ITEM *const item)
 {
     XYZ_32 pos = {
         .x = 0,
-        .y = -M_CLIMB_HEIGHT,
+        .y = -STEP_L / 2,
         .z = 0,
     };
-    Lara_GetJointAbsPosition(&pos, LM_HAND_R);
+    Collide_GetJointAbsPosition(item, &pos, LM_HAND_R);
     int16_t room_num = item->room_num;
     Room_GetSector(pos, &room_num);
 
