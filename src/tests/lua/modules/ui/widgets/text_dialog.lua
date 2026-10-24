@@ -4,6 +4,7 @@ local h = require("harness")
 local test = h.test
 
 local Role = trx.input.Role
+local accent = require("common.ui.accent")
 local text_dialog = require("common.ui.widgets.text_dialog")
 
 local LONG = "one\ntwo\nthree\nfour\nfive"
@@ -85,6 +86,29 @@ test("the same text wrapped again keeps the page", function()
   assert(dialog.page:get() == 2)
   dialog:set_text("T", "other", 900, 2)
   assert(dialog.page:get() == 1)
+end)
+
+test("a dialog shows its title in orange in TR4 only", function()
+  for _, case in ipairs({ { version = 4, orange = true }, { version = 1 } }) do
+    fake.set_tr_version(case.version)
+    local dialog = text_dialog.new()
+    dialog:set_text("Title", "text", 1000, 4)
+    local layer = trx.ui.layers.push({ root = dialog.widget })
+    fake.tick()
+    local title = nil
+    for _, op in ipairs(fake.scene()) do
+      title = title or op:match("^text .- text=(.*TITLE.*)$")
+    end
+    layer:close()
+    assert(title ~= nil, "no title")
+    local color = accent.color_of(accent.Role.VALUE)
+    local orange = color ~= nil
+      and title:find(accent.color("", color), 1, true) ~= nil
+    assert(
+      orange == (case.orange == true),
+      ("TR%d shows %s"):format(case.version, title)
+    )
+  end
 end)
 
 return h.report()
