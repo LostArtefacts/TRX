@@ -135,6 +135,17 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── snow.rpl
 │   │   │   └── vision.rpl
 │   │   ├── images
+│   │   │   ├── og
+│   │   │   │   └── ps1
+│   │   │   │       ├── atlantis.webp
+│   │   │   │       ├── credits_ps1.webp
+│   │   │   │       ├── egypt.webp
+│   │   │   │       ├── eidos.webp
+│   │   │   │       ├── end.webp
+│   │   │   │       ├── greece.webp
+│   │   │   │       ├── gym.webp
+│   │   │   │       ├── peru.webp
+│   │   │   │       └── title.webp
 │   │   │   ├── atlantis.webp
 │   │   │   ├── credits_1.webp
 │   │   │   ├── credits_2.webp
@@ -1702,6 +1713,17 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── snow.rpl
     │   │   │   │   └── vision.rpl
     │   │   │   ├── images
+    │   │   │   │   ├── og
+    │   │   │   │   │   └── ps1
+    │   │   │   │   │       ├── atlantis.webp
+    │   │   │   │   │       ├── credits_ps1.webp
+    │   │   │   │   │       ├── egypt.webp
+    │   │   │   │   │       ├── eidos.webp
+    │   │   │   │   │       ├── end.webp
+    │   │   │   │   │       ├── greece.webp
+    │   │   │   │   │       ├── gym.webp
+    │   │   │   │   │       ├── peru.webp
+    │   │   │   │   │       └── title.webp
     │   │   │   │   ├── atlantis.webp
     │   │   │   │   ├── credits_1.webp
     │   │   │   │   ├── credits_2.webp

@@ -147,6 +147,7 @@
 - Fixed Lara sometimes aiming at a different enemy than in the original games when two were equally good targets
 
 **TR1**
+- Added the original PS1 loading screens to the images folder, for use in place of the upscaled ones (#5913 / TRX747)
 - Fixed empty pods being included in the total kill statistics if `O_ATLANTEAN_WINGED` is present in the level (TRX1693, regression from 1.5)
 - Fixed not being able to trigger enemies 193 and 194 if Lara survives room 95 in Temple of the Cat (OG bug) (TRX1694)
 
