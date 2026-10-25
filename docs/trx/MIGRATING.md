@@ -74,14 +74,11 @@ order: 3
    object and so the trigger timer returns to having normal effect. Update any
    triggers as required and set the fire head's `blow_time` property value.
 
-10. **The shipped interface modules moved to `modules/ui`**
-    The modules that draw the interface now sit in `modules/ui`: the screens
-    in `modules/ui/screens`, the overlay, the assault course readouts and the
-    level captions in `modules/ui/hud`, and the parts that they share in
-    `modules/ui/widgets`. Require them by their place, for example
-    `require("common.ui.hud.overlay")` in place of `require("common.overlay")`.
-    The screens are set up by one startup script, `scripts/ui.lua`, in place
-    of a script each.
+10. **The shipped overlay modules moved to `modules/ui/hud`**
+    The modules that draw the overlay, the assault course readouts and the
+    level captions now sit in `modules/ui/hud`. Require them by their place,
+    for example `require("common.ui.hud.overlay")` in place of
+    `require("common.overlay")`.
 
 11. **A released widget cannot be used again**
     `trx.ui.Widget:release` ends the widget and every widget under it, and
@@ -130,11 +127,10 @@ order: 3
     - `trx.overlay.signals.health_bar_forced` →
       `require("common.ui.ring").signals.health_bar`
 
-20. **The caption shows its text as given**
-    `trx.overlay.set_caption` no longer styles its text, and its `plain`
-    option is gone. The shipped `common.ui.accent` module styles text by
-    what it is: `accent.text(name, accent.Role.NAME)` gives the look of an
-    entry's name. These strings, which only styled other text, are gone:
+20. **Strings that only styled other text are gone**
+    The shipped `common.ui.accent` module styles text by what it is:
+    `accent.text(name, accent.Role.NAME)` gives the look of an entry's name.
+    These strings are gone:
     - `general/inventory_ring/heading_fmt`
     - `general/inventory_ring/object_name_fmt`
     - `general/inventory_ring/item_count_fmt`
