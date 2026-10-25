@@ -20,7 +20,25 @@ REPO_DIR = Path(__file__).parents[3]
 
 type Level = dict[str, Any]
 type Catalog = dict[int, str]
-type SupportStatus = dict[str, tuple[Status, str | None]]
+type Support = tuple[Status, str | None]
+
+
+@dataclass(frozen=True, slots=True)
+class ObjectSupport:
+    default: Support
+    # Per-level overrides as (first level, last level, support).
+    levels: list[tuple[int, int, Support]]
+
+    def at(self, level_id: int) -> Support:
+        for first, last, support in self.levels:
+            if first <= level_id <= last:
+                return support
+        return self.default
+
+
+type SupportStatus = dict[str, ObjectSupport]
+
+UNSUPPORTED = ObjectSupport(default=(Status.NOT_IMPLEMENTED, None), levels=[])
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,13 +60,30 @@ def load_catalog(path: Path) -> Catalog:
         }
 
 
+def parse_support(payload: str | dict[str, Any]) -> Support:
+    if isinstance(payload, str):
+        return Status(payload), None
+    status = Status(payload["status"])
+    note = payload.get("notes") or payload.get("todo")
+    return status, note
+
+
+def parse_level_range(key: str) -> tuple[int, int]:
+    first, _, last = key.partition("-")
+    return int(first), int(last or first)
+
+
 def load_support_status(path: Path) -> SupportStatus:
     raw = json.loads(path.read_text(encoding="utf-8"))
     out: SupportStatus = {}
     for name, payload in raw.items():
-        status = Status(payload["status"])
-        note = payload.get("notes") or payload.get("todo")
-        out[str(name)] = (status, note)
+        levels = [
+            (*parse_level_range(key), parse_support(value))
+            for key, value in payload.get("levels", {}).items()
+        ]
+        out[str(name)] = ObjectSupport(
+            default=parse_support(payload), levels=levels
+        )
     return out
 
 
@@ -130,7 +165,7 @@ def make_todo_list(
     lines: list[str] = []
     prev_zone_num: int | None = None
 
-    for level in levels:
+    for level_id, level in enumerate(levels):
         items = level.get("items") or []
         if not items:
             continue
@@ -148,8 +183,8 @@ def make_todo_list(
         )
         for object_name, count in sorted_objects:
             status, note = support_status.get(
-                object_name, (Status.NOT_IMPLEMENTED, None)
-            )
+                object_name, UNSUPPORTED
+            ).at(level_id)
             if status == Status.FULLY_IMPLEMENTED:
                 continue
 
@@ -212,8 +247,8 @@ def make_svg(
             items = data.get(obj_id, {}).get(lvl_id, [])
             present = bool(items)
             status, todo = support_status.get(
-                obj_name, (Status.NOT_IMPLEMENTED, None)
-            )
+                obj_name, UNSUPPORTED
+            ).at(lvl_id)
             tooltip = ""
             if present:
                 row_statuses.append(status)
