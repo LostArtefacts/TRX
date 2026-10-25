@@ -29,6 +29,7 @@
 #include <trx/gl/context.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/track.h>
+#include <trx/version.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_UNIFORMS *m_Uniforms = nullptr;
@@ -297,6 +298,15 @@ void Output_RefreshRoomMeshes(void)
 bool Output_IsFaceSemiTransparent(const FACE *const face)
 {
     return face->ps1_semi_transparent && g_Config.rendering.enable_ps1_blending;
+}
+
+DRAW_TYPE Output_GetSpriteDrawType(const OBJECT *const obj)
+{
+    if (g_TRVersion <= 2 && obj->semi_transparent
+        && g_Config.rendering.enable_ps1_blending) {
+        return DRAW_BLEND;
+    }
+    return DRAW_OPAQUE;
 }
 
 void Output_DispatchRoomFlip(const ROOM *room)

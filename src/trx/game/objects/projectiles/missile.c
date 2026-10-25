@@ -260,6 +260,7 @@ static void M_SetupFlame(OBJECT *const obj)
 {
     obj->effect_control_func = M_ControlFlame;
     obj->save_position = true;
+    obj->semi_transparent = g_TRVersion >= 2;
 }
 
 static void M_SetupPoison(OBJECT *const obj)

@@ -54,7 +54,7 @@ trx.objects.wolf.properties.max_hit_points = 30
     - <a id="objects.Object.mesh_count" name="objects.Object.mesh_count"></a>**`mesh_count`**: integer. How many meshes the object is built from. *(read-only)*
     - <a id="objects.Object.pivot_length" name="objects.Object.pivot_length"></a>**`pivot_length`**: integer. How far in front of itself the object turns about.
     - <a id="objects.Object.radius" name="objects.Object.radius"></a>**`radius`**: integer. Collision radius.
-    - <a id="objects.Object.semi_transparent" name="objects.Object.semi_transparent"></a>**`semi_transparent`**: boolean. Whether the object is drawn see-through.
+    - <a id="objects.Object.semi_transparent" name="objects.Object.semi_transparent"></a>**`semi_transparent`**: boolean. Whether the PlayStation draws the sprites of the object half see-through. In TR1 and TR2, they are drawn so while PlayStation blending is on.
     - <a id="objects.Object.shadow_size" name="objects.Object.shadow_size"></a>**`shadow_size`**: integer. Size of the blob shadow drawn under it, and 0 for none.
     - <a id="objects.Object.smartness" name="objects.Object.smartness"></a>**`smartness`**: integer. How readily a creature of this type finds its way to Lara.
 

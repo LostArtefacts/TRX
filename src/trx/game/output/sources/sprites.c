@@ -16,6 +16,7 @@ typedef struct {
     MESH_BATCHER *batcher;
     OUTPUT_MESH **meshes;
     OUTPUT_MESH **meshes_blend_add;
+    OUTPUT_MESH **meshes_half;
     size_t mesh_count;
 
     MATRIX last_matrix;
@@ -33,7 +34,8 @@ static void M_RenderBegin(const SCENE_SOURCE *const src)
 
 static void M_AddSpriteMesh(
     MESH_BUILDER *const builder, const int32_t texture_idx,
-    const SCENE_PASS pass, const uint16_t extra_flags, const bool depth_write)
+    const SCENE_PASS pass, const uint16_t extra_flags, const RGBA_8888 color,
+    const bool depth_write)
 {
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(texture_idx);
     const struct {
@@ -50,7 +52,7 @@ static void M_AddSpriteMesh(
             .normal = { .x = normal[j].x, .y = normal[j].y, .z = 0.0f },
             .flags = Output_Textures_GetSpriteTextureFlags(texture_idx)
                 | extra_flags,
-            .color = { 255, 255, 255, 255 },
+            .color = color,
             .uvw_idx = Output_Textures_GetSpriteUVWIndex(texture_idx, j),
             .reflectivity = 1.0f,
             .shade = 0,
@@ -67,6 +69,7 @@ static void M_PrepareMeshes(M_PRIV *const p)
     p->meshes = Memory_Alloc(sizeof(*p->meshes) * p->mesh_count);
     p->meshes_blend_add =
         Memory_Alloc(sizeof(*p->meshes_blend_add) * p->mesh_count);
+    p->meshes_half = Memory_Alloc(sizeof(*p->meshes_half) * p->mesh_count);
     MESH_BUILDER *const builder = MeshBuilder_Create();
     for (int32_t i = 0; i < (int32_t)p->mesh_count; i++) {
         // The original engines painter-sorted every sprite instead of using
@@ -74,16 +77,27 @@ static void M_PrepareMeshes(M_PRIV *const p)
         // skipping the depth prepass reproduces that in the sorted
         // transparent pass.
         M_AddSpriteMesh(
-            builder, i, SCENE_PASS_TRANSPARENT, VERT_USE_OWN_LIGHT, false);
+            builder, i, SCENE_PASS_TRANSPARENT, VERT_USE_OWN_LIGHT,
+            (RGBA_8888) { 255, 255, 255, 255 }, false);
         OUTPUT_MESH *const mesh_transparent = MeshBuilder_Seal(builder);
         MeshBatcher_AddMesh(p->batcher, mesh_transparent);
         p->meshes[i] = mesh_transparent;
 
         M_AddSpriteMesh(
-            builder, i, SCENE_PASS_BLEND_ADD, VERT_USE_OWN_LIGHT, true);
+            builder, i, SCENE_PASS_BLEND_ADD, VERT_USE_OWN_LIGHT,
+            (RGBA_8888) { 255, 255, 255, 255 }, true);
         OUTPUT_MESH *const mesh_blend_add = MeshBuilder_Seal(builder);
         MeshBatcher_AddMesh(p->batcher, mesh_blend_add);
         p->meshes_blend_add[i] = mesh_blend_add;
+
+        // The transparent pass blends premultiplied alpha, so the color is
+        // halved along with the alpha.
+        M_AddSpriteMesh(
+            builder, i, SCENE_PASS_TRANSPARENT, VERT_USE_OWN_LIGHT,
+            (RGBA_8888) { 128, 128, 128, 128 }, false);
+        OUTPUT_MESH *const mesh_half = MeshBuilder_Seal(builder);
+        MeshBatcher_AddMesh(p->batcher, mesh_half);
+        p->meshes_half[i] = mesh_half;
     }
     MeshBuilder_Destroy(builder);
 }
@@ -96,9 +110,12 @@ static void M_FreeMeshes(M_PRIV *const p)
             Output_Mesh_Destroy(p->meshes[i]);
             MeshBatcher_RemoveMesh(p->batcher, p->meshes_blend_add[i]);
             Output_Mesh_Destroy(p->meshes_blend_add[i]);
+            MeshBatcher_RemoveMesh(p->batcher, p->meshes_half[i]);
+            Output_Mesh_Destroy(p->meshes_half[i]);
         }
         Memory_FreePointer(&p->meshes);
         Memory_FreePointer(&p->meshes_blend_add);
+        Memory_FreePointer(&p->meshes_half);
     }
 }
 
@@ -166,6 +183,9 @@ void OutputSource_Sprites_Stage(
         inst.mesh = p->meshes_blend_add[sprite_idx];
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BLEND_ADD);
     } else {
+        if (draw_type == DRAW_BLEND) {
+            inst.mesh = p->meshes_half[sprite_idx];
+        }
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
     }

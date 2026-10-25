@@ -373,7 +373,7 @@ static void M_DrawSplashes(void)
         Output_DrawSprite(
             splash->pos.x, splash->pos.y, splash->pos.z,
             obj->mesh_idx - splash->frame_num, Output_GetLightAdder(), tint,
-            DRAW_BLEND, M_SPLASH_SCALE);
+            Output_GetSpriteDrawType(obj), M_SPLASH_SCALE);
     }
 }
 

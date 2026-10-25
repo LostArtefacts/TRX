@@ -1665,7 +1665,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "\\{review}Mieszanie z PlayStation",
-            "description": "\\{review}Miesza niektóre efekty i powierzchnie ze sceną tak, jak robiła to PlayStation. Dym, cienie i ślady stóp odejmują swój kolor od sceny, przyciemniając każdy kanał koloru o tę samą wartość, więc wynik jest bardziej nasycony. W TR1 i TR2 powierzchnie takie jak woda, szkło i błyski z broni są mieszane ze sceną po połowie. W TR3 krew jest również mieszana ze sceną po połowie. Po wyłączeniu wszystko to jest rysowane jak na PC.",
+            "description": "\\{review}Miesza niektóre efekty i powierzchnie ze sceną tak, jak robiła to PlayStation. Dym, cienie i ślady stóp odejmują swój kolor od sceny, przyciemniając każdy kanał koloru o tę samą wartość, więc wynik jest bardziej nasycony. W TR1 i TR2 powierzchnie takie jak woda, szkło i błyski z broni oraz efekty takie jak rozbryzgi, płomienie i eksplozje są mieszane ze sceną po połowie. W TR3 krew jest również mieszana ze sceną po połowie. Po wyłączeniu wszystko to jest rysowane jak na PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Mgła z PlayStation",

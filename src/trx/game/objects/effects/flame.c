@@ -535,7 +535,7 @@ static void M_Setup(OBJECT *const obj)
             g_TRVersion == 3 ? M_TR3_Control : M_TR12_Control;
         obj->effect_draw_func = nullptr;
     }
-    obj->semi_transparent = true;
+    obj->semi_transparent = g_TRVersion >= 2;
 }
 
 REGISTER_OBJECT(O_FLAME, M_Setup)

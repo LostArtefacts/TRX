@@ -1665,7 +1665,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "\\{review}Mélange PlayStation",
-            "description": "\\{review}Mélange certains effets et surfaces avec la scène comme le faisait la PlayStation. La fumée, les ombres et les empreintes soustraient leur couleur de la scène, ce qui assombrit chaque canal de couleur de la même quantité et rend le résultat plus saturé. Dans TR1 et TR2, les surfaces comme l'eau, le verre et les éclairs des armes sont mélangées à moitié avec la scène. Dans TR3, le sang est aussi mélangé à moitié avec la scène. Désactivé, tout cela est dessiné comme sur PC.",
+            "description": "\\{review}Mélange certains effets et surfaces avec la scène comme le faisait la PlayStation. La fumée, les ombres et les empreintes soustraient leur couleur de la scène, ce qui assombrit chaque canal de couleur de la même quantité et rend le résultat plus saturé. Dans TR1 et TR2, les surfaces comme l'eau, le verre et les éclairs des armes, ainsi que les effets comme les éclaboussures, les flammes et les explosions, sont mélangés à moitié avec la scène. Dans TR3, le sang est aussi mélangé à moitié avec la scène. Désactivé, tout cela est dessiné comme sur PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Brouillard PlayStation",
