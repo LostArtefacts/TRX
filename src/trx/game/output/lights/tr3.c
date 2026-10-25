@@ -25,6 +25,7 @@ typedef struct {
     RGB_888 bulb_color;
     RGB_888 dynamic_color;
     uint8_t ambient;
+    int32_t tick;
     struct {
         bool has_sun : 1;
         bool has_bulb : 1;
@@ -34,6 +35,7 @@ typedef struct {
 } M_ITEM_LIGHT;
 
 static M_ITEM_LIGHT m_ItemLights[MAX_ITEMS] = {};
+static int32_t m_Tick = 0;
 
 static bool M_IsPS1Light(void)
 {
@@ -228,9 +230,16 @@ static void M_CalculateLightSmoothed(
         }
     }
 
+    // Steps the smoothing once per game frame, as the original does, so that
+    // the frame rate and repeated draws do not speed it up.
+    const bool step = il->tick != m_Tick;
+    il->tick = m_Tick;
+
     // Ambient (smoothed)
     if (enable_smoothing && il->flags.has_ambient) {
-        il->ambient = M_LerpU8Shift(il->ambient, ambient_target, 3);
+        if (step) {
+            il->ambient = M_LerpU8Shift(il->ambient, ambient_target, 3);
+        }
     } else {
         il->ambient = ambient_target;
         il->flags.has_ambient = true;
@@ -256,9 +265,11 @@ static void M_CalculateLightSmoothed(
 
     if (want_sun) {
         if (enable_smoothing && il->flags.has_sun) {
-            il->sun_dir_world =
-                M_LerpXYZShift(il->sun_dir_world, sun_dir_world_target, 3);
-            il->sun_color = M_LerpRGBShift(il->sun_color, sun_target, 3);
+            if (step) {
+                il->sun_dir_world =
+                    M_LerpXYZShift(il->sun_dir_world, sun_dir_world_target, 3);
+                il->sun_color = M_LerpRGBShift(il->sun_color, sun_target, 3);
+            }
         } else {
             il->sun_dir_world = sun_dir_world_target;
             il->sun_color = sun_target;
@@ -290,9 +301,11 @@ static void M_CalculateLightSmoothed(
 
     if (want_bulb) {
         if (enable_smoothing && il->flags.has_bulb) {
-            il->bulb_dir_world =
-                M_LerpXYZShift(il->bulb_dir_world, bulb_dir_world_target, 3);
-            il->bulb_color = M_LerpRGBShift(il->bulb_color, bulb_target, 3);
+            if (step) {
+                il->bulb_dir_world = M_LerpXYZShift(
+                    il->bulb_dir_world, bulb_dir_world_target, 3);
+                il->bulb_color = M_LerpRGBShift(il->bulb_color, bulb_target, 3);
+            }
         } else {
             il->bulb_dir_world = bulb_dir_world_target;
             il->bulb_color = bulb_target;
@@ -323,10 +336,12 @@ static void M_CalculateLightSmoothed(
 
     if (want_dynamic) {
         if (enable_smoothing && il->flags.has_dynamic) {
-            il->dynamic_dir_world = M_LerpXYZShift(
-                il->dynamic_dir_world, dynamic_dir_world_target, 1);
-            il->dynamic_color =
-                M_LerpRGBShift(il->dynamic_color, dynamic_target, 1);
+            if (step) {
+                il->dynamic_dir_world = M_LerpXYZShift(
+                    il->dynamic_dir_world, dynamic_dir_world_target, 1);
+                il->dynamic_color =
+                    M_LerpRGBShift(il->dynamic_color, dynamic_target, 1);
+            }
         } else {
             il->dynamic_dir_world = dynamic_dir_world_target;
             il->dynamic_color = dynamic_target;
@@ -501,6 +516,11 @@ static void M_ObserveLevelLoad(void)
     memset(m_ItemLights, 0, sizeof(m_ItemLights));
 }
 
+static void M_Animate(const int32_t num_frames)
+{
+    m_Tick += num_frames;
+}
+
 void Output_Lights_TR3_AddDynamicLight(
     const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
 {
@@ -537,6 +557,7 @@ void Output_Lights_TR3_AddDynamicLight(
 const LIGHTING_MODEL g_LightingModelTR3 = {
     .init = M_Init,
     .observe_level_load = M_ObserveLevelLoad,
+    .animate = M_Animate,
     .calculate_light = M_CalculateLight,
     .calculate_object_lighting_at = M_CalculateObjectLightingAt,
     .calculate_static_light = M_CalculateStaticLight,
