@@ -1,0 +1,346 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "globe_select": {
+            "area_1": "\\{review}Индия",
+            "area_2": "\\{review}Острова южной части Тихого океана",
+            "area_3": "\\{review}Невада",
+            "area_4": "\\{review}",
+            "area_5": "\\{review}Лондон",
+            "area_6": "\\{review}Антарктида",
+        },
+        "misc": {
+            "empty_slot_fmt": "\\{review}- Пустой слот -",
+        }
+    },
+    "objects": {
+        "large_medipack_item": {
+            "name": "\\{review}Большая аптечка",
+        },
+        "quest_item_1": {
+            "name": "\\{review}Камень Инфада",
+            "description": "",
+        },
+        "quest_item_2": {
+            "name": "\\{review}Элемент 115",
+            "description": "",
+        },
+        "quest_item_3": {
+            "name": "\\{review}Глаз Исиды",
+            "description": "",
+        },
+        "quest_item_4": {
+            "name": "\\{review}Кинжал Ора",
+            "description": "",
+        },
+        "small_medipack_item": {
+            "name": "\\{review}Маленькая аптечка",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "\\{review}Заставка 1",
+        },
+        {
+            "title": "\\{review}Заставка 2",
+        },
+        {
+            "title": "\\{review}Заставка 3",
+        },
+        {
+            "title": "\\{review}Заставка 4",
+        },
+        {
+            "title": "\\{review}Заставка 5",
+        },
+        {
+            "title": "\\{review}Заставка 6",
+        },
+        {
+            "title": "\\{review}Заставка 7",
+        },
+        {
+            "title": "\\{review}Заставка 8",
+        },
+        {
+            "title": "\\{review}Заставка 9",
+        },
+        {
+            "title": "\\{review}Заставка 10",
+        },
+        {
+            "title": "\\{review}Заставка 11",
+        }
+    ],
+    "levels": [
+        {
+            "title": "\\{review}Дом Лары",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от гоночной трассы",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Джунгли",
+            "objects": {
+                "key_item_4": {
+                    "name": "\\{review}Ключ Индры",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Руины храма",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ Ганеши",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Ятаган",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Ятаган",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Река Ганг",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от ворот",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Пещеры Калии",
+        },
+        {
+            "title": "\\{review}Прибрежная деревня",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ контрабандиста",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Змеиный камень",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Место крушения",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ коммандера Бишопа",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ лейтенанта Такермана",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Карта болота",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Ущелье Мадубу",
+        },
+        {
+            "title": "\\{review}Храм Пуны",
+        },
+        {
+            "title": "\\{review}Причал на Темзе",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от дымоходной",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ от собора",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Олдвич",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Служебный ключ",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ Соломона",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Ключ Соломона",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Старый пенни",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Билет",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Масонский молоток",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Узорная звезда",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Ворота Луда",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от котельной",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Бальзамирующая жидкость",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Город",
+        },
+        {
+            "title": "\\{review}Пустыня Невада",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Доступ к генератору",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Переключатель детонатора",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Комплекс строгого режима",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ-карта типа A",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ-карта типа B",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Синий пропуск",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Жёлтый пропуск",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Зона 51",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Пропуск с кодами запуска",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Ключ доступа в башню",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Диск с кодом допуска",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Диск с кодом допуска",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Ключ доступа в ангар",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Антарктида",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от хижины",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Лом",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Ключ управления воротами",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Шахты RX-Tech",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Лом",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Свинцово-кислотный аккумулятор",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Стартер лебёдки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Затерянный город Тиннос",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ Ули",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Океаническая маска",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Пещера метеорита",
+        },
+        {
+            "title": "\\{review}Всех Святых",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от хранилища",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "\\{review}Олдвич",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Служебный ключ",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ Соломона",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Ключ Соломона",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Старый пенни",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Билет",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Масонский молоток",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Узорная звезда",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Река Ганг",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от ворот",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Пустыня Невада",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Доступ к генератору",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Переключатель детонатора",
+                }
+            }
+        }
+    ]
+}

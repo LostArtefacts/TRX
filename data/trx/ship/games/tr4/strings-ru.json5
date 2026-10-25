@@ -1,0 +1,1011 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "\\{review}Оснастить гранатомёт",
+            "equip_uzis": "\\{review}Оснастить узи",
+        }
+    },
+    "objects": {
+        "crossbow_ammo_1_item": {
+            "name": "\\{review}Обычные стрелы для арбалета",
+        },
+        "crossbow_ammo_2_item": {
+            "name": "\\{review}Отравленные стрелы для арбалета",
+        },
+        "crossbow_ammo_3_item": {
+            "name": "\\{review}Взрывные стрелы для арбалета",
+        },
+        "flare_item": {
+            "name": "\\{review}Вспышки",
+        },
+        "grenade_ammo_2_item": {
+            "name": "\\{review}Усиленные гранаты",
+        },
+        "grenade_ammo_3_item": {
+            "name": "\\{review}Светошумовые гранаты",
+        },
+        "grenade_ammo_item": {
+            "name": "\\{review}Обычные гранаты",
+        },
+        "grenade_gun_item": {
+            "name": "\\{review}Гранатомёт",
+        },
+        "pistols_ammo_item": {
+            "name": "\\{review}Магазины для пистолета",
+        },
+        "quest_item_1": {
+            "name": "\\{review}Амулет Гора",
+        },
+        "shotgun_ammo_2_item": {
+            "name": "\\{review}Патроны для дробовика с широким разлётом",
+        },
+        "shotgun_ammo_item": {
+            "name": "\\{review}Обычные патроны для дробовика",
+        },
+        "uzis_ammo_item": {
+            "name": "\\{review}Обоймы для узи",
+        },
+        "uzis_item": {
+            "name": "\\{review}Узи",
+        }
+    },
+    "levels": [
+        {
+            "title": "\\{review}Ангкор-Ват",
+            "general": {
+                "legend": "\\{review}Камбоджа, 1984",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Золотой череп",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Гонка за Ирисом",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Золотой череп",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Гробница Сета",
+            "general": {
+                "legend": "\\{review}Египет, наши дни",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Глаз Гора",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Вечные пески",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Часть глаза",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Часть глаза",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Погребальные камеры",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Рука Ориона",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Рука Сириуса",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Талисман-скарабей",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Золотой змей",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Долина царей",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Ключ зажигания",
+                }
+            }
+        },
+        {
+            "title": "\\{review}KV5",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Ключ зажигания",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Храм Карнака",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Ключ от гипостильного зала",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Солнечный талисман",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Канопа 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Канопа 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Солнечный диск",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Богиня солнца",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Большой гипостильный зал",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Ключ от гипостильного зала",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Солнечный талисман",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Канопа 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Канопа 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Солнечный диск",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Богиня солнца",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Священное озеро",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Ключ от гипостильного зала",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Солнечный талисман",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Канопа 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Канопа 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Солнечный диск",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Богиня солнца",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Озеро 2",
+        },
+        {
+            "title": "\\{review}Гробница Семерхета",
+            "objects": {
+                "puzzle_item_4": {
+                    "name": "\\{review}Картуш Ба",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Картуш Ра",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Часть картуша 1",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Часть картуша 2",
+                },
+                "examine_item_2": {
+                    "name": "\\{review}Правила сенета",
+                    "description": "\\{review}Чтобы выиграть, уведите все свои фишки с доски, поставив их на последнюю клетку с анхом. В свой ход бросьте палочки. Число очков равно числу выпавших белых сторон.\n\nЕсли не выпало ни одной белой стороны, число очков равно шести. Если выпало шесть очков или фишка встала на клетку с анхом, полагается дополнительный ход. Если фишка встала на фишку противника, та возвращается на старт.",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Страж Семерхета",
+            "objects": {
+                "puzzle_item_6": {
+                    "name": "\\{review}Золотой урей",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Ключ стража",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Железная дорога в пустыне",
+        },
+        {
+            "title": "\\{review}Александрия",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Жетон",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Ключ от ворот",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Трезубец",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Нотный свиток",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Золотая звезда",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Крюк с шестом",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Камень всадника",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Колонна Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Настенный крюк",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Сломанная рукоять",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Прибрежные руины",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Жетон",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Ключ от ворот",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Трезубец",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Нотный свиток",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Золотая звезда",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Крюк с шестом",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Камень всадника",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Колонна Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Настенный крюк",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Сломанная рукоять",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Фарос, храм Исиды",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Жетон",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Ключ от ворот",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Трезубец",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Нотный свиток",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Золотая звезда",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Крюк с шестом",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Камень всадника",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Колонна Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Настенный крюк",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Сломанная рукоять",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Дворцы Клеопатры",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Катакомбы",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Жетон",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Ключ от ворот",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Трезубец",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Нотный свиток",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Золотая звезда",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Крюк с шестом",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Камень всадника",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Колонна Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Храм Посейдона",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Трезубец",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Нотный свиток",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Золотая звезда",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Камень всадника",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Колонна Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Затерянная библиотека",
+            "objects": {
+                "puzzle_item_2": {
+                    "name": "\\{review}Нотный свиток",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Золотая звезда",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Камень всадника",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Колонна Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                },
+                "examine_item_3": {
+                    "name": "\\{review}Свиток огненного круга",
+                    "description": "\\{review}Чтобы змеи ожили, сначала всё должно замереть. Потревожь каждую по очереди, и огненный круг замкнётся.",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Зал Деметрия",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "\\{review}Страж портала",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Узел Фароса",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Колонна Фароса",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Чёрный жук",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Узорная рукоять",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Изваяние Хатхор",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Сломанный жук",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Разбитые очки",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Город мёртвых",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Подача закиси азота",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Домкрат",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Ключ от крыши",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Ключ с кодом оружия",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Детонатор мин",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Труба с вентилем",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Баллон с закисью азота",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Корпус домкрата",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Рукоять",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Корпус детонатора мин",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Данные о расположении мин",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Траншеи",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Подача закиси азота",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Домкрат",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Ключ от крыши",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Ключ с кодом оружия",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Детонатор мин",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Труба с вентилем",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Баллон с закисью азота",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Корпус домкрата",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Рукоять",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Корпус детонатора мин",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Данные о расположении мин",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Покои Тулуна",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Подача закиси азота",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Домкрат",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Ключ от крыши",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Ключ с кодом оружия",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Детонатор мин",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Труба с вентилем",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Баллон с закисью азота",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Корпус домкрата",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Рукоять",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Корпус детонатора мин",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Данные о расположении мин",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Уличный базар",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Подача закиси азота",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Домкрат",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Ключ от крыши",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Ключ с кодом оружия",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Детонатор мин",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Труба с вентилем",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Баллон с закисью азота",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Корпус домкрата",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Рукоять",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Корпус детонатора мин",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Данные о расположении мин",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Ворота цитадели",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Подача закиси азота",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Домкрат",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Ключ от крыши",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Ключ с кодом оружия",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Детонатор мин",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Труба с вентилем",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Баллон с закисью азота",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Корпус домкрата",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Рукоять",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Корпус детонатора мин",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Данные о расположении мин",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Цитадель",
+        },
+        {
+            "title": "\\{review}Комплекс Сфинкса",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Серебряный ключ",
+                },
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Лопата",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Металлический клинок",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Деревянная рукоять",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Храм в долине",
+        },
+        {
+            "title": "\\{review}Под Сфинксом",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Камень Маат",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Камень Хепри",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Камень Атума",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Камень Ра",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                },
+                "examine_item_1": {
+                    "name": "\\{review}Клочок бумаги",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Пирамида Менкаура",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Внутри пирамиды Менкаура",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Мастабы",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Ключ от северной шахты",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Ключ от южной шахты",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Мешок с песком",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Канистра",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Великая пирамида",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Ключ от северной шахты",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Ключ от южной шахты",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Пирамиды цариц Хуфу",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Ключ от северной шахты",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Ключ от южной шахты",
+                },
+                "puzzle_item_9": {
+                    "name": "\\{review}Ключ от восточной шахты",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Внутри Великой пирамиды",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Ключ от западной шахты",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Ключ от северной шахты",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Ключ от южной шахты",
+                },
+                "puzzle_item_9": {
+                    "name": "\\{review}Ключ от восточной шахты",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Храм Гора",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Священное писание",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Храм Гора",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Ключ от оружейной",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Ключи охраны",
+                }
+            }
+        }
+    ]
+}

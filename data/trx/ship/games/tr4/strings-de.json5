@@ -32,6 +32,9 @@
         "grenade_gun_item": {
             "name": "Granatenwerfer",
         },
+        "pistols_ammo_item": {
+            "name": "\\{review}Pistolenmunition",
+        },
         "quest_item_1": {
             "name": "\\{review}Amulett des Horus",
         },
@@ -40,6 +43,12 @@
         },
         "shotgun_ammo_item": {
             "name": "\\{review}Normale Schrotpatronen",
+        },
+        "uzis_ammo_item": {
+            "name": "\\{review}Uzi-Munition",
+        },
+        "uzis_item": {
+            "name": "\\{review}Uzi",
         }
     },
     "cutscenes": [],

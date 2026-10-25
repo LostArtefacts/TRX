@@ -432,6 +432,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   ├── strings-ru.json5
+│   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr1-ub
 │   │   ├── images
@@ -869,6 +870,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   ├── strings-uk.json5
 │   │   ├── strings.json5
 │   │   └── weapons.json5
@@ -933,6 +935,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr2-level
@@ -942,6 +945,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
+│   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr3
 │   │   ├── audio
@@ -1260,6 +1265,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   ├── strings-uk.json5
 │   │   ├── strings.json5
 │   │   ├── tombpc.dat
@@ -1354,14 +1360,18 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr3-level
 │   │   ├── gameflow.json5
+│   │   ├── strings-de.json5
 │   │   ├── strings-fr.json5
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
+│   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr4
 │   │   ├── injections
@@ -1445,14 +1455,22 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── gameflow.json5
 │   │   ├── inv_ring.json5
 │   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   ├── strings-ru.json5
 │   │   ├── strings-uk.json5
 │   │   ├── strings.json5
 │   │   └── weapons.json5
 │   └── tr4-level
 │       ├── gameflow.json5
+│       ├── strings-de.json5
+│       ├── strings-fr.json5
+│       ├── strings-gd.json5
 │       ├── strings-it.json5
+│       ├── strings-pl.json5
+│       ├── strings-ru.json5
 │       ├── strings-uk.json5
 │       └── strings.json5
 ├── modules
@@ -2019,6 +2037,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
     │   │   │   ├── strings-ru.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr1-ub
     │   │   │   ├── images
@@ -2456,6 +2475,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-ru.json5
     │   │   │   ├── strings-uk.json5
     │   │   │   ├── strings.json5
     │   │   │   └── weapons.json5
@@ -2520,6 +2540,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-ru.json5
     │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr2-level
@@ -2529,6 +2550,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-ru.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr3
     │   │   │   ├── audio
@@ -2847,6 +2870,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-ru.json5
     │   │   │   ├── strings-uk.json5
     │   │   │   ├── strings.json5
     │   │   │   ├── tombpc.dat
@@ -2941,14 +2965,18 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-ru.json5
     │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr3-level
     │   │   │   ├── gameflow.json5
+    │   │   │   ├── strings-de.json5
     │   │   │   ├── strings-fr.json5
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-ru.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr4
     │   │   │   ├── injections
@@ -3032,14 +3060,22 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── gameflow.json5
     │   │   │   ├── inv_ring.json5
     │   │   │   ├── strings-de.json5
+    │   │   │   ├── strings-fr.json5
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
+    │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-ru.json5
     │   │   │   ├── strings-uk.json5
     │   │   │   ├── strings.json5
     │   │   │   └── weapons.json5
     │   │   └── tr4-level
     │   │       ├── gameflow.json5
+    │   │       ├── strings-de.json5
+    │   │       ├── strings-fr.json5
+    │   │       ├── strings-gd.json5
     │   │       ├── strings-it.json5
+    │   │       ├── strings-pl.json5
+    │   │       ├── strings-ru.json5
     │   │       ├── strings-uk.json5
     │   │       └── strings.json5
     │   ├── modules

@@ -1,0 +1,1011 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "\\{review}Wyposaż wyrzutnię granatów",
+            "equip_uzis": "\\{review}Wyposaż uzi",
+        }
+    },
+    "objects": {
+        "crossbow_ammo_1_item": {
+            "name": "\\{review}Zwykłe bełty do kuszy",
+        },
+        "crossbow_ammo_2_item": {
+            "name": "\\{review}Zatrute bełty do kuszy",
+        },
+        "crossbow_ammo_3_item": {
+            "name": "\\{review}Wybuchowe bełty do kuszy",
+        },
+        "flare_item": {
+            "name": "\\{review}Flary",
+        },
+        "grenade_ammo_2_item": {
+            "name": "\\{review}Wzmocnione granaty",
+        },
+        "grenade_ammo_3_item": {
+            "name": "\\{review}Granaty błyskowe",
+        },
+        "grenade_ammo_item": {
+            "name": "\\{review}Zwykłe granaty",
+        },
+        "grenade_gun_item": {
+            "name": "\\{review}Wyrzutnia granatów",
+        },
+        "pistols_ammo_item": {
+            "name": "\\{review}Magazynki do pistoletu",
+        },
+        "quest_item_1": {
+            "name": "\\{review}Amulet Horusa",
+        },
+        "shotgun_ammo_2_item": {
+            "name": "\\{review}Naboje do strzelby o szerokim rozrzucie",
+        },
+        "shotgun_ammo_item": {
+            "name": "\\{review}Zwykłe naboje do strzelby",
+        },
+        "uzis_ammo_item": {
+            "name": "\\{review}Magazynki do uzi",
+        },
+        "uzis_item": {
+            "name": "\\{review}Uzi",
+        }
+    },
+    "levels": [
+        {
+            "title": "\\{review}Angkor Wat",
+            "general": {
+                "legend": "\\{review}Kambodża, 1984",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Złota czaszka",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Wyścig po Iris",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Złota czaszka",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Grobowiec Seta",
+            "general": {
+                "legend": "\\{review}Egipt, współcześnie",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Oko Horusa",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Ponadczasowe Piaski",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Fragment oka",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Fragment oka",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Komory Grobowe",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Dłoń Oriona",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Dłoń Syriusza",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Talizman skarabeusza",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Złoty wąż",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Dolina Królów",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Kluczyk do stacyjki",
+                }
+            }
+        },
+        {
+            "title": "\\{review}KV5",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Kluczyk do stacyjki",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Świątynia w Karnaku",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Klucz do sali hypostylowej",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Talizman słońca",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Kanopa 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Kanopa 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Dysk słoneczny",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bogini słońca",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Wielka Sala Hypostylowa",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Klucz do sali hypostylowej",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Talizman słońca",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Kanopa 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Kanopa 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Dysk słoneczny",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bogini słońca",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Święte Jezioro",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Klucz do sali hypostylowej",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Talizman słońca",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Kanopa 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Kanopa 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Dysk słoneczny",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bogini słońca",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Jezioro 2",
+        },
+        {
+            "title": "\\{review}Grobowiec Semerkheta",
+            "objects": {
+                "puzzle_item_4": {
+                    "name": "\\{review}Kartusz Ba",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Kartusz Ra",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Fragment kartusza 1",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Fragment kartusza 2",
+                },
+                "examine_item_2": {
+                    "name": "\\{review}Zasady senetu",
+                    "description": "\\{review}Aby wygrać, zdejmij wszystkie swoje pionki z planszy, stawiając je na ostatnim polu z ankh. W swojej turze rzuć patyczkami. Wynik rzutu to liczba widocznych białych stron.\n\nJeśli nie widać żadnej białej strony, wynik rzutu to sześć. Jeśli wyrzucisz sześć lub staniesz na polu z ankh, otrzymujesz dodatkowy ruch. Jeśli staniesz na pionku przeciwnika, wraca on na start.",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Strażnik Semerkheta",
+            "objects": {
+                "puzzle_item_6": {
+                    "name": "\\{review}Złoty ureusz",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Klucz strażnika",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Pustynna Kolej",
+        },
+        {
+            "title": "\\{review}Aleksandria",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Żeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Klucz do bramy",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trójząb",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Zwój muzyczny",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Złota gwiazda",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Hak z drążkiem",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klejnot Jeźdźca",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Kolumna Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Hak ścienny",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Złamany uchwyt",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Nadbrzeżne Ruiny",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Żeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Klucz do bramy",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trójząb",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Zwój muzyczny",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Złota gwiazda",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Hak z drążkiem",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klejnot Jeźdźca",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Kolumna Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Hak ścienny",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Złamany uchwyt",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Faros, Świątynia Izydy",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Żeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Klucz do bramy",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trójząb",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Zwój muzyczny",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Złota gwiazda",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Hak z drążkiem",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klejnot Jeźdźca",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Kolumna Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Hak ścienny",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Złamany uchwyt",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Pałace Kleopatry",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Katakumby",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Żeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Klucz do bramy",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trójząb",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Zwój muzyczny",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Złota gwiazda",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Hak z drążkiem",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klejnot Jeźdźca",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Kolumna Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Świątynia Posejdona",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Trójząb",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Zwój muzyczny",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Złota gwiazda",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klejnot Jeźdźca",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Kolumna Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Zaginiona Biblioteka",
+            "objects": {
+                "puzzle_item_2": {
+                    "name": "\\{review}Zwój muzyczny",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Złota gwiazda",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klejnot Jeźdźca",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Kolumna Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                },
+                "examine_item_3": {
+                    "name": "\\{review}Zwój ognistego kręgu",
+                    "description": "\\{review}Aby węże mogły żyć, wszystkie muszą najpierw znieruchomieć. Pobudź każdego po kolei, a krąg zapłonie w całości.",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Sala Demetriusza",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "\\{review}Strażnik portalu",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Węzeł Faros",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Kolumna Faros",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Czarny żuk",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Zdobiony uchwyt",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Wizerunek Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Zepsuty żuk",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Rozbite okulary",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Miasto Umarłych",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Podajnik podtlenku azotu",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Lewarek",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Klucz do dachu",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Klucz z kodem do broni",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Detonator min",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Rura z zaworem",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Butla z podtlenkiem azotu",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Korpus lewarka",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Uchwyt",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Korpus detonatora min",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Dane o położeniu min",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Okopy",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Podajnik podtlenku azotu",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Lewarek",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Klucz do dachu",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Klucz z kodem do broni",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Detonator min",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Rura z zaworem",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Butla z podtlenkiem azotu",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Korpus lewarka",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Uchwyt",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Korpus detonatora min",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Dane o położeniu min",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Komnaty Tuluna",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Podajnik podtlenku azotu",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Lewarek",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Klucz do dachu",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Klucz z kodem do broni",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Detonator min",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Rura z zaworem",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Butla z podtlenkiem azotu",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Korpus lewarka",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Uchwyt",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Korpus detonatora min",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Dane o położeniu min",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Uliczny Bazar",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Podajnik podtlenku azotu",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Lewarek",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Klucz do dachu",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Klucz z kodem do broni",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Detonator min",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Rura z zaworem",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Butla z podtlenkiem azotu",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Korpus lewarka",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Uchwyt",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Korpus detonatora min",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Dane o położeniu min",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Brama Cytadeli",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Podajnik podtlenku azotu",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Lewarek",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Klucz do dachu",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Klucz z kodem do broni",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Detonator min",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Rura z zaworem",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Butla z podtlenkiem azotu",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Korpus lewarka",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Uchwyt",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Korpus detonatora min",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Dane o położeniu min",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Cytadela",
+        },
+        {
+            "title": "\\{review}Kompleks Sfinksa",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Srebrny klucz",
+                },
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Łopata",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Metalowe ostrze",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Drewniany uchwyt",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Świątynia w Dolinie",
+        },
+        {
+            "title": "\\{review}Pod Sfinksem",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Kamień Maat",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Kamień Chepri",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Kamień Atuma",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Kamień Re",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                },
+                "examine_item_1": {
+                    "name": "\\{review}Skrawek papieru",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Piramida Menkaure",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Wewnątrz Piramidy Menkaure",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Mastaby",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Klucz do szybu północnego",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Klucz do szybu południowego",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Worek z piaskiem",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Kanister",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Wielka Piramida",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Klucz do szybu północnego",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Klucz do szybu południowego",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Piramidy Królowych Chufu",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Klucz do szybu północnego",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Klucz do szybu południowego",
+                },
+                "puzzle_item_9": {
+                    "name": "\\{review}Klucz do szybu wschodniego",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Wewnątrz Wielkiej Piramidy",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Klucz do szybu zachodniego",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Klucz do szybu północnego",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Klucz do szybu południowego",
+                },
+                "puzzle_item_9": {
+                    "name": "\\{review}Klucz do szybu wschodniego",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Świątynia Horusa",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Święte Pismo",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Świątynia Horusa",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Klucz do zbrojowni",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Klucze strażników",
+                }
+            }
+        }
+    ]
+}

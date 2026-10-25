@@ -1,0 +1,95 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "objects": {
+        "quest_item_1": {
+            "name": "\\{review}Рука Ратмора",
+            "description": "",
+        }
+    },
+    "levels": [
+        {
+            "title": "\\{review}Дом Лары",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от гоночной трассы",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Шотландская пляска",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Лом",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Камень чертополоха",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Логово Уилларда",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от кургана",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Лом",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Утёс Шекспира",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Карта запуска бура",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Диск доступа к насосу",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Спящий с рыбами",
+            "objects": {
+                "orca": {
+                    "name": "\\{review}Дельфин",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Лампа для цепи",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Образец мутанта",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Образец мутанта",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Лампа для цепи",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Это сумасшедший дом!",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от зоопарка",
+                },
+                "key_item_4": {
+                    "name": "\\{review}Ключ от вольера",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Рука Ратмора",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Воссоединение",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Рука Ратмора",
+                }
+            }
+        }
+    ]
+}

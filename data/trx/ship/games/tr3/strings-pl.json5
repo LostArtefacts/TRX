@@ -14,6 +14,30 @@
             "empty_slot_fmt": "- Pusty Slot -",
         }
     },
+    "objects": {
+        "large_medipack_item": {
+            "name": "\\{review}Duża apteczka",
+        },
+        "quest_item_1": {
+            "name": "\\{review}Kamień Infada",
+            "description": "",
+        },
+        "quest_item_2": {
+            "name": "\\{review}Pierwiastek 115",
+            "description": "",
+        },
+        "quest_item_3": {
+            "name": "\\{review}Oko Izydy",
+            "description": "",
+        },
+        "quest_item_4": {
+            "name": "\\{review}Sztylet Ora",
+            "description": "",
+        },
+        "small_medipack_item": {
+            "name": "\\{review}Mała apteczka",
+        }
+    },
     "cutscenes": [
         {
             "title": "Scena Przerywnikowa 1",
