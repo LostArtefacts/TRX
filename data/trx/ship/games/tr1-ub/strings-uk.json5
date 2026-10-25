@@ -1,0 +1,34 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "levels": [
+        {
+            "title": "Повернення до Єгипту",
+            "objects": {
+                "key_item_1": {
+                    "name": "Золотий ключ",
+                }
+            }
+        },
+        {
+            "title": "Храм Кішки",
+            "objects": {
+                "key_item_1": {
+                    "name": "Різьблений ключ",
+                }
+            }
+        },
+        {
+            "title": "Цитадель Атлантиди",
+        },
+        {
+            "title": "Вулик",
+        },
+        {
+            "title": "Головний екран",
+        },
+        {
+            "title": "Поточна позиція",
+        }
+    ]
+}

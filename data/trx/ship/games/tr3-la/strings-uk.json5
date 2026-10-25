@@ -1,0 +1,95 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "objects": {
+        "quest_item_1": {
+            "name": "Рука Ратмора",
+            "description": "",
+        }
+    },
+    "levels": [
+        {
+            "title": "Маєток Лари",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від гоночної траси",
+                }
+            }
+        },
+        {
+            "title": "Шотландські веселощі",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Лом",
+                },
+                "puzzle_item_2": {
+                    "name": "Будяковий камінь",
+                }
+            }
+        },
+        {
+            "title": "Лігво Вілларда",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від кромлеха",
+                },
+                "puzzle_item_1": {
+                    "name": "Лом",
+                }
+            }
+        },
+        {
+            "title": "Шекспірівська скеля",
+            "objects": {
+                "key_item_1": {
+                    "name": "Картка активації бура",
+                },
+                "puzzle_item_1": {
+                    "name": "Диск доступу до насоса",
+                }
+            }
+        },
+        {
+            "title": "На дні з рибами",
+            "objects": {
+                "orca": {
+                    "name": "Дельфін",
+                },
+                "puzzle_item_1": {
+                    "name": "Електронна лампа",
+                },
+                "puzzle_item_2": {
+                    "name": "Зразок мутанта",
+                },
+                "puzzle_item_3": {
+                    "name": "Зразок мутанта",
+                },
+                "puzzle_item_4": {
+                    "name": "Електронна лампа",
+                }
+            }
+        },
+        {
+            "title": "Це божевільня!",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від зоопарку",
+                },
+                "key_item_4": {
+                    "name": "Ключ від вольєра",
+                },
+                "puzzle_item_1": {
+                    "name": "Рука Ратмора",
+                }
+            }
+        },
+        {
+            "title": "Возз'єднання",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Рука Ратмора",
+                }
+            }
+        }
+    ]
+}

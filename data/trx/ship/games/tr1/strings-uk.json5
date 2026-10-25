@@ -1,0 +1,231 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "misc": {
+            "empty_slot_fmt": "- ПУСТИЙ СЛОТ %d -",
+        },
+        "stats": {
+            "secrets": "Секрети",
+        }
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "\\{review}Вмикає динамічне освітлення від пострілів і вибухів, як у TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "\\{review}Виправляє оригінальну проблему в рівнях «Цистерна» і «Гробниця Тіхокана», де спрайти рослин у воді не анімуються.",
+        }
+    },
+    "objects": {
+        "large_medipack_item": {
+            "name": "Велика аптечка",
+        },
+        "small_medipack_item": {
+            "name": "Мала аптечка",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Кат-сцена 1",
+        },
+        {
+            "title": "Кат-сцена 2",
+        },
+        {
+            "title": "Кат-сцена 3",
+        },
+        {
+            "title": "Кат-сцена 4",
+        }
+    ],
+    "levels": [
+        {
+            "title": "Маєток Лари",
+        },
+        {
+            "title": "Печери",
+        },
+        {
+            "title": "Місто Вількабамба",
+            "objects": {
+                "key_item_1": {
+                    "name": "Срібний ключ",
+                },
+                "puzzle_item_1": {
+                    "name": "Золотий ідол",
+                }
+            }
+        },
+        {
+            "title": "Загублена долина",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Шестерня механізму",
+                }
+            }
+        },
+        {
+            "title": "Гробниця Куалопека",
+        },
+        {
+            "title": "Палац святого Франциска",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ Нептуна",
+                },
+                "key_item_2": {
+                    "name": "Ключ Атласа",
+                },
+                "key_item_3": {
+                    "name": "Ключ Дамокла",
+                },
+                "key_item_4": {
+                    "name": "Ключ Тора",
+                }
+            }
+        },
+        {
+            "title": "Колізей",
+            "objects": {
+                "key_item_1": {
+                    "name": "Іржавий ключ",
+                }
+            }
+        },
+        {
+            "title": "Палац Мідаса",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Золотий злиток",
+                }
+            }
+        },
+        {
+            "title": "Цистерна",
+            "objects": {
+                "key_item_1": {
+                    "name": "Золотий ключ",
+                },
+                "key_item_2": {
+                    "name": "Срібний ключ",
+                },
+                "key_item_3": {
+                    "name": "Іржавий ключ",
+                }
+            }
+        },
+        {
+            "title": "Гробниця Тіхокана",
+            "objects": {
+                "key_item_1": {
+                    "name": "Золотий ключ",
+                },
+                "key_item_2": {
+                    "name": "Іржавий ключ",
+                },
+                "key_item_3": {
+                    "name": "Іржавий ключ",
+                }
+            }
+        },
+        {
+            "title": "Місто Хамун",
+            "objects": {
+                "key_item_1": {
+                    "name": "Сапфіровий ключ",
+                }
+            }
+        },
+        {
+            "title": "Обеліск Хамуна",
+            "objects": {
+                "key_item_1": {
+                    "name": "Сапфіровий ключ",
+                },
+                "puzzle_item_1": {
+                    "name": "Око Гора",
+                },
+                "puzzle_item_2": {
+                    "name": "Скарабей",
+                },
+                "puzzle_item_3": {
+                    "name": "Печатка Анубіса",
+                },
+                "puzzle_item_4": {
+                    "name": "Анх",
+                }
+            }
+        },
+        {
+            "title": "Святилище Сціона",
+            "objects": {
+                "key_item_1": {
+                    "name": "Золотий ключ",
+                },
+                "puzzle_item_1": {
+                    "name": "Анх",
+                },
+                "puzzle_item_2": {
+                    "name": "Скарабей",
+                }
+            }
+        },
+        {
+            "title": "Шахти Натли",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Запобіжник",
+                },
+                "puzzle_item_2": {
+                    "name": "Пірамідальний ключ",
+                }
+            }
+        },
+        {
+            "title": "Атлантида",
+        },
+        {
+            "title": "Велика піраміда",
+        },
+        {
+            "title": "Заглушка",
+        },
+        {
+            "title": "Заглушка",
+        },
+        {
+            "title": "Заглушка",
+        },
+        {
+            "title": "Заглушка",
+        },
+        {
+            "title": "Головний екран",
+        },
+        {
+            "title": "Поточна позиція",
+        }
+    ],
+    "demos": [
+        {
+            "title": "Місто Вількабамба",
+            "objects": {
+                "key_item_1": {
+                    "name": "Срібний ключ",
+                },
+                "puzzle_item_1": {
+                    "name": "Золотий ідол",
+                }
+            }
+        },
+        {
+            "title": "Загублена долина",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Шестерня механізму",
+                }
+            }
+        }
+    ]
+}
