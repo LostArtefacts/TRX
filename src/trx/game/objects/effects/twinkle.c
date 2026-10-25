@@ -7,6 +7,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
+#include <trx/version.h>
 
 #define M_DISAPPEAR_RANGE STEP_L
 
@@ -79,6 +80,7 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->effect_control_func = M_Control;
+    obj->semi_transparent = g_TRVersion == 1;
 }
 
 void Twinkle_SparkleItem(const ITEM *const item, const uint32_t mesh_mask)

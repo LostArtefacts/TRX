@@ -1665,7 +1665,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "\\{review}PlayStation-Überblendung",
-            "description": "\\{review}Blendet einige Effekte und Flächen wie auf der PlayStation mit der Szene. Rauch, Schatten und Fußspuren ziehen ihre Farbe von der Szene ab, wodurch jeder Farbkanal um denselben Betrag abgedunkelt wird und das Ergebnis gesättigter wirkt. In TR1 und TR2 werden Flächen wie Wasseroberflächen, Glas und Mündungsfeuer zur Hälfte mit der Szene gemischt. In TR3 wird außerdem Blut zur Hälfte mit der Szene gemischt. Deaktiviert wird all dies wie auf dem PC gezeichnet.",
+            "description": "\\{review}Blendet einige Effekte und Flächen wie auf der PlayStation mit der Szene. Rauch, Schatten und Fußspuren ziehen ihre Farbe von der Szene ab, wodurch jeder Farbkanal um denselben Betrag abgedunkelt wird und das Ergebnis gesättigter wirkt. In TR1 und TR2 werden Flächen wie Wasseroberflächen, Glas und Mündungsfeuer sowie Effekte wie Spritzer, Flammen und Explosionen zur Hälfte mit der Szene gemischt. In TR3 wird außerdem Blut zur Hälfte mit der Szene gemischt. Deaktiviert wird all dies wie auf dem PC gezeichnet.",
         },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}PlayStation-Nebel",

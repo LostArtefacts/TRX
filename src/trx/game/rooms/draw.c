@@ -421,7 +421,7 @@ static void M_DrawEffect(const EFFECT *const effect)
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, Object_Get(O_GLOW)->mesh_idx,
-            effect->shade, COLOR_RGBA_F_WHITE, DRAW_BLEND, 1.0f);
+            effect->shade, COLOR_RGBA_F_WHITE, DRAW_OPAQUE, 1.0f);
         return;
     }
 
@@ -444,7 +444,7 @@ static void M_DrawEffect(const EFFECT *const effect)
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            shade, tint, DRAW_BLEND, 1.0f);
+            shade, tint, Output_GetSpriteDrawType(obj), 1.0f);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);

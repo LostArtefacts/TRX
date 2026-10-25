@@ -1665,7 +1665,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "PlayStation blending",
-            "description": "Blends some effects and faces with the scene as the PlayStation did. Smoke, shadows and footprints subtract their color from the scene, which darkens each color channel by the same amount and gives a more saturated result. In TR1 and TR2, faces such as water surfaces, glass and gun flashes are mixed half and half with the scene. In TR3, blood is also mixed half and half with the scene. When disabled, all of these are drawn as on the PC.",
+            "description": "Blends some effects and faces with the scene as the PlayStation did. Smoke, shadows and footprints subtract their color from the scene, which darkens each color channel by the same amount and gives a more saturated result. In TR1 and TR2, faces such as water surfaces, glass and gun flashes, and effects such as splashes, flames and explosions, are mixed half and half with the scene. In TR3, blood is also mixed half and half with the scene. When disabled, all of these are drawn as on the PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "PlayStation fog",

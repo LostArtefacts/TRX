@@ -301,7 +301,7 @@ bool Item_DrawSprite(const ITEM *const item)
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
-        shade.value_1, tint, DRAW_BLEND, 1.0f);
+        shade.value_1, tint, Output_GetSpriteDrawType(obj), 1.0f);
     return true;
 }
 

@@ -64,7 +64,7 @@ end
 ---@field shadow_size integer Size of the blob shadow drawn under it, and 0 for none.
 ---@field smartness integer How readily a creature of this type finds its way to Lara.
 ---@field pivot_length integer How far in front of itself the object turns about.
----@field semi_transparent boolean Whether the object is drawn see-through.
+---@field semi_transparent boolean Whether the PlayStation draws the sprites of the object half see-through. In TR1 and TR2, they are drawn so while PlayStation blending is on.
 ---@field name string? The name the game shows for the object. It is the first value in `trx.objects.Object.names`, or `nil` where the object has no name.
 ---@field names table Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`. <!--noref: medipack-->
 ---@field description string? The text the game shows when the player examines the object, or `nil` where it cannot be examined. An empty description can still be examined: the player turns it without reading anything.

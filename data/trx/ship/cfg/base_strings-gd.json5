@@ -1665,7 +1665,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "Measgachadh PlayStation",
-            "description": "Measgaichidh seo cuid de dh'èifeachdan is uachdaran leis an t-sealladh mar a rinn am PlayStation. Bheir ceò, faileasan is lorgan-coise an dath aca fhèin air falbh on t-sealladh, a nì gach seanail dath nas dorcha leis an aon uiread, mar sin bidh an toradh nas sàithichte. Ann an TR1 is TR2, thèid uachdaran mar uachdar an uisge, glainne is lasraichean ghunnaichean a mheasgachadh leth air leth leis an t-sealladh. Ann an TR3, thèid fuil cuideachd a mheasgachadh leth air leth leis an t-sealladh. Nuair a bhios e dheth, thèid seo uile a tharraing mar air a' PC.",
+            "description": "\\{review}Measgaichidh seo cuid de dh'èifeachdan is uachdaran leis an t-sealladh mar a rinn am PlayStation. Bheir ceò, faileasan is lorgan-coise an dath aca fhèin air falbh on t-sealladh, a nì gach seanail dath nas dorcha leis an aon uiread, mar sin bidh an toradh nas sàithichte. Ann an TR1 is TR2, thèid uachdaran mar uachdar an uisge, glainne is lasraichean ghunnaichean, agus èifeachdan mar steallaidhean, lasraichean is spreadhaidhean, a mheasgachadh leth air leth leis an t-sealladh. Ann an TR3, thèid fuil cuideachd a mheasgachadh leth air leth leis an t-sealladh. Nuair a bhios e dheth, thèid seo uile a tharraing mar air a' PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "Ceò PlayStation",

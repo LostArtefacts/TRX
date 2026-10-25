@@ -1665,7 +1665,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "Fusione PlayStation",
-            "description": "Fonde alcuni effetti e superfici con la scena, come avviene su PlayStation. Fumo, ombre e impronte sottraggono il proprio colore dalla scena, scurendo ogni canale cromatico in egual misura e producendo un risultato più saturo. In TR1 e TR2, elementi come superfici dell'acqua, vetro e lampi degli spari vengono miscelati con la scena in rapporto 50:50. In TR3, anche il sangue viene miscelato con la scena in rapporto 50:50. Se l'opzione è disattivata, tutti questi elementi vengono renderizzati come nella versione per PC.",
+            "description": "\\{review}Fonde alcuni effetti e superfici con la scena, come avviene su PlayStation. Fumo, ombre e impronte sottraggono il proprio colore dalla scena, scurendo ogni canale cromatico in egual misura e producendo un risultato più saturo. In TR1 e TR2, elementi come superfici dell'acqua, vetro e lampi degli spari, ed effetti come schizzi, fiamme ed esplosioni, vengono miscelati con la scena in rapporto 50:50. In TR3, anche il sangue viene miscelato con la scena in rapporto 50:50. Se l'opzione è disattivata, tutti questi elementi vengono renderizzati come nella versione per PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "Nebbia PlayStation",
