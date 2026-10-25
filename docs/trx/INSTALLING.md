@@ -109,6 +109,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── base_strings-it.json5
 │   ├── base_strings-pl.json5
 │   ├── base_strings-ru.json5
+│   ├── base_strings-uk.json5
 │   ├── base_strings.json5
 │   ├── object_combos.json5
 │   ├── object_families.json5
@@ -410,6 +411,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   ├── strings-ru.json5
+│   │   ├── strings-uk.json5
 │   │   ├── strings.json5
 │   │   └── weapons.json5
 │   ├── tr1-demo-pc
@@ -420,6 +422,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   ├── strings-ru.json5
+│   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr1-level
 │   │   ├── gameflow.json5
@@ -450,6 +453,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   ├── strings-ru.json5
+│   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr2
 │   │   ├── fmv
@@ -865,6 +869,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-uk.json5
 │   │   ├── strings.json5
 │   │   └── weapons.json5
 │   ├── tr2-gm
@@ -928,6 +933,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr2-level
 │   │   ├── gameflow.json5
@@ -1254,6 +1260,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-uk.json5
 │   │   ├── strings.json5
 │   │   ├── tombpc.dat
 │   │   └── weapons.json5
@@ -1347,6 +1354,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
+│   │   ├── strings-uk.json5
 │   │   └── strings.json5
 │   ├── tr3-level
 │   │   ├── gameflow.json5
@@ -1439,11 +1447,13 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-de.json5
 │   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
+│   │   ├── strings-uk.json5
 │   │   ├── strings.json5
 │   │   └── weapons.json5
 │   └── tr4-level
 │       ├── gameflow.json5
 │       ├── strings-it.json5
+│       ├── strings-uk.json5
 │       └── strings.json5
 ├── modules
 │   ├── ui
@@ -1686,6 +1696,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── base_strings-it.json5
     │   │   ├── base_strings-pl.json5
     │   │   ├── base_strings-ru.json5
+    │   │   ├── base_strings-uk.json5
     │   │   ├── base_strings.json5
     │   │   ├── object_combos.json5
     │   │   ├── object_families.json5
@@ -1987,6 +1998,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
     │   │   │   ├── strings-ru.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   ├── strings.json5
     │   │   │   └── weapons.json5
     │   │   ├── tr1-demo-pc
@@ -1997,6 +2009,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
     │   │   │   ├── strings-ru.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr1-level
     │   │   │   ├── gameflow.json5
@@ -2027,6 +2040,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
     │   │   │   ├── strings-ru.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr2
     │   │   │   ├── fmv
@@ -2442,6 +2456,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   ├── strings.json5
     │   │   │   └── weapons.json5
     │   │   ├── tr2-gm
@@ -2505,6 +2520,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr2-level
     │   │   │   ├── gameflow.json5
@@ -2831,6 +2847,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   ├── strings.json5
     │   │   │   ├── tombpc.dat
     │   │   │   └── weapons.json5
@@ -2924,6 +2941,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   └── strings.json5
     │   │   ├── tr3-level
     │   │   │   ├── gameflow.json5
@@ -3016,11 +3034,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-de.json5
     │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
+    │   │   │   ├── strings-uk.json5
     │   │   │   ├── strings.json5
     │   │   │   └── weapons.json5
     │   │   └── tr4-level
     │   │       ├── gameflow.json5
     │   │       ├── strings-it.json5
+    │   │       ├── strings-uk.json5
     │   │       └── strings.json5
     │   ├── modules
     │   │   ├── ui

@@ -21,6 +21,7 @@
 - Fixed Lara being able to pull up from ladders into very small gaps (#6999 / TRX1881, regression from 1.10)
 
 **UI**
+- Added a Ukrainian translation (TRX1901)
 - Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)
 - Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)

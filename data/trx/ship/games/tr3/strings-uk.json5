@@ -1,0 +1,347 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "globe_select": {
+            "area_1": "Індія",
+            "area_2": "Острови Південної частини Тихого океану",
+            "area_3": "Невада",
+            "area_4": " ",
+            "area_5": "Лондон",
+            "area_6": "Антарктида",
+        },
+        "misc": {
+            "empty_slot_fmt": "- Пустий слот -",
+        }
+    },
+    "objects": {
+        "large_medipack_item": {
+            "name": "Велика аптечка",
+        },
+        "quest_item_1": {
+            "name": "Камінь Інфада",
+            "description": "",
+        },
+        "quest_item_2": {
+            "name": "Елемент 115",
+            "description": "",
+        },
+        "quest_item_3": {
+            "name": "Око Ісіди",
+            "description": "",
+        },
+        "quest_item_4": {
+            "name": "Кинджал Ора",
+            "description": "",
+        },
+        "small_medipack_item": {
+            "name": "Мала аптечка",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "\\{review}Кат-сцена 1",
+        },
+        {
+            "title": "\\{review}Кат-сцена 2",
+        },
+        {
+            "title": "\\{review}Кат-сцена 3",
+        },
+        {
+            "title": "\\{review}Кат-сцена 4",
+        },
+        {
+            "title": "\\{review}Кат-сцена 5",
+        },
+        {
+            "title": "\\{review}Кат-сцена 6",
+        },
+        {
+            "title": "\\{review}Кат-сцена 7",
+        },
+        {
+            "title": "\\{review}Кат-сцена 8",
+        },
+        {
+            "title": "\\{review}Кат-сцена 9",
+        },
+        {
+            "title": "\\{review}Кат-сцена 10",
+        },
+        {
+            "title": "\\{review}Кат-сцена 11",
+        }
+    ],
+    "levels": [
+        {
+            "title": "Маєток Лари",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від гоночної траси",
+                }
+            }
+        },
+        {
+            "title": "Джунглі",
+            "objects": {
+                "key_item_4": {
+                    "name": "Ключ Індри",
+                }
+            }
+        },
+        {
+            "title": "Руїни Храму",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ Ганеші",
+                },
+                "puzzle_item_1": {
+                    "name": "Ятаган",
+                },
+                "puzzle_item_2": {
+                    "name": "Ятаган",
+                }
+            }
+        },
+        {
+            "title": "Річка Ган",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від воріт",
+                }
+            }
+        },
+        {
+            "title": "Печери Калії",
+        },
+        {
+            "title": "Прибережне селище",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ контрабандиста",
+                },
+                "puzzle_item_1": {
+                    "name": "Зміїний камінь",
+                }
+            }
+        },
+        {
+            "title": "Місце аварії",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ командира Бішопа",
+                },
+                "key_item_2": {
+                    "name": "Ключ лейтенанта Такермана",
+                },
+                "pickup_item_1": {
+                    "name": "Карта болота",
+                    "description": "",
+                }
+            }
+        },
+        {
+            "title": "Ущелина Мадубу",
+        },
+        {
+            "title": "Храм Пуна",
+        },
+        {
+            "title": "Причал Темзи",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від котельні",
+                },
+                "key_item_2": {
+                    "name": "Ключ від собору",
+                }
+            }
+        },
+        {
+            "title": "Олдвіч",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від службових приміщень",
+                },
+                "key_item_2": {
+                    "name": "Ключ Соломона",
+                },
+                "key_item_3": {
+                    "name": "Ключ Соломона",
+                },
+                "puzzle_item_1": {
+                    "name": "Старий пенні",
+                },
+                "puzzle_item_2": {
+                    "name": "Квиток",
+                },
+                "puzzle_item_3": {
+                    "name": "Масонська киянка",
+                },
+                "puzzle_item_4": {
+                    "name": "Орнаментна зірка",
+                }
+            }
+        },
+        {
+            "title": "Ворота Луда",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від бойлерної",
+                },
+                "puzzle_item_1": {
+                    "name": "Рідина для бальзамування",
+                }
+            }
+        },
+        {
+            "title": "Сіті",
+        },
+        {
+            "title": "Пустеля Невада",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ доступу до генератора",
+                },
+                "key_item_2": {
+                    "name": "Пульт детонатора",
+                }
+            }
+        },
+        {
+            "title": "Зона суворого режиму",
+            "objects": {
+                "key_item_1": {
+                    "name": "Електронна картка типу A",
+                },
+                "key_item_2": {
+                    "name": "Електронна картка типу B",
+                },
+                "puzzle_item_1": {
+                    "name": "Синя перепустка охорони",
+                },
+                "puzzle_item_2": {
+                    "name": "Жовта перепустка охорони",
+                }
+            }
+        },
+        {
+            "title": "Зона 51",
+            "objects": {
+                "key_item_1": {
+                    "name": "Перепустка з кодом запуску",
+                },
+                "puzzle_item_1": {
+                    "name": "Ключ доступу до вежі",
+                },
+                "puzzle_item_2": {
+                    "name": "Диск авторизації доступу",
+                },
+                "puzzle_item_3": {
+                    "name": "Диск авторизації доступу",
+                },
+                "puzzle_item_4": {
+                    "name": "Ключ доступу до ангара",
+                }
+            }
+        },
+        {
+            "title": "Антарктида",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від побутівки",
+                },
+                "puzzle_item_1": {
+                    "name": "Лом",
+                },
+                "puzzle_item_2": {
+                    "name": "Ключ керування воротами",
+                }
+            }
+        },
+        {
+            "title": "Шахти RX-Tech",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Лом",
+                },
+                "puzzle_item_2": {
+                    "name": "Свинцево-кислотний акумулятор",
+                },
+                "puzzle_item_3": {
+                    "name": "Стартер лебідки",
+                }
+            }
+        },
+        {
+            "title": "Загублене місто Тіннос",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ Улі",
+                },
+                "puzzle_item_1": {
+                    "name": "Океанічна маска",
+                }
+            }
+        },
+        {
+            "title": "Печера метеорита",
+        },
+        {
+            "title": "Всі Святі",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від сховища",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "Олдвіч",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від службових приміщень",
+                },
+                "key_item_2": {
+                    "name": "Ключ Соломона",
+                },
+                "key_item_3": {
+                    "name": "Ключ Соломона",
+                },
+                "puzzle_item_1": {
+                    "name": "Старий пенні",
+                },
+                "puzzle_item_2": {
+                    "name": "Квиток",
+                },
+                "puzzle_item_3": {
+                    "name": "Масонська киянка",
+                },
+                "puzzle_item_4": {
+                    "name": "Орнаментна зірка",
+                }
+            }
+        },
+        {
+            "title": "Річка Ган",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від воріт",
+                }
+            }
+        },
+        {
+            "title": "Пустеля Невада",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ доступу до генератора",
+                },
+                "key_item_2": {
+                    "name": "Пульт детонатора",
+                }
+            }
+        }
+    ]
+}

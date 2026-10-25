@@ -1,0 +1,79 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "levels": [
+        {
+            "title": "Маєток Лари",
+        },
+        {
+            "title": "Холодна війна",
+            "objects": {
+                "tiger": {
+                    "name": "Сніговий барс",
+                },
+                "key_item_1": {
+                    "name": "Ключ від вартової кімнати",
+                },
+                "key_item_2": {
+                    "name": "Ключ від шахти «Б»",
+                }
+            }
+        },
+        {
+            "title": "Золото дурнів",
+            "objects": {
+                "key_item_1": {
+                    "name": "Електронна картка 1",
+                },
+                "key_item_4": {
+                    "name": "Електронна картка 2",
+                },
+                "puzzle_item_1": {
+                    "name": "Друкована плата",
+                }
+            }
+        },
+        {
+            "title": "Горнило богів",
+            "objects": {
+                "big_spider": {
+                    "name": "Білий ведмідь",
+                },
+                "spider": {
+                    "name": "Вовк",
+                },
+                "puzzle_item_1": {
+                    "name": "Маска Торнарсука",
+                },
+                "puzzle_item_2": {
+                    "name": "Золотий самородок",
+                }
+            }
+        },
+        {
+            "title": "Королівство",
+            "objects": {
+                "tiger": {
+                    "name": "Сніговий барс",
+                },
+                "puzzle_item_1": {
+                    "name": "Маска Торнарсука",
+                }
+            }
+        },
+        {
+            "title": "Кошмар у Вегасі",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ключ від готелю",
+                },
+                "puzzle_item_1": {
+                    "name": "Розподільний вузол ліфта",
+                },
+                "puzzle_item_2": {
+                    "name": "Дверна мікросхема",
+                }
+            }
+        }
+    ]
+}
