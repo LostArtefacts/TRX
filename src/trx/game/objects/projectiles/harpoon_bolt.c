@@ -7,6 +7,7 @@
 #include <trx/game/gun/smashing.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/draw.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
@@ -335,6 +336,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->control_func = g_TRVersion == 3 ? M_Control_TR3 : M_Control_TR12;
+    obj->draw_func = Object_DrawProjectile;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;

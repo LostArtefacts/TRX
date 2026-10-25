@@ -2,6 +2,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/draw.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
@@ -246,12 +247,14 @@ static void M_ControlKnife(const int16_t effect_num)
 
 static void M_SetupAtlanteanBomb(OBJECT *const obj)
 {
+    obj->effect_draw_func = Object_DrawProjectileEffect;
     obj->effect_control_func = M_ControlAtlanteanBomb;
     obj->save_position = true;
 }
 
 static void M_SetupAtlanteanShard(OBJECT *const obj)
 {
+    obj->effect_draw_func = Object_DrawProjectileEffect;
     obj->effect_control_func = M_ControlAtlanteanShard;
     obj->save_position = true;
 }
@@ -271,12 +274,14 @@ static void M_SetupPoison(OBJECT *const obj)
 
 static void M_SetupHarpoon(OBJECT *const obj)
 {
+    obj->effect_draw_func = Object_DrawProjectileEffect;
     obj->effect_control_func = M_ControlHarpoon;
     obj->save_position = true;
 }
 
 static void M_SetupKnife(OBJECT *const obj)
 {
+    obj->effect_draw_func = Object_DrawProjectileEffect;
     obj->effect_control_func = M_ControlKnife;
     obj->save_position = true;
 }

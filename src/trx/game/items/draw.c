@@ -222,8 +222,14 @@ bool Item_DrawAnimatingEx(
         return false;
     }
 
-    Output_CalculateObjectLighting(
-        item, frames[0] != nullptr ? &frames[0]->bounds : bounds);
+    const BOUNDS_16 *const light_bounds =
+        frames[0] != nullptr ? &frames[0]->bounds : bounds;
+    if (desc->room_light) {
+        Output_CalculateObjectRoomLighting(item, light_bounds);
+    } else {
+        Output_CalculateObjectLighting(item, light_bounds);
+    }
+    Output_BrightenLight(desc->brightness);
 
     const int16_t *extra_rotation = item->extra_rotations;
 

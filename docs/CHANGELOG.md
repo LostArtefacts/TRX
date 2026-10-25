@@ -122,6 +122,7 @@
 - Fixed wrong lighting on objects in TR4 rooms that change during the game, such as visible seams in the blood streams in Burial Chambers (TRX1798)
 - Fixed water splashes, ripples and underwater particles in TR4 looking too bright (TRX1799)
 - Fixed the land on the TR3 globe looking too dark (TRX1817)
+- Fixed knives, harpoons, grenades and other projectiles in TR1 and TR2 glowing at full brightness in dark rooms (OG bug) (Gameplay → Fixes → Fix projectile brightness) (TRX91)
 
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)

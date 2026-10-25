@@ -231,7 +231,12 @@ void Output_CalculateObjectLighting(
             item->pos, item->shade, Room_Get(item->room_num));
         return;
     }
+    Output_CalculateObjectRoomLighting(item, bounds);
+}
 
+void Output_CalculateObjectRoomLighting(
+    const ITEM *const item, const BOUNDS_16 *const bounds)
+{
     // Samples TR3 cutscene actors at their root joint, as the original does.
     // A bounding box centre can fall in a brighter spot than the actor.
     if (g_TRVersion == 3 && GF_GetCurrentLevel()->type == GFL_CUTSCENE) {
@@ -260,6 +265,11 @@ void Output_CalculateObjectLighting(
     Matrix_Pop();
 
     Output_CalculateObjectLightingAt(item, sample_pos);
+}
+
+void Output_BrightenLight(const int32_t shade)
+{
+    Output_SetLightAdder(Output_GetLightAdder() - shade);
 }
 
 void Output_CalculateObjectLightingAt(

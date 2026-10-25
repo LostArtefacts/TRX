@@ -10,6 +10,11 @@
 // object that opts out of clipping.
 CLIP Object_GetClip(const OBJECT *obj, const BOUNDS_16 *bounds);
 
+// Draws a projectile item or effect as any other, or, with the projectile
+// brightness fix in TR1 and TR2, lit by its room and slightly brighter.
+bool Object_DrawProjectile(const ITEM *item);
+bool Object_DrawProjectileEffect(const EFFECT *effect);
+
 void Object_DrawMesh(int32_t mesh_idx, CLIP clip, bool interpolated);
 
 void Object_DrawStaticObject(

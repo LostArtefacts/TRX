@@ -12,6 +12,11 @@ typedef struct {
     const OBJECT *mesh_swap;
     // Joints left out, whichever object they would be drawn from.
     uint32_t hide_mask;
+    // Lights the item by its room, rather than by its shade.
+    bool room_light;
+    // Lowers the shade of the light by this much, which shows the item
+    // brighter.
+    int32_t brightness;
 } ITEM_DRAW_DESC;
 
 void Item_ControlDraw(ITEM *item);

@@ -11,6 +11,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/draw.h>
 #include <trx/game/objects/general/smashable.h>
 #include <trx/game/objects/projectiles/grenade_tr4.h>
 #include <trx/game/rooms.h>
@@ -355,6 +356,7 @@ static void M_Setup(OBJECT *const obj)
     }
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
+    obj->draw_func = Object_DrawProjectile;
     obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
 }

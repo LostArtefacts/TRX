@@ -141,6 +141,7 @@ local TABS = {
     "gameplay.fix_floor_data_issues",
     "visuals.fix_texture_issues",
     "visuals.fix_smoke_emitters",
+    "visuals.fix_projectile_brightness",
     "visuals.fix_item_rots",
 
     "visuals.fix_animated_sprites",

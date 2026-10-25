@@ -2086,6 +2086,10 @@
             "title": "Correggi posizionamento oggetti",
             "description": "Corregge diversi problemi presenti nei giochi originali causati da un posizionamento o una configurazione errati degli oggetti, tra cui rotazioni, posizioni e assegnazioni delle stanze.",
         },
+        "visuals.fix_projectile_brightness": {
+            "title": "\\{review}Correggi luminosità proiettili",
+            "description": "\\{review}Corregge i proiettili come coltelli, arpioni e granate disegnati alla massima luminosità, invece di essere illuminati dalla stanza circostante.",
+        },
         "visuals.fix_smoke_emitters": {
             "title": "Correggi emettitori di fumo",
             "description": "Corregge gli emettitori di fumo che dovrebbero essere neri ma vengono visualizzati in bianco.",

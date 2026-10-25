@@ -6,7 +6,8 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/output.h>
 
-static void M_DrawSprite(const EFFECT *const effect)
+static void M_DrawSprite(
+    const EFFECT *const effect, const EFFECT_DRAW_DESC *const desc)
 {
     const OBJECT *const obj = Object_Get(effect->object_id);
     const RGBA_F tint =
@@ -14,8 +15,9 @@ static void M_DrawSprite(const EFFECT *const effect)
         ? COLOR_RGBA_F_WHITE
         : Output_GetTint();
     int16_t shade = effect->shade;
-    if (shade == -1) {
+    if (shade == -1 || desc->room_light) {
         Output_CalculateLight(effect->pos, effect->room_num);
+        Output_BrightenLight(desc->brightness);
         shade = Output_GetLightAdder();
     }
     Output_DrawSprite(
@@ -24,28 +26,36 @@ static void M_DrawSprite(const EFFECT *const effect)
         tint, Output_GetSpriteDrawType(obj), 1.0f);
 }
 
-static void M_DrawMesh(const EFFECT *const effect)
+static void M_DrawMesh(
+    const EFFECT *const effect, const EFFECT_DRAW_DESC *const desc)
 {
     const OBJECT *const obj = Object_Get(effect->object_id);
     Matrix_Push();
     Matrix_TranslateAbs32(effect->interp.result.pos);
     Matrix_Rot16(effect->interp.result.rot);
-    if (obj->mesh_count != 0) {
+    if (obj->mesh_count != 0 && !desc->room_light) {
         Output_CalculateStaticLight(effect->shade);
-        Object_DrawMesh(obj->mesh_idx, -1, false);
     } else {
         Output_CalculateLight(effect->interp.result.pos, effect->room_num);
-        Object_DrawMesh(effect->frame_num, -1, false);
     }
+    Output_BrightenLight(desc->brightness);
+    Object_DrawMesh(
+        obj->mesh_count != 0 ? obj->mesh_idx : effect->frame_num, -1, false);
     Matrix_Pop();
 }
 
 bool Effect_Draw(const EFFECT *const effect)
 {
+    return Effect_DrawEx(effect, &(EFFECT_DRAW_DESC) {});
+}
+
+bool Effect_DrawEx(
+    const EFFECT *const effect, const EFFECT_DRAW_DESC *const desc)
+{
     if (Object_Get(effect->object_id)->mesh_count < 0) {
-        M_DrawSprite(effect);
+        M_DrawSprite(effect, desc);
     } else {
-        M_DrawMesh(effect);
+        M_DrawMesh(effect, desc);
     }
     return true;
 }
