@@ -46,6 +46,9 @@
         },
         "uzis_ammo_item": {
             "name": "Caricatori per Uzi",
+        },
+        "uzis_item": {
+            "name": "\\{review}Uzi",
         }
     },
     "cutscenes": [],

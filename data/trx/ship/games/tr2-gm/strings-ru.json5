@@ -1,0 +1,79 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "levels": [
+        {
+            "title": "\\{review}Дом Лары",
+        },
+        {
+            "title": "\\{review}Холодная война",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Снежный барс",
+                },
+                "key_item_1": {
+                    "name": "\\{review}Ключ от караульного помещения",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ от шахты «B»",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Золото дураков",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ-карта 1",
+                },
+                "key_item_4": {
+                    "name": "\\{review}Ключ-карта 2",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Печатная плата",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Горнило богов",
+            "objects": {
+                "big_spider": {
+                    "name": "\\{review}Белый медведь",
+                },
+                "spider": {
+                    "name": "\\{review}Волк",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Маска Торнарсука",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Золотой самородок",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Королевство",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Снежный барс",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Маска Торнарсука",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Кошмар в Вегасе",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от отеля",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Лифтовый узел",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Схема двери",
+                }
+            }
+        }
+    ]
+}

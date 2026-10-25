@@ -1,0 +1,1011 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "\\{review}Équiper le lance-grenades",
+            "equip_uzis": "\\{review}Équiper les Uzis",
+        }
+    },
+    "objects": {
+        "crossbow_ammo_1_item": {
+            "name": "\\{review}Flèches d'arbalète normales",
+        },
+        "crossbow_ammo_2_item": {
+            "name": "\\{review}Flèches d'arbalète empoisonnées",
+        },
+        "crossbow_ammo_3_item": {
+            "name": "\\{review}Flèches d'arbalète explosives",
+        },
+        "flare_item": {
+            "name": "\\{review}Fusées éclairantes",
+        },
+        "grenade_ammo_2_item": {
+            "name": "\\{review}Super grenades",
+        },
+        "grenade_ammo_3_item": {
+            "name": "\\{review}Grenades éclairantes",
+        },
+        "grenade_ammo_item": {
+            "name": "\\{review}Grenades normales",
+        },
+        "grenade_gun_item": {
+            "name": "\\{review}Lance-grenades",
+        },
+        "pistols_ammo_item": {
+            "name": "\\{review}Munitions de pistolet",
+        },
+        "quest_item_1": {
+            "name": "\\{review}Amulette d'Horus",
+        },
+        "shotgun_ammo_2_item": {
+            "name": "\\{review}Cartouches de fusil à pompe à dispersion",
+        },
+        "shotgun_ammo_item": {
+            "name": "\\{review}Cartouches de fusil à pompe normales",
+        },
+        "uzis_ammo_item": {
+            "name": "\\{review}Munitions d'Uzi",
+        },
+        "uzis_item": {
+            "name": "\\{review}Uzis",
+        }
+    },
+    "levels": [
+        {
+            "title": "\\{review}Angkor Vat",
+            "general": {
+                "legend": "\\{review}Cambodge, 1984",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Crâne d'or",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La course pour l'Iris",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Crâne d'or",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le tombeau de Seth",
+            "general": {
+                "legend": "\\{review}Égypte, de nos jours",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Œil d'Horus",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Les sables éternels",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Fragment de l'Œil",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Fragment de l'Œil",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les chambres funéraires",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}La main d'Orion",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}La main de Sirius",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Talisman du scarabée",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Le serpent d'or",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La vallée des Rois",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Clé de contact",
+                }
+            }
+        },
+        {
+            "title": "\\{review}KV5",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Clé de contact",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le temple de Karnak",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Clé de la salle hypostyle",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Talisman du soleil",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Vase canope 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Vase canope 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Disque solaire",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Déesse du soleil",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La grande salle hypostyle",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Clé de la salle hypostyle",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Talisman du soleil",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Vase canope 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Vase canope 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Disque solaire",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Déesse du soleil",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le lac sacré",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Clé de la salle hypostyle",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Talisman du soleil",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Vase canope 1",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Vase canope 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Disque solaire",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Déesse du soleil",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Lac 2",
+        },
+        {
+            "title": "\\{review}Le tombeau de Semerkhet",
+            "objects": {
+                "puzzle_item_4": {
+                    "name": "\\{review}Cartouche du Ba",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Cartouche de Râ",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Fragment de cartouche 1",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Fragment de cartouche 2",
+                },
+                "examine_item_2": {
+                    "name": "\\{review}Les règles du senet",
+                    "description": "\\{review}Pour gagner la partie, faites sortir tous vos pions du plateau en les amenant sur la dernière case ankh. À votre tour, lancez les bâtonnets. Votre lancer correspond au nombre de faces blanches visibles.\n\nSi aucune face blanche n'est visible, votre lancer vaut six. Si vous obtenez un six ou si vous arrivez sur une case ankh, vous rejouez. Si vous arrivez sur un pion adverse, celui-ci retourne au départ.",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le gardien de Semerkhet",
+            "objects": {
+                "puzzle_item_6": {
+                    "name": "\\{review}Uræus d'or",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Clé du gardien",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le chemin de fer du désert",
+        },
+        {
+            "title": "\\{review}Alexandrie",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Jeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Clé du portail",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trident",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Parchemin musical",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Étoile d'or",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Crochet et perche",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Gemme du cavalier",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Pilier de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Crochet mural",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Poignée cassée",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les ruines côtières",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Jeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Clé du portail",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trident",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Parchemin musical",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Étoile d'or",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Crochet et perche",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Gemme du cavalier",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Pilier de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Crochet mural",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Poignée cassée",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Pharos, temple d'Isis",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Jeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Clé du portail",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trident",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Parchemin musical",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Étoile d'or",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Crochet et perche",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Gemme du cavalier",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Pilier de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "\\{review}Crochet mural",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "\\{review}Poignée cassée",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les palais de Cléopâtre",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les catacombes",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Jeton",
+                },
+                "key_item_10": {
+                    "name": "\\{review}Clé du portail",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Trident",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Parchemin musical",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Étoile d'or",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Crochet et perche",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Gemme du cavalier",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Pilier de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le temple de Poséidon",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Trident",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Parchemin musical",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Étoile d'or",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Gemme du cavalier",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Pilier de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La bibliothèque perdue",
+            "objects": {
+                "puzzle_item_2": {
+                    "name": "\\{review}Parchemin musical",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Étoile d'or",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Gemme du cavalier",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Pilier de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                },
+                "examine_item_3": {
+                    "name": "\\{review}Parchemin du cercle de feu",
+                    "description": "\\{review}Pour que les serpents vivent, tous doivent d'abord être apaisés. Provoquez-les chacun à leur tour, et le cercle brûlera en entier.",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La salle de Démétrius",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "\\{review}Le gardien du portail",
+                },
+                "puzzle_item_10": {
+                    "name": "\\{review}Nœud de Pharos",
+                },
+                "puzzle_item_11": {
+                    "name": "\\{review}Pilier de Pharos",
+                },
+                "puzzle_item_12": {
+                    "name": "\\{review}Scarabée noir",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "\\{review}Poignée ornée",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "\\{review}Effigie d'Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Scarabée brisé",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Lunettes cassées",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La cité des morts",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Injecteur de protoxyde d'azote",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Cric",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Clé du toit",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Clé du code des armes",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Détonateur de mines",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Tuyau à valve",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bouteille de protoxyde d'azote",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Corps du cric",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Poignée",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Corps du détonateur de mines",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Positions des mines",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les tranchées",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Injecteur de protoxyde d'azote",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Cric",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Clé du toit",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Clé du code des armes",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Détonateur de mines",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Tuyau à valve",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bouteille de protoxyde d'azote",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Corps du cric",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Poignée",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Corps du détonateur de mines",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Positions des mines",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les salles de Tulun",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Injecteur de protoxyde d'azote",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Cric",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Clé du toit",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Clé du code des armes",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Détonateur de mines",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Tuyau à valve",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bouteille de protoxyde d'azote",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Corps du cric",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Poignée",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Corps du détonateur de mines",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Positions des mines",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le bazar",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Injecteur de protoxyde d'azote",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Cric",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Clé du toit",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Clé du code des armes",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Détonateur de mines",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Tuyau à valve",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bouteille de protoxyde d'azote",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Corps du cric",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Poignée",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Corps du détonateur de mines",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Positions des mines",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La porte de la citadelle",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Injecteur de protoxyde d'azote",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Cric",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Clé du toit",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Clé du code des armes",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Détonateur de mines",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Tuyau à valve",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Bouteille de protoxyde d'azote",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "\\{review}Corps du cric",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "\\{review}Poignée",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "\\{review}Corps du détonateur de mines",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "\\{review}Positions des mines",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La citadelle",
+        },
+        {
+            "title": "\\{review}Le complexe du Sphinx",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Clé d'argent",
+                },
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Pelle",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "\\{review}Lame de métal",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "\\{review}Poignée en bois",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le temple de la vallée",
+        },
+        {
+            "title": "\\{review}Sous le Sphinx",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Pierre de Maât",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Pierre de Khépri",
+                },
+                "puzzle_item_3": {
+                    "name": "\\{review}Pierre d'Atoum",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Pierre de Rê",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                },
+                "examine_item_1": {
+                    "name": "\\{review}Bout de papier",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La pyramide de Mykérinos",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Dans la pyramide de Mykérinos",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les mastabas",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Clé du puits nord",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Clé du puits sud",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Sac de sable",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Jerrican",
+                }
+            }
+        },
+        {
+            "title": "\\{review}La Grande Pyramide",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Clé du puits nord",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Clé du puits sud",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Les pyramides des reines de Khéops",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Clé du puits nord",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Clé du puits sud",
+                },
+                "puzzle_item_9": {
+                    "name": "\\{review}Clé du puits est",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Dans la Grande Pyramide",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                },
+                "puzzle_item_6": {
+                    "name": "\\{review}Clé du puits ouest",
+                },
+                "puzzle_item_7": {
+                    "name": "\\{review}Clé du puits nord",
+                },
+                "puzzle_item_8": {
+                    "name": "\\{review}Clé du puits sud",
+                },
+                "puzzle_item_9": {
+                    "name": "\\{review}Clé du puits est",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le temple d'Horus",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                },
+                "puzzle_item_5": {
+                    "name": "\\{review}Écriture sainte",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Le temple d'Horus",
+            "objects": {
+                "key_item_11": {
+                    "name": "\\{review}Clé de l'armurerie",
+                },
+                "key_item_12": {
+                    "name": "\\{review}Les clés des gardes",
+                }
+            }
+        }
+    ]
+}

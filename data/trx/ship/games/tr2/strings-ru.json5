@@ -1,0 +1,339 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "\\{review}Исправляет атаку лапой медведя в «Золотой маске», чтобы она не промахивалась по Ларе.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "\\{review}Исправляет изначальные проблемы в уровнях «40 саженей», «Обломки „Марии Дории“» и «Палуба», из-за которых спрайты растений в водных зонах не анимировались.",
+        }
+    },
+    "objects": {
+        "large_medipack_item": {
+            "name": "\\{review}Большая аптечка|Большая аптечка",
+        },
+        "small_medipack_item": {
+            "name": "\\{review}Маленькая аптечка",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "\\{review}Заставка 1",
+        },
+        {
+            "title": "\\{review}Заставка 2",
+        },
+        {
+            "title": "\\{review}Заставка 3",
+        },
+        {
+            "title": "\\{review}Заставка 4",
+        }
+    ],
+    "levels": [
+        {
+            "title": "\\{review}Дом Лары",
+        },
+        {
+            "title": "\\{review}Великая стена",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от караульной",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ржавый ключ",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Венеция",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от лодочного сарая",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Стальной ключ",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Железный ключ",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Убежище Бартоли",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от библиотеки",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ детонатора",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Оперный театр",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Узорный ключ",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Релейный блок",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Печатная плата",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Морская платформа",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Красная карта-пропуск",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Жёлтая карта-пропуск",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Зелёная карта-пропуск",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Зона погружения",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Красная карта-пропуск",
+                },
+                "key_item_4": {
+                    "name": "\\{review}Синяя карта-пропуск",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Микросхема",
+                }
+            }
+        },
+        {
+            "title": "\\{review}40 саженей",
+        },
+        {
+            "title": "\\{review}Обломки «Марии Дории»",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от комнаты отдыха",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ржавый ключ",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Ключ от каюты",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Автоматический выключатель",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Жилые помещения",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от театра",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ржавый ключ",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Палуба",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Ключ от кормы",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Ключ от склада",
+                },
+                "key_item_4": {
+                    "name": "\\{review}Ключ от каюты",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Серафим",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Тибетские предгорья",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Снежный барс",
+                },
+                "key_item_1": {
+                    "name": "\\{review}Ключ от подъёмного моста",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ от хижины",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Серафим",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Монастырь Баркханг",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от бронированной комнаты",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ от люка",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Ключ от крыш",
+                },
+                "key_item_4": {
+                    "name": "\\{review}Ключ от главного зала",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Молитвенные барабаны",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Драгоценные камни",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Серафим",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Катакомбы Талиона",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Снежный барс",
+                },
+                "pickup_item_1": {
+                    "name": "\\{review}Молот для гонга",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Тибетская маска",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Ледяной дворец",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Белый тигр",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Молот для гонга",
+                },
+                "pickup_item_2": {
+                    "name": "\\{review}Талион",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Тибетская маска",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Храм Сианя",
+            "objects": {
+                "key_item_2": {
+                    "name": "\\{review}Золотой ключ",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Серебряный ключ",
+                },
+                "key_item_4": {
+                    "name": "\\{review}Ключ от главной камеры",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Печать дракона",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Парящие острова",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Мистическая табличка",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Мистическая табличка",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Логово дракона",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "\\{review}Мистическая табличка",
+                },
+                "puzzle_item_2": {
+                    "name": "\\{review}Кинжал Сианя",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Дом, милый дом",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от оружейного шкафа",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Кинжал Сианя",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "\\{review}Венеция",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от лодочного сарая",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Стальной ключ",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Железный ключ",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Обломки «Марии Дории»",
+            "objects": {
+                "key_item_1": {
+                    "name": "\\{review}Ключ от комнаты отдыха",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ржавый ключ",
+                },
+                "key_item_3": {
+                    "name": "\\{review}Ключ от каюты",
+                },
+                "puzzle_item_1": {
+                    "name": "\\{review}Автоматический выключатель",
+                }
+            }
+        },
+        {
+            "title": "\\{review}Тибетские предгорья",
+            "objects": {
+                "tiger": {
+                    "name": "\\{review}Снежный барс",
+                },
+                "key_item_1": {
+                    "name": "\\{review}Ключ от подъёмного моста",
+                },
+                "key_item_2": {
+                    "name": "\\{review}Ключ от хижины",
+                },
+                "puzzle_item_4": {
+                    "name": "\\{review}Серафим",
+                }
+            }
+        }
+    ]
+}

@@ -22,6 +22,7 @@
 
 **UI**
 - Added a Ukrainian translation (TRX1901)
+- Added Russian text for TR2, TR3 and TR4, and French and Polish text for TR4
 - Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)
 - Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
