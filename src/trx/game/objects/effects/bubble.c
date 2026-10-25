@@ -86,10 +86,20 @@ static void M_Control_TR3(const int16_t effect_num)
     effect->pos = pos;
 }
 
+// TR3 uses the bubble as a dummy effect carrier and draws the bubble as an
+// attached spark, so the effect itself draws nothing.
+static bool M_Draw_TR3(const EFFECT *const effect)
+{
+    return true;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->effect_control_func =
         g_TRVersion == 3 ? M_Control_TR3 : M_Control_TR1TR2;
+    if (g_TRVersion == 3) {
+        obj->effect_draw_func = M_Draw_TR3;
+    }
     if (obj->loaded) {
         for (int32_t i = 0; i < -obj->mesh_count; i++) {
             Output_GetSpriteTexture(obj->mesh_idx + i)->flags = VERT_ABS_SPRITE;
