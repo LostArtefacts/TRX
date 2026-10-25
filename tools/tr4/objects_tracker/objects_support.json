@@ -72,7 +72,7 @@
   "examine_item_2":           { "status": "partially implemented", "todo": "check 100% parity"                 },
   "examine_item_3":           { "status": "partially implemented", "todo": "check 100% parity"                 },
   "expanding_block":          { "status": "fully implemented" },
-  "falling_blade":            { "status": "not implemented",       "todo": "port from SETH_BLADE"              },
+  "falling_blade":            { "status": "fully implemented" },
   "falling_block_1":          { "status": "fully implemented" },
   "falling_ceiling_3":        { "status": "not implemented",       "todo": "port from SQUISHY_BLOCK2"          },
   "fire_rope":                { "status": "not implemented",       "todo": "port from FIREROPE"                },
