@@ -570,7 +570,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut3_ps1_blend.bin
 │   │   │   ├── cut3_setup.bin
 │   │   │   ├── cut3_textures.bin
-│   │   │   ├── cut4_ps1_blend.bin
 │   │   │   ├── cut4_setup.bin
 │   │   │   ├── cut4_textures.bin
 │   │   │   ├── dagger_sprite.bin
@@ -2137,7 +2136,6 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cut3_ps1_blend.bin
     │   │   │   │   ├── cut3_setup.bin
     │   │   │   │   ├── cut3_textures.bin
-    │   │   │   │   ├── cut4_ps1_blend.bin
     │   │   │   │   ├── cut4_setup.bin
     │   │   │   │   ├── cut4_textures.bin
     │   │   │   │   ├── dagger_sprite.bin
