@@ -11,6 +11,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/lara/hair.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
@@ -101,6 +102,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     } else {
         // The snapshot re-renders the scene, so it must happen before the
         // inventory lighting mode kicks in.
+        Lara_Hair_Follow();
         Output_Overlay_CaptureGameSnapshot();
         if (!g_Config.audio.enable_music_in_inventory) {
             Music_Pause();

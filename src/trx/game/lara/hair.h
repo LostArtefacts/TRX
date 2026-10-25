@@ -35,6 +35,11 @@ bool Lara_Hair_IsActive(void);
 
 void Lara_Hair_Control(bool in_cutscene);
 
+// Steps the braid once if Lara has moved since its last step, so that a frame
+// captured in the middle of Lara's control shows the braid on her head. Does
+// nothing otherwise.
+void Lara_Hair_Follow(void);
+
 void Lara_Hair_Draw(void);
 
 int32_t Lara_Hair_GetBraidCount(void);

@@ -59,6 +59,7 @@
 - Fixed the color editor looping around its sliders when scroll wrap is off (Graphic Options → UI → Scroll wrap)
 - Fixed the controls dialog looping around its key columns when scroll wrap is off (Graphic Options → UI → Scroll wrap)
 - Fixed the change outfit key changing Lara's outfit in the inventory, pause, save and load screens (TRX1854, regression from 1.2)
+- Fixed Lara's braid hanging away from her head behind the inventory when a keyhole or puzzle hole opens it (OG bug) (TRX438)
 - Fixed a thin dark line splitting the fill of the second bar at some resolutions, such as 4K (#6749)
 
 **Controls**
