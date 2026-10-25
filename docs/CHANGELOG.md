@@ -271,6 +271,7 @@
 - Fixed Lara's shots being too high when crouched (TRX1257)
 - Fixed water particles appearing in dry rooms that have an alternate underwater room (TRX1830)
 - Fixed young Lara carrying weapons and ammunition in New Game+
+- Fixed the lighting on Lara and objects changing too abruptly when moving between lights (TRX1896)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
