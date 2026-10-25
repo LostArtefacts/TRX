@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
+#include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/families.h>
@@ -65,6 +66,7 @@ void Object_SetupAllObjects(void)
         obj->floor_height_func = nullptr;
         obj->ceiling_height_func = nullptr;
         obj->draw_func = Item_DrawAnimating;
+        obj->effect_draw_func = Effect_Draw;
         obj->collision_func = nullptr;
         obj->add_walkable_func = nullptr;
         obj->is_usable_func = nullptr;

@@ -367,6 +367,7 @@ common_sources = [
   'trx/game/cutseq/pak.c',
   'trx/game/cutseq/playback.c',
   'trx/game/demo.c',
+  'trx/game/effects/draw.c',
   'trx/game/effects/manager.c',
   'trx/game/enum.c',
   'trx/game/events.c',
