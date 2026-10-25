@@ -9,18 +9,93 @@
 - Changed the "Fixed" wall glitch mode to prevent Lara being voided when embedding into walls, similar to TR4+ (Gameplay → Fixes → Wall glitch mode)
 - Changed the "Fixed" wall glitch mode to prevent Lara being voided when jumping under low ceilings, similar to TR3+ (Gameplay → Fixes → Wall glitch mode)
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
-- Fixed Lara staying silent in TR4 when using an item that fits nothing, such as a combo piece
-- Fixed the inventory opening in TR4 when Lara uses a keyhole or receptacle without its item (TRX1826)
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 - Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)
 - Fixed Lara's position while vaulting to prevent cases where she may be slightly embedded into the block she is interacting with (OG bug)
 - Fixed Lara crawl-turning in mid-air if the floor below her gives way (OG TR3 bug) (Gameplay → Fixes → Fix falling)
 - Fixed Lara being able to jump off trapdoors when they open (Gameplay → Fixes → Fix falling)
 - Fixed Lara not being able to do a turn around move in monkey bars by pressing the forward and backward keys simultaneously (#6850)
-- Fixed Lara's torso not being reset to a neutral position when boarding certain vehicles if she was looking away somewhere beforehand (OG bug, #6859)
+- Fixed Lara's torso not being reset to a neutral position when boarding certain vehicles if she was looking away somewhere beforehand (OG bug) (#6858)
 - Fixed Lara getting thrown to the side of a pole after dismount (OG bug) (TRX1753)
 - Fixed Lara embedding slightly into the floor after descending a pole and dismounting (TRX1763, regression from 1.9)
 - Fixed Lara being able to pull up from ladders into very small gaps (#6999 / TRX1881, regression from 1.10)
+
+**UI**
+- Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)
+- Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
+- Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
+- Added an option to draw the side borders of the PS1 bars (Graphics → Bars → Side borders) (TRX488)
+- Added an option to choose how a level comes in: a cross-fade from the loading screen, a fade through black, or none. TR4 fades through black by default, as in the original (Graphics → UI → Level start transition) (TRX1375)
+- Added an option to show the menus flat, as in the original TR4, in place of the inventory ring. TR4 shows them flat by default (Graphic Options → UI → Menu system)
+- Added an option to choose the model of the controls item in the inventory: the Sega Saturn pad, the keyboard or the PlayStation pad. By default, it shows a pad while the controls are set to a controller, and the keyboard otherwise (Graphic Options → UI → Controls model) (#6759 / TRX94)
+- Improved the position of the passport dialogs, which now line up on every page
+- Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
+- Changed the PS1 loading bars to match the size and position of the PS1 releases, with a "Loading" caption in TR4 (TRX1619)
+- Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
+- Changed the inventory and pause screens in TR4 to no longer fade in and out by default, as in the original game (Graphic Options → UI)
+- Changed the TR4 inventory to open on the item it was left on by default, and to keep that item in saved games, as in the original game (Gameplay → General → Remember inventory position) (TRX1843)
+- Changed the names and counts of the items in the TR4 inventory, and in its combine and ammo dialogs, to show in gold, as in the original game (TRX1890)
+- Changed the headings and values of the TR4 option dialogs, save lists, new game lists and statistics to show in orange, as in the original game (TRX1853)
+- Changed the TR4 font and arrows to look as in the original game (TRX1845)
+- Changed the texts of the examined items in TR4 to show in the colours of the original game (TRX484)
+- Changed the examine screen to show its hide dialog prompt where the rotate prompt shows, and to no longer repeat the name of the item over its description
+- Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
+- Changed the preset question to show the change to each setting beside its name, where it fits (Gameplay → Presets) (TRX1883)
+- Changed the passport, compass and other inventory items to show their dialog only once they have finished opening, rather than sometimes while still turning (TRX1779)
+- Changed the interface and the pickups in the corner to move in with the cinematic bars, so the bars no longer cover them (TRX1426)
+- Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
+- Fixed the FPS counter briefly showing an incorrect value after switching mods (TRX1631)
+- Fixed the game not fading to black when it was exited during an FMV (TRX1616)
+- Fixed an FMV that follows a level sometimes being skipped by a key held down at the end of the level, such as the jeep's accelerate (TRX1681)
+- Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
+- Fixed dialogs moving down when the FPS counter or another corner element is shown, even where the dialog does not reach it
+- Fixed the screen jumping when a loading screen was skipped while it was still fading in
+- Fixed the title screen blending into the loading screen when Lara's Home is picked, rather than fading to black (#6746 / TRX1634, TRX1793)
+- Fixed the settings dialog showing no selected option after switching tabs with the sidestep keys (TRX1755, regression from 1.10.1)
+- Fixed inventory items staying slightly tilted on the ring after being turned while examined (TRX1732)
+- Fixed item descriptions from one level showing on items in the levels after it (TRX1754)
+- Fixed the TR4 inventory showing ammunition with the wrong name, and with a wrong count or no count (TRX1654)
+- Fixed the statistics sometimes showing a huge total
+- Fixed the color editor looping around its sliders when scroll wrap is off (Graphic Options → UI → Scroll wrap)
+- Fixed the controls dialog looping around its key columns when scroll wrap is off (Graphic Options → UI → Scroll wrap)
+- Fixed the change outfit key changing Lara's outfit in the inventory, pause, save and load screens (TRX1854, regression from 1.2)
+- Fixed a thin dark line splitting the fill of the second bar at some resolutions, such as 4K (#6749)
+
+**Controls**
+- Changed the default controller layout to follow the PS1 releases: TR3 and TR4 sprint with R2, crouch with L2 and have no side steps, and TR2 to TR4 light a flare with R1 and Select together (#6019 / TRX864)
+- Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
+- Fixed being unable to unbind the second key of a movement, jump, action or draw weapon binding while the first key stays bound
+- Fixed key combos such as Alt+Enter working from only one of the two Alt keys, and not at all after jump was bound to that Alt (TRX1762)
+
+**Camera**
+- Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
+- Fixed flyby and cutscene cameras rolling in steps at 60 FPS
+- Fixed flyby sequences that contain only one camera causing a crash when returning the view to Lara (TRX1879, regression from 1.9)
+- Fixed a visible jump in some cases when a flyby sequence returns the camera to normal view (TRX1636, regression from 1.9)
+- Fixed the view shifting slightly when entering photo mode (TRX1839, regression from 1.11)
+- Fixed holding the action button skipping a flyby sequence, such as the guide walking to the jeep in Valley of the Kings (TRX1859, regression from 1.11)
+
+**Gameplay**
+- Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
+- Added options to scale the health enemies start with and the damage Lara takes (Gameplay → Mods → Enemy health / Damage taken by Lara) (#6789 / TRX1690)
+- Improved how quickly enemies find a new route to Lara when she moves (Gameplay → Fixes → Fix enemy route delay)
+- Changed the name and description of the M16/MP5 accuracy fix to say that it makes firing while running less accurate, as the original game intended (Gameplay → Fixes → Fix M16/MP5 running accuracy) (TRX1739)
+- Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
+- Fixed enemies in New Game+ losing their doubled health in some levels, such as Diving Area in TR2 (TRX1702, regression from 1.10)
+- Fixed enemies losing track of Lara in large custom levels (regression from 1.11)
+
+**Saves and settings**
+- Changed the Saving crystal modes to offer a save at the end of each level, after the statistics, rather than at the start of the next one, like the PS1 releases (Gameplay → General → Crystal mode) (#6159 / TRX1011)
+- Fixed Lara not getting a crystal when starting a game with the crystal mode set to Saving (pickups) (Gameplay → General → Crystal mode)
+- Fixed harpoons, grenades, rockets and other items spawned during play disappearing after loading a save (TRX1677)
+- Fixed items dropped by enemies sometimes being swapped between them, or a collected one coming back, after loading a save (TRX1677)
+
+**Weapons and ammunition**
+- Fixed the BFG9000 blast passing through friendly creatures
+- Fixed the BFG9000 filling the log with errors when shot at a creature on the ground (#6703 / TRX1595)
+- Fixed level completion after explosive weapon kills (#6685 / TRX1584)
+- Fixed Lara sometimes aiming at a different enemy than in the original games when two were equally good targets
+- Fixed the appearance of Lara's holstered Uzis in TR2 and TR3 not matching those in her hands (OG bug) (TRX1776)
 
 **Music and sound**
 - Added an option to choose the dub apart from the text language, which plays FMVs, music and speech from a language folder beside the retail files (Sound → Voice language) (#1021 / TRX1710)
@@ -48,58 +123,6 @@
 - Fixed water splashes, ripples and underwater particles in TR4 looking too bright (TRX1799)
 - Fixed the land on the TR3 globe looking too dark (TRX1817)
 
-**UI**
-- Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)
-- Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
-- Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
-- Added an option to draw the side borders of the PS1 bars (Graphics → Bars → Side borders) (TRX488)
-- Added an option to choose how a level comes in: a cross-fade from the loading screen, a fade through black, or none. TR4 fades through black by default, as in the original (Graphics → UI → Level start transition) (TRX1375)
-- Added an option to show the menus flat, as in the original TR4, in place of the inventory ring. TR4 shows them flat by default (Graphic Options → UI → Menu system)
-- Added an option to choose the model of the controls item in the inventory: the Sega Saturn pad, the keyboard or the PlayStation pad. By default, it shows a pad while the controls are set to a controller, and the keyboard otherwise (Graphic Options → UI → Controls model) (#6759 / TRX94)
-- Improved the position of the passport dialogs, which now line up on every page
-- Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
-- Changed the PS1 loading bars to match the size and position of the PS1 releases, with a "Loading" caption in TR4 (TRX1619)
-- Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
-- Changed the inventory and pause screens in TR4 to no longer fade in and out by default, as in the original game (Graphic Options → UI)
-- Changed the TR4 inventory to open on the item it was left on by default, and to keep that item in saved games, as in the original game (Gameplay → General → Remember inventory position) (TRX1843)
-- Changed the names and counts of the items in the TR4 inventory, and in its combine and ammo dialogs, to show in gold, as in the original game (TRX1890)
-- Changed the headings and values of the TR4 option dialogs, save lists, new game lists and statistics to show in orange, as in the original game (TRX1853)
-- Changed the TR4 font and arrows to look as in the original game (TRX1845)
-- Changed the texts of the examined items in TR4 to show in the colours of the original game (TRX484)
-- Changed the examine screen to show its hide dialog prompt where the rotate prompt shows, and to no longer repeat the name of the item over its description
-- Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
-- Changed the preset question to show the change to each setting beside its name, where it fits (Gameplay → Presets) (TRX1883)
-- Changed the passport, compass and other inventory items to show their dialog only once they have finished opening, rather than sometimes while still turning (TRX1779)
-- Changed the default controller layout to follow the PS1 releases: TR3 and TR4 sprint with R2, crouch with L2 and have no side steps, and TR2 to TR4 light a flare with R1 and Select together (#6019 / TRX864)
-- Changed the interface and the pickups in the corner to move in with the cinematic bars, so the bars no longer cover them (TRX1426)
-- Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
-- Fixed the FPS counter briefly showing an incorrect value after switching mods (TRX1631)
-- Fixed the game not fading to black when it was exited during an FMV (TRX1616)
-- Fixed an FMV that follows a level sometimes being skipped by a key held down at the end of the level, such as the jeep's accelerate (TRX1681)
-- Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
-- Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
-- Fixed being unable to unbind the second key of a movement, jump, action or draw weapon binding while the first key stays bound
-- Fixed dialogs moving down when the FPS counter or another corner element is shown, even where the dialog does not reach it
-- Fixed the screen jumping when a loading screen was skipped while it was still fading in
-- Fixed the title screen blending into the loading screen when Lara's Home is picked, rather than fading to black (#6746 / TRX1634)
-- Fixed the settings dialog showing no selected option after switching tabs with the sidestep keys (TRX1755, regression from 1.10.1)
-- Fixed key combos such as Alt+Enter working from only one of the two Alt keys, and not at all after jump was bound to that Alt (TRX1762)
-- Fixed inventory items staying slightly tilted on the ring after being turned while examined (TRX1732)
-- Fixed item descriptions from one level showing on items in the levels after it (TRX1754)
-- Fixed the TR4 inventory showing ammunition with the wrong name, and with a wrong count or no count (TRX1654)
-- Fixed the statistics sometimes showing a huge total
-- Fixed the color editor looping around its sliders when scroll wrap is off (Graphic Options → UI → Scroll wrap)
-- Fixed the controls dialog looping around its key columns when scroll wrap is off (Graphic Options → UI → Scroll wrap)
-- Fixed the change outfit key changing Lara's outfit in the inventory, pause, save and load screens (TRX1854, regression from 1.2)
-
-**Camera**
-- Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
-- Fixed flyby and cutscene cameras rolling in steps at 60 FPS
-- Fixed flyby sequences that contain only one camera causing a crash when returning the view to Lara (TRX1879, regression from 1.9)
-- Fixed a visible jump in some cases when a flyby sequence returns the camera to normal view (TRX1636, regression from 1.9)
-- Fixed the view shifting slightly when entering photo mode (TRX1839, regression from 1.11)
-- Fixed holding the action button skipping a flyby sequence, such as the guide walking to the jeep in Valley of the Kings (TRX1859, regression from 1.11)
-
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
 - Added `/debug zones`, which outlines the zones a mod watches (#6726)
@@ -109,19 +132,6 @@
 - Fixed the console being covered by the game's fades, such as the title ring fading in from black
 - Fixed Lara holding an empty hand up as if it held a flare, after leaving fly mode while the flare was leaving her hand (TRX1701, regression from 1.9)
 
-**Gameplay**
-- Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
-- Added options to scale the health enemies start with and the damage Lara takes (Gameplay → Mods → Enemy health / Damage taken by Lara) (#6789 / TRX1690)
-- Improved how quickly enemies find a new route to Lara when she moves (Gameplay → Fixes → Fix enemy route delay)
-- Changed the Saving crystal modes to offer a save at the end of each level, after the statistics, rather than at the start of the next one, like the PS1 releases (Gameplay → General → Crystal mode) (#6159 / TRX1011)
-- Changed the name and description of the M16/MP5 accuracy fix to say that it makes firing while running less accurate, as the original game intended (Gameplay → Fixes → Fix M16/MP5 running accuracy) (TRX1739)
-- Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
-- Fixed Lara not getting a crystal when starting a game with the crystal mode set to Saving (pickups) (Gameplay → General → Crystal mode)
-- Fixed enemies in New Game+ losing their doubled health in some levels, such as Diving Area in TR2 (TRX1702, regression from 1.10)
-- Fixed harpoons, grenades, rockets and other items spawned during play disappearing after loading a save (TRX1677)
-- Fixed items dropped by enemies sometimes being swapped between them, or a collected one coming back, after loading a save (TRX1677)
-- Fixed enemies losing track of Lara in large custom levels (regression from 1.11)
-
 **Level and game data**
 - Added the `health.scale` rule, which scales the health of every item but Lara. New Game+ sets it to 2.
 - Added a `mode` property to Earthquakes to select the camera shake intensity and sound effect behavior
@@ -129,8 +139,8 @@
 - Added a `trigger_items` property to Earthquakes to control whether or not related items are triggered when active
 - Added a `lifetime` property to Earthquakes to control deactivating them automatically after a set number of frames
 - Added a `blocks_portal` property to trapdoors to make them behave like in TR4+
-- Added a `final_shot_damage` property to RX-Tech gunmen and armed MPs (#6801 / TRX178)
-- Added a `blow_time` property to the `fire_head` object, replacing OG TR3's trigger timer setup; refer to the migration guide (#6828, TRX1717)
+- Added a `final_shot_damage` property to RX-Tech gunmen and armed MPs (TRX178)
+- Added a `blow_time` property to the `fire_head` object, replacing OG TR3's trigger timer setup; refer to the migration guide (#6828 / TRX1717)
 - Added support for levels with more than 16,384 pathfinding overlaps, which level editors can now pass through an injection (TRX3)
 - Fixed birds placed in mid-air always shifting to the floor when triggered in custom levels (Gameplay → Fixes → Fix bird start positions)
 - Fixed birds placed over slopes not being able to pathfind when they are triggered (OG bug)
@@ -139,12 +149,6 @@
 - Fixed injections that change how an object behaves carrying over to later levels and mods, such as spiders acting as wolves in TR2 after playing TR2 Gold, and enemy jeeps in TR4 (TRX1686)
 - Fixed Lara's braid jumping during TR2 and TR3 cutscenes (OG bug) (TRX1771)
 - Fixed the game crashing at the end of a level in a game whose weapons name none as the default (#6832 / TRX1721)
-
-**Weapons and ammunition**
-- Fixed the BFG9000 blast passing through friendly creatures
-- Fixed the BFG9000 filling the log with errors when shot at a creature on the ground (#6703 / TRX1595)
-- Fixed level completion after explosive weapon kills (#6685 / TRX1584)
-- Fixed Lara sometimes aiming at a different enemy than in the original games when two were equally good targets
 
 **TR1**
 - Fixed empty pods being included in the total kill statistics if `O_ATLANTEAN_WINGED` is present in the level (TRX1693, regression from 1.5)
@@ -155,7 +159,6 @@
 - Changed the Venice Violins music in Lara's Home to play as an overlay track, so that Lara doesn't interrupt it while navigating the level (#6862 / TRX1750)
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 - Fixed Lara not colliding with the submarine in Diving Area room 70 when soft static collision is enabled (TRX1703, regression from 1.1)
-- Fixed the appearance of Lara's holstered Uzis not matching those in her hands (OG bug) (TRX1776)
 - Fixed the boat using extreme pitched sounds when riding over flat dry land (OG bug) (#6936 / TRX1816)
 
 **TR3**
@@ -177,12 +180,12 @@
 - Fixed missing gun flashes in the Antarctica cutscene (OG bug) (TRX1540)
 - Fixed crow 68 in Highland Fling dying as soon it spawned (#6849 / TRX1737)
 - Fixed the vultures at the beginning of Nevada Desert visibly shifting to the floor when triggered
-- Fixed the appearance of Lara's holstered Uzis not matching those in her hands (OG bug) (TRX1776)
 - Fixed the Shiva statues that drop scimitars in Temple Ruins keeping the hand of the dropped sword after they die (TRX1813, regression from 1.2)
 - Fixed a door looking too bright in the `HSC` cutscene (TRX31)
 - Fixed the lighting on Lara and objects changing too abruptly, such as in the Antarctica cutscene (TRX1895, regression from 1.1)
 
 **TR4**
+*Enemies and objects*
 - Added Small Scorpion control (TRX1562)
 - Added Jackal control (TRX1553)
 - Added Guide control (TRX1551)
@@ -195,20 +198,38 @@
 - Added Pushable Object control (TRX1556)
 - Added Earthquake control (TRX1548)
 - Added Henchman 1 and Henchman 2 control (TRX1552)
-- Added Jeep control (TRX1554)
 - Added Bouncing Boulder control (TRX1560)
 - Added Smashable Vehicle Wall control (TRX1563)
-- Added Enemy Jeep control (TRX1549)
 - Added Trapdoor 1-3 control (TRX1565)
-- Added level views before play starts, with a progress bar (TRX493)
+- Added the option to stop Lara after each push or pull of a pushable object (Gameplay → Controls → Continuous pushables) (TRX462)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
-- Added the ability to carry a lit flare into the next level, as in the original game (TRX1345)
-- Added a skybox to the title screen (TRX1394)
-- Added all TR4 gun meshes into the outfit system (TRX1756)
-- Added the original PC and PS1 bars, with the PC bars used by default (Graphics → Bars → Bars appearance) (TRX488)
+- Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
+- Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
+- Fixed Lara being unable to pull some pushable objects against walls (OG bug)
+- Fixed Lara being unable to pull pushable object 80 in Catacombs if pushable object 84 is directly below (OG bug) (TRX1615)
+
+*Vehicles*
+- Added Jeep control (TRX1554)
+- Added Enemy Jeep control (TRX1549)
 - Added the speedometer while Lara drives the jeep (TRX1658)
-- Added shatterable scenery, such as vases that break when Lara shoots them or drives the jeep into them (TRX1257)
-- Added underwater bubbles, such as those Lara breathes out while swimming (TRX1831)
+- Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
+- Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
+- Changed KV5 to have Lara always start inside the Jeep, regardless of the previous level
+- Fixed Lara being able to lock the enemy jeep out of most of KV5 if she closes gates 77 and 78 before it reaches them (OG bug)
+- Fixed ricochets from missed enemy shots appearing far from the ground while Lara drives the jeep (OG bug) (TRX1673)
+- Fixed the camera being thrown aggressively into pits when a jeep tips into one briefly (OG bug) (TRX1719)
+
+*Lara*
+- Added the ability to carry a lit flare into the next level, as in the original game (TRX1345)
+- Fixed Lara staying silent in TR4 when using an item that fits nothing, such as a combo piece (TRX1668)
+- Fixed Lara not being able to grab ceiling trapdoors (TRX599, regression from 1.9)
+- Fixed Lara having too much forward momentum when sliding off slopes (TRX1674, regression from 1.9)
+- Fixed Lara not being able to grab some ladders (TRX1729, regression from 1.9)
+- Fixed Lara embedding into walls when crouched and picking up flares (Gameplay → Fixes → Fix pickup embed glitch)
+- Fixed Lara descending to the floor immediately if she is crawl-turning and the floor below her gives way (OG bug) (Gameplay → Fixes → Fix descending glitch)
+
+*Weapons*
+- Added all TR4 gun meshes into the outfit system (TRX1756)
 - Added the choice of ammunition for the shotgun, grenade gun and crossbow, with each kind of ammunition kept apart in the inventory, as in the original game (TRX483)
 - Added the laser sight, which combines with the revolver and the crossbow, and gives a zoomed view to aim and fire through, which the look key opens and closes; holding the key instead, as in the original game, is optional (Gameplay → Controls → Laser sight toggle) (TRX481)
 - Added crossbow bolts that fly through the air and break against walls, as in the original game, rather than hitting at once (TRX1823)
@@ -221,241 +242,254 @@
 - Added flash grenades, which flash the screen white and blind enemies that cover their eyes (TRX1822)
 - Added gun smoke to the pistols, uzis, revolver, shotgun and grenade gun, as in the original game (TRX1864)
 - Changed grenades to explode as in the original game, with a shockwave, shattering what breaks around them and hurting Lara when she is caught in the blast
-- Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
-- Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
-- Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
-- Changed KV5 to have Lara always start inside the Jeep, regardless of the previous level
-- Changed the title screen to show puffs of smoke when Lara pushes the mummy into spikes rather than blood (Gameplay → Fixes → Fix texture issues) (TRX1745)
-- Fixed a box appearing beside the Eye of Horus in the inventory (OG bug)
+- Changed the Uzi and grenade ammunition names to match the original game (TRX1833)
+- Fixed the shotgun, revolver, and crossbow showing the laser sight in the inventory (OG bug)
+- Fixed the revolver and crossbow showing the laser sight in the pickup display
+- Fixed the shotgun, revolver, and crossbow showing the laser sight where they lie in a level
+- Fixed the uzis and revolver not showing in Lara's holsters (OG bug) (TRX485)
+- Fixed crossbow bolts being invisible in Tomb of Semerkhet (OG bug) (TRX1858)
+- Fixed shell casings from the pistols, Uzis and revolver having open ends, and shotgun shell casings having misplaced textures (OG bug) (TRX1336, TRX1877)
+- Fixed Lara's shots being too high when crouched (TRX1257)
+- Fixed young Lara carrying weapons and ammunition in New Game+
+
+*Inventory and interface*
+- Added the original PC and PS1 bars, with the PC bars used by default (Graphics → Bars → Bars appearance) (TRX488)
+- Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items (TRX1358)
+- Fixed the inventory opening in TR4 when Lara uses a keyhole or receptacle without its item (TRX1826)
+- Fixed a box appearing beside the Eye of Horus in the inventory (OG bug) (TRX1358)
 - Fixed the small and large waterskins appearing in the inventory ring instead of the items ring (TRX1603)
 - Fixed inventory items such as the Broken Beetle appearing in the wrong place or not appearing in the ring
 - Fixed items appearing at the wrong angle in the pickup display
-- Fixed the shotgun, revolver, and crossbow showing the laser sight in the inventory (OG bug)
-- Fixed fog showing on the black mask of the binoculars
-- Fixed the revolver and crossbow showing the laser sight in the pickup display
-- Fixed the shotgun, revolver, and crossbow showing the laser sight where they lie in a level
-- Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
-- Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
-- Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 - Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
-- Fixed objects and Lara being lit differently from the original, such as blocks and the title screen pulpit looking too dark, the doors in Tomb of Seth looking black, and flares lighting Lara from the wrong side (TRX954, TRX1578, TRX786)
-- Fixed Lara's footprints looking too dark (TRX768)
-- Fixed Lara being unable to pull some pushable objects against walls (OG bug)
-- Fixed Lara being unable to pull pushable object 80 in Catacombs if pushable object 84 is directly below (OG bug) (TRX1615)
-- Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)
-- Fixed Lara being able to lock the enemy jeep out of most of KV5 if she closes gates 77 and 78 before it reaches them (OG bug)
-- Fixed Lara not being able to grab ceiling trapdoors (TRX599, regression from 1.9)
-- Fixed Lara having too much forward momentum when sliding off slopes (TRX1674, regression from 1.9)
-- Fixed Lara not being able to grab some ladders (TRX1729, regression from 1.9)
-- Fixed kills made by Von Croy not registering in the statistics (TRX1689, regression from 1.10)
-- Fixed the total kills showing as 3 in Race for the Iris, rather than 0 (TRX1689, regression from 1.10)
-- Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
-- Fixed Lara embedding into walls when crouched and picking up flares (Gameplay → Fixes → Fix pickup embed glitch)
-- Fixed Lara descending to the floor immediately if she is crawl-turning and the floor below her gives way (OG bug) (Gameplay → Fixes → Fix descending glitch)
-- Fixed the uzis and revolver not showing in Lara's holsters (OG bug) (TRX485)
-- Fixed the title screen camera flying through the void before a cutscene starts (TRX1770, regression from 1.11)
 - Fixed the Amulet of Horus not showing in the pickup display when Lara takes it in the Burial Chambers cutscene (OG bug) (TRX1570)
 - Fixed flares needing a second press in the inventory before Lara takes one out, unlike the original game (TRX1775)
-- Fixed ricochets from missed enemy shots appearing far from the ground while Lara drives the jeep (OG bug) (TRX1673)
-- Fixed the camera being thrown aggressively into pits when a jeep tips into one briefly (OG bug) (TRX1719)
-- Fixed z-fighting between pickups 21 and 22 in Valley of the Kings (OG bug, TRX1571)
-- Fixed crossbow bolts being invisible in Tomb of Semerkhet (OG bug) (TRX1858)
-- Fixed shell casings from the pistols, Uzis and revolver having open ends, and shotgun shell casings having misplaced textures (OG bug) (TRX1336, TRX1877)
 - Fixed the compass needle staying solid when Lara faces true north, unlike the original game (TRX1784)
 - Fixed the compass facing away in the inventory ring, and added the opening and closing of its lid, as in TR1 (TRX1802)
+- Fixed some Cyrillic and Greek letters showing as empty boxes (TRX1887, regression from 1.11)
+
+*Levels*
+- Added level views before play starts, with a progress bar (TRX493)
+- Added a skybox to the title screen (TRX1394)
+- Changed the title screen to show puffs of smoke when Lara pushes the mummy into spikes rather than blood (Gameplay → Fixes → Fix texture issues) (TRX1745)
+- Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)
+- Fixed kills made by Von Croy not registering in the statistics (TRX1689, regression from 1.10)
+- Fixed the total kills showing as 3 in Race for the Iris, rather than 0 (TRX1689, regression from 1.10)
+- Fixed the title screen camera flying through the void before a cutscene starts (TRX1770, regression from 1.11)
+- Fixed z-fighting between pickups 21 and 22 in Valley of the Kings (OG bug) (TRX1571)
 - Fixed a mis-rotated texture in Angkor Wat room 3 (TRX1624)
 - Fixed stretched and incorrect textures in Tomb of Seth rooms 31, 42 and 126 (TRX1624)
 - Fixed stretched and incorrect textures in Burial Chambers rooms 11, 12, 58, 88, 89 and 114 (TRX1624)
 - Fixed an incorrect texture in Valley of the Kings room 25 (TRX1624)
 - Fixed incorrect and missing textures in KV5 rooms 2, 4, 37, 50, 65, 69 and 77 (TRX1624)
-- Fixed Lara's shots being too high when crouched (TRX1257)
+
+*Rendering and sound*
+- Added shatterable scenery, such as vases that break when Lara shoots them or drives the jeep into them (TRX1257)
+- Added underwater bubbles, such as those Lara breathes out while swimming (TRX1831)
+- Fixed fog showing on the black mask of the binoculars
+- Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
+- Fixed objects and Lara being lit differently from the original, such as blocks and the title screen pulpit looking too dark, the doors in Tomb of Seth looking black, and flares lighting Lara from the wrong side (TRX786, TRX954, TRX1578)
+- Fixed Lara's footprints looking too dark (TRX768)
+- Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
 - Fixed water particles appearing in dry rooms that have an alternate underwater room (TRX1830)
-- Fixed young Lara carrying weapons and ammunition in New Game+
 - Fixed the lighting on Lara and objects changing too abruptly when moving between lights (TRX1896)
+- Fixed torch flames stuttering when the torch moves fast, such as Ahmed's torch in Tomb of Seth (TRX1581)
+
+**Game and mods**
+- Fixed the game failing to start after an update was extracted over an older installation (#6854)
 
 **Lua**
+
+*Game and levels*
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
-- Added `trx.savegame.set_save_offer`, which lets a script decide whether the game offers a save as a level ends (#6159 / TRX1011)
-- Added `trx.overlay.letterbox`, which sets how deep the cinematic bars are (TRX1426)
-- Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
-- Added `trx.ui.screen`, the whole screen in canvas units, which reaches the edges that `trx.ui.canvas` can stop short of
-- Added `trx.config.labels`, `trx.config.to_string`, `trx.config.is_default` and `trx.config.is_hidden`, which tell a script what the settings menu shows of a setting
-- Added `trx.json.keys`, which gives the keys of an object read as JSON in the order they were written
-- Added `trx.path.Path:list`, which lists the entries of a directory
-- Added `trx.locale.text_languages`, `trx.locale.voice_languages` and `trx.locale.language_name`, which list the languages and the dubs the game has
-- Added `trx.input.has_touchscreen`, which says whether the device has a touchscreen
-- Added `trx.input.can_unbind`, which says whether a binding can be cleared
-- Added `trx.stats.has_crystals`, which says whether any level of the game holds a save crystal
-- Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
-- Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
-- Added `ammo_objects` to `trx.weapons.Weapon`, every kind of ammunition a weapon takes
-- Added `order` and `alone` to `trx.ui.regions.place`, which say where a widget stacks in its region and whether it shows only while the region holds nothing else
-- Added `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
-- Added `trx.overlay.show_version`, which asks for the game's version on screen as the title screen does
-- Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
-- Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
-- Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
-- Added `false` as a style of `trx.ui.widgets.Frame`, which draws no frame, so that a frame can come and go with the cursor
-- Added `trx.ui.frames_shown`, which hides the game's frames and marks the option the player is on by its text colour instead
-- Added `trx.ui.primitive.image_size`, which reports the size of an image, and let `trx.ui.widgets.Image` take only its width or its height and keep the picture's shape
-- Added `trx.config.signals.changed`, which says when any setting changes
-- Added `scaled` to `trx.ui.widgets.Resize`, which gives a size at the default text size
-- Added `preview` to `trx.ui.widgets.Bar`, which sizes a bar by the text around it
-- Added `trx.strings.equivalent`, which says whether two texts differ only in case
-- Added `trx.config.declared_rows`, which lists the settings rows that scripts declared
-- Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
-- Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
-- Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
-- Added `trx.math.rotate()`, which turns a vector the way the engine turns a model
-- Added `trx.math.wrap_angle()`, `trx.math.idiv()`, `trx.math.lerp()` and `trx.math.lerp_angle()`, which wrap, divide and blend numbers the way the engine does
-- Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
-- Added `trx.ui.primitive.model` and `trx.ui.widgets.Model`, which draw a model on the canvas as the interface is painted, turned any way and in the game or over the inventory ring, held as a pickup or standing free, and lit as the script says, each game in its own terms, by the light the game holds a pickup up in unless told otherwise
-- Added `trx.ui.primitive.background`, which draws a picture behind the whole interface, in colour or greyed and dimmed
-- Added `trx.ui.primitive.backdrop`, which draws one of the game's menu backdrops behind the whole interface, under any model drawn after it
-- Added `trx.ui.primitive.world_model`, which draws a model in a world of its own as a camera there sees it, placed step by step as the engine places one and posed in any frame of its animation, so a script can show a model as the game shows it
-- Added `trx.ui.primitive.darken`, which darkens the screen behind the interface, as the game does behind a menu and to fade to black
-- Added `trx.ui.primitive.mesh_bounds`, the box a model occupies
-- Added `trx.ui.primitive.line`, which draws a straight line between two points with smooth edges
-- Added `trx.ui.primitive.sprite_rect`, which draws a sprite stretched over a box, for sprites that do not carry their own edges
-- Added the baseline of the text as a third value from `trx.ui.primitive.measure_text`, so a script can line up text with a point
+- Added `trx.game.start_new_game`, which starts a new game at the first level
+- Added `trx.game.can_restart_level`, which says whether the current level can be restarted
+- Added `from_save` to `trx.game.play_level`, so a script can start a level with Lara's progress from a save
+- Added `ng_plus` to `trx.game.play_level`, so a script can pick the game mode a level starts in
+- Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
+- Added `trx.game.is_leaving`, which says whether the game has been told what to play next once the screens on show end
+- Added `trx.game.Level.is_completed`, which says whether the player has finished a level
+- Added `trx.game.sim_time`, the game's own clock, which its fades are timed by
+- Added `trx.game.globe`, the areas of the TR3 globe with the adventure each one starts and the areas it waits on
+- Added `trx.mod.can_switch`, which says whether the game can restart into a mod
+- Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
+
+*Saves and statistics*
+- Added `trx.savegame.set_save_offer`, which lets a script decide whether the game offers a save as a level ends (#6159 / TRX1011)
+- Added `trx.savegame.info` and `trx.savegame.SlotInfo`, which say what a save slot holds
+- Added `trx.savegame.delete`, which removes the save from a slot and deletes its file
+- Added `trx.savegame.total_count`, which counts the saves in every pool
+- Added `trx.savegame.restart_available`, which says whether the saved level can be restarted
+- Added `trx.savegame.manual_allowed`, which says whether the current level allows manual saving
+- Added `trx.savegame.reached_levels`, which lists the levels up to the saved one
+- Added `trx.savegame.play_story`, which plays the story content that runs before the saved level
+- Added `trx.savegame.recent_slot`, the slot where a save list should open
+- Added `trx.stats.has_crystals`, which says whether any level of the game holds a save crystal
+- Added `icon` to the entries of `trx.stats.secret_list`, which names the glyph that draws a secret
+- Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
+- Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
+- Changed `trx.savegame.load` to raise an error for an empty slot
+
+*Lara, items and objects*
 - Added `trx.lara.vehicle_dashboard`, what the dashboard of Lara's vehicle shows: its speed, the speeds its dial marks, and its gear
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
-- Added `trx.fx.Spark.context` and `trx.fx.SparkContext`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
+- Added `trx.fx.Spark.context`, `trx.fx.SparkContext` and the `spark_context` option of `trx.fx.sparks.spawn`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
 - Added `trx.items.Item.can_take_damage`, which says whether weapons and explosions can damage an item (TRX1857)
 - Added `trx.items.EarthquakeMode`, the values that an earthquake's `mode` property takes
 - Added `trx.objects.Object:set_hit_effect()`, so a script can decide whether a bullet hit spawns blood, a ricochet, smoke or nothing (`trx.items.HitEffect`) (TRX1676)
-- Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
-- Added `trx.game.is_leaving`, which says whether the game has been told what to play next once the screens on show end
-- Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
-- Added `trx.events.on_show_pickup`, which happens when the game announces an object in the corner of the screen
-- Added the ability for a script to draw outlines in the world the camera is looking at
-    - `trx.scene.on_paint`
-    - `trx.scene.box`
-    - `trx.scene.sphere`
-- Added script support for drawing in the engine's menu area:
-    - `trx.overlay.set_caption`, `trx.overlay.show_arrow`, and `trx.overlay.Arrow`
-    - `trx.ui.primitive.horizontal_line`
-    - `trx.ui.text_scale`
-- Added script access to passport data and actions
-    - `trx.game.start_new_game`
-    - `trx.game.can_restart_level`
-    - `from_save` in `trx.game.play_level`
-    - `trx.savegame.SlotInfo`
-    - `trx.savegame.info`
-    - `trx.savegame.delete`
-    - `trx.savegame.total_count`
-    - `trx.savegame.restart_available`
-    - `trx.savegame.manual_allowed`
-    - `trx.savegame.reached_levels`
-    - `trx.savegame.play_story`
-    - `trx.savegame.recent_slot`
-    - `trx.mod.can_switch`
-- Added `trx.ui.MenuMode`, which says what the game opened its menu for
-- Added `ng_plus` to `trx.game.play_level`, so a script can pick the game mode a level starts in
-- Added the ability for a script to hold a player action inactive
-    - `trx.input.suppress`
-    - `trx.input.Suppression:release`
-    - `trx.input.is_suppressed`
-- Added `trx.input.hold_off_skip` and `trx.input.SkipContext`, so that a script that ends a scene on a skip press can keep the press from reaching what comes after
-- Added the ability for a script to read the keyboard itself, rather than the action a key stands for
-    - `trx.events.on_key_down`
-    - `trx.events.on_key_up`
-    - `trx.input.is_key_held`
-    - `trx.input.is_key_pressed`
-    - `trx.input.is_key_known`
-    - `trx.input.is_reserved`
-    - `trx.events.on_key_repeat`
-- Added the ability for a script to read the controller itself, sticks and triggers included
-    - `trx.events.on_button_down`
-    - `trx.events.on_button_up`
-    - `trx.input.is_button_held`
-    - `trx.input.is_button_pressed`
-    - `trx.input.is_button_known`
-    - `trx.input.axis`
-    - `trx.input.is_axis_known`
-- Added script text input, clipboard access, and input grabbing
-    - `trx.events.on_text_input`
-    - `trx.ui.clipboard`
-    - `trx.input.grab`, `trx.input.Grab` and `trx.input.is_grabbed`
-- Added console events, history access, and script-controlled console visibility
-    - `trx.events.on_console_open`, `trx.events.on_console_close`, `trx.events.on_console_clear` and `trx.events.on_console_log`
-    - `trx.console.history` and `trx.console.remember`
-    - `trx.console.is_open`
-- Added `trx.ui.widgets.Custom`, a widget that measures and draws itself through script functions
-- Added `trx.ui.safe_area_for`, the room a centered box of a given width has, so that a narrow box need not keep clear of what sits in a corner
-- Added script support for stacking screens, such as a menu with a question over it
-    - `trx.ui.layers.push`
-    - `trx.ui.layers.active`
-    - `trx.ui.layers.count`
-    - `trx.ui.StackLayer` and `trx.ui.LayerKeys`
-    - `trx.ui.Placement`, which says where a layer puts its widgets
-- Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
-- Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
-- Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
-- Added `trx.signal.polled_while`, which reads a value once a tick only while another signal is true
-- Added `trx.ui.widgets.Spacer`, which keeps empty room that follows the text size
-- Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes, or either way with `trx.ui.Carousel:turn`
-- Added the `common.timer` module, which runs a function after some ticks or every few ticks, counted while the level runs or on every tick
-- Added `trx.ui.Screen.MENU` and `trx.ui.MenuContext`, so a script draws the menu the game opens over the play and on the title screen
-- Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks, after a delay if asked, and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the pause screen, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from. A script can also open one of these screens itself
-    - `trx.ui.Screen` and `trx.ui.ScreenContext`, and a context for each kind of screen: `trx.ui.EntryContext`, `trx.ui.PauseContext`, `trx.ui.SaveLoadContext`, `trx.ui.StatsContext` and `trx.ui.GlobeContext`
-    - `trx.ui.StatsContext.level`, `trx.ui.StatsContext.is_final` and `trx.ui.StatsContext.is_bare`, which say what the statistics screen shows
-    - `background` in `trx.ui.StatsContext` and `trx.ui.GlobeContext`, the picture a screen stands on
-    - `trx.ui.ScreenContext:on_end`, which runs a function once a screen ends
-- Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
-- Added `trx.game.Level.is_completed`, which says whether the player has finished a level
-- Added `trx.game.sim_time`, the game's own clock, which its fades are timed by
-- Added `trx.game.globe`, the areas of the TR3 globe with the adventure each one starts and the areas it waits on
-- Added `icon` to the entries of `trx.stats.Stats:secret_list`, which names the glyph that draws a secret
-- Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object
-- Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
-- Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
-- Added `trx.inventory.use`, which uses an entry as choosing it in the inventory ring does, and `trx.inventory.actions`, which says whether the ring offers to use, examine or combine it
-- Added `trx.inventory.ammo_kind` and `trx.inventory.set_ammo_kind`, which read and set the kind of ammunition a weapon fires, and a kind to `trx.inventory.shots` and `trx.inventory.set_shots`, which count and set the shots of one kind
-- Added `trx.inventory.separate`, which takes an attachment such as the laser sight off a weapon, `trx.inventory.has_attachment`, `separate` to `trx.inventory.Actions`, and `attachment` to `trx.weapons.Weapon`
+- Added `trx.scene.on_paint`, which happens on every drawn frame after the rooms and before the interface, so a script can draw in the world the camera is looking at
+- Added `trx.scene.box` and `trx.scene.sphere`, which draw the outline of a box or a sphere in the world
+- Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, which says what the flying body parts draw, which meshes burst, how fast the parts fly and how much they hurt Lara
+- Fixed `trx.items.Item.anim_num` not being accurate when the item is Lara and she is either on a vehicle or performing an extra animation (TRX1644)
+- Fixed iterating over `trx.fx.fog_bulbs` and `trx.fx.sparks.pool` skipping the last entry
+
+*Inventory and weapons*
+- Added `is_machine_gun` and `is_launcher` to `trx.weapons.Weapon`, which say how a weapon fires
+- Added `equip_key` to `trx.weapons.Weapon`, the role that draws the weapon
+- Added `ammo_objects` to `trx.weapons.Weapon`, every kind of ammunition a weapon takes
+- Added `attachment` to `trx.weapons.Weapon`, the attachment such as the laser sight that a weapon takes
+- Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
+- Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with
+- Added `trx.inventory.combine`, which combines two entries into what they make
+- Added `trx.inventory.use`, which uses an entry as choosing it in the inventory ring does
+- Added `trx.inventory.actions`, which says whether the ring offers to use, examine, combine or separate an entry
+- Added `trx.inventory.ammo_kind` and `trx.inventory.set_ammo_kind`, which read and set the kind of ammunition a weapon fires
+- Added a kind of ammunition to `trx.inventory.shots` and `trx.inventory.set_shots`, which count and set the shots of one kind
+- Added `trx.inventory.separate`, which takes an attachment such as the laser sight off a weapon
+- Added `trx.inventory.has_attachment`, which says whether a weapon carries its attachment
+- Changed the inventory ring to be drawn by the shipped interface scripts, where a script declares the ring's entries through the `common.ui.ring` module in place of `trx.inventory.declare_ring_item`
+- Changed the functions of `trx.inventory` and `trx.stats` to plain functions, called with a dot rather than a colon
+
+*Input*
+- Added `trx.input.has_touchscreen`, which says whether the device has a touchscreen
+- Added `trx.input.can_unbind`, which says whether a binding can be cleared
+- Added `trx.input.suppress` and `trx.input.Suppression:release`, which hold a player action inactive until the suppression is released
+- Added `trx.input.is_suppressed`, which says whether a player action is held inactive
+- Added `trx.input.hold_off_skip` and `trx.input.SkipContext`, so that a script that ends a scene on a skip press can keep the press from reaching what comes after
+- Added `trx.events.on_key_down`, `trx.events.on_key_up` and `trx.events.on_key_repeat`, which happen when a key goes down, comes up or repeats
+- Added `trx.input.is_key_held` and `trx.input.is_key_pressed`, which say whether a key is down or went down in this frame
+- Added `trx.input.is_key_known`, which says whether the player's layout has a key of a given name
+- Added `trx.input.is_reserved`, which says whether the game holds the keyboard and the pad rather than the player
+- Added `trx.events.on_button_down` and `trx.events.on_button_up`, which happen when a controller button goes down or comes up
+- Added `trx.input.is_button_held` and `trx.input.is_button_pressed`, which say whether a controller button is down or went down in this frame
+- Added `trx.input.axis`, where a controller axis stands, from -1 to 1, to read the sticks and the triggers
+- Added `trx.input.is_button_known` and `trx.input.is_axis_known`, which say whether a controller button or axis carries a given name
+- Added `trx.events.on_text_input`, which happens when the player types text
+- Added `trx.input.grab`, `trx.input.Grab` and `trx.input.is_grabbed`, which take the keyboard and the pad from the game until the grab is released
+- Added `trx.ui.clipboard`, what the system clipboard holds
+- Fixed `trx.input.with_listen()` always failing with an error
+- Fixed key bindings that a script changes being lost when the game closes
+
+*Console*
+- Added `trx.events.on_console_open`, `trx.events.on_console_close`, `trx.events.on_console_clear` and `trx.events.on_console_log`, which happen when the console opens, closes, clears or shows a line
+- Added `trx.console.history` and `trx.console.remember`, which read and add to the lines the player has entered
+- Added `trx.console.is_open`, which says whether the console is open, and opens or closes it
+
+*Settings*
+- Added `trx.config.labels`, `trx.config.to_string`, `trx.config.is_default` and `trx.config.is_hidden`, which tell a script what the settings menu shows of a setting
+- Added `trx.config.signals.changed`, which says when any setting changes
+- Added `trx.config.declared_rows`, which lists the settings rows that scripts declared
+- Changed `trx.config.declare` so that a value of a declared setting can carry a label of its own
+
+*Screens*
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the pause screen, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from. A script can also open one of these screens itself
+- Added `trx.ui.Screen` and `trx.ui.ScreenContext`, with a context for each kind of screen: `trx.ui.EntryContext`, `trx.ui.PauseContext`, `trx.ui.SaveLoadContext`, `trx.ui.StatsContext` and `trx.ui.GlobeContext`
+- Added `trx.ui.StatsContext.level`, `trx.ui.StatsContext.is_final` and `trx.ui.StatsContext.is_bare`, which say what the statistics screen shows
+- Added `background` to `trx.ui.StatsContext` and `trx.ui.GlobeContext`, the picture a screen stands on
+- Added `trx.ui.ScreenContext:on_end`, which runs a function once a screen ends
+- Added `trx.ui.Screen.MENU` and `trx.ui.MenuContext`, so a script draws the menu the game opens over the play and on the title screen
+- Added `trx.ui.MenuMode`, which says what the game opened its menu for
+- Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.TimedContext`, which reports how long the view shows and fades
+- Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
+- Added `trx.ui.layers.push`, which puts a layer of widgets on top of the stack, such as a question over a menu
+- Added `trx.ui.layers.active` and `trx.ui.layers.count`, the top layer that reads input and how many layers are on the stack
+- Added `trx.ui.StackLayer` and `trx.ui.LayerKeys`, a layer on the stack and the player's input as that layer reads it
+- Added `trx.ui.Placement`, which says where a layer puts its widgets
 - Added fade layers, which the game draws over its interface, below the console or over it, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
 - Added `trx.events.on_screen_change`, `trx.events.on_exit` and the `holds_screen` setting of `trx.ui.layers.fade`, which let a script run the change from one screen to the next and the fade as the game exits
-- Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.TimedContext`, which reports how long the view shows and fades
-- Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
-- Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
-- Added colour markup that names its colours, as `\{color #c08040 #401000}`, for a flat colour or one that grades from the top of each glyph to its bottom, with `pulse` for one that brightens and dims
-- Added `trx.ui.text_color` and `trx.ui.picked_text_color`, the colours text is drawn in where it names none and where it marks the option the player is on
-- Changed `trx.config.declare` so that a value of a declared setting can carry a label of its own
-- Changed the inventory ring to be drawn by the shipped interface scripts, where a script declares the ring's entries through the `common.ui.ring` module
-- Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
-- Changed the drawing events to belong to the modules that draw
-    - `trx.events.on_ui_draw` → `trx.ui.on_reserve`
-    - `trx.events.on_ui_paint` → `trx.ui.on_paint`
-- Changed the name of the setting that takes a widget out of the layout
-    - `shown` → `visible`
-    - `trx.ui.Widget:is_shown` → `trx.ui.Widget:is_visible`
-- Changed `hidden` of `trx.ui.Widget` into `trx.ui.widgets.Blank`, a widget that keeps the room of its child and draws nothing while a condition holds
+
+*Overlay and layout*
+- Added `trx.overlay.letterbox`, which sets how deep the cinematic bars are (TRX1426)
+- Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
+- Added `trx.ui.screen`, the whole screen in canvas units, which reaches the edges that `trx.ui.canvas` can stop short of
+- Added `trx.ui.safe_area_for`, the room a centered box of a given width has, so that a narrow box need not keep clear of what sits in a corner
+- Added `order` and `alone` to `trx.ui.regions.place`, which say where a widget stacks in its region and whether it shows only while the region holds nothing else
+- Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
+- Added `trx.overlay.set_caption`, which sets the caption at the bottom of the screen
+- Added `caption`, `caption_flashing`, `arrows` and `version_shown` to `trx.overlay.signals`, which say what text and arrows the game shows over the play
+- Added `trx.overlay.show_arrow` and `trx.overlay.Arrow`, which show or hide an interface arrow
+- Added `trx.overlay.show_version`, which asks for the game's version on screen as the title screen does
+- Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
+- Added `trx.events.on_show_pickup`, which happens when the game announces an object in the corner of the screen
+- Added `trx.ui.text_scale`, the scale applied to text and its boxes
 - Changed script widgets to stay behind the game interface when they overlap
-- Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
-- Changed `trx.overlay.set_caption` to show its text as given, without the `plain` option
-- Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
-- Changed `trx.savegame.load` to raise an error for an empty slot
-- Changed the functions of `trx.inventory` and `trx.stats` to plain functions, called with a dot rather than a colon
-- Removed `trx.ui.Widget:wakes_on`, as a widget follows every signal it reads while it measures, however it reads it
 - Removed `trx.ui.regions.fallback`, as nothing drew a fallback
+- Removed `trx.overlay.signals.health_bar_forced` in favour of the `health_bar` signal of the shipped `common.ui.ring` module
+
+*Widgets*
+- Added `trx.ui.widgets.Custom`, a widget that measures and draws itself through script functions
+- Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
+- Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
+- Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
+- Added `trx.ui.widgets.Spacer`, which keeps empty room that follows the text size
+- Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes, or either way with `trx.ui.Carousel:turn`, and `trx.ui.Carousel.is_sliding`, which says whether it is still sliding
+- Added `false` as a style of `trx.ui.widgets.Frame`, which draws no frame, so that a frame can come and go with the cursor
+- Added `trx.ui.FrameStyle.HEADING_OUTLINE`, the outline of a dialog's title strip with nothing behind it
+- Added `trx.ui.is_ps1_bar`, which says whether a bar takes the PS1 look
+- Added `trx.ui.frames_shown`, which hides the game's frames and marks the option the player is on by its text colour instead
+- Added `scaled` to `trx.ui.widgets.Resize`, which gives a size at the default text size
+- Added `preview` to `trx.ui.widgets.Bar`, which sizes a bar by the text around it
+- Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
+- Added signals to every widget setting that holds a value, such as a size, a scale or a style, so that a widget follows the value as it changes
+- Changed `trx.ui.widgets.Image` to take only its width or its height and keep the picture's shape
+- Changed the `shown` setting of widgets to `visible`, and `trx.ui.Widget:is_shown` to `trx.ui.Widget:is_visible`
+- Changed `hidden` of `trx.ui.Widget` into `trx.ui.widgets.Blank`, a widget that keeps the room of its child and draws nothing while a condition holds
+- Removed `trx.ui.Widget:wakes_on`, as a widget follows every signal it reads while it measures, however it reads it
 - Removed `trx.ui.widgets.Row`, which was a horizontal `trx.ui.widgets.Stack` of two arrows and a widget
 - Removed `h_bars` from `trx.ui.widgets.Resize`, as a `trx.ui.widgets.Bar` already follows the player's bar scale
-- Removed `trx.signal.Signal:above` in favour of `trx.signal.Signal:map`
-- Removed `trx.overlay.signals.health_bar_forced` in favour of the `health_bar` signal of the shipped `common.ui.ring` module
-- Removed the numbered colours of the text markup and `\{dim}`, which a colour named by its shades replaces
+- Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes
+
+*Drawing*
+- Added `trx.ui.primitive.model` and `trx.ui.widgets.Model`, which draw a model on the canvas as the interface is painted, turned any way and in the game or over the inventory ring, held as a pickup or standing free, and lit as the script says, each game in its own terms, by the light the game holds a pickup up in unless told otherwise
+- Added `trx.ui.primitive.world_model`, which draws a model in a world of its own as a camera there sees it, placed step by step as the engine places one and posed in any frame of its animation, so a script can show a model as the game shows it
+- Added `trx.ui.primitive.background`, which draws a picture behind the whole interface, in colour or greyed and dimmed
+- Added `trx.ui.primitive.backdrop`, which draws one of the game's menu backdrops behind the whole interface, under any model drawn after it
+- Added `trx.ui.primitive.darken`, which darkens the screen behind the interface, as the game does behind a menu and to fade to black
+- Added `trx.ui.primitive.mesh_bounds`, the box a model occupies
+- Added `trx.ui.primitive.line`, which draws a straight line between two points with smooth edges
+- Added `trx.ui.primitive.sprite_rect`, which draws a sprite stretched over a box, for sprites that do not carry their own edges
+- Added `trx.ui.primitive.horizontal_line`, which draws a horizontal rule in the selected menu style
+- Added `trx.ui.primitive.image_size`, which reports the size of an image
+- Added the baseline of the text as a third value from `trx.ui.primitive.measure_text`, so a script can line up text with a point
+- Changed `trx.events.on_ui_draw` to `trx.ui.on_reserve` and `trx.events.on_ui_paint` to `trx.ui.on_paint`, so the drawing events belong to the module that draws
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.ui.primitive.panel` and `trx.ui.widgets.Frame` drawing a frame a pixel away from where the game draws its own
-- Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes
-- Fixed `trx.item.anim_num` not being accurate when the item is Lara and she is either on a vehicle or performing an extra animation (TRX1644)
-- Fixed `trx.input.with_listen()` always failing with an error
+
+*Text and colour*
+- Added colour markup that names its colours, as `\{color #c08040 #401000}`, for a flat colour or one that grades from the top of each glyph to its bottom, with `pulse` for one that brightens and dims
+- Added `trx.ui.text_color` and `trx.ui.picked_text_color`, the colours text is drawn in where it names none and where it marks the option the player is on
+- Added the shipped `common.ui.accent` module, which names the colours each game draws its text in
+- Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
+- Added `trx.strings.equivalent`, which says whether two texts differ only in case
+- Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
+- Added `trx.locale.text_languages`, `trx.locale.voice_languages` and `trx.locale.language_name`, which list the languages and the dubs the game has
+- Removed the numbered colours of the text markup and `\{dim}`, which a colour named by its shades replaces
+
+*Utilities*
+- Added `trx.json.keys`, which gives the keys of an object read as JSON in the order they were written
+- Added `trx.path.Path:list`, which lists the entries of a directory
+- Added `trx.math.from_oklch` and `trx.math.to_oklch`, which convert a color to and from OKLCH
+- Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
+- Added `trx.math.rotate()`, which turns a vector the way the engine turns a model
+- Added `trx.math.wrap_angle()`, `trx.math.idiv()`, `trx.math.lerp()` and `trx.math.lerp_angle()`, which wrap, divide and blend numbers the way the engine does
+- Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks, after a delay if asked, and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
+- Added `trx.signal.polled_while`, which reads a value once a tick only while another signal is true
+- Added the `common.timer` module, which runs a function after some ticks or every few ticks, counted while the level runs or on every tick
+- Removed `trx.signal.Signal:above` in favour of `trx.signal.Signal:map`
 - Fixed a derived signal sometimes giving its old value when read from a listener of the signal it follows, such as a settings row showing its old value after the first change
-- Fixed key bindings that a script changes being lost when the game closes
-- Fixed iterating over `trx.fx.fog_bulbs` and `trx.fx.sparks.pool` skipping the last entry
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22
