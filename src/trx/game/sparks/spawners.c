@@ -212,8 +212,13 @@ void Sparks_TriggerRainSplash(const XYZ_32 pos)
     for (int32_t i = 0; i < 2; i++) {
         SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_SPLASH);
         spark->src_color.r = 88;
-        spark->src_color.g = 100;
-        spark->src_color.b = (Random_GetDraw() & 0x1F) + 120;
+        if (g_Config.visuals.enable_ps1_rain) {
+            spark->src_color.g = (Random_GetDraw() & 0x1F) + 100;
+            spark->src_color.b = spark->src_color.g;
+        } else {
+            spark->src_color.g = 100;
+            spark->src_color.b = (Random_GetDraw() & 0x1F) + 120;
+        }
         spark->dst_color.r = spark->src_color.r >> 1;
         spark->dst_color.g = spark->src_color.g >> 1;
         spark->dst_color.b = spark->src_color.b >> 1;
