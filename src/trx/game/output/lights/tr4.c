@@ -89,6 +89,7 @@ typedef struct {
     M_ITEM_ROOM_LIGHT lights[2][M_MAX_ITEM_LIGHTS];
     int32_t n_lights[2];
     int32_t cur; // index of the current list; 1 - cur = previous
+    int32_t tick; // game frame of the last fade step
     bool used;
 } M_ITEM_LIGHT;
 
@@ -122,6 +123,7 @@ static int32_t m_RoomBakeCount = 0;
 
 static M_ITEM_LIGHT m_ItemLights[MAX_ITEMS] = {};
 static M_ITEM_LIGHT m_ScratchLight = {}; // the OG StaticMeshLightItem
+static int32_t m_Tick = 0;
 static const ITEM *m_LooseLightKeys[M_MAX_LOOSE_LIGHTS] = {};
 static M_ITEM_LIGHT m_LooseLights[M_MAX_LOOSE_LIGHTS] = {};
 static M_ITEM_LIGHT *m_CurrentItemLight = nullptr;
@@ -604,6 +606,7 @@ static void M_PrepareItemLight(M_ITEM_LIGHT *const il)
         il->used = true;
         il->amb_fcnt = -1; // snap the first ambient update
         il->light_room_num = NO_ROOM;
+        il->tick = m_Tick - 1;
         il->n_lights[0] = 0;
         il->n_lights[1] = 0;
     }
@@ -616,11 +619,16 @@ static void M_CalculateObjectLightingAt(
     M_PrepareItemLight(il);
     il->item_pos = sample_pos.pos;
 
-    int16_t room_num = sample_pos.room_num;
-    Room_GetSector(sample_pos.pos, &room_num);
-    M_CalcAmbientLight(il, Room_Get(room_num)->ambient_rgb);
-
-    M_CreateLightList(il, item != nullptr ? item->room_num : room_num);
+    // Steps the fades once per game frame, as the original does, so that the
+    // frame rate and repeated draws do not speed them up. The scratch state
+    // serves many objects in one frame, so it updates on every call.
+    if (il == &m_ScratchLight || il->tick != m_Tick) {
+        il->tick = m_Tick;
+        int16_t room_num = sample_pos.room_num;
+        Room_GetSector(sample_pos.pos, &room_num);
+        M_CalcAmbientLight(il, Room_Get(room_num)->ambient_rgb);
+        M_CreateLightList(il, item != nullptr ? item->room_num : room_num);
+    }
 
     m_CurrentItemLight = il;
     m_CurrentIsProp = item != nullptr
@@ -905,6 +913,12 @@ static void M_ObserveRoomFlip(const ROOM *const room)
     SWAP(m_RoomBake[room_1], m_RoomBake[room_2]);
 }
 
+static void M_Animate(const int32_t num_frames)
+{
+    m_Tick += num_frames;
+    Output_FogBulbs_Animate(num_frames);
+}
+
 static void M_BeginScene(void)
 {
     if (m_StagedPool != nullptr) {
@@ -932,7 +946,7 @@ const LIGHTING_MODEL g_LightingModelTR4 = {
     .add_dynamic_light_rgb = M_AddDynamicLightRGB,
     .begin_scene = M_BeginScene,
     .prepare_scene = Output_FogBulbs_PrepareScene,
-    .animate = Output_FogBulbs_Animate,
+    .animate = M_Animate,
     .fill_instance_light = M_FillInstanceLight,
     .fill_slot_light = M_FillSlotLight,
     .get_slot_light_count = M_GetSlotLightCount,
