@@ -2086,6 +2086,10 @@
             "title": "Fix item placement issues",
             "description": "Fixes several original-game issues caused by incorrect item placement or configuration, including rotations, positions, and room assignments.",
         },
+        "visuals.fix_projectile_brightness": {
+            "title": "Fix projectile brightness",
+            "description": "Fixes projectiles such as knives, harpoons and grenades being drawn at full brightness, rather than lit by the room around them.",
+        },
         "visuals.fix_smoke_emitters": {
             "title": "Fix smoke emitters",
             "description": "Fixes smoke emitters intended to be black rendering as white.",

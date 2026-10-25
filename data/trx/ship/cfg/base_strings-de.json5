@@ -2086,6 +2086,10 @@
             "title": "\\{review}Fix: Objektplatzierung",
             "description": "\\{review}Behebt mehrere Probleme aus den Originalspielen, die durch falsch platzierte oder ausgerichtete Objekte verursacht werden.",
         },
+        "visuals.fix_projectile_brightness": {
+            "title": "\\{review}Projektilhelligkeit korrigieren",
+            "description": "\\{review}Behebt, dass Projektile wie Messer, Harpunen und Granaten in voller Helligkeit gezeichnet werden, statt vom umgebenden Raum beleuchtet zu werden.",
+        },
         "visuals.fix_smoke_emitters": {
             "title": "\\{review}Rauchemitter korrigieren",
             "description": "\\{review}Behebt Rauchemitter, die eigentlich schwarz dargestellt werden sollten, aber weiß erscheinen.",

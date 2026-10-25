@@ -1,14 +1,52 @@
 #include <trx/game/objects/draw.h>
 
+#include <trx/config.h>
+#include <trx/game/effects.h>
+#include <trx/game/items/draw.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
+#include <trx/version.h>
+
+#define M_PROJECTILE_BRIGHTNESS 0x300
+
+static bool M_FixesProjectileBrightness(void)
+{
+    return g_TRVersion <= 2 && g_Config.visuals.fix_projectile_brightness;
+}
 
 CLIP Object_GetClip(const OBJECT *const obj, const BOUNDS_16 *const bounds)
 {
     return (obj->can_clip_func == nullptr || obj->can_clip_func())
         ? Output_CheckBoundsClip(bounds)
         : CLIP_FULLY_VISIBLE;
+}
+
+bool Object_DrawProjectile(const ITEM *const item)
+{
+    if (!M_FixesProjectileBrightness()) {
+        return Item_DrawAnimating(item);
+    }
+    return Item_DrawAnimatingEx(
+        item,
+        &(ITEM_DRAW_DESC) {
+            .mesh_mask = item->mesh_bits,
+            .room_light = true,
+            .brightness = M_PROJECTILE_BRIGHTNESS,
+        });
+}
+
+bool Object_DrawProjectileEffect(const EFFECT *const effect)
+{
+    if (!M_FixesProjectileBrightness()) {
+        return Effect_Draw(effect);
+    }
+    return Effect_DrawEx(
+        effect,
+        &(EFFECT_DRAW_DESC) {
+            .room_light = true,
+            .brightness = M_PROJECTILE_BRIGHTNESS,
+        });
 }
 
 void Object_DrawMesh(

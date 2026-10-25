@@ -2086,6 +2086,10 @@
             "title": "\\{review}Placement des objets",
             "description": "\\{review}Corrige plusieurs problèmes des jeux d'origine causés par des objets mal placés ou mal orientés.",
         },
+        "visuals.fix_projectile_brightness": {
+            "title": "\\{review}Corriger la luminosité des projectiles",
+            "description": "\\{review}Corrige l'affichage des projectiles tels que les couteaux, les harpons et les grenades en pleine luminosité, au lieu d'être éclairés par la pièce qui les entoure.",
+        },
         "visuals.fix_smoke_emitters": {
             "title": "\\{review}Corriger les émetteurs de fumée",
             "description": "\\{review}Corrige les émetteurs de fumée qui sont censés être noirs mais qui s'affichent en blanc.",

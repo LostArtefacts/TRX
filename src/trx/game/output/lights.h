@@ -18,6 +18,12 @@ void Output_CalculateStaticLightRGB15(int16_t rgb15);
 void Output_CalculateStaticLightRGB_F(RGB_F rgb);
 void Output_CalculateStaticMeshLight(XYZ_32 pos, SHADE shade, const ROOM *room);
 void Output_CalculateObjectLighting(const ITEM *item, const BOUNDS_16 *bounds);
+// Lights an item by its room, and ignores the static shade of the item.
+void Output_CalculateObjectRoomLighting(
+    const ITEM *item, const BOUNDS_16 *bounds);
+// Lowers the shade of the light calculated last, so that the meshes drawn
+// next show brighter.
+void Output_BrightenLight(int32_t shade);
 void Output_CalculateObjectLightingAt(
     const ITEM *item, const GAME_VECTOR sample_pos);
 int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);

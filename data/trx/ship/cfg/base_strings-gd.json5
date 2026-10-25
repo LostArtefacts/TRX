@@ -2086,6 +2086,10 @@
             "title": "Càraich suidheachadh nithean",
             "description": "Ceartaichidh seo grunn dhuilgheadasan anns na geamannan tùsail a tha air an adhbhrachadh le nithean air an cur no air an stiùireadh gu ceàrr.",
         },
+        "visuals.fix_projectile_brightness": {
+            "title": "\\{review}Ceartaich soilleireachd nan urchraichean",
+            "description": "\\{review}Ceartaichidh seo urchraichean mar sgeinean, mòr-ghathan agus grenèidean a bhith air an sealltainn le làn-shoilleireachd, seach a bhith air an soillseachadh leis an rùm mun cuairt orra.",
+        },
         "visuals.fix_smoke_emitters": {
             "title": "Ceartaich sgaoiladairean ceò",
             "description": "Ceartaich sgaoiladairean ceò a bu chòir a bhith air an sealltainn dubh ach a th'air an sealltainn geal.",

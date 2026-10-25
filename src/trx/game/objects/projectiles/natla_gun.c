@@ -1,6 +1,7 @@
 #include <trx/core/math.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/draw.h>
 #include <trx/game/rooms.h>
 
 static void M_Control(const int16_t effect_num)
@@ -41,6 +42,7 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->effect_control_func = M_Control;
+    obj->effect_draw_func = Object_DrawProjectileEffect;
 }
 
 REGISTER_OBJECT(O_NATLA_GUN, M_Setup)

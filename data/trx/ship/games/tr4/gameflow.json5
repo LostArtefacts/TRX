@@ -652,6 +652,7 @@
     ],
 
     "hidden_config": [
+        "fix_projectile_brightness",
         "change_pierre_spawn",
         "disable_trex_collision",
         "enable_3d_pickups",

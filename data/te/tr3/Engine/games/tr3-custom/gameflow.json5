@@ -53,6 +53,7 @@
     "cutscenes": [],
     "fmvs": [],
     "hidden_config": [
+        "fix_projectile_brightness",
         "fix_animated_sprites",
         "fix_item_rots",
         "fix_floor_data_issues",
