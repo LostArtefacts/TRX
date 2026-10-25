@@ -47,6 +47,16 @@ static struct {
     const ANIM_BONE *bones[M_MAX_BRAIDS];
     int32_t mesh_idx[M_MAX_BRAIDS];
 } m_Seated = {};
+// Lara's position and frame when the braid last followed her. The inventory
+// can open between Lara moving and the braid following her, as a keyhole
+// does when it opens the inventory from Lara's collision.
+static struct {
+    bool is_set;
+    XYZ_32 pos;
+    XYZ_16 rot;
+    int16_t anim_num;
+    int16_t frame_num;
+} m_FollowedPose = {};
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
 static HAIR_SEGMENT m_HairSegments[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
 
@@ -826,8 +836,30 @@ static bool M_HasBraidChanged(void)
     return changed;
 }
 
+static void M_RememberPose(const ITEM *const lara_item)
+{
+    m_FollowedPose.is_set = true;
+    m_FollowedPose.pos = lara_item->pos;
+    m_FollowedPose.rot = lara_item->rot;
+    m_FollowedPose.anim_num = lara_item->anim_num;
+    m_FollowedPose.frame_num = lara_item->frame_num;
+}
+
+static bool M_HasLaraMoved(const ITEM *const lara_item)
+{
+    return !m_FollowedPose.is_set || lara_item->pos.x != m_FollowedPose.pos.x
+        || lara_item->pos.y != m_FollowedPose.pos.y
+        || lara_item->pos.z != m_FollowedPose.pos.z
+        || lara_item->rot.x != m_FollowedPose.rot.x
+        || lara_item->rot.y != m_FollowedPose.rot.y
+        || lara_item->rot.z != m_FollowedPose.rot.z
+        || lara_item->anim_num != m_FollowedPose.anim_num
+        || lara_item->frame_num != m_FollowedPose.frame_num;
+}
+
 void Lara_Hair_Initialise(void)
 {
+    m_FollowedPose.is_set = false;
     for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
         m_IsFirstHair[i] = true;
 
@@ -870,6 +902,20 @@ void Lara_Hair_Control(const bool in_cutscene)
     const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
     for (int32_t i = 0; i < braid->count; i++) {
         M_Control(in_cutscene, i, braid->setup[i].position, braid->count > 1);
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item != nullptr) {
+        M_RememberPose(lara_item);
+    }
+}
+
+void Lara_Hair_Follow(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    if (Lara_Hair_IsActive() && lara_item != nullptr
+        && M_HasLaraMoved(lara_item)) {
+        Lara_Hair_Control(false);
     }
 }
 

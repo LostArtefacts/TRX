@@ -4,6 +4,7 @@
 #include <trx/core/memory.h>
 #include <trx/game/game.h>
 #include <trx/game/input.h>
+#include <trx/game/lara/hair.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
@@ -39,6 +40,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         p->music_paused = true;
     }
 
+    Lara_Hair_Follow();
     Output_Overlay_CaptureGameSnapshot();
     UI_Takeover_Offer(
         UI_TAKEOVER_SAVE_LOAD, (UI_TAKEOVER_ARGS) { .mode = p->mode });
