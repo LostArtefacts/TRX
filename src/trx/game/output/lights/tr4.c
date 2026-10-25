@@ -63,6 +63,7 @@ typedef struct {
 typedef struct {
     XYZ_F pos;
     XYZ_32 ipos;
+    XYZ_32 rlp; // position relative to the item at the last list update
     float r, g, b; // current faded color
     float tr, tg, tb; // fade target color
     float rs, gs, bs; // per-frame fade step
@@ -406,6 +407,7 @@ static void M_CreateLightList(M_ITEM_LIGHT *const il, const int16_t room_num)
         }
 
         light->range = range;
+        light->rlp = (XYZ_32) { (int32_t)dx, (int32_t)dy, (int32_t)dz };
 
         if (in_range) {
             if (!light->active) {
@@ -439,14 +441,15 @@ static bool M_HasRoom(const M_STAGED_LIST *const list)
 
 // Port of the retail SetupLight. Every light sits where it is relative to
 // the item, which the shader carries into the object space of the mesh being
-// drawn; the shadow lights only darken the ambient.
+// drawn; the shadow lights only darken the ambient. A light fading out of the
+// previous room keeps the position it had when the item left that room.
 static void M_StageLight(
     const M_ITEM_ROOM_LIGHT *const light, M_STAGED_LIST *const list)
 {
     const XYZ_F pos = {
-        (float)light->ipos.x,
-        (float)light->ipos.y,
-        (float)light->ipos.z,
+        (float)(list->item_pos.x + light->rlp.x),
+        (float)(list->item_pos.y + light->rlp.y),
+        (float)(list->item_pos.z + light->rlp.z),
     };
     const XYZ_F dir = { light->nx, light->ny, light->nz };
 
