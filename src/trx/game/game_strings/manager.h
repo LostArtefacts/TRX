@@ -5,6 +5,7 @@
 #include <trx/core/event_manager.h>
 #include <trx/core/result.h>
 #include <trx/core/vector.h>
+#include <trx/game/game_flow/types.h>
 #include <trx/game/shell/mod.h>
 
 // Point the manager at the files the given mod takes its strings from - the
@@ -28,11 +29,14 @@ const char *GameStringManager_GetLanguageName(const char *code);
 // GetAvailableLanguages.
 RESULT GameStringManager_ReloadLanguage(const char *lang);
 
-// Subscribe to be notified when the game strings language is reloaded.
-// The listener will receive an EVENT with name "reload_language",
-// and .data pointing to the language code (const char *).
-int32_t GameStringManager_SubscribeReload(
+// Applies the strings that are in force for a level, or for no level where
+// level is nullptr, and notifies the change subscribers.
+void GameStringManager_Apply(const GF_LEVEL *level);
+
+// Subscribes to changes of the game strings: a reload of the language, and the
+// strings of a level being applied. The listener receives an EVENT with name
+// "change".
+int32_t GameStringManager_SubscribeChanges(
     EVENT_LISTENER listener, void *user_data);
 
-// Unsubscribe from language reload events.
-void GameStringManager_UnsubscribeReload(int32_t listener_id);
+void GameStringManager_UnsubscribeChanges(int32_t listener_id);

@@ -5,6 +5,17 @@
 #include <lauxlib.h>
 #include <stdint.h>
 
+const char *LUA_CheckText(lua_State *const L, const int arg)
+{
+    if (lua_type(L, arg) != LUA_TSTRING
+        && luaL_getmetafield(L, arg, "__tostring") != LUA_TNIL) {
+        lua_pop(L, 1);
+        luaL_tolstring(L, arg, nullptr);
+        lua_replace(L, arg);
+    }
+    return luaL_checkstring(L, arg);
+}
+
 int32_t LUA_CheckRange(
     lua_State *const L, const int arg, const int32_t count,
     const char *const what)

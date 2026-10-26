@@ -54,7 +54,7 @@ RE_OBJ_NAME_DEFINE = re.compile(
 )
 
 RE_LUA_GAME_STRING_USAGE = re.compile(
-    r"trx\.locale\.(?:get|format)\(\s*"
+    r"trx\.locale\.(?:get|format|text)\(\s*"
     r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
 )
 # The help key of a trx.console.register{} spec. Loose on purpose: keeping a key

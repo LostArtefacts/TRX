@@ -176,14 +176,17 @@ b_lua_strings = {
 
 # What it takes to dispatch a console command, on top of b_lua_surface: the
 # console itself, the strings it prints and the log it prints them through.
+# The strings tell scripts when they reload through the event bridge.
 b_console = {
   'engine': [
     'core/completion.c',
     'core/event_manager.c',
     'game/events.c',
     'game/lua/capi/console.c',
+    'game/lua/capi/events.c',
     'game/lua/capi/locale.c',
     'game/lua/capi/log.c',
+    'game/lua/events/manager.c',
     'game/lua/utils/game_flow.c',
   ],
   'src': ['fakes/console.c', 'fakes/locale.c'],
@@ -921,7 +924,7 @@ unit_tests += {
 # trx.strings, so the two are stood up together.
 unit_tests += {
   'name': 'lua/trx/argparse',
-  'bundles': [b_lua_surface, b_lua_strings],
+  'bundles': [b_lua_surface, b_lua_strings, b_lua_events],
   'src': ['fakes/locale.c'],
   'engine': ['game/lua/capi/locale.c'],
 }
@@ -942,7 +945,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/trx/locale',
-  'bundles': [b_lua_surface],
+  'bundles': [b_lua_surface, b_lua_events, b_lua_strings],
   'src': ['fakes/locale.c'],
   'engine': ['game/lua/capi/locale.c'],
 }
@@ -1187,7 +1190,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/trx/console',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_events],
 }
 
 # The help command, which the console module registers and composes from the
@@ -1195,14 +1198,14 @@ unit_tests += {
 # itself does not.
 unit_tests += {
   'name': 'lua/commands/help',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_events],
 }
 
 # The copy command, which runs another command and copies what it prints. It
 # needs nothing the console itself does not.
 unit_tests += {
   'name': 'lua/commands/copy',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_events],
 }
 
 # A console command written in Lua, exercised through the console that
@@ -1248,20 +1251,20 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/commands/music',
-  'bundles': [b_lua_surface, b_console],
+  'bundles': [b_lua_surface, b_console, b_lua_events],
   'src': ['fakes/music.c', 'fakes/strings.c'],
   'engine': ['game/lua/capi/music.c'],
 }
 
 unit_tests += {
   'name': 'lua/commands/load_game',
-  'bundles': [b_lua_surface, b_console],
+  'bundles': [b_lua_surface, b_console, b_lua_events],
   'src': ['fakes/savegame.c'],
 }
 
 unit_tests += {
   'name': 'lua/commands/rule',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_events],
   'engine': ['game/lua/capi/rules.c', 'game/rules.c'],
 }
 
@@ -2636,7 +2639,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/set',
 
-  'src': ['fakes/level.c'],  'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings, b_console],
+  'src': ['fakes/level.c'],  'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings, b_console, b_lua_events],
   'engine': ['game/lua/capi/config.c'],
 }
 

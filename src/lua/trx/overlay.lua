@@ -78,7 +78,7 @@ local caption_flashing = trx.signal.new(false)
 ---  flashing = true,
 ---})
 ---```
----@param text? string Text to show. Omit this parameter to remove the caption.
+---@param text? string|trx.locale.Text Text to show. A `trx.locale.Text` follows the player's language. Omit this parameter to remove the caption.
 ---@param opts? trx.overlay.set_caption.opts How it shows.
 function M.set_caption(text, opts)
   opts = opts or {}

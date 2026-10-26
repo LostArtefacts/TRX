@@ -399,7 +399,9 @@ end
 ---local text = trx.ui.input_hint_text(trx.input.Role.MENU_CONFIRM, "Use")
 ---```
 ---@param input trx.ui.Inputs The role, or the roles shown side by side.
----@param words? string What the keys do.
+---@overload fun(input: trx.ui.Inputs, words: trx.locale.Text): trx.locale.Text
+---@overload fun(input: trx.ui.Inputs, words?: string|trx.locale.Text): string|trx.locale.Text
+---@param words? string What the keys do. A `trx.locale.Text` makes the result follow the player's language.
 ---@return string # The text.
 function M.input_hint_text(input, words)
   local roles = type(input) == "table" and input or { input }

@@ -6,6 +6,7 @@
 // game_strings/entries.def and has cfg/base_strings.json5 and its translations
 // layered over it.
 
+#include <trx/core/event_manager.h>
 #include <trx/core/memory.h>
 #include <trx/core/result.h>
 #include <trx/core/vector.h>
@@ -26,6 +27,8 @@ typedef struct {
 // Enough for every module and command one test loads.
 static M_ENTRY m_Entries[256];
 static int32_t m_EntryCount = 0;
+static int32_t m_ReloadCount = 0;
+static EVENT_LISTENER m_ChangeListener = nullptr;
 
 // The language trx.locale.reload() asks for. Which one does not matter: the
 // reload below loads nothing.
@@ -60,10 +63,28 @@ const char *Locale_GetLanguageName(const char *const code)
 }
 
 // trx.locale.reload() reloads the language files from disk. There is no disk
-// here, so report success without doing anything.
+// here, so this counts the reload, which changes the text of test/changing,
+// and tells the listener.
 RESULT GameStringManager_ReloadLanguage(const char *const lang)
 {
+    m_ReloadCount++;
+    if (m_ChangeListener != nullptr) {
+        const EVENT event = { .name = "change" };
+        m_ChangeListener(&event, nullptr);
+    }
     return OK;
+}
+
+int32_t GameStringManager_SubscribeChanges(
+    const EVENT_LISTENER listener, void *const user_data)
+{
+    m_ChangeListener = listener;
+    return 0;
+}
+
+void GameStringManager_UnsubscribeChanges(const int32_t listener_id)
+{
+    m_ChangeListener = nullptr;
 }
 
 void GameString_Define(const char *const key, const char *const value)
@@ -99,6 +120,9 @@ const char *GameString_Get(const char *const key)
     }
     if (strcmp(key, "test/percent") == 0) {
         return "100% of the text";
+    }
+    if (strcmp(key, "test/changing") == 0) {
+        return m_ReloadCount % 2 == 0 ? "First" : "Second";
     }
     return nullptr;
 }

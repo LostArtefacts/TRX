@@ -77,4 +77,41 @@ test("reload reports whether the language files came back", function()
   assert(trx.locale.reload() == true)
 end)
 
+test("text reads as the string behind its key", function()
+  assert(tostring(trx.locale.text("test/plain")) == "Plain text")
+  assert(tostring(trx.locale.text("test/two", 1, 5)) == "1 of 5")
+  assert(#trx.locale.text("test/plain") == #"Plain text")
+end)
+
+test("text of the same key is the same text", function()
+  assert(
+    rawequal(trx.locale.text("test/plain"), trx.locale.text("test/plain"))
+  )
+  assert(
+    trx.locale.text("test/two", 1, 5) == trx.locale.text("test/two", 1, 5)
+  )
+  assert(
+    trx.locale.text("test/two", 1, 5) ~= trx.locale.text("test/two", 2, 5)
+  )
+end)
+
+test("text joins and changes case without becoming a string", function()
+  local joined = "> " .. trx.locale.text("test/plain") .. "!"
+  assert(getmetatable(joined) == getmetatable(trx.locale.text("test/plain")))
+  assert(tostring(joined) == "> Plain text!")
+  assert(tostring(trx.locale.text("test/plain"):upper()) == "PLAIN TEXT")
+  assert(tostring(trx.locale.text("test/plain"):lower()) == "plain text")
+end)
+
+test("text follows a reload of the strings", function()
+  local text = trx.locale.text("test/changing")
+  local nested = trx.locale.text("test/formatted", 1) .. text
+  local before = tostring(text)
+  local count = trx.locale.signals.changed:get()
+  assert(trx.locale.reload())
+  assert(trx.locale.signals.changed:get() == count + 1)
+  assert(tostring(text) ~= before)
+  assert(tostring(nested) == "Text with 1 in it" .. tostring(text))
+end)
+
 return h.report()

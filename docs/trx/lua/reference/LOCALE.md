@@ -14,7 +14,47 @@ order: 24
 
 The text the player reads, in the player's own language.
 
+### Properties
+
+- <a id="locale.signals.changed" name="locale.signals.changed"></a>**`trx.locale.signals.changed`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the game text changes, such as when the player picks another language or a level brings text of its own. It holds a count that goes up with each change. *(read-only)*
+
+### Structures
+
+- <a id="locale.Text" name="locale.Text"></a>[lua]`trx.locale.Text`
+
+    Text that looks itself up again in the player's language, for anything that
+    shows text on screen. A label that is given one shows it in the current
+    language, and changes when the player picks another one.
+
+    Text resolves when it is turned into a string, and keeps the result until
+    the game text changes, so showing it again costs nothing. Text made from the
+    same key and arguments is equal.
+
+    Operators:
+    - **`text .. text`**. Joins text into a new text, whichever side of the `..` it is on.
+    - **`text == text`**. Two texts are equal when they are made from the same parts.
+    - **`#text`**. The length of the text in the player's language.
+    - **`tostring(text)`**. The text in the player's language.
+
+    Methods:
+
+    - <a id="locale.Text.lower" name="locale.Text.lower"></a>[lua]`text:lower()`  
+      The text in small letters, in the player's language, as
+      [`trx.strings.lower`](STRINGS.md#strings.lower) turns it.
+
+      Returns: [trx.locale.Text](#locale.Text). The text in small letters.
+
+    - <a id="locale.Text.upper" name="locale.Text.upper"></a>[lua]`text:upper()`  
+      The text in capitals, in the player's language, as [`trx.strings.upper`](STRINGS.md#strings.upper)
+      turns it.
+
+      Returns: [trx.locale.Text](#locale.Text). The text in capitals.
+
 ### Functions
+
+- <a id="locale.signals" name="locale.signals"></a>[lua]`trx.locale.signals`  
+  The signals the text speaks through, for a script that would rather hear
+  about a change than ask after one.
 
 - <a id="locale.declare" name="locale.declare"></a>[lua]`trx.locale.declare(strings)`  
   Declares game string keys and the text behind them.
@@ -86,3 +126,37 @@ The text the player reads, in the player's own language.
   Reloads the current language's text from disk.
 
   Returns: boolean. Whether the reload succeeded.
+
+- <a id="locale.text" name="locale.text"></a>[lua]`trx.locale.text(key, ...)`  
+  The text behind a game string key, as text that follows the player's
+  language. Use it for text that goes on screen, and [`trx.locale.get`](#locale.get) for
+  text that a script reads.
+
+  Parameters:
+  - <a id="locale.text.key" name="locale.text.key"></a>**`key`** (string). The key, e.g. `general/misc/off`.
+  - <a id="locale.text...." name="locale.text...."></a>**`...`** (any). What to fill the placeholders with. A [`trx.locale.Text`](#locale.Text) among them follows the player's language too.
+
+  Returns: [trx.locale.Text](#locale.Text). The text.
+
+  Example:
+  ```lua
+  local hint = trx.locale.text("general/misc/pagination_nav", 1, 5)
+  ```
+
+- <a id="locale.object_name" name="locale.object_name"></a>[lua]`trx.locale.object_name(object)`  
+  The name the game shows for an object, as text that follows the player's
+  language.
+
+  Parameters:
+  - <a id="locale.object_name.object" name="locale.object_name.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object.
+
+  Returns: [trx.locale.Text](#locale.Text). The name, which is empty where the object has none.
+
+- <a id="locale.level_title" name="locale.level_title"></a>[lua]`trx.locale.level_title(level)`  
+  The name the game shows for a level, as text that follows the player's
+  language.
+
+  Parameters:
+  - <a id="locale.level_title.level" name="locale.level_title.level"></a>**`level`** ([trx.game.Level](GAME.md#game.Level)). The level.
+
+  Returns: [trx.locale.Text](#locale.Text). The name.

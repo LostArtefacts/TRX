@@ -57,12 +57,12 @@ primitive.reserve = raw.reserve
 primitive.slot_box = raw.slot_box
 
 ---Measures one line of text. Available at any time.
----@param text string What to measure.
+---@param text string|trx.locale.Text What to measure.
 ---@param scale? number Multiplies the text size. `1.0` by default.
 ---@return number # The width, in canvas units.
 ---@return number # The height, in canvas units.
 ---@return number # The distance from the top of the text to its baseline, in canvas units.
----@type fun(text: string, scale?: number): number, number, number
+---@type fun(text: string|trx.locale.Text, scale?: number): number, number, number
 primitive.measure_text = raw.measure_text
 
 ---Breaks text into lines that fit a width, the way the game wraps its own
@@ -71,20 +71,20 @@ primitive.measure_text = raw.measure_text
 ---```lua
 ---local lines = trx.ui.primitive.wrap_text(description, 300)
 ---```
----@param text string What to wrap.
+---@param text string|trx.locale.Text What to wrap.
 ---@param width number The widest a line may be, in canvas units.
 ---@param scale? number Multiplies the text size. `1.0` by default.
 ---@return string # The text with line breaks where the lines end.
----@type fun(text: string, width: number, scale?: number): string
+---@type fun(text: string|trx.locale.Text, width: number, scale?: number): string
 primitive.wrap_text = raw.wrap_text
 
 ---Draws one line of text on the canvas.
----@param text string What to draw.
+---@param text string|trx.locale.Text What to draw.
 ---@param x number The left edge.
 ---@param y number The top edge.
 ---@param scale? number Multiplies the text size.
 ---@param z? integer The draw order.
----@type fun(text: string, x: number, y: number, scale?: number, z?: integer)
+---@type fun(text: string|trx.locale.Text, x: number, y: number, scale?: number, z?: integer)
 primitive.text = raw.draw_text
 
 ---Converts a canvas length to screen pixels.

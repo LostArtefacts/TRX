@@ -539,7 +539,7 @@ trxc = {}
 ---@field draw_backdrop fun(style: string, opacity: number, path?: string)
 ---@field draw_background fun(path?: string, mono?: boolean, dim?: number): boolean
 ---@field draw_model fun(object: trx.catalog.objects, x: number, y: number, w: number, h: number, opts?: trx.ui.primitive.model.opts)
----@field draw_text fun(text: string, x: number, y: number, scale?: number, z?: integer)
+---@field draw_text fun(text: string|trx.locale.Text, x: number, y: number, scale?: number, z?: integer)
 ---@field draw_world_model fun(object: trx.catalog.objects, opts: trx.ui.primitive.world_model.opts)
 ---@field drawn_text_scale fun(): number
 ---@field flat_quad fun(x: number, y: number, z?: integer, w: number, h: number, color: trx.math.Color|table)
@@ -560,7 +560,7 @@ trxc = {}
 ---@field image_size fun(path: string): integer?, integer?
 ---@field interpolation_rate fun(): number
 ---@field line fun(x0: number, y0: number, x1: number, y1: number, z?: integer, width: number, color: trx.math.Color|table)
----@field measure_text fun(text: string, scale?: number): number, number, number
+---@field measure_text fun(text: string|trx.locale.Text, scale?: number): number, number, number
 ---@field mesh_bounds fun(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
 ---@field panel fun(x: number, y: number, z?: integer, w: number, h: number, look: integer, fill: boolean, colors?: table)
 ---@field pop_text_scale fun()
@@ -575,7 +575,7 @@ trxc = {}
 ---@field sprite_rect fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, w: number, h: number, color: trx.math.Color|table)
 ---@field to_canvas fun(pixels: number): number
 ---@field to_screen fun(length: number): number
----@field wrap_text fun(text: string, width: number, scale?: number): string
+---@field wrap_text fun(text: string|trx.locale.Text, width: number, scale?: number): string
 
 ---@class (exact) trxc.waypoints
 ---@field get_current fun(): trx.waypoints.Num?
