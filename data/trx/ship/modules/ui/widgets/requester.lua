@@ -85,7 +85,7 @@ function Requester:selected_row()
 end
 
 ---@class common.ui.Requester.settings
----@field title? string The heading, or nil for none.
+---@field title? string|trx.locale.Text The heading, or nil for none.
 ---@field rows? trx.ui.ListRow[] The rows, as trx.ui.widgets.List takes them.
 ---@field min_w? number The least width of the whole frame.
 ---@field reserve? boolean Whether to keep room for every row the screen fits.

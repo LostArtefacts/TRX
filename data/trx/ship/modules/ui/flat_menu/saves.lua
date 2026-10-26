@@ -38,7 +38,7 @@ local DATE_FMT = "%04d-%02d-%02d %02d:%02d"
 ---@field pool integer
 
 ---@class common.ui.flat_menu.saves.Pick
----@field heading string
+---@field heading string|trx.locale.Text
 ---@field filter fun(info: trx.savegame.SlotInfo?): boolean Says whether the list shows a save.
 ---@field on_pick fun(slot: common.ui.flat_menu.saves.Slot): boolean Runs with the save the player picks, and says whether the list closes.
 ---@field on_back fun() Runs once the player backs out of the list.
@@ -85,7 +85,7 @@ end
 local function slot_text(slot)
   local info = trx.savegame.info(slot.slot_num, slot.pool)
   if info == nil then
-    return nil, trx.locale.get("general/flat_menu/empty_slot"), nil
+    return nil, trx.locale.text("general/flat_menu/empty_slot"), nil
   end
   local date = nil
   local at = info.saved_at
@@ -144,8 +144,8 @@ local function open(ctx, kind, pick, on_done, stays)
   local heading = colored(
     accent.Role.MENU_HEADING,
     pick ~= nil and pick.heading
-      or kind == M.Kind.SAVE and trx.locale.get("general/passport/save_game")
-      or trx.locale.get("general/passport/load_game")
+      or kind == M.Kind.SAVE and trx.locale.text("general/passport/save_game")
+      or trx.locale.text("general/passport/load_game")
   )
 
   -- The height of a line of text, which spaces the heading and the rows.

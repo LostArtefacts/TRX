@@ -135,7 +135,7 @@ function M.open(ctx)
           end,
         }
       end
-      return trx.locale.get("general/passport/select_mode"), entries
+      return trx.locale.text("general/passport/select_mode"), entries
     end))
   end
 
@@ -152,7 +152,7 @@ function M.open(ctx)
           end,
         }
       end
-      return trx.locale.get("general/passport/select_level"), entries
+      return trx.locale.text("general/passport/select_level"), entries
     end)
   end
 
@@ -161,7 +161,7 @@ function M.open(ctx)
   local function slot_list(filter, on_slot)
     go_away(function(_, on_close)
       return saves.pick(ctx, {
-        heading = trx.locale.get("general/passport/select_save"),
+        heading = trx.locale.text("general/passport/select_save"),
         filter = filter,
         on_pick = function(slot)
           if not on_slot(slot) then
@@ -215,8 +215,8 @@ function M.open(ctx)
       local entries = {}
       for _, mod in ipairs(pages.switchable_mods()) do
         local key = "dynamic/mods/" .. mod.name .. "/title"
-        local title = trx.locale.get(key)
-        if title == key then
+        local title = trx.locale.text(key)
+        if trx.locale.get(key) == key then
           title = mod.title or mod.name
         end
         entries[#entries + 1] = {
@@ -230,7 +230,7 @@ function M.open(ctx)
           current = #entries
         end
       end
-      return trx.locale.get("general/passport/select_mod"), entries
+      return trx.locale.text("general/passport/select_mod"), entries
     end)
     mods.selected = current
     mods:follow()
@@ -270,7 +270,7 @@ function M.open(ctx)
           choose = NEW_GAME[row.choice],
         }
       end
-      return trx.locale.get("general/passport/select_mode"), entries
+      return trx.locale.text("general/passport/select_mode"), entries
     end))
   end
 
@@ -289,19 +289,19 @@ function M.open(ctx)
   push(list_of(function()
     local main = {
       {
-        text = trx.locale.get("general/passport/new_game"),
+        text = trx.locale.text("general/passport/new_game"),
         choose = new_game,
       },
     }
     if pages.saving_enabled() then
       main[#main + 1] = {
-        text = trx.locale.get("general/passport/load_game"),
+        text = trx.locale.text("general/passport/load_game"),
         choose = load_game,
       }
     end
     if trx.game.gym ~= nil then
       main[#main + 1] = {
-        text = trx.locale.get("general/flat_menu/gym"),
+        text = trx.locale.text("general/flat_menu/gym"),
         choose = function()
           trx.game.play_gym()
           leave()
@@ -315,7 +315,7 @@ function M.open(ctx)
       end,
     }
     main[#main + 1] = {
-      text = trx.locale.get("general/flat_menu/exit"),
+      text = trx.locale.text("general/flat_menu/exit"),
       -- The exit fade covers the menu, so the menu does not fade out itself.
       choose = function()
         trx.game.exit_game()

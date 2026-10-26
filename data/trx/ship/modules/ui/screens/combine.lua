@@ -51,8 +51,7 @@ local function model(object, turn)
 end
 
 local function name_of(object)
-  local info = object ~= nil and trx.objects[object] or nil
-  return info ~= nil and info.name or ""
+  return object ~= nil and trx.locale.object_name(object) or ""
 end
 
 local function dialog(state)
@@ -107,11 +106,11 @@ local function begin(ctx, state)
   ring.set_hint({
     {
       input = trx.input.Role.MENU_CONFIRM,
-      text = trx.locale.get("general/actions/combine_item"),
+      text = trx.locale.text("general/actions/combine_item"),
     },
     {
       input = trx.input.Role.MENU_BACK,
-      text = trx.locale.get("general/actions/cancel"),
+      text = trx.locale.text("general/actions/cancel"),
     },
   })
 end

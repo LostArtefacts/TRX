@@ -92,12 +92,12 @@ test("the flat pause screen lists what the original lists", function()
   finish()
 end)
 
--- The strings load nothing here, so declaring the text as the screen shows
--- stands in for the player picking another language.
+-- The strings load nothing here, so declaring the text and reloading the
+-- strings stands in for the player picking another language.
 test("the flat pause screen follows the player's language", function()
   pause()
   trx.locale.declare({ ["general/pause/paused"] = "Halted" })
-  trx.config.set("audio.master_volume", 40)
+  trx.locale.reload()
   fake.tick()
   assert(shows("Halted"), "the heading kept its old text")
   trx.config.reset("audio.master_volume")

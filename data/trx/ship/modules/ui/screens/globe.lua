@@ -107,7 +107,7 @@ local function open_areas(areas)
 end
 
 local function area_name(index)
-  return trx.locale.get("general/globe_select/area_" .. index)
+  return trx.locale.text("general/globe_select/area_" .. index)
 end
 
 -------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ end
 
 local function heading()
   return accent.text(
-    trx.locale.get("general/inventory_ring/heading_adventure"),
+    trx.locale.text("general/inventory_ring/heading_adventure"),
     accent.Role.HEADING
   )
 end

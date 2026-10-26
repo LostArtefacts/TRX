@@ -73,8 +73,8 @@ test("the flat title menu lists what the original lists", function()
   finish()
 end)
 
--- The strings load nothing here, so declaring the text as the menu shows
--- stands in for the player picking another language.
+-- The strings load nothing here, so declaring the text and reloading the
+-- strings stands in for the player picking another language.
 test("the flat title menu follows the player's language", function()
   local function listeners()
     local count = 0
@@ -101,7 +101,7 @@ test("the flat title menu follows the player's language", function()
     ["general/passport/load_game"] = "Resume",
     ["general/settings/graphic_settings/title"] = "Looks",
   })
-  trx.config.set("audio.master_volume", 40)
+  trx.locale.reload()
   fake.tick()
   assert(shows("Looks"), "the options kept their old text")
   press(Role.MENU_BACK)

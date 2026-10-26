@@ -112,8 +112,8 @@ test("a closed dialog leaves nothing following the game", function()
   assert(listeners_of(trx.ui.signals.layout) == layout)
 end)
 
--- The strings load nothing here, so declaring the text as the dialog shows
--- stands in for the player picking another language.
+-- The strings load nothing here, so declaring the text and reloading the
+-- strings stands in for the player picking another language.
 test("the heading and the tabs follow the player's language", function()
   open(SOUND)
   local function shows(wanted)
@@ -129,7 +129,7 @@ test("the heading and the tabs follow the player's language", function()
     ["general/settings/sound/title"] = "Noises",
     ["general/settings/sound/tabs/volume"] = "Loudness",
   })
-  trx.config.set("audio.master_volume", 40)
+  trx.locale.reload()
   fake.tick()
   assert(shows("Noises"), "the heading kept its old text")
   assert(shows("Loudness"), "the tab kept its old name")

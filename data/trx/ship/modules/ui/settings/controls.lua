@@ -52,7 +52,7 @@ local BACKENDS = {
   {
     backend = Backend.KEYBOARD,
     name = function()
-      return trx.locale.get("general/settings/controls/backend/keyboard")
+      return trx.locale.text("general/settings/controls/backend/keyboard")
     end,
     setting = "keyboard",
     layout = "input.keyboard_layout",
@@ -60,7 +60,7 @@ local BACKENDS = {
   {
     backend = Backend.CONTROLLER,
     name = function()
-      return trx.locale.get("general/settings/controls/backend/controller")
+      return trx.locale.text("general/settings/controls/backend/controller")
     end,
     setting = "controller",
     layout = "input.controller_layout",
@@ -68,7 +68,7 @@ local BACKENDS = {
   {
     backend = Backend.TOUCH,
     name = function()
-      return trx.locale.get("general/settings/controls/backend/touch")
+      return trx.locale.text("general/settings/controls/backend/touch")
     end,
     setting = "touch",
     layout = "input.touch_layout",
@@ -81,7 +81,7 @@ local BACKENDS = {
 local GROUPS = {
   {
     title = function()
-      return trx.locale.get("general/settings/controls/tabs/basics")
+      return trx.locale.text("general/settings/controls/tabs/basics")
     end,
     roles = {
       Role.FORWARD,
@@ -102,7 +102,7 @@ local GROUPS = {
   },
   {
     title = function()
-      return trx.locale.get("general/settings/controls/tabs/items")
+      return trx.locale.text("general/settings/controls/tabs/items")
     end,
     roles = {
       Role.USE_FLARE,
@@ -126,7 +126,7 @@ local GROUPS = {
   },
   {
     title = function()
-      return trx.locale.get("general/settings/controls/tabs/misc")
+      return trx.locale.text("general/settings/controls/tabs/misc")
     end,
     roles = {
       Role.CHANGE_TARGET,
@@ -148,7 +148,7 @@ local GROUPS = {
   },
   {
     title = function()
-      return trx.locale.get("general/settings/controls/tabs/system")
+      return trx.locale.text("general/settings/controls/tabs/system")
     end,
     roles = {
       Role.OPTION,
@@ -658,11 +658,11 @@ function M.editor(settings)
     capturing = trx.signal.new(false),
     settling = false,
     reset = hold_button.new({
-      words = trx.locale.get("general/actions/reset_defaults"),
+      words = trx.locale.text("general/actions/reset_defaults"),
       role = Role.RESET_BINDINGS,
     }),
     unbind = hold_button.new({
-      words = trx.locale.get("general/actions/unbind"),
+      words = trx.locale.text("general/actions/unbind"),
       role = Role.UNBIND_KEY,
     }),
     blinking = timer.every(BLINK_PERIOD, function()
@@ -783,7 +783,7 @@ function M.editor(settings)
       children = {
         window.new({
           title = accent.text(
-            trx.locale.get("general/settings/controls/customize")
+            trx.locale.text("general/settings/controls/customize")
           ),
           scroll = self.scroll,
           reserve_scroll = true,
@@ -855,7 +855,9 @@ function M.open(settings)
   local choosing = trx.signal.new(true)
   local available = available_backends()
   local req = requester.new({
-    title = accent.text(trx.locale.get("general/settings/controls/customize")),
+    title = accent.text(
+      trx.locale.text("general/settings/controls/customize")
+    ),
     place = chooser_place,
   })
 

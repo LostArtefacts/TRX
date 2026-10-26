@@ -18,6 +18,20 @@ local SLIDE_TICKS = 8
 
 require("common.ui.screens.combine").setup()
 
+-- The game keeps the names of objects among its strings. The fake level
+-- localizes nothing, so the names it gives are declared there as the game
+-- would hold them.
+for _, object in ipairs({
+  OBJECT,
+  objects.SMALL_MEDIPACK_ITEM,
+  table.unpack(PARTNERS),
+}) do
+  local key = trx.catalog.key(trx.catalog.Context.OBJECTS, object)
+  trx.locale.declare({
+    [("objects/%s/name"):format(key)] = trx.objects[object].name,
+  })
+end
+
 local function press(role)
   fake.release_all()
   fake.press(role)

@@ -44,7 +44,7 @@ function M.push(ctx, on_close)
   end
   local heading = colored(
     accent.Role.MENU_HEADING,
-    trx.locale.get("general/flat_menu/statistics")
+    trx.locale.text("general/flat_menu/statistics")
   )
 
   local function paint()

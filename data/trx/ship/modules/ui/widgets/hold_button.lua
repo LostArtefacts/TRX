@@ -5,7 +5,7 @@
 -- Usage:
 --   local hold_button = require("common.ui.widgets.hold_button")
 --   local button = hold_button.new({
---     words = trx.locale.get("general/passport/delete_save"),
+--     words = trx.locale.text("general/passport/delete_save"),
 --     align = trx.ui.HAlign.RIGHT,
 --   })
 --   ctx:push({ root = button.widget, ... })
@@ -58,11 +58,7 @@ local function label_of(words, role)
   if key == nil then
     return nil
   end
-  return string.format(
-    "%s: %s",
-    words,
-    trx.locale.format("general/misc/hold_fmt", key)
-  )
+  return words .. ": " .. trx.locale.text("general/misc/hold_fmt", key)
 end
 
 -- A hold counts one a tick, so the bar fills in one move from the tick it
@@ -142,7 +138,7 @@ local function build(self, text, align, scale)
 end
 
 ---@class common.ui.HoldButton.settings
----@field words string What the button does.
+---@field words string|trx.locale.Text What the button does.
 ---@field role? trx.input.Role The key to hold. `UNBIND_KEY` by default.
 ---@field align? trx.ui.HAlign Where the button sits in the width it is given. Centered by default.
 ---@field scale? number How many times its size the button is drawn. `1` by default.

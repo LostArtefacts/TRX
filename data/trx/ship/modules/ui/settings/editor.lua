@@ -147,17 +147,17 @@ end
 -- The texts of the hints under the dialog.
 local function edit_hint()
   return "\\{input menu_confirm} "
-    .. trx.locale.get("general/settings/common/edit_value")
+    .. trx.locale.text("general/settings/common/edit_value")
 end
 
 local function help_hint()
   return "\\{input menu_show_info} "
-    .. trx.locale.get("general/settings/common/toggle_help")
+    .. trx.locale.text("general/settings/common/toggle_help")
 end
 
 local function restore_hint()
   return "\\{input unbind_key} "
-    .. trx.locale.get("general/settings/common/restore_default")
+    .. trx.locale.text("general/settings/common/restore_default")
 end
 
 -- How wide the first hint is at most, and both hints, without the gap.
@@ -183,8 +183,9 @@ end
 -- Opens the description of the setting under the cursor over the dialog.
 function Editor:describe(key)
   local dialog = text_dialog.new({ heavy = true })
+  ---@type string|trx.locale.Text
   local title = rows.title(key)
-  local text = rows.description(key)
+  local text = tostring(rows.description(key))
   if rows.held(key) then
     title = title .. "*"
     text = "* "

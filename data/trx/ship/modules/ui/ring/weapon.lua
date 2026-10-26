@@ -98,12 +98,12 @@ end
 -- Returns what the hint of the ring says the key does: the one action where
 -- there is one, and the options otherwise.
 ---@param choice common.ui.ring.weapon.Choice
----@return string
+---@return trx.locale.Text
 function M.hint_of(choice)
   if #choice.actions == 1 then
-    return trx.locale.get(ACTION_TEXT[choice.actions[1]])
+    return trx.locale.text(ACTION_TEXT[choice.actions[1]])
   end
-  return trx.locale.get("general/actions/weapon_options")
+  return trx.locale.text("general/actions/weapon_options")
 end
 
 -- Returns whether the key does the one action at once, with no frame.
@@ -166,28 +166,38 @@ end
 
 -- A line of text that keeps the room of the widest of its texts, so that the
 -- frame keeps its size while the player picks.
+---@param texts (string|trx.locale.Text)[]
+---@param picked fun(): integer
 local function steady_label(texts, picked)
   local primitive = trx.ui.primitive
+  ---@type string[]
+  local shown = {}
+  ---@type number[]
+  local widths = {}
   return trx.ui.widgets.Custom({
     measure = function()
       local width, height = 0.0, 0.0
-      for _, text in ipairs(texts) do
-        local w, h = primitive.measure_text(text, 1.0)
+      for i, text in ipairs(texts) do
+        shown[i] = tostring(text)
+        local w, h = primitive.measure_text(shown[i], 1.0)
+        widths[i] = w
         width = math.max(width, w)
         height = math.max(height, h)
       end
       return width, height
     end,
     paint = function(x, y, w)
-      local text = texts[picked()] or ""
-      local text_w = primitive.measure_text(text, 1.0)
-      primitive.text(text, x + (w - text_w) / 2, y, 1.0, 0)
+      local i = picked()
+      local text = shown[i]
+      if text ~= nil then
+        primitive.text(text, x + (w - widths[i]) / 2, y, 1.0, 0)
+      end
     end,
   })
 end
 
 local function count_label(state)
-  ---@type string[]
+  ---@type trx.locale.Text[]
   local captions = {}
   for i, kind in ipairs(state.kinds) do
     captions[i] = accent.text(
@@ -204,7 +214,7 @@ end
 local function action_lines(state)
   local lines = {}
   for i, action in ipairs(state.choice.actions) do
-    local text = trx.locale.get(ACTION_TEXT[action])
+    local text = trx.locale.text(ACTION_TEXT[action])
     lines[i] = trx.ui.widgets.Label({
       text = state.action:map(function(at)
         local role = at == i and accent.Role.PICKED or accent.Role.MENU_OPTION
@@ -235,25 +245,25 @@ local function hints(state)
   if state.choice.has_row then
     picks[#picks + 1] = trx.ui.widgets.InputHint({
       input = { Role.MENU_LEFT, Role.MENU_RIGHT },
-      text = trx.locale.get("general/actions/ammo"),
+      text = trx.locale.text("general/actions/ammo"),
     })
   end
   if #state.choice.actions > 1 then
     picks[#picks + 1] = trx.ui.widgets.InputHint({
       input = { Role.MENU_UP, Role.MENU_DOWN },
-      text = trx.locale.get("general/actions/action"),
+      text = trx.locale.text("general/actions/action"),
     })
   end
   local ends = {
     trx.ui.widgets.InputHint({
       input = Role.MENU_CONFIRM,
       text = state.action:map(function(at)
-        return trx.locale.get(ACTION_TEXT[state.choice.actions[at]])
+        return trx.locale.text(ACTION_TEXT[state.choice.actions[at]])
       end),
     }),
     trx.ui.widgets.InputHint({
       input = Role.MENU_BACK,
-      text = trx.locale.get("general/actions/cancel"),
+      text = trx.locale.text("general/actions/cancel"),
     }),
   }
   local rows = {}

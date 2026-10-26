@@ -48,7 +48,7 @@ local function offer(what)
   if what == "hide" then
     hints[1] = {
       input = trx.input.Role.MENU_SHOW_INFO,
-      text = trx.locale.get("general/actions/hide_dialog"),
+      text = trx.locale.text("general/actions/hide_dialog"),
     }
   elseif what == "turn" then
     hints[1] = {
@@ -58,7 +58,7 @@ local function offer(what)
         trx.input.Role.LEFT,
         trx.input.Role.RIGHT,
       },
-      text = trx.locale.get("general/actions/rotate"),
+      text = trx.locale.text("general/actions/rotate"),
     }
   end
   ring.set_hint(hints)
@@ -110,7 +110,7 @@ local function open(ctx)
   local resting = ring.resting()
   local hidden = trx.signal.new(false)
   local state = {
-    title = object ~= nil and object.name or "",
+    title = trx.locale.object_name(ctx.object),
     description = description,
     hidden = hidden,
     shown = has_text and resting & ~hidden or trx.signal.new(false),

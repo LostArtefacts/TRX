@@ -56,21 +56,21 @@ function M.setup()
     end)
   end
 
-  local function text(shown, read)
+  local function text(shown, words)
     return ui.widgets.Label({
-      text = state.language:map(read),
+      text = words,
       visible = shown,
     })
   end
 
   -- A prompt follows the current target, so the same row can say "move the
-  -- camera" or "move Lara". Each line supplies its own translated text.
+  -- camera" or "move Lara".
   local function per_target(camera, lara)
-    return signal.combine(state.target, state.language, function(target)
+    return state.target:map(function(target)
       if target == trx.game.PhotoModeTarget.CAMERA then
-        return camera()
+        return camera
       end
-      return lara()
+      return lara
     end)
   end
 
@@ -84,11 +84,10 @@ function M.setup()
     spacing = 8,
     children = {
       ui.widgets.Label({
-        text = per_target(function()
-          return trx.locale.get("general/photo_mode/title_camera_pos")
-        end, function()
-          return trx.locale.get("general/photo_mode/title_lara_pos")
-        end),
+        text = per_target(
+          trx.locale.text("general/photo_mode/title_camera_pos"),
+          trx.locale.text("general/photo_mode/title_lara_pos")
+        ),
       }),
       ui.widgets.InputHint({
         input = { input.Role.STEP_LEFT, input.Role.STEP_RIGHT },
@@ -167,58 +166,44 @@ function M.setup()
   local actions = ui.widgets.Stack({
     children = {
       ui.widgets.Label({
-        text = per_target(function()
-          return trx.locale.get("general/photo_mode/camera_move_prompt")
-        end, function()
-          return trx.locale.get("general/photo_mode/lara_move_prompt")
-        end),
+        text = per_target(
+          trx.locale.text("general/photo_mode/camera_move_prompt"),
+          trx.locale.text("general/photo_mode/lara_move_prompt")
+        ),
       }),
       ui.widgets.Label({
-        text = per_target(function()
-          return trx.locale.get("general/photo_mode/camera_rotate_prompt")
-        end, function()
-          return trx.locale.get("general/photo_mode/lara_rotate_prompt")
-        end),
+        text = per_target(
+          trx.locale.text("general/photo_mode/camera_rotate_prompt"),
+          trx.locale.text("general/photo_mode/lara_rotate_prompt")
+        ),
       }),
       ui.widgets.Label({
-        text = per_target(function()
-          return trx.locale.get("general/photo_mode/camera_roll_prompt")
-        end, function()
-          return trx.locale.get("general/photo_mode/lara_roll_prompt")
-        end),
+        text = per_target(
+          trx.locale.text("general/photo_mode/camera_roll_prompt"),
+          trx.locale.text("general/photo_mode/lara_roll_prompt")
+        ),
       }),
       ui.widgets.Label({
-        text = per_target(function()
-          return trx.locale.get("general/photo_mode/camera_rotate_90_prompt")
-        end, function()
-          return trx.locale.get("general/photo_mode/lara_rotate_90_prompt")
-        end),
+        text = per_target(
+          trx.locale.text("general/photo_mode/camera_rotate_90_prompt"),
+          trx.locale.text("general/photo_mode/lara_rotate_90_prompt")
+        ),
       }),
       ui.widgets.Label({
-        text = per_target(function()
-          return trx.locale.get("general/photo_mode/camera_reset_prompt")
-        end, function()
-          return trx.locale.get("general/photo_mode/lara_reset_prompt")
-        end),
+        text = per_target(
+          trx.locale.text("general/photo_mode/camera_reset_prompt"),
+          trx.locale.text("general/photo_mode/lara_reset_prompt")
+        ),
       }),
-      text(nil, function()
-        return trx.locale.get("general/photo_mode/fov_prompt")
-      end),
-      text(state.can_pose, function()
-        return trx.locale.get("general/photo_mode/change_lara_pose")
-      end),
-      text(nil, function()
-        return trx.locale.get("general/photo_mode/advance_frame")
-      end),
-      text(nil, function()
-        return trx.locale.get("general/photo_mode/toggle_help")
-      end),
-      text(nil, function()
-        return trx.locale.get("general/photo_mode/snap_prompt")
-      end),
-      text(nil, function()
-        return trx.locale.get("general/misc/exit")
-      end),
+      text(nil, trx.locale.text("general/photo_mode/fov_prompt")),
+      text(
+        state.can_pose,
+        trx.locale.text("general/photo_mode/change_lara_pose")
+      ),
+      text(nil, trx.locale.text("general/photo_mode/advance_frame")),
+      text(nil, trx.locale.text("general/photo_mode/toggle_help")),
+      text(nil, trx.locale.text("general/photo_mode/snap_prompt")),
+      text(nil, trx.locale.text("general/misc/exit")),
     },
   })
 

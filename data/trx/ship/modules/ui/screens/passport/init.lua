@@ -52,9 +52,9 @@ local function open_save_load(ctx)
     return nil
   end
   if ctx.mode == trx.ui.MenuMode.LOAD then
-    trx.overlay.set_caption(trx.locale.get("general/passport/load_game"))
+    trx.overlay.set_caption(trx.locale.text("general/passport/load_game"))
   else
-    trx.overlay.set_caption(trx.locale.get("general/passport/save_game"))
+    trx.overlay.set_caption(trx.locale.text("general/passport/save_game"))
   end
   ctx:on_end(function()
     trx.overlay.set_caption()
@@ -67,8 +67,7 @@ M.open_save_load = open_save_load
 
 local function name_crystal()
   local crystal = trx.catalog.objects.SAVE_CRYSTAL_ITEM
-  local name = trx.locale.get("objects/save_crystal_item/name"):match("^[^|]*")
-  trx.overlay.set_caption(name)
+  trx.overlay.set_caption(trx.locale.object_name(crystal))
   ring.show_count(trx.inventory.count(crystal))
 end
 

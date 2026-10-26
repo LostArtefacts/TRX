@@ -53,15 +53,14 @@ end
 -- Returns the name of a kind with the shots Lara carries of it.
 ---@param weapon trx.weapons.Weapon
 ---@param kind trx.catalog.objects
----@return string
+---@return trx.locale.Text
 function M.caption(weapon, kind)
-  local info = trx.objects[trx.inventory.icon_of(kind) or kind]
-  local name = info ~= nil and info.name or ""
+  local name = trx.locale.object_name(trx.inventory.icon_of(kind) or kind)
   if weapon.has_infinite_ammo then
-    return trx.locale.get("general/ammo/unlimited_fmt"):format(name)
+    return trx.locale.text("general/ammo/unlimited_fmt", name)
   end
   local shots = trx.inventory.shots(weapon.id, kind)
-  return trx.locale.get("general/ammo/count_fmt"):format(shots, name)
+  return trx.locale.text("general/ammo/count_fmt", shots, name)
 end
 
 -- Returns the next kind after the one the weapon fires that Lara has shots

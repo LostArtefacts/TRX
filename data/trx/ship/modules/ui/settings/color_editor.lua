@@ -38,7 +38,7 @@ local Role = trx.input.Role
 local SLIDERS = {
   {
     label = function()
-      return trx.locale.get("general/settings/common/hue")
+      return trx.locale.text("general/settings/common/hue")
     end,
     stops = {
       { h = 0 },
@@ -58,7 +58,7 @@ local SLIDERS = {
   },
   {
     label = function()
-      return trx.locale.get("general/settings/common/chroma")
+      return trx.locale.text("general/settings/common/chroma")
     end,
     stops = { { c = 0 }, { c = MAX_CHROMA } },
     position = function(lch)
@@ -71,7 +71,7 @@ local SLIDERS = {
   },
   {
     label = function()
-      return trx.locale.get("general/settings/common/lightness")
+      return trx.locale.text("general/settings/common/lightness")
     end,
     stops = { { l = 0 }, { l = 0.5 }, { l = 1 } },
     position = function(lch)

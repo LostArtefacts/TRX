@@ -92,7 +92,7 @@ local function page_at(frame)
 end
 
 function Passport:set_caption(key)
-  self.caption:set(accent.text(trx.locale.get(key), accent.Role.NAME))
+  self.caption:set(accent.text(trx.locale.text(key), accent.Role.NAME))
 end
 
 -- Shuts the book towards the nearer cover. A confirmed close leaves the ring;
@@ -313,19 +313,19 @@ function Passport:open_page(role)
       self.bare = true
       return true
     end
-    req = modes_req(choices, trx.locale.get("general/passport/select_mode"))
+    req = modes_req(choices, trx.locale.text("general/passport/select_mode"))
   elseif role == pages.Page.LOAD_GAME or role == pages.Page.SAVE_GAME then
     page.delete = delete_save.button()
     req = list_req(
       rows.slot_rows(),
-      trx.locale.get(pages.CAPTIONS[role]),
+      trx.locale.text(pages.CAPTIONS[role]),
       page.delete.widget
     )
     select_recent_slot(req)
   elseif role == pages.Page.SELECT_LEVEL then
     req = list_req(
       rows.all_level_rows(),
-      trx.locale.get("general/passport/select_level")
+      trx.locale.text("general/passport/select_level")
     )
   else
     return false
@@ -414,7 +414,7 @@ function Passport:choose_new_game(row)
         rows.slot_rows(function(info)
           return info ~= nil and info.can_select_level
         end),
-        trx.locale.get("general/passport/select_save")
+        trx.locale.text("general/passport/select_save")
       )
     )
     return
@@ -425,7 +425,7 @@ function Passport:choose_new_game(row)
         rows.slot_rows(function(info)
           return info ~= nil and info.has_story
         end),
-        trx.locale.get("general/passport/select_save")
+        trx.locale.text("general/passport/select_save")
       )
     )
     return
@@ -434,8 +434,8 @@ function Passport:choose_new_game(row)
     local current = 1
     for _, mod in ipairs(pages.switchable_mods()) do
       local key = "dynamic/mods/" .. mod.name .. "/title"
-      local title = trx.locale.get(key)
-      if title == key then
+      local title = trx.locale.text(key)
+      if trx.locale.get(key) == key then
         title = mod.title or mod.name
       end
       mod_rows[#mod_rows + 1] = { text = title, mod = mod }
@@ -444,7 +444,7 @@ function Passport:choose_new_game(row)
       end
     end
     local req =
-      list_req(mod_rows, trx.locale.get("general/passport/select_mod"))
+      list_req(mod_rows, trx.locale.text("general/passport/select_mod"))
     req.list:select(current)
     self:push_list(List.SWITCH_MOD, req)
     return
@@ -481,7 +481,7 @@ function Passport:choose(entry, row)
         List.SELECT_LEVEL_MODE,
         modes_req(
           rows.mode_rows(),
-          trx.locale.get("general/passport/select_mode")
+          trx.locale.text("general/passport/select_mode")
         )
       )
       return
@@ -506,13 +506,13 @@ function Passport:choose(entry, row)
     local level_rows = reached and rows.reached_level_rows(reached) or {}
     if #level_rows == 0 then
       self:show_message(
-        trx.locale.get("general/passport/save_slot_unsupported")
+        trx.locale.text("general/passport/save_slot_unsupported")
       )
       return
     end
     self:push_list(
       List.PLAY_PREV_LEVEL,
-      list_req(level_rows, trx.locale.get("general/passport/select_level")),
+      list_req(level_rows, trx.locale.text("general/passport/select_level")),
       { slot = row }
     )
   elseif role == List.PLAY_PREV_LEVEL then

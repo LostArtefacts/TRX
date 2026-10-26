@@ -165,7 +165,7 @@ function M.icon_secrets(level)
     end
   end
   if found == 0 then
-    return trx.locale.get("general/stats/none")
+    return trx.locale.text("general/stats/none")
   end
   return table.concat(parts)
 end

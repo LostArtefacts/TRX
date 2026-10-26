@@ -163,7 +163,10 @@ local function texts(widget, out)
   end
   local text = rawget(widget, "text")
   if text ~= nil then
-    out[#out + 1] = type(text) == "table" and text:get() or text
+    if type(text) == "table" and text.get ~= nil then
+      text = text:get()
+    end
+    out[#out + 1] = tostring(text)
   end
   local child = rawget(widget, "child")
   if child ~= nil then

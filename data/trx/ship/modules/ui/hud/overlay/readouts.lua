@@ -26,7 +26,6 @@ function M.setup(state)
   local ui = trx.ui
   local signal = trx.signal
   local lara = trx.lara
-  local language = signal.config("language")
 
   -------------------------------------------------------------------------------
   -- where Lara is and what she is doing
@@ -66,9 +65,9 @@ function M.setup(state)
     end
 
     -- The key is named at the point of use, so the shipped strings can see it.
-    local function title(shown, read)
+    local function title(shown, text)
       return ui.widgets.Label({
-        text = language:map(read),
+        text = text,
         visible = shown,
       })
     end
@@ -81,36 +80,28 @@ function M.setup(state)
     -- Every readout is a title and a value, and the two are drawn as columns so
     -- a value lines up with its title however wide either is.
     local titles = {
-      title(pos_shown, function()
-        return trx.locale.get("general/overlay/debug_position")
-      end),
-      title(pos_shown, function()
-        return trx.locale.get("general/overlay/debug_rotation")
-      end),
-      title(pos_shown, function()
-        return trx.locale.get("general/overlay/debug_speed")
-      end),
-      title(pos_shown, function()
-        return trx.locale.get("general/overlay/debug_interaction")
-      end),
-      title(anim_shown, function()
-        return trx.locale.get("general/overlay/debug_animation")
-      end),
-      title(anim_shown, function()
-        return trx.locale.get("general/overlay/debug_animation_state")
-      end),
-      title(anim_shown, function()
-        return trx.locale.get("general/overlay/debug_animation_arm_l")
-      end),
-      title(anim_shown, function()
-        return trx.locale.get("general/overlay/debug_animation_arm_r")
-      end),
-      title(camera_shown, function()
-        return trx.locale.get("general/overlay/debug_camera_pos")
-      end),
-      title(camera_shown, function()
-        return trx.locale.get("general/overlay/debug_camera_target")
-      end),
+      title(pos_shown, trx.locale.text("general/overlay/debug_position")),
+      title(pos_shown, trx.locale.text("general/overlay/debug_rotation")),
+      title(pos_shown, trx.locale.text("general/overlay/debug_speed")),
+      title(pos_shown, trx.locale.text("general/overlay/debug_interaction")),
+      title(anim_shown, trx.locale.text("general/overlay/debug_animation")),
+      title(
+        anim_shown,
+        trx.locale.text("general/overlay/debug_animation_state")
+      ),
+      title(
+        anim_shown,
+        trx.locale.text("general/overlay/debug_animation_arm_l")
+      ),
+      title(
+        anim_shown,
+        trx.locale.text("general/overlay/debug_animation_arm_r")
+      ),
+      title(camera_shown, trx.locale.text("general/overlay/debug_camera_pos")),
+      title(
+        camera_shown,
+        trx.locale.text("general/overlay/debug_camera_target")
+      ),
     }
 
     local values = {
@@ -217,9 +208,7 @@ function M.setup(state)
 
       -- The mark that says nothing can hurt her.
       ui.widgets.Label({
-        text = language:map(function()
-          return trx.locale.get("general/overlay/debug_immune")
-        end),
+        text = trx.locale.text("general/overlay/debug_immune"),
         scale = 0.8,
         visible = debuggable
           & signal.config("debug.enable_debug_status")

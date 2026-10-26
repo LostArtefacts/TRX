@@ -12,7 +12,7 @@ trx.locale.declare({
 
 -- The name of the page, as the row that leads to it shows it.
 function M.title()
-  return trx.locale.get("general/flat_menu/options")
+  return trx.locale.text("general/flat_menu/options")
 end
 
 -- Makes the page. Confirming a row runs `open` with the function that pushes

@@ -160,7 +160,11 @@ end
 -- Returns the hint the ring shows, its parts set apart with " | ", or an empty
 -- string for none.
 function M.ring_hint()
-  return table.concat(require("common.ui.ring").signals.hint:get(), " | ")
+  local parts = {}
+  for i, part in ipairs(require("common.ui.ring").signals.hint:get()) do
+    parts[i] = tostring(part)
+  end
+  return table.concat(parts, " | ")
 end
 
 function M.report()

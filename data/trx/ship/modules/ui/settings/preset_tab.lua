@@ -105,15 +105,13 @@ end
 -- each with the value it holds and the value it would take, and a choice to
 -- apply the preset or go back.
 local function confirm(push, preset, changes)
-  local title = trx.locale.format(
-    "general/config_presets/title_fmt",
-    presets.title(preset)
-  )
+  local title =
+    trx.locale.text("general/config_presets/title_fmt", presets.title(preset))
   local description =
-    trx.locale.get("general/config_presets/confirm_description")
-  local note = trx.locale.get("general/config_presets/confirm_restart_note")
-  local apply_text = trx.locale.get("general/config_presets/confirm_apply")
-  local back_text = trx.locale.get("general/config_presets/confirm_back")
+    trx.locale.text("general/config_presets/confirm_description")
+  local note = trx.locale.text("general/config_presets/confirm_restart_note")
+  local apply_text = trx.locale.text("general/config_presets/confirm_apply")
+  local back_text = trx.locale.text("general/config_presets/confirm_back")
 
   -- The dialog is as wide as its widest line, within what the screen allows.
   local natural = math.max(CONFIRM_MIN_W + 0.0, width_of(title))
@@ -306,7 +304,7 @@ local function confirm(push, preset, changes)
         show_message(
           push,
           title,
-          trx.locale.get("general/config_presets/applied")
+          trx.locale.text("general/config_presets/applied")
         )
       elseif confirmed or keys:pressed(Role.MENU_BACK) then
         layer:close()
@@ -373,11 +371,11 @@ function PresetTab:control(keys)
     else
       show_message(
         self.push,
-        trx.locale.format(
+        trx.locale.text(
           "general/config_presets/title_fmt",
           presets.title(preset)
         ),
-        trx.locale.get("general/config_presets/no_changes")
+        trx.locale.text("general/config_presets/no_changes")
       )
     end
     return true, false
@@ -388,7 +386,7 @@ end
 function PresetTab:close() end
 
 ---@class common.ui.settings.PresetTab.settings
----@field title string|trx.signal.Signal The name on the tab bar, or a signal that holds it.
+---@field title string|trx.locale.Text|trx.signal.Signal The name on the tab bar, or a signal that holds it.
 ---@field editing trx.signal.Signal Whether the cursor is on the list rather than on the tab bar.
 ---@field changed trx.signal.Signal Says when any setting changes, for as long as the dialog is open. The names follow the player's language through it.
 ---@field push fun(settings: trx.ui.layers.push.settings): trx.ui.StackLayer Opens a layer over the dialog.
@@ -433,7 +431,7 @@ function M.new(settings)
   end
   if #self.presets == 0 then
     children[1] = centered(label(settings.changed:map(function()
-      return trx.locale.get("general/config_presets/empty")
+      return trx.locale.text("general/config_presets/empty")
     end)))
   end
   self.widget = trx.ui.widgets.Stack({

@@ -32,7 +32,8 @@ local function ticks(count)
 end
 
 local function caption()
-  return trx.overlay.signals.caption:get()
+  local caption = trx.overlay.signals.caption:get()
+  return caption ~= nil and tostring(caption) or nil
 end
 
 -- The deepest black that filled the screen over some ticks.
