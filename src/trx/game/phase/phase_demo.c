@@ -75,7 +75,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     switch (p->state) {
     case STATE_RUN:
+        LUA_FireEvent(LUA_EVENT_BEFORE_CONTROL);
         const GF_COMMAND gf_cmd = Demo_Control();
+        LUA_FireEvent(LUA_EVENT_AFTER_CONTROL);
         if (gf_cmd.action != GF_NOOP) {
             p->state = STATE_FADE_OUT;
             p->exit_gf_cmd = gf_cmd;
