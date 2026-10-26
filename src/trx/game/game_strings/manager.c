@@ -400,17 +400,18 @@ RESULT GameStringManager_ReloadLanguage(const char *lang)
     const RESULT result = M_ReloadLangRec(lang, visited);
     Vector_Free(visited);
     if (IS_OK(result)) {
-        GameStringTable_Apply(GF_GetCurrentLevel());
-        if (m_EventManager != nullptr) {
-            const EVENT event = {
-                .name = "reload_language",
-                .sender = nullptr,
-                .data = (void *)lang,
-            };
-            EventManager_Fire(m_EventManager, &event);
-        }
+        GameStringManager_Apply(GF_GetCurrentLevel());
     }
     return result;
+}
+
+void GameStringManager_Apply(const GF_LEVEL *const level)
+{
+    GameStringTable_Apply(level);
+    if (m_EventManager != nullptr) {
+        const EVENT event = { .name = "change", .sender = nullptr };
+        EventManager_Fire(m_EventManager, &event);
+    }
 }
 
 const char *GameStringManager_GetLanguageName(const char *const code)
@@ -422,15 +423,15 @@ const char *GameStringManager_GetLanguageName(const char *const code)
     return ent != nullptr ? ent->display_name : nullptr;
 }
 
-int32_t GameStringManager_SubscribeReload(
+int32_t GameStringManager_SubscribeChanges(
     const EVENT_LISTENER listener, void *const user_data)
 {
     ASSERT(m_EventManager != nullptr);
     return EventManager_Subscribe(
-        m_EventManager, "reload_language", nullptr, listener, user_data);
+        m_EventManager, "change", nullptr, listener, user_data);
 }
 
-void GameStringManager_UnsubscribeReload(const int32_t listener_id)
+void GameStringManager_UnsubscribeChanges(const int32_t listener_id)
 {
     if (m_EventManager != nullptr) {
         EventManager_Unsubscribe(m_EventManager, listener_id);

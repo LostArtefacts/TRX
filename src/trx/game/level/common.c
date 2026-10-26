@@ -7,7 +7,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/fx.h>
 #include <trx/game/game.h>
-#include <trx/game/game_strings/table.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/gym.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -129,7 +129,7 @@ RESULT Level_Initialise(
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
     Output_DispatchLevelLoad();
 
-    GameStringTable_Apply(level);
+    GameStringManager_Apply(level);
 
     Effect_InitialiseArray();
     LOT_InitialiseArray();

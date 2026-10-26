@@ -55,6 +55,7 @@ OPERATORS = {
     "concat": "{0} .. {0}",
     "div": "{0} / {0}",
     "eq": "{0} == {0}",
+    "len": "#{0}",
     "tostring": "tostring({0})",
 }
 

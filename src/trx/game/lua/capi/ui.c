@@ -648,7 +648,7 @@ static int M_L_UISlotBox(lua_State *const L)
     return 4;
 }
 
-// trxc.ui.measure_text(text: string, scale?: number): number, number, number
+// trxc.ui.measure_text(text: string|trx.locale.Text, scale?: number): number, number, number
 static int M_L_UIMeasureText(lua_State *const L)
 {
     float w;
@@ -656,30 +656,30 @@ static int M_L_UIMeasureText(lua_State *const L)
     const UI_TEXT_SETTINGS settings = {
         .scale = (float)luaL_optnumber(L, 2, 1.0),
     };
-    UI_Text_Measure(luaL_checkstring(L, 1), &w, &h, settings);
+    UI_Text_Measure(LUA_CheckText(L, 1), &w, &h, settings);
     lua_pushnumber(L, w);
     lua_pushnumber(L, h);
     lua_pushnumber(L, UI_Text_GetBaseline(settings));
     return 3;
 }
 
-// trxc.ui.wrap_text(text: string, width: number, scale?: number): string
+// trxc.ui.wrap_text(text: string|trx.locale.Text, width: number, scale?: number): string
 static int M_L_UIWrapText(lua_State *const L)
 {
     char *wrapped = UI_Text_WordWrap(
-        luaL_checkstring(L, 1), (float)luaL_optnumber(L, 3, 1.0),
+        LUA_CheckText(L, 1), (float)luaL_optnumber(L, 3, 1.0),
         (float)luaL_checknumber(L, 2));
     lua_pushstring(L, wrapped != nullptr ? wrapped : "");
     Memory_FreePointer(&wrapped);
     return 1;
 }
 
-// trxc.ui.draw_text(text: string, x: number, y: number, scale?: number, z?: integer)
+// trxc.ui.draw_text(text: string|trx.locale.Text, x: number, y: number, scale?: number, z?: integer)
 static int M_L_UIDrawText(lua_State *const L)
 {
     M_CheckPainting(L);
     UI_Text_Draw(
-        luaL_checkstring(L, 1), (float)luaL_checknumber(L, 2),
+        LUA_CheckText(L, 1), (float)luaL_checknumber(L, 2),
         (float)luaL_checknumber(L, 3),
         (UI_TEXT_SETTINGS) {
             .scale = (float)luaL_optnumber(L, 4, 1.0),

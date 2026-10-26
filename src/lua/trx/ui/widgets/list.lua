@@ -41,8 +41,8 @@ end
 ---One entry of a `trx.ui.widgets.List`.
 ---@trx.record
 ---@class trx.ui.ListRow
----@field text string The text. It is centered unless the row has a right part.
----@field right? string Text drawn against the right edge. The main text is then drawn against the left edge.
+---@field text string|trx.locale.Text The text. It is centered unless the row has a right part.
+---@field right? string|trx.locale.Text Text drawn against the right edge. The main text is then drawn against the left edge.
 ---@field rule? boolean Whether a line separates the row from the row above it.
 
 local function list_visible(list)
@@ -165,13 +165,23 @@ function List:control(keys)
   return nil, keys:pressed(trx.input.Role.MENU_BACK)
 end
 
-local function list_row_width(list, row)
-  local scale = raw.drawn_text_scale()
-  local width = primitive.measure_text(row.text, 1.0) / scale
+-- Resolves a row's text and measures it. The list keeps the result until it
+-- measures again, so that painting does neither.
+local function list_line(row)
+  local line = { text = tostring(row.text) }
+  line.text_w = primitive.measure_text(line.text, 1.0)
   if row.right ~= nil then
-    width = width
-      + LIST_RIGHT_GAP
-      + primitive.measure_text(row.right, 1.0) / scale
+    line.right = tostring(row.right)
+    line.right_w = primitive.measure_text(line.right, 1.0)
+  end
+  return line
+end
+
+local function list_row_width(list, line)
+  local scale = raw.drawn_text_scale()
+  local width = line.text_w / scale
+  if line.right ~= nil then
+    width = width + LIST_RIGHT_GAP + line.right_w / scale
   end
   return width + 2 * setting(list, "row_pad")
 end
@@ -181,9 +191,12 @@ local function list_measure(list)
   local count = list_visible(list)
   list_scroll_into_view(list)
   local width = value_of(list.min_w) or 0
-  for _, row in ipairs(list._rows) do
-    width = math.max(width, list_row_width(list, row))
+  local lines = {}
+  for i, row in ipairs(list._rows) do
+    lines[i] = list_line(row)
+    width = math.max(width, list_row_width(list, lines[i]))
   end
+  list._lines = lines
   local height = count * setting(list, "row_height")
     + (count - 1) * setting(list, "row_spacing")
     + list_rules(list, count) * LIST_RULE_HEIGHT
@@ -207,16 +220,14 @@ local function list_hint(list, glyph, nudge, x, y, w, scale)
   )
 end
 
-local function list_draw_row(list, row, x, y, w, scale)
+local function list_draw_row(list, line, x, y, w, scale)
   local pad = setting(list, "row_pad") * scale
-  if row.right ~= nil then
-    primitive.text(row.text, x + pad, y, 1.0, 0)
-    local rw = primitive.measure_text(row.right, 1.0)
-    primitive.text(row.right, x + w - pad - rw, y, 1.0, 0)
+  if line.right ~= nil then
+    primitive.text(line.text, x + pad, y, 1.0, 0)
+    primitive.text(line.right, x + w - pad - line.right_w, y, 1.0, 0)
     return
   end
-  local tw = primitive.measure_text(row.text, 1.0)
-  primitive.text(row.text, x + (w - tw) / 2, y, 1.0, 0)
+  primitive.text(line.text, x + (w - line.text_w) / 2, y, 1.0, 0)
 end
 
 local function list_paint(list, x, y, w)
@@ -260,10 +271,10 @@ local function list_paint(list, x, y, w)
     local picked_color = trx.ui.picked_text_color
     if picked and not trx.ui.frames_shown and picked_color ~= nil then
       local previous = raw.set_text_color(picked_color)
-      list_draw_row(list, row, x, top, w, scale)
+      list_draw_row(list, list._lines[i], x, top, w, scale)
       raw.set_text_color(previous)
     else
-      list_draw_row(list, row, x, top, w, scale)
+      list_draw_row(list, list._lines[i], x, top, w, scale)
     end
     top = top
       + (setting(list, "row_height") + setting(list, "row_spacing")) * scale

@@ -59,7 +59,7 @@ say what to draw.
   removes it.
 
   Parameters:
-  - <a id="overlay.set_caption.text" name="overlay.set_caption.text"></a>**`text`** (string, optional). Text to show. Omit this parameter to remove the caption.
+  - <a id="overlay.set_caption.text" name="overlay.set_caption.text"></a>**`text`** (string or [trx.locale.Text](LOCALE.md#locale.Text), optional). Text to show. A [`trx.locale.Text`](LOCALE.md#locale.Text) follows the player's language. Omit this parameter to remove the caption.
   - <a id="overlay.set_caption.opts" name="overlay.set_caption.opts"></a>**`opts`** (table, optional). How it shows.
 
     Keys:

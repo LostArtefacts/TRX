@@ -10,10 +10,13 @@
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/locale/common.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/module.h>
 
 #include <lauxlib.h>
+
+static int32_t m_ChangeListener = -1;
 
 // trxc.locale.get(key: string): string?
 static int M_L_LocaleGet(lua_State *const L)
@@ -99,9 +102,24 @@ static const luaL_Reg m_Module[] = {
     { nullptr, nullptr },
 };
 
+static void M_HandleChange(const EVENT *const event, void *const data)
+{
+    LUA_FireEvent(LUA_EVENT_STRINGS_CHANGE);
+}
+
 static void M_Create(lua_State *const L)
 {
     LUA_RegisterModule(L, "locale", m_Module);
+    m_ChangeListener =
+        GameStringManager_SubscribeChanges(M_HandleChange, nullptr);
 }
 
-REGISTER_LUA_CAPI(.create = M_Create)
+static void M_Shutdown(void)
+{
+    if (m_ChangeListener >= 0) {
+        GameStringManager_UnsubscribeChanges(m_ChangeListener);
+        m_ChangeListener = -1;
+    }
+}
+
+REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

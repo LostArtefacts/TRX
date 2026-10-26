@@ -479,6 +479,8 @@
 - Added `trx.strings.equivalent`, which says whether two texts differ only in case
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
 - Added `trx.locale.text_languages`, `trx.locale.voice_languages` and `trx.locale.language_name`, which list the languages and the dubs the game has
+- Added `trx.locale.text`, `trx.locale.object_name` and `trx.locale.level_title`, text that follows the player's language, which labels, lists and the text primitives take in place of a string
+- Added `trx.locale.signals.changed`, which says when the game text changes
 - Removed the numbered colours of the text markup and `\{dim}`, which a colour named by its shades replaces
 
 *Utilities*

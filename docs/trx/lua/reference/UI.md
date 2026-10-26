@@ -618,9 +618,9 @@ lights its font.
     One entry of a [`trx.ui.widgets.List`](#ui.widgets.List).
 
     Properties:
-    - <a id="ui.ListRow.right" name="ui.ListRow.right"></a>**`right`**: string, optional. Text drawn against the right edge. The main text is then drawn against the left edge.
+    - <a id="ui.ListRow.right" name="ui.ListRow.right"></a>**`right`**: string or [trx.locale.Text](LOCALE.md#locale.Text), optional. Text drawn against the right edge. The main text is then drawn against the left edge.
     - <a id="ui.ListRow.rule" name="ui.ListRow.rule"></a>**`rule`**: boolean, optional. Whether a line separates the row from the row above it.
-    - <a id="ui.ListRow.text" name="ui.ListRow.text"></a>**`text`**: string. The text. It is centered unless the row has a right part.
+    - <a id="ui.ListRow.text" name="ui.ListRow.text"></a>**`text`**: string or [trx.locale.Text](LOCALE.md#locale.Text). The text. It is centered unless the row has a right part.
 
 - <a id="ui.List" name="ui.List"></a>[lua]`trx.ui.List`
 
@@ -825,7 +825,7 @@ lights its font.
 
   Parameters:
   - <a id="ui.input_hint_text.input" name="ui.input_hint_text.input"></a>**`input`** ([trx.ui.Inputs](#ui.Inputs)). The role, or the roles shown side by side.
-  - <a id="ui.input_hint_text.words" name="ui.input_hint_text.words"></a>**`words`** (string, optional). What the keys do.
+  - <a id="ui.input_hint_text.words" name="ui.input_hint_text.words"></a>**`words`** (string, optional). What the keys do. A [`trx.locale.Text`](LOCALE.md#locale.Text) makes the result follow the player's language.
 
   Returns: string. The text.
 
@@ -931,7 +931,7 @@ lights its font.
   Measures one line of text. Available at any time.
 
   Parameters:
-  - <a id="ui.primitive.measure_text.text" name="ui.primitive.measure_text.text"></a>**`text`** (string). What to measure.
+  - <a id="ui.primitive.measure_text.text" name="ui.primitive.measure_text.text"></a>**`text`** (string or [trx.locale.Text](LOCALE.md#locale.Text)). What to measure.
   - <a id="ui.primitive.measure_text.scale" name="ui.primitive.measure_text.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
 
   Returns:
@@ -944,7 +944,7 @@ lights its font.
   text. Available at any time.
 
   Parameters:
-  - <a id="ui.primitive.wrap_text.text" name="ui.primitive.wrap_text.text"></a>**`text`** (string). What to wrap.
+  - <a id="ui.primitive.wrap_text.text" name="ui.primitive.wrap_text.text"></a>**`text`** (string or [trx.locale.Text](LOCALE.md#locale.Text)). What to wrap.
   - <a id="ui.primitive.wrap_text.width" name="ui.primitive.wrap_text.width"></a>**`width`** (number). The widest a line may be, in canvas units.
   - <a id="ui.primitive.wrap_text.scale" name="ui.primitive.wrap_text.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
 
@@ -959,7 +959,7 @@ lights its font.
   Draws one line of text on the canvas.
 
   Parameters:
-  - <a id="ui.primitive.text.text" name="ui.primitive.text.text"></a>**`text`** (string). What to draw.
+  - <a id="ui.primitive.text.text" name="ui.primitive.text.text"></a>**`text`** (string or [trx.locale.Text](LOCALE.md#locale.Text)). What to draw.
   - <a id="ui.primitive.text.x" name="ui.primitive.text.x"></a>**`x`** (number). The left edge.
   - <a id="ui.primitive.text.y" name="ui.primitive.text.y"></a>**`y`** (number). The top edge.
   - <a id="ui.primitive.text.scale" name="ui.primitive.text.scale"></a>**`scale`** (number, optional). Multiplies the text size.
@@ -1582,7 +1582,7 @@ lights its font.
 
     Keys:
     - <a id="ui.widgets.InputHint.settings.input" name="ui.widgets.InputHint.settings.input"></a>**`input`** (any). The input role whose keys to show, a list of roles shown side by side, or a signal carrying either.
-    - <a id="ui.widgets.InputHint.settings.text" name="ui.widgets.InputHint.settings.text"></a>**`text`** (any, optional). What the keys do, or a signal carrying it.
+    - <a id="ui.widgets.InputHint.settings.text" name="ui.widgets.InputHint.settings.text"></a>**`text`** (any, optional). What the keys do, as a string or a [`trx.locale.Text`](LOCALE.md#locale.Text), or a signal carrying either.
     - <a id="ui.widgets.InputHint.settings.scale" name="ui.widgets.InputHint.settings.scale"></a>**`scale`** (any, optional). Multiplies the text size, or a signal that holds it. `1.0` by default.
     - <a id="ui.widgets.InputHint.settings.visible" name="ui.widgets.InputHint.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 
@@ -1592,18 +1592,19 @@ lights its font.
   ```lua
   trx.ui.widgets.InputHint({
     input = trx.input.Role.MENU_BACK,
-    text = trx.locale.get("general/actions/cancel"),
+    text = trx.locale.text("general/actions/cancel"),
   })
   ```
 
 - <a id="ui.widgets.Label" name="ui.widgets.Label"></a>[lua]`trx.ui.widgets.Label(settings)`  
-  A line of text. Use a signal for text that changes.
+  A line of text. Use a signal for text that changes. A [`trx.locale.Text`](LOCALE.md#locale.Text)
+  follows the player's language without one.
 
   Parameters:
   - <a id="ui.widgets.Label.settings" name="ui.widgets.Label.settings"></a>**`settings`** (table). The label settings.
 
     Keys:
-    - <a id="ui.widgets.Label.settings.text" name="ui.widgets.Label.settings.text"></a>**`text`** (any). The text, or a signal carrying it.
+    - <a id="ui.widgets.Label.settings.text" name="ui.widgets.Label.settings.text"></a>**`text`** (any). The text, a [`trx.locale.Text`](LOCALE.md#locale.Text), or a signal carrying either.
     - <a id="ui.widgets.Label.settings.scale" name="ui.widgets.Label.settings.scale"></a>**`scale`** (any, optional). Multiplies the text size, or a signal that holds it. `1.0` by default.
     - <a id="ui.widgets.Label.settings.visible" name="ui.widgets.Label.settings.visible"></a>**`visible`** (any, optional). Whether the widget is visible, or a signal that holds that value. A widget that is not visible keeps no room and leaves no gap. [`Blank`](#ui.widgets.Blank) keeps the room instead.
 

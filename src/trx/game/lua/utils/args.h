@@ -5,6 +5,11 @@
 
 #include <lua.h>
 
+// Returns a text argument: a string, or a value whose __tostring gives one,
+// such as trx.locale.Text. The string replaces the value on the stack, so it
+// stays valid while the value's slot does.
+const char *LUA_CheckText(lua_State *L, int arg);
+
 // An argument the engine indexes one of its own tables with, unchecked.
 // Narrowed only once it fits, so a wider value cannot wrap into range.
 int32_t LUA_CheckRange(lua_State *L, int arg, int32_t count, const char *what);

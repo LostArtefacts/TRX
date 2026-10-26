@@ -10,7 +10,7 @@
 #include <trx/game/game_flow/sequencer.h>
 #include <trx/game/game_flow/sequencer_events.h>
 #include <trx/game/game_flow/vars.h>
-#include <trx/game/game_strings/table.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/inventory.h>
 #include <trx/game/level.h>
 #include <trx/game/locale/common.h>
@@ -42,7 +42,7 @@ static void M_PlayIntroFMVs(void)
 RESULT GF_RunTitle(GF_COMMAND *const out_cmd)
 {
     SG_Manager_UnbindSlot();
-    GameStringTable_Apply(nullptr);
+    GameStringManager_Apply(nullptr);
     GF_ResetLevelSetup(GFSC_NORMAL);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
     MUST(Level_Initialise(title_level, GFSC_NORMAL), "the title level");
