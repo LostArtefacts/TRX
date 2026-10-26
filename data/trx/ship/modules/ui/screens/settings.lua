@@ -18,64 +18,63 @@ trx.locale.declare({
 })
 
 -- What each dialog holds: its title, and its tabs, each the settings tab it
--- shows or the presets. The text is read again whenever a setting changes,
--- so that it follows the player's language.
+-- shows or the presets.
 local DIALOGS = {
   graphics = function()
-    return trx.locale.get("general/settings/graphic_settings/title"),
+    return trx.locale.text("general/settings/graphic_settings/title"),
       {
         {
-          trx.locale.get("general/settings/graphic_settings/tabs/visuals"),
+          trx.locale.text("general/settings/graphic_settings/tabs/visuals"),
           "graphic_visuals",
         },
         {
-          trx.locale.get("general/settings/graphic_settings/tabs/ui"),
+          trx.locale.text("general/settings/graphic_settings/tabs/ui"),
           "graphic_ui",
         },
         {
-          trx.locale.get("general/settings/graphic_settings/tabs/stats"),
+          trx.locale.text("general/settings/graphic_settings/tabs/stats"),
           "graphic_ui_stats",
         },
         {
-          trx.locale.get("general/settings/graphic_settings/tabs/bars"),
+          trx.locale.text("general/settings/graphic_settings/tabs/bars"),
           "graphic_ui_bars",
         },
         {
-          trx.locale.get("general/settings/graphic_settings/tabs/rendering"),
+          trx.locale.text("general/settings/graphic_settings/tabs/rendering"),
           "graphic_rendering",
         },
       }
   end,
   sound = function()
-    return trx.locale.get("general/settings/sound/title"),
+    return trx.locale.text("general/settings/sound/title"),
       {
         {
-          trx.locale.get("general/settings/sound/tabs/volume"),
+          trx.locale.text("general/settings/sound/tabs/volume"),
           "sound_volume",
         },
-        { trx.locale.get("general/settings/sound/tabs/misc"), "sound_misc" },
+        { trx.locale.text("general/settings/sound/tabs/misc"), "sound_misc" },
       }
   end,
   gameplay = function()
-    return trx.locale.get("general/settings/gameplay/title"),
+    return trx.locale.text("general/settings/gameplay/title"),
       {
         {
-          trx.locale.get("general/settings/gameplay/tabs/general"),
+          trx.locale.text("general/settings/gameplay/tabs/general"),
           "gameplay_general",
         },
         {
-          trx.locale.get("general/settings/gameplay/tabs/controls"),
+          trx.locale.text("general/settings/gameplay/tabs/controls"),
           "gameplay_controls",
         },
         {
-          trx.locale.get("general/settings/gameplay/tabs/mods"),
+          trx.locale.text("general/settings/gameplay/tabs/mods"),
           "gameplay_mods",
         },
         {
-          trx.locale.get("general/settings/gameplay/tabs/fixes"),
+          trx.locale.text("general/settings/gameplay/tabs/fixes"),
           "gameplay_fixes",
         },
-        { trx.locale.get("general/settings/gameplay/tabs/presets") },
+        { trx.locale.text("general/settings/gameplay/tabs/presets") },
       }
   end,
 }
@@ -113,23 +112,14 @@ end
 -- Builds one of the dialogs, opening anything it opens over itself through
 -- `push`.
 local function build_dialog(which, push)
-  local _, specs = DIALOGS[which]()
+  local heading, specs = DIALOGS[which]()
   local declared = declared_by_tab()
   return dialog.new({
-    title = function()
-      return (DIALOGS[which]())
-    end,
+    title = heading,
     tabs = function(self)
-      local names = self.changed:map(function()
-        local _, now = DIALOGS[which]()
-        return now
-      end)
       local result = {}
       for i, spec in ipairs(specs) do
-        local name = spec[2]
-        local title = names:map(function(now)
-          return now[i][1]
-        end)
+        local title, name = spec[1], spec[2]
         if name == nil then
           result[i] = preset_tab.new({
             title = title,
@@ -324,7 +314,7 @@ function M.dialogs()
     }
   end
   result[#result + 1] = {
-    title = trx.locale.get("general/settings/controls/title"),
+    title = trx.locale.text("general/settings/controls/title"),
     push = push_controls,
   }
   return result

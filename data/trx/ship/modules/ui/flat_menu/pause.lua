@@ -101,7 +101,7 @@ function M.open(ctx)
     local level = trx.game.current_level
     if level ~= nil and level.stats ~= nil then
       rows[#rows + 1] = {
-        text = trx.locale.get("general/flat_menu/statistics"),
+        text = trx.locale.text("general/flat_menu/statistics"),
         choose = function()
           go_away(stats.push)
         end,
@@ -115,11 +115,11 @@ function M.open(ctx)
     }
     if ctx.can_exit_to_title then
       rows[#rows + 1] = {
-        text = trx.locale.get("general/flat_menu/exit_to_title"),
+        text = trx.locale.text("general/flat_menu/exit_to_title"),
         choose = exit,
       }
     end
-    return { heading = trx.locale.get("general/pause/paused"), rows = rows }
+    return { heading = trx.locale.text("general/pause/paused"), rows = rows }
   end
   state.pages[1] = list.new(main)
   list.follow_settings(ctx, state.pages)

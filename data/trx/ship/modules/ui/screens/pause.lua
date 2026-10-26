@@ -33,10 +33,10 @@ local EXIT_HOLD_TICKS = 3
 
 local function question(title, first, second)
   local req = requester.new({
-    title = trx.locale.get(title),
+    title = trx.locale.text(title),
     rows = {
-      { text = trx.locale.get(first) },
-      { text = trx.locale.get(second) },
+      { text = trx.locale.text(first) },
+      { text = trx.locale.text(second) },
     },
     row_pad = metrics.CHOICE_ROW_PAD,
     -- The engine spaces the rows of this question alike in every game, TR1
@@ -134,7 +134,7 @@ function M.open(ctx)
   local function wait()
     is_waiting = true
     trx.overlay.set_caption(
-      accent.text(trx.locale.get("general/pause/paused"), accent.Role.NAME)
+      accent.text(trx.locale.text("general/pause/paused"), accent.Role.NAME)
     )
   end
 

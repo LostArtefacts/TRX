@@ -543,12 +543,15 @@ local function open_crystal(crystal_mode, count)
 end
 
 test("the save crystal shows the save list and its own name", function()
+  trx.locale.declare({
+    ["objects/save_crystal_item/name"] = "Save Crystal|crystal",
+  })
   assert(open_crystal(), "the crystal was not taken")
   local drawn = texts()
   assert(has(drawn, L("general/passport/save_game")), table.concat(drawn, ","))
   assert(not has(drawn, "\\{button right}"), "the crystal drew page arrows")
   assert(
-    trx.overlay.signals.caption:get() == "objects/save_crystal_item/name",
+    tostring(trx.overlay.signals.caption:get()) == "Save Crystal",
     "the crystal was not named"
   )
   finish()

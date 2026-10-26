@@ -82,13 +82,13 @@ function M.open(ctx)
     local rows = {}
     if pages.saving_enabled() then
       rows[#rows + 1] = {
-        text = trx.locale.get("general/passport/load_game"),
+        text = trx.locale.text("general/passport/load_game"),
         choose = load_game,
       }
     end
     if trx.game.can_restart_level() then
       rows[#rows + 1] = {
-        text = trx.locale.get("general/passport/restart_level"),
+        text = trx.locale.text("general/passport/restart_level"),
         choose = function()
           trx.game.restart_level()
           leave()
@@ -99,7 +99,7 @@ function M.open(ctx)
     -- saves; alone, GAME OVER takes the player there by itself.
     if #rows > 0 then
       rows[#rows + 1] = {
-        text = trx.locale.get("general/passport/exit_to_title"),
+        text = trx.locale.text("general/passport/exit_to_title"),
         choose = function()
           trx.game.exit_to_title()
           leave()
@@ -107,7 +107,7 @@ function M.open(ctx)
       }
     end
     return {
-      heading = trx.locale.get("general/inventory_ring/heading_game_over"),
+      heading = trx.locale.text("general/inventory_ring/heading_game_over"),
       heading_role = accent.Role.MENU_WARNING,
       heading_gap = GAME_OVER_GAP,
       rows = rows,

@@ -52,12 +52,14 @@ end
 
 -- Wraps a text to a width and cuts it into pages. The dialog stays on the page
 -- that it showed where the text is the one it already holds.
----@param title string
+---@param title string|trx.locale.Text
 ---@param text string
 ---@param width number The width to wrap to, in canvas units.
 ---@param max_lines integer The most lines a page holds.
 function TextDialog:set_text(title, text, width, max_lines)
-  self.title:set(trx.strings.upper(title))
+  self.title:set(
+    type(title) == "string" and trx.strings.upper(title) or title:upper()
+  )
   local wrapped = trx.ui.primitive.wrap_text(text, math.floor(width))
   local pages = carry_colors(trx.strings.paginate(wrapped, max_lines))
   local lines = 0
@@ -124,7 +126,7 @@ local function page_indicator(self)
     return page < n
   end)
   local text = trx.signal.combine(self.page, count, function(page, n)
-    return trx.locale.format("general/misc/pagination_nav", page, n)
+    return trx.locale.text("general/misc/pagination_nav", page, n)
   end)
   return trx.ui.widgets.Stack({
     align = trx.ui.HAlign.RIGHT,

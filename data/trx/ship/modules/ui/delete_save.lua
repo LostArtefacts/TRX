@@ -31,7 +31,7 @@ end
 ---@return common.ui.HoldButton
 function M.button()
   return hold_button.new({
-    words = trx.locale.get("general/passport/delete_save"),
+    words = trx.locale.text("general/passport/delete_save"),
     align = trx.ui.HAlign.RIGHT,
   })
 end
@@ -50,13 +50,13 @@ end
 ---@return common.ui.Requester
 function M.confirm_req(place)
   local req = requester.new({
-    title = trx.locale.get("general/passport/delete_save_confirm"),
+    title = trx.locale.text("general/passport/delete_save_confirm"),
     rows = {
       {
-        text = trx.locale.get("general/passport/delete_save_yes"),
+        text = trx.locale.text("general/passport/delete_save_yes"),
         yes = true,
       },
-      { text = trx.locale.get("general/passport/delete_save_no") },
+      { text = trx.locale.text("general/passport/delete_save_no") },
     },
     arrows = false,
     place = place,
@@ -75,13 +75,13 @@ end
 -- `on_fail` with the text that says so.
 ---@param slot_num trx.savegame.SlotNum
 ---@param pool trx.savegame.Pool
----@param on_fail fun(text: string)
+---@param on_fail fun(text: string|trx.locale.Text)
 ---@return boolean
 function M.delete(slot_num, pool, on_fail)
   if trx.savegame.delete(slot_num, pool) then
     return true
   end
-  on_fail(trx.locale.get("general/passport/delete_save_failed"))
+  on_fail(trx.locale.text("general/passport/delete_save_failed"))
   return false
 end
 

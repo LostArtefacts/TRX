@@ -62,7 +62,7 @@ function M.push(ctx, settings)
   if settings.caption then
     ctx:push({
       root = trx.ui.widgets.Label({
-        text = trx.strings.upper(trx.locale.get("general/misc/loading")),
+        text = trx.locale.text("general/misc/loading"):upper(),
         visible = visible & is_ps1,
       }),
       place = function(w, h)

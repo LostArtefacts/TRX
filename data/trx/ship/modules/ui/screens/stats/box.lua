@@ -118,7 +118,7 @@ end
 -- The bare look draws its words in capitals.
 local function bare_text(state, text)
   if listing.is_bare(state) then
-    return trx.strings.upper(text)
+    return type(text) == "string" and trx.strings.upper(text) or text:upper()
   end
   return text
 end
@@ -235,7 +235,7 @@ local function body_rows(state)
     children = shown,
   }))
   state.reset = hold_button.new({
-    words = trx.locale.get("general/stats/assault_reset_times"),
+    words = trx.locale.text("general/stats/assault_reset_times"),
     scale = state.fit,
     from = state.reset,
   })

@@ -30,9 +30,7 @@ trx.events.on_game_start(function(is_save)
 end)
 
 -- The caption the level opens with, which the level's strings carry.
-require("common.ui.hud.legend").setup(function()
-  return trx.locale.get("general/legend")
-end)
+require("common.ui.hud.legend").setup(trx.locale.text("general/legend"))
 
 require("tr4.inv_setup").apply({
   -- Draw only the model mesh. The ring does not use the collision box.

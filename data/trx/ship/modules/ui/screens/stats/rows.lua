@@ -147,8 +147,8 @@ local function auto_secrets_row(state)
   local totals = state.totals
   if state.mode == Mode.FINAL or state.floor_secrets then
     return row(
-      trx.locale.get("general/stats/secrets"),
-      trx.locale.format(
+      trx.locale.text("general/stats/secrets"),
+      trx.locale.text(
         "general/stats/detail_fmt",
         totals.counts.secrets,
         totals.maxes.secrets
@@ -156,7 +156,7 @@ local function auto_secrets_row(state)
     )
   end
   return row(
-    trx.locale.get("general/stats/secrets"),
+    trx.locale.text("general/stats/secrets"),
     counts.icon_secrets(state.level)
   )
 end
@@ -166,8 +166,8 @@ local function count_row(state, key, name)
       and "general/stats/detail_fmt"
     or "general/stats/basic_fmt"
   return row(
-    trx.locale.get(key),
-    trx.locale.format(fmt, state.totals.counts[name], state.totals.maxes[name])
+    trx.locale.text(key),
+    trx.locale.text(fmt, state.totals.counts[name], state.totals.maxes[name])
   )
 end
 
@@ -181,7 +181,7 @@ local function configured_rows(state)
   end
 
   local function timer()
-    add(row(trx.locale.get("general/stats/time_taken"), state.time_text))
+    add(row(trx.locale.text("general/stats/time_taken"), state.time_text))
   end
 
   if M.is_bare(state) then
@@ -222,21 +222,21 @@ local function configured_rows(state)
     if M.is_bare(state) then
       add(
         row(
-          trx.locale.get("general/stats/ammo_used"),
+          trx.locale.text("general/stats/ammo_used"),
           string.format("%d", totals.ammo_used)
         )
       )
       add(
         row(
-          trx.locale.get("general/stats/ammo_hits"),
+          trx.locale.text("general/stats/ammo_hits"),
           string.format("%d", totals.ammo_hits)
         )
       )
     else
       add(
         row(
-          trx.locale.get("general/stats/ammo"),
-          trx.locale.format(
+          trx.locale.text("general/stats/ammo"),
+          trx.locale.text(
             "general/stats/ammo_fmt",
             totals.ammo_hits,
             totals.ammo_used
@@ -248,7 +248,7 @@ local function configured_rows(state)
   if get("ui.stats.show_medipacks_used") then
     add(
       row(
-        trx.locale.get("general/stats/medipacks_used"),
+        trx.locale.text("general/stats/medipacks_used"),
         string.format("%.1f", totals.medipacks_used)
       )
     )
@@ -256,7 +256,7 @@ local function configured_rows(state)
   if get("ui.stats.show_distance_travelled") then
     add(
       row(
-        trx.locale.get("general/stats/distance_travelled"),
+        trx.locale.text("general/stats/distance_travelled"),
         counts.format_distance(totals.distance_travelled)
       )
     )
@@ -266,8 +266,8 @@ local function configured_rows(state)
   if get("ui.stats.show_deaths") and totals.deaths >= 0 then
     add(
       row(
-        trx.locale.get("general/stats/deaths"),
-        trx.locale.format("general/stats/basic_fmt", totals.deaths)
+        trx.locale.text("general/stats/deaths"),
+        trx.locale.text("general/stats/basic_fmt", totals.deaths)
       )
     )
   end
@@ -296,7 +296,7 @@ local function assault_rows(state)
   local function track_rows(track)
     local records = counts.records_of(track)
     if #records == 0 then
-      add(centered(trx.locale.get("general/stats/assault_no_times_set")))
+      add(centered(trx.locale.text("general/stats/assault_no_times_set")))
       return
     end
     for i, record in ipairs(records) do
@@ -309,12 +309,9 @@ local function assault_rows(state)
       else
         add(
           row(
-            string.format(
-              "%2d: %s %d",
-              i,
-              trx.locale.get("general/stats/assault_finish"),
-              record.attempt_num
-            ),
+            ("%2d: "):format(i)
+              .. trx.locale.text("general/stats/assault_finish")
+              .. (" %d"):format(record.attempt_num),
             time
           )
         )
@@ -326,7 +323,7 @@ local function assault_rows(state)
     add(
       centered(
         accent.text(
-          trx.locale.get("general/stats/gym_assault_course"),
+          trx.locale.text("general/stats/gym_assault_course"),
           accent.Role.HEADING
         )
       )
@@ -338,7 +335,7 @@ local function assault_rows(state)
     add(
       centered(
         accent.text(
-          trx.locale.get("general/stats/gym_racetrack_course"),
+          trx.locale.text("general/stats/gym_racetrack_course"),
           accent.Role.HEADING
         )
       )
@@ -356,15 +353,15 @@ end
 
 function M.title_of(state)
   if state.mode == Mode.LEVEL then
-    return state.level.title
+    return trx.locale.level_title(state.level)
   elseif state.mode == Mode.FINAL then
-    return trx.locale.get(
+    return trx.locale.text(
       state.level.type == trx.game.LevelType.BONUS
           and "general/stats/bonus_statistics"
         or "general/stats/final_statistics"
     )
   end
-  return trx.locale.get("general/stats/assault_title")
+  return trx.locale.text("general/stats/assault_title")
 end
 
 -- Every row the screen shows. A level screen with nothing to show says the
@@ -378,8 +375,8 @@ function M.all_rows(state)
     state.mode == Mode.LEVEL and trx.config.get("ui.stats.show_level_header")
   then
     rows[1] = row(
-      trx.locale.get("general/stats/level"),
-      trx.locale.format(
+      trx.locale.text("general/stats/level"),
+      trx.locale.text(
         "general/stats/detail_fmt",
         counts.count_completed() + 1,
         #trx.game.levels
@@ -388,7 +385,7 @@ function M.all_rows(state)
   end
   local configured = configured_rows(state)
   if #configured == 0 and state.mode == Mode.LEVEL then
-    rows[#rows + 1] = centered(trx.locale.get("general/osd/complete_level"))
+    rows[#rows + 1] = centered(trx.locale.text("general/osd/complete_level"))
   end
   for _, r in ipairs(configured) do
     rows[#rows + 1] = r

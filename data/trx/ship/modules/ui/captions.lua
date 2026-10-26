@@ -66,7 +66,7 @@ local function follow_demos()
   local playing = nil
   local function show(flashing)
     trx.overlay.set_caption(
-      trx.locale.get("general/misc/demo_mode"),
+      trx.locale.text("general/misc/demo_mode"),
       { flashing = flashing }
     )
   end

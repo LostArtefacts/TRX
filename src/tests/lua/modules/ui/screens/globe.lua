@@ -52,11 +52,12 @@ local function open(completed, areas, background)
 end
 
 local function last_caption()
-  return trx.overlay.signals.caption:get() or ""
+  return tostring(trx.overlay.signals.caption:get() or "")
 end
 
 local function heading()
-  return require("common.ui.ring").signals.heading:get()
+  local heading = require("common.ui.ring").signals.heading:get()
+  return heading ~= nil and tostring(heading) or nil
 end
 
 local function arrows_shown()

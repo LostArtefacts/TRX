@@ -120,7 +120,7 @@ local function active_scroll(active, tabs)
 end
 
 ---@class common.ui.settings.Tab
----@field title string|trx.signal.Signal The name on the tab bar, or a signal that holds it.
+---@field title string|trx.locale.Text|trx.signal.Signal The name on the tab bar, or a signal that holds it.
 ---@field scroll common.ui.Scroll The tab's rows.
 ---@field widget? trx.ui.Widget What the tab shows. An editor tab has none of its own and shows the rows the dialog shares.
 ---@field footer trx.ui.Widget The hints under the dialog.
@@ -241,7 +241,7 @@ function Dialog:close()
 end
 
 ---@class common.ui.settings.Dialog.settings
----@field title string|trx.signal.Signal|fun(): string The heading, a signal that holds it, or a function that reads it again whenever a setting changes, so that it follows the player's language.
+---@field title string|trx.locale.Text|trx.signal.Signal The heading, or a signal that holds it.
 ---@field tabs fun(dialog: common.ui.settings.Dialog): common.ui.settings.Tab[] Makes the tabs, which read the dialog's signals.
 
 -- Creates a dialog.
@@ -345,9 +345,6 @@ function M.new(settings)
   })
 
   local title = settings.title
-  if type(title) == "function" then
-    title = self.changed:map(title)
-  end
   self.widget = trx.ui.widgets.Fit({
     child = trx.ui.widgets.Stack({
       spacing = FOOTER_SPACING,

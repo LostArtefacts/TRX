@@ -111,9 +111,7 @@ cutscenes.register(ENTRANCE_CUTSCENE, {
 })
 
 -- The caption the level opens with, which the level's strings carry.
-require("common.ui.hud.legend").setup(function()
-  return trx.locale.get("general/legend")
-end)
+require("common.ui.hud.legend").setup(trx.locale.text("general/legend"))
 
 require("tr4.inv_setup").apply({
   puzzle_item_1 = { scale = 384, offset_y = 1, rot_y = -157.5 },

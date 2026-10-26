@@ -114,28 +114,28 @@ local Option = {
 
 local OPTION_TEXT = {
   [Option.LOAD] = function()
-    return trx.locale.get("general/flat_menu/load_game")
+    return trx.locale.text("general/flat_menu/load_game")
   end,
   [Option.SAVE] = function()
-    return trx.locale.get("general/flat_menu/save_game")
+    return trx.locale.text("general/flat_menu/save_game")
   end,
   [Option.EXAMINE] = function()
-    return trx.locale.get("general/flat_menu/examine")
+    return trx.locale.text("general/flat_menu/examine")
   end,
   [Option.USE] = function()
-    return trx.locale.get("general/flat_menu/use")
+    return trx.locale.text("general/flat_menu/use")
   end,
   [Option.EQUIP] = function()
-    return trx.locale.get("general/flat_menu/equip")
+    return trx.locale.text("general/flat_menu/equip")
   end,
   [Option.CHOOSE_AMMO] = function()
-    return trx.locale.get("general/flat_menu/choose_ammo")
+    return trx.locale.text("general/flat_menu/choose_ammo")
   end,
   [Option.COMBINE] = function()
-    return trx.locale.get("general/flat_menu/combine")
+    return trx.locale.text("general/flat_menu/combine")
   end,
   [Option.SEPARATE] = function()
-    return trx.locale.get("general/flat_menu/separate")
+    return trx.locale.text("general/flat_menu/separate")
   end,
 }
 
@@ -229,9 +229,8 @@ end
 -- flares that never run out. Ammunition always shows the quantity its boxes
 -- are labelled with.
 local function name_of(entry)
-  local info = trx.objects[entry.object]
   local name =
-    attachment.name_of(entry.object, info ~= nil and info.name or "")
+    attachment.name_of(entry.object, trx.locale.object_name(entry.object))
   if has_endless_flares(entry.object) then
     return name
   end
@@ -242,8 +241,7 @@ local function name_of(entry)
   elseif count <= 1 or weapon_of(entry.object) ~= nil then
     return name
   end
-  local fmt = trx.locale.get("general/flat_menu/count_fmt")
-  return fmt:format(count, name)
+  return trx.locale.text("general/flat_menu/count_fmt", count, name)
 end
 
 -- The load and save entries the original shows at the end of the row, where
@@ -714,7 +712,7 @@ local function start_combine(state)
     state.ctx,
     colored(
       accent.Role.PICKED,
-      trx.locale.get("general/flat_menu/combine_with")
+      trx.locale.text("general/flat_menu/combine_with")
     ),
     0.5 - line_height() / trx.ui.canvas.height / 2
   )
@@ -771,8 +769,7 @@ local function start_choosing_ammo(state)
   state.ammo_option = state.option
   local options = {}
   for _, kind in ipairs(shown.kinds) do
-    local info = trx.objects[kind.object]
-    options[#options + 1] = { name = info ~= nil and info.name or "" }
+    options[#options + 1] = { name = trx.locale.object_name(kind.object) }
   end
   state.options = options
   state.option = shown.row.current

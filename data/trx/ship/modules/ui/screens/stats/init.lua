@@ -230,10 +230,10 @@ local function offer_save(ctx, state)
   state.offering = true
   state.layer:set_root(box_of(state))
   local req = requester.new({
-    title = trx.locale.get("general/stats/save_offer"),
+    title = trx.locale.text("general/stats/save_offer"),
     rows = {
-      { text = trx.locale.get("general/stats/save_offer_yes") },
-      { text = trx.locale.get("general/stats/save_offer_no") },
+      { text = trx.locale.text("general/stats/save_offer_yes") },
+      { text = trx.locale.text("general/stats/save_offer_no") },
     },
     row_pad = metrics.CHOICE_ROW_PAD,
     row_spacing = 3.0,
@@ -400,14 +400,14 @@ end
 -- Returns the name of the level being played and the rows of its
 -- statistics as the screen lists them, or nil outside a level. A row names a
 -- counter in `key` and gives its value in `value`, or holds a line of `text`.
----@return string?, table[]?
+---@return trx.locale.Text?, table[]?
 function M.level_rows()
   local level = trx.game.current_level
   if level == nil then
     return nil, nil
   end
   local state = new_state(level, Mode.LEVEL, false, false)
-  return level.title, state.rows
+  return trx.locale.level_title(level), state.rows
 end
 
 function M.setup()

@@ -153,7 +153,7 @@ end
 
 -- Shows key hints where the ring shows its own, each as a role and what it
 -- does, up to four.
----@param hints { input: trx.input.Role, text: string }[]
+---@param hints { input: trx.input.Role, text: string|trx.locale.Text }[]
 function M.set_hint(hints)
   hints = hints or {}
   local parts = {}

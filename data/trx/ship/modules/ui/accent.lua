@@ -181,21 +181,25 @@ function M.color_of(role)
 end
 
 -- Returns the text in a colour, as the text markup names it.
+---@overload fun(text: trx.locale.Text, color: string): trx.locale.Text
+---@overload fun(text: string|trx.locale.Text, color: string): string|trx.locale.Text
 ---@param text string
 ---@param color string
 ---@return string
 function M.color(text, color)
-  return ("\\{color %s}%s"):format(color, text)
+  return "\\{color " .. color .. "}" .. text
 end
 
 -- Returns the text styled as the role says, the value of an option by
--- default.
+-- default. Styled `trx.locale.Text` follows the player's language.
+---@overload fun(text: trx.locale.Text, role?: string): trx.locale.Text
+---@overload fun(text: string|trx.locale.Text, role?: string): string|trx.locale.Text
 ---@param text string|number
 ---@param role? string One of `M.Role`.
 ---@return string
 function M.text(text, role)
   local style = style_of(role or M.Role.VALUE)
-  local result = tostring(text)
+  local result = type(text) == "number" and tostring(text) or text --[[@as string]]
   if style.color ~= nil then
     result = M.color(result, style.color)
   end
@@ -207,7 +211,7 @@ end
 
 -- Returns a signal that holds the text styled as the role says, as the text
 -- or the signal that holds it changes.
----@param text string|trx.signal.Signal
+---@param text string|trx.locale.Text|trx.signal.Signal
 ---@param role? string One of `M.Role`.
 ---@return trx.signal.Signal
 function M.signal(text, role)

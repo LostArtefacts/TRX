@@ -98,10 +98,11 @@ test("unbind restores the setting under the cursor", function()
   tab:close()
 end)
 
--- The strings load nothing here, so declaring the text as the dialog shows
--- stands in for the player picking another language.
+-- The strings load nothing here, so declaring the text and reloading the
+-- strings stands in for the player picking another language.
 test("the hints follow the player's language", function()
   trx.config.set("visuals.fov", 80)
+  trx.config.set("visuals.fov", 81)
   local tab = make({ "visuals.fov" })
   tab.scroll:select(1)
   local layer = trx.ui.layers.push({ root = tab.footer })
@@ -114,11 +115,11 @@ test("the hints follow the player's language", function()
     end
     return false
   end
-  assert(not shows("Put it back"))
+  assert(shows("restore_default"), "the hint is not up")
   trx.locale.declare({
     ["general/settings/common/restore_default"] = "Put it back",
   })
-  trx.config.set("visuals.fov", 81)
+  trx.locale.reload()
   fake.tick()
   assert(shows("Put it back"), "the hint kept its old text")
   layer:close()

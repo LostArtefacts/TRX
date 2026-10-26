@@ -194,9 +194,9 @@ end
 
 local function format_voice(code)
   if code == nil or code == "" or trx.strings.equivalent(code, VOICE_AUTO) then
-    return trx.locale.get("settings/audio.media_language/auto")
+    return trx.locale.text("settings/audio.media_language/auto")
   elseif trx.strings.equivalent(code, VOICE_RETAIL) then
-    return trx.locale.get("settings/audio.media_language/retail")
+    return trx.locale.text("settings/audio.media_language/retail")
   end
   return language_name(code)
 end

@@ -29,7 +29,9 @@ local widths = {}
 local widths_scale = nil
 
 -- How wide a text is, in canvas units at the default text size.
+---@param text string|trx.locale.Text
 function M.text_width(text)
+  text = tostring(text)
   local scale = trx.ui.text_scale
   if scale ~= widths_scale then
     widths = {}

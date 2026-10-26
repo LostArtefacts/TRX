@@ -658,9 +658,8 @@ local function name_of(object)
       object = objects.SAVE_CRYSTAL_ITEM
     end
   end
-  local info = trx.objects[object]
-  local name = info ~= nil and info.name or nil
-  if name == nil or name == "" then
+  local name = trx.locale.object_name(object)
+  if #name == 0 then
     return nil
   end
   return attachment.name_of(object, name)
@@ -679,7 +678,7 @@ local function hints_of(state)
   if actions.examine then
     result[#result + 1] = {
       input = Role.MENU_SHOW_INFO,
-      text = trx.locale.get("general/actions/examine_item"),
+      text = trx.locale.text("general/actions/examine_item"),
     }
   elseif state.weapon_choice ~= nil then
     result[#result + 1] = {
@@ -690,9 +689,9 @@ local function hints_of(state)
   if actions.use or actions.combine or state.weapon_choice ~= nil then
     result[#result + 1] = {
       input = Role.MENU_CONFIRM,
-      text = actions.combine and trx.locale.get(
+      text = actions.combine and trx.locale.text(
         "general/actions/combine_item"
-      ) or trx.locale.get("general/actions/use_item"),
+      ) or trx.locale.text("general/actions/use_item"),
     }
   end
   return result
@@ -702,21 +701,24 @@ end
 -- has died.
 local function heading_of(state)
   if state.ring_type == Ring.MAIN then
-    return trx.locale.get("general/inventory_ring/heading_inventory")
+    return trx.locale.text("general/inventory_ring/heading_inventory")
   elseif state.ring_type == Ring.KEYS then
-    return trx.locale.get("general/inventory_ring/heading_items")
+    return trx.locale.text("general/inventory_ring/heading_items")
   elseif state.mode == trx.ui.MenuMode.DEATH then
-    return trx.locale.get("general/inventory_ring/heading_game_over")
+    return trx.locale.text("general/inventory_ring/heading_game_over")
   end
-  return trx.locale.get("general/inventory_ring/heading_option")
+  return trx.locale.text("general/inventory_ring/heading_option")
 end
 
 local function show_heading(state, shown)
-  if shown ~= true then
-    ring.set_heading(nil)
+  local heading = shown == true and heading_of(state) or nil
+  if heading == state.heading then
     return
   end
-  ring.set_heading(accent.text(heading_of(state), accent.Role.HEADING))
+  state.heading = heading
+  ring.set_heading(
+    heading ~= nil and accent.text(heading, accent.Role.HEADING) or nil
+  )
 end
 
 -- Sets the caption, where it changes.

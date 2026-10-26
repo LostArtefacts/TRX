@@ -45,9 +45,8 @@ local function shape_of(key)
   return shape
 end
 
--- The titles of the settings, for the language they were read in.
+-- The titles of the settings, by key.
 local titles = {}
-local titles_language = nil
 
 -- What a setting is, as trx.config.describe says. Raises where this game has
 -- no such setting.
@@ -70,24 +69,22 @@ local function is_number(shape)
 end
 
 -- The game strings that a setting's text is kept under, which the game
--- strings derive from the settings themselves. A title is read once for each
--- language.
+-- strings derive from the settings themselves.
+---@param key string
+---@return trx.locale.Text
 function M.title(key)
-  local language = trx.signal.config("language"):get()
-  if language ~= titles_language then
-    titles = {}
-    titles_language = language
-  end
   local title = titles[key]
   if title == nil then
-    title = trx.locale.get(("settings/%s/title"):format(key))
+    title = trx.locale.text(("settings/%s/title"):format(key))
     titles[key] = title
   end
   return title
 end
 
+---@param key string
+---@return trx.locale.Text
 function M.description(key)
-  return trx.locale.get(("settings/%s/description"):format(key))
+  return trx.locale.text(("settings/%s/description"):format(key))
 end
 
 -- Whether the settings file names a setting this game has.

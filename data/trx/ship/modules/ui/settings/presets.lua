@@ -44,7 +44,7 @@ local function read(path)
     return a.key < b.key
   end)
   return {
-    title = trx.locale.get(data.name_gs),
+    title = trx.locale.text(data.name_gs),
     name_gs = data.name_gs,
     settings = settings,
   }
@@ -52,12 +52,12 @@ end
 
 -- The name of a preset in the player's language now.
 ---@param preset common.ui.settings.Preset
----@return string
+---@return string|trx.locale.Text
 function M.title(preset)
   if preset.name_gs == nil then
     return preset.title
   end
-  return trx.locale.get(preset.name_gs)
+  return trx.locale.text(preset.name_gs)
 end
 
 -- Every preset the game offers, sorted by title. The presets come from the

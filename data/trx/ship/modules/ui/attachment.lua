@@ -30,18 +30,18 @@ end
 -- Returns the name of an inventory entry, with the name of its attachment
 -- where it is a weapon that carries one.
 ---@param object trx.catalog.objects
----@param name string The entry's own name.
----@return string
+---@param name string|trx.locale.Text The entry's own name.
+---@return string|trx.locale.Text
 function M.name_of(object, name)
   local weapon = attached_weapon_of(object)
   if weapon == nil then
     return name
   end
-  local info = trx.objects[weapon.attachment.object]
-  local attached = info ~= nil and info.name or ""
-  return trx.locale
-    .get("general/inventory/attached_fmt")
-    :format(name, attached)
+  return trx.locale.text(
+    "general/inventory/attached_fmt",
+    name,
+    trx.locale.object_name(weapon.attachment.object)
+  )
 end
 
 -- Returns the meshes an inventory entry is drawn with where it is a weapon

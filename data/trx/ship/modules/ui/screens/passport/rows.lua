@@ -15,9 +15,10 @@ function M.slot_rows(filter)
     if filter ~= nil and not filter(info) then
       return
     end
+    ---@type { slot_num: integer, pool: any, text: (string|trx.locale.Text)?, right: string? }
     local row = { slot_num = slot_num, pool = pool }
     if info == nil then
-      row.text = trx.locale.format("general/misc/empty_slot_fmt", slot_num)
+      row.text = trx.locale.text("general/misc/empty_slot_fmt", slot_num)
     elseif info.counter <= 0 then
       row.text = info.level_title
     elseif trx.game.tr_version == 1 then
@@ -45,7 +46,7 @@ function M.all_level_rows()
       and level.type ~= trx.game.LevelType.DUMMY
       and level.type ~= trx.game.LevelType.CURRENT
     then
-      rows[#rows + 1] = { text = level.title, level = level }
+      rows[#rows + 1] = { text = trx.locale.level_title(level), level = level }
     end
   end
   return rows
@@ -59,7 +60,7 @@ function M.reached_level_rows(reached_nums)
   local rows = {}
   for _, level in ipairs(trx.game.levels) do
     if level.type ~= trx.game.LevelType.GYM and reached[level.num] then
-      rows[#rows + 1] = { text = level.title, level = level }
+      rows[#rows + 1] = { text = trx.locale.level_title(level), level = level }
     end
   end
   return rows
@@ -68,13 +69,13 @@ end
 function M.mode_rows()
   local rows = {
     {
-      text = trx.locale.get("general/passport/mode_new_game"),
+      text = trx.locale.text("general/passport/mode_new_game"),
       choice = "new_game",
     },
   }
   if pages.game_modes_available() then
     rows[#rows + 1] = {
-      text = trx.locale.get("general/passport/mode_new_game_plus"),
+      text = trx.locale.text("general/passport/mode_new_game_plus"),
       choice = "new_game_plus",
     }
   end
@@ -105,19 +106,19 @@ function M.new_game_rows()
   local extras = {}
   if play_prev then
     extras[#extras + 1] = {
-      text = trx.locale.get("general/passport/play_previous_levels"),
+      text = trx.locale.text("general/passport/play_previous_levels"),
       choice = "play_prev",
     }
   end
   if story then
     extras[#extras + 1] = {
-      text = trx.locale.get("general/passport/story_so_far"),
+      text = trx.locale.text("general/passport/story_so_far"),
       choice = "story",
     }
   end
   if #pages.switchable_mods() > 1 then
     extras[#extras + 1] = {
-      text = trx.locale.get("general/passport/switch_mod"),
+      text = trx.locale.text("general/passport/switch_mod"),
       choice = "switch_mod",
     }
   end
