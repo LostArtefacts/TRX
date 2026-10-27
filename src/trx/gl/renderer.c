@@ -69,6 +69,7 @@ typedef struct {
     TRX_GL_TEXTURE palette_lut;
     int32_t palette_lut_size;
     GLuint composite_fbo;
+    bool is_output_blank;
 } M_CONTEXT;
 
 static void M_Blit(const M_CONTEXT *const p, const TRX_GL_FBO *const fbo)
@@ -306,6 +307,11 @@ static void M_SwapBuffers(TRX_GL_RENDERER *const renderer)
     M_CONTEXT *const p = renderer->priv;
 
     M_Render(renderer);
+    if (p->is_output_blank) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        TRX_GL_Context_SwitchToViewport(VIEWPORT_WINDOW);
+        TRX_GL_Context_Clear();
+    }
     SDL_GL_SwapWindow(TRX_GL_Context_GetWindowHandle());
     M_UpdateFBOSizes(renderer);
 
@@ -472,6 +478,12 @@ void TRX_GL_Renderer_BlankWindow(void)
 
     TRX_GL_FBO_Bind(p->geometry);
     TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
+}
+
+void TRX_GL_Renderer_SetOutputBlank(const bool is_blank)
+{
+    M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
+    p->is_output_blank = is_blank;
 }
 
 void TRX_GL_Renderer_CompositeToTexture(

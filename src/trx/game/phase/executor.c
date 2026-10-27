@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/game/clock.h>
@@ -28,6 +29,7 @@
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
 #include <trx/gl/gpu_timer.h>
+#include <trx/gl/renderer.h>
 #include <trx/gl/track.h>
 
 #include <SDL2/SDL_timer.h>
@@ -37,9 +39,9 @@
 // target rate, or once this many frames in a row are no faster than the
 // fastest one by M_WARM_UP_GAIN.
 #define M_WARM_UP_BUDGET 1.1
-#define M_WARM_UP_SETTLED_FRAMES 3
+#define M_WARM_UP_SETTLED_FRAMES 4
 #define M_WARM_UP_GAIN 0.95
-#define M_WARM_UP_MAX_SECONDS 0.5
+#define M_WARM_UP_MAX_SECONDS 1.0
 
 static int32_t m_CurrentFrame = 0;
 static bool m_Exiting;
@@ -316,9 +318,11 @@ static void M_Draw(PHASE *const phase)
 }
 
 // Draws the first frame of a phase again while the frames get faster, without
-// moving the phase on, for at most M_WARM_UP_MAX_SECONDS. A graphics card that
-// idled through an FMV lowers its clock and takes a moment to raise it again,
-// and a fade that ran meanwhile would stall and then jump.
+// moving the phase on, for at most M_WARM_UP_MAX_SECONDS. The window shows
+// black meanwhile, since the first frame can be part way into a fade, and
+// holding it would show as a stall. A graphics card that idled through an FMV
+// lowers its clock and takes a moment to raise it again, and a fade that ran
+// meanwhile would stall and then jump.
 static void M_WarmUp(PHASE *const phase)
 {
     const double frequency = (double)SDL_GetPerformanceFrequency();
@@ -326,7 +330,13 @@ static void M_WarmUp(PHASE *const phase)
     const Uint64 start = SDL_GetPerformanceCounter();
     Uint64 last = start;
     double best_time = 0.0;
+    double time = 0.0;
     int32_t settled_frames = 0;
+    int32_t frames = 0;
+    // A frame that waits for the display takes as long as the display does,
+    // which hides how fast the card has become.
+    TRX_GL_Context_SetVSync(false);
+    TRX_GL_Renderer_SetOutputBlank(true);
     while ((SDL_GetPerformanceCounter() - start) / frequency
            < M_WARM_UP_MAX_SECONDS) {
         Shell_ProcessEvents();
@@ -335,8 +345,9 @@ static void M_WarmUp(PHASE *const phase)
         // for to time it.
         glFinish();
         const Uint64 now = SDL_GetPerformanceCounter();
-        const double time = (now - last) / frequency;
+        time = (now - last) / frequency;
         last = now;
+        frames++;
         if (time <= budget) {
             break;
         }
@@ -347,6 +358,11 @@ static void M_WarmUp(PHASE *const phase)
             break;
         }
     }
+    TRX_GL_Renderer_SetOutputBlank(false);
+    TRX_GL_Context_SetVSync(g_Config.rendering.enable_vsync);
+    LOG_DEBUG(
+        "warmed up in %d frames, %.0f ms, last frame %.2f ms", frames,
+        (last - start) * 1000.0 / frequency, time * 1000.0);
     Clock_SyncTick();
 }
 

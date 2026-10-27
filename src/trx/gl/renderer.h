@@ -58,6 +58,10 @@ void TRX_GL_Renderer_SyncFboSizes(void);
 // shows an older frame.
 void TRX_GL_Renderer_BlankWindow(void);
 
+// Makes each frame present black while it is set. The frame is still drawn
+// and put together in full, so the graphics card does the same work.
+void TRX_GL_Renderer_SetOutputBlank(bool is_blank);
+
 // Resolve the geometry framebuffer down to VIEWPORT_SCENE and return the GL
 // object id holding the result (3D scene only, no UI). Multisampling and
 // supersampling both need this before the scene can be sampled or read back;
