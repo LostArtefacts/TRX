@@ -943,8 +943,8 @@ static void M_Control(const int16_t item_num)
 
     const int16_t x_rot = Math_Atan(M_FRONT, item->pos.y - height);
     const int16_t z_rot = Math_Atan(M_SIDE, height - fl.y);
-    item->rot.x += (x_rot - item->rot.x) / 2;
-    item->rot.z += (z_rot - item->rot.z) / 2;
+    item->rot.x += (x_rot - item->rot.x) >> 1;
+    item->rot.z += (z_rot - item->rot.z) >> 1;
 
     if (x_rot == 0 && ABS(item->rot.x) < 4) {
         item->rot.x = 0;
