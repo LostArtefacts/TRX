@@ -219,6 +219,13 @@ void Output_SwitchViewport(const VIEWPORT_SPACE space)
 
 void Output_SetSupersamplingEnabled(const bool enabled)
 {
+    // Sizes the supersampled framebuffers before they are suspended. After a
+    // mod switch, they still have the size the previous mod's settings gave
+    // them, and they would otherwise be rebuilt only when supersampling
+    // resumes.
+    if (!enabled) {
+        TRX_GL_Renderer_SyncFboSizes();
+    }
     Viewport_SetSupersamplingEnabled(enabled);
     TRX_GL_Renderer_SyncFboSizes();
 }

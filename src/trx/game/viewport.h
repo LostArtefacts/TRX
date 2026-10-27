@@ -76,6 +76,8 @@ int16_t Viewport_GetEffectiveFOV(void);
 // fixed source and so gain nothing from being rasterized above the resolution
 // they are shown at. VIEWPORT_GAME then matches VIEWPORT_SCENE.
 void Viewport_SetSupersamplingEnabled(bool enabled);
+// Returns false while the supersampling factor is suspended.
+bool Viewport_IsSupersamplingEnabled(void);
 
 // Returns the current FOV formula.
 FOV_MODE Viewport_GetFOVMode(void);
