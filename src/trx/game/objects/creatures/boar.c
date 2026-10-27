@@ -1,3 +1,5 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -34,6 +36,10 @@ typedef enum {
 
 typedef struct {
     int32_t damage;
+    // Set while the boar runs off after a bite, until it is far from its
+    // enemy. The original keeps this in the item flags, which also hold the
+    // trigger bits, so a boar starts out running and charging.
+    bool is_retreating;
 } M_PRIV;
 
 static const BITE m_Bite = {
@@ -48,6 +54,21 @@ static void M_Initialise(const int16_t item_num)
     Item_SwitchToAnim(item, M_ANIM_STOP, 0);
     item->current_anim_state = M_STATE_STOP;
     item->goal_anim_state = M_STATE_STOP;
+    M_PRIV *const p = item->priv;
+    p->is_retreating = true;
+}
+
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    MUST(JSON_READ_OPT(io, "is_retreating", &p->is_retreating));
+    return OK;
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "is_retreating", p->is_retreating);
 }
 
 static void M_CalculateEnemy(ITEM *const item)
@@ -92,6 +113,7 @@ static void M_Control(const int16_t item_num)
 
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->creature_data;
+    M_PRIV *const p = item->priv;
     int16_t neck_x = 0;
     int16_t neck_y = 0;
     int16_t angle = 0;
@@ -113,7 +135,7 @@ static void M_Control(const int16_t item_num)
     AI_INFO info = {};
     Creature_AIInfo(item, &info);
     Creature_UpdateMood(item, &info, true);
-    if (creature->flags != 0) {
+    if (p->is_retreating) {
         creature->mood = MOOD_ESCAPE;
     }
     Creature_ApplyMood(item, &info, true);
@@ -126,7 +148,7 @@ static void M_Control(const int16_t item_num)
     switch (item->current_anim_state) {
     case M_STATE_STOP:
         creature->maximum_turn = 0;
-        if ((info.ahead && info.distance != 0) || creature->flags != 0) {
+        if ((info.ahead && info.distance != 0) || p->is_retreating) {
             item->goal_anim_state = M_STATE_ATTACK;
         } else if ((Random_GetControl() & 0x7F) != 0) {
             neck_y = Creature_AIGuard(creature) >> 1;
@@ -138,20 +160,19 @@ static void M_Control(const int16_t item_num)
     case M_STATE_ATTACK:
         if (info.distance >= M_ATTACK_DIST) {
             creature->maximum_turn = M_ATTACK_TURN;
-            creature->flags = 0;
+            p->is_retreating = false;
         } else {
             creature->maximum_turn = M_RUN_TURN;
             neck_x = -info.distance;
         }
 
-        if (creature->flags == 0 && info.distance < M_BITE_DIST && info.bite) {
+        if (!p->is_retreating && info.distance < M_BITE_DIST && info.bite) {
             if (creature->enemy == Lara_GetItem()) {
-                const M_PRIV *const p = item->priv;
                 Lara_TakeDamage(p->damage, true);
             }
 
             Creature_Effect(item, &m_Bite, Spawn_Blood);
-            creature->flags = 1;
+            p->is_retreating = true;
             item->goal_anim_state = M_STATE_WARN;
         }
         break;
@@ -193,6 +214,8 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = M_PIVOT;
 
     obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->intelligent = true;
     obj->save_flags = true;
     obj->save_anim = true;
