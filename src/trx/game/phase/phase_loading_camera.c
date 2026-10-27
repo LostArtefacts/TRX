@@ -84,6 +84,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Input_Update();
     Shell_ProcessInput();
+    Output_AnimateLights(1);
     if (UI_Takeover_TakeChoice(UI_TAKEOVER_LEVEL_VIEW)
         != UI_TAKEOVER_CHOICE_NONE) {
         p->is_held = false;
