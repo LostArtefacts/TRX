@@ -725,12 +725,12 @@ static void M_Control(const int16_t item_num)
     boat_item->fall_speed =
         M_DoDynamics(p->water, boat_item->fall_speed, &boat_item->pos.y);
 
-    height = (fr.y + fl.y) / 2;
+    height = (fr.y + fl.y) >> 1;
 
     const int16_t x_rot = Math_Atan(M_FRONT, boat_item->pos.y - height);
     const int16_t z_rot = Math_Atan(M_SIDE, height - fl.y);
-    boat_item->rot.x += (x_rot - boat_item->rot.x) / 2;
-    boat_item->rot.z += (z_rot - boat_item->rot.z) / 2;
+    boat_item->rot.x += (x_rot - boat_item->rot.x) >> 1;
+    boat_item->rot.z += (z_rot - boat_item->rot.z) >> 1;
 
     if (x_rot == 0 && ABS(boat_item->rot.x) < 4) {
         boat_item->rot.x = 0;
