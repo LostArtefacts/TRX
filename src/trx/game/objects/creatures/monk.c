@@ -163,7 +163,7 @@ static void M_Control(const int16_t item_num)
             if (Creature_IsHostile(item)) {
                 creature->maximum_turn = M_RUN_TURN_FAST;
             }
-            tilt = angle / 4;
+            tilt = angle >> 2;
             if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = M_STATE_WAIT_1;
             } else if (creature->mood == MOOD_ESCAPE) {

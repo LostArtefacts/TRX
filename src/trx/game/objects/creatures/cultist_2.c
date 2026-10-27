@@ -116,7 +116,7 @@ static void M_Control(const int16_t item_num)
 
         case M_STATE_RUN:
             creature->maximum_turn = M_RUN_TURN;
-            tilt = angle / 4;
+            tilt = angle >> 2;
             if (info.ahead) {
                 neck = info.angle;
             }
