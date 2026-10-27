@@ -13,6 +13,11 @@ void Game_SetIsPlaying(bool is_playing);
 // during pause, photo mode, or while the inventory is open.
 bool Game_IsPlaying(void);
 
+// Sets whether the title level runs behind the menu, as a live scene.
+void Game_SetIsLiveScene(bool is_live_scene);
+// Returns true while the title level runs behind the menu.
+bool Game_IsLiveScene(void);
+
 const GF_LEVEL *Game_GetCurrentLevel(void);
 void Game_SetCurrentLevel(const GF_LEVEL *level);
 

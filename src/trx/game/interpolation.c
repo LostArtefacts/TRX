@@ -450,10 +450,11 @@ bool Interpolation_IsActive(void)
 
 double Interpolation_GetWorldRate(void)
 {
-    // Photo mode steps the world itself and keeps its own rate, so the frozen
-    // gameplay state must not force the rate back to 1.0.
+    // Photo mode steps the world itself and keeps its own rate, and the title
+    // level runs behind the menu, so neither is frozen gameplay.
     if (!Interpolation_IsActive()
-        || (!Game_IsPlaying() && !PhotoMode_IsActive())) {
+        || (!Game_IsPlaying() && !Game_IsLiveScene()
+            && !PhotoMode_IsActive())) {
         return 1.0;
     }
     return m_WorldRate;
