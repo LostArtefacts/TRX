@@ -451,12 +451,13 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         const int16_t angle = (int16_t)Math_Atan(
             lara->pos.z - item->pos.z, lara->pos.x - item->pos.x);
 
+        // He stays turned as the cutscene sets him, rather than turning
+        // towards his next marker while he talks.
+        info->maximum_turn = 0;
         if (p->waypoint == 14 || p->waypoint == 3) {
             item->rot.y = info->enemy->rot.y;
             info->lot.is_jumping = true;
-            info->maximum_turn = 0;
         } else if (p->waypoint == 43 || p->waypoint == 53) {
-            info->maximum_turn = 0;
             item->rot.y = -0x6000;
         } else {
             item->rot.y = angle;

@@ -300,6 +300,7 @@
 - Fixed water particles appearing in dry rooms that have an alternate underwater room (TRX1830)
 - Fixed the lighting on Lara and objects changing too abruptly when moving between lights (TRX1896)
 - Fixed boars standing still rather than charging, such as the second boar in Angkor Wat waiting for Werner (TRX1918)
+- Fixed Werner turning away from Lara during cutscenes (OG bug) (TRX1919)
 - Fixed torch flames stuttering when the torch moves fast, such as Ahmed's torch in Tomb of Seth (TRX1581)
 
 **Game and mods**
