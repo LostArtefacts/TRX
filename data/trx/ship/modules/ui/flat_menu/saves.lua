@@ -175,6 +175,14 @@ local function open(ctx, kind, pick, on_done, stays)
     return math.max(1, math.min(count, fit))
   end
 
+  -- Shows the delete button over a save that it can delete, unless a dialog
+  -- stands in place of the list.
+  local function sync_button()
+    button:set_enabled(
+      not state.is_asking and delete_save.is_deletable(slots[state.selected])
+    )
+  end
+
   -- Builds the text of the rows that show, once the selection moves.
   local function follow()
     left_on = slots[state.selected]
@@ -196,6 +204,7 @@ local function open(ctx, kind, pick, on_done, stays)
         date = date ~= nil and colored(color, date) or nil,
       }
     end
+    sync_button()
   end
 
   local function paint()
@@ -260,6 +269,7 @@ local function open(ctx, kind, pick, on_done, stays)
       on_input = on_input,
       on_close = function()
         state.is_asking = false
+        sync_button()
       end,
     })
   end

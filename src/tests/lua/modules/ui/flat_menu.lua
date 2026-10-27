@@ -610,6 +610,19 @@ test("backing out of the question keeps the save", function()
   finish()
 end)
 
+test("the delete button shows with the list of saves", function()
+  local SAVE_LOAD = trx.ui.Screen.SAVE_LOAD
+  trx.config.set("ui.menu_system", "flat")
+  assert(fake.offer(SAVE_LOAD, { mode = MenuMode.LOAD }), "no list opened")
+  assert(shows("QS "), "no save was listed")
+  assert(
+    shows(trx.locale.get("general/passport/delete_save")),
+    "the delete button came after the list"
+  )
+  fake.release(SAVE_LOAD)
+  finish()
+end)
+
 test("the ring draws the menu unless the flat menu is picked", function()
   carry()
   trx.config.set("ui.menu_system", "ring")
