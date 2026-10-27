@@ -214,6 +214,11 @@ void Viewport_SetSupersamplingEnabled(const bool enabled)
     Viewport_Reset();
 }
 
+bool Viewport_IsSupersamplingEnabled(void)
+{
+    return m_SupersamplingEnabled;
+}
+
 FOV_MODE Viewport_GetFOVMode(void)
 {
     return m_CurrentFOVMode;
