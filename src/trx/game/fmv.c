@@ -337,6 +337,7 @@ RESULT FMV_Play(const char *const file_path)
     const RESULT result = M_Play(file_path);
     Output_SetSupersamplingEnabled(true);
     m_IsPlaying = false;
+    PhaseExecutor_WarmUpNextPhase();
     return result;
 }
 

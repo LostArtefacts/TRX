@@ -33,12 +33,20 @@
 #include <SDL2/SDL_timer.h>
 
 #define M_MAX_PHASES 10
+// The warm-up ends once a frame takes no longer than this many frames of the
+// target rate, or once this many frames in a row are no faster than the
+// fastest one by M_WARM_UP_GAIN.
+#define M_WARM_UP_BUDGET 1.1
+#define M_WARM_UP_SETTLED_FRAMES 3
+#define M_WARM_UP_GAIN 0.95
+#define M_WARM_UP_MAX_SECONDS 0.5
 
 static int32_t m_CurrentFrame = 0;
 static bool m_Exiting;
 static int32_t m_PhaseStackSize = 0;
 static PHASE *m_PhaseStack[M_MAX_PHASES] = {};
 static bool m_PendingFadeToBlack = false;
+static bool m_WarmUpPending = false;
 static FADER_ARGS m_PendingFadeToBlackArgs;
 
 static double m_LastFlipMs = 0.0;
@@ -307,6 +315,46 @@ static void M_Draw(PHASE *const phase)
     }
 }
 
+// Draws the first frame of a phase again while the frames get faster, without
+// moving the phase on, for at most M_WARM_UP_MAX_SECONDS. A graphics card that
+// idled through an FMV lowers its clock and takes a moment to raise it again,
+// and a fade that ran meanwhile would stall and then jump.
+static void M_WarmUp(PHASE *const phase)
+{
+    const double frequency = (double)SDL_GetPerformanceFrequency();
+    const double budget = M_WARM_UP_BUDGET / (double)Clock_GetCurrentFPS();
+    const Uint64 start = SDL_GetPerformanceCounter();
+    Uint64 last = start;
+    double best_time = 0.0;
+    int32_t settled_frames = 0;
+    while ((SDL_GetPerformanceCounter() - start) / frequency
+           < M_WARM_UP_MAX_SECONDS) {
+        Shell_ProcessEvents();
+        M_Draw(phase);
+        // The card queues frames ahead of the processor, so each is waited
+        // for to time it.
+        glFinish();
+        const Uint64 now = SDL_GetPerformanceCounter();
+        const double time = (now - last) / frequency;
+        last = now;
+        if (time <= budget) {
+            break;
+        }
+        if (best_time == 0.0 || time < best_time * M_WARM_UP_GAIN) {
+            best_time = time;
+            settled_frames = 0;
+        } else if (++settled_frames >= M_WARM_UP_SETTLED_FRAMES) {
+            break;
+        }
+    }
+    Clock_SyncTick();
+}
+
+void PhaseExecutor_WarmUpNextPhase(void)
+{
+    m_WarmUpPending = true;
+}
+
 GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
@@ -348,6 +396,11 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
         // run as ticks before the first frame, so a fade that the start set
         // off would show part way through.
         Clock_SyncTick();
+    }
+
+    if (m_WarmUpPending) {
+        m_WarmUpPending = false;
+        M_WarmUp(phase);
     }
 
     while (true) {

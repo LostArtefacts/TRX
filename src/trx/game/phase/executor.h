@@ -10,3 +10,8 @@ GF_COMMAND PhaseExecutor_Run(PHASE *phase);
 bool PhaseExecutor_BeginExit(void);
 
 PHASE *PhaseExecutor_GetOuterPhase(void);
+
+// Makes the next phase draw its first frame until the graphics card keeps up
+// before the phase moves on. Call it after the card has had little to draw,
+// such as after an FMV.
+void PhaseExecutor_WarmUpNextPhase(void);
