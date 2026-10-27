@@ -880,7 +880,7 @@ bool Skidoo_Control(void)
     skidoo->fall_speed =
         M_DoDynamics(height, skidoo->fall_speed, &skidoo->pos.y);
 
-    height = (fr.y + fl.y) / 2;
+    height = (fr.y + fl.y) >> 1;
     const int16_t x_rot = Math_Atan(M_FRONT, skidoo->pos.y - height);
     const int16_t z_rot = Math_Atan(M_SIDE, height - fl.y);
     skidoo->rot.x += (x_rot - skidoo->rot.x) >> 1;
