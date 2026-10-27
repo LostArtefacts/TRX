@@ -1,0 +1,3235 @@
+# Tomb2.exe manifest -- safe to edit by hand
+# sha256 not recorded; the build is not in blob
+# the European build TRX was decompiled from; retail names from TR2Main where the builds line up
+#   0xADDR d NAME TYPE  global variable
+#   0xADDR + NAME PROTO function (kept if already named)
+#   0xADDR ! NAME PROTO function (override an existing name)
+#   0xADDR x            delete this function
+#   0xADDR -            not identified yet
+
+# types
+typedef void *LPDIRECT3D2;
+typedef void *LPDIRECT3DDEVICE2;
+typedef void *LPDIRECT3DVIEWPORT2;
+typedef void *LPDIRECT3DMATERIAL2;
+typedef void *LPDIRECT3DTEXTURE2;
+typedef DDSURFACEDESC DDSDESC, *LPDDSDESC;
+typedef LPDIRECTDRAWSURFACE3 LPDDS;
+typedef D3DTEXTUREHANDLE HWR_TEXTURE_HANDLE;
+typedef struct __unaligned {
+    int32_t x;
+    int32_t y;
+    int32_t z;
+} XYZ_32;
+typedef struct __unaligned {
+    int16_t x;
+    int16_t y;
+    int16_t z;
+} XYZ_16;
+typedef struct __unaligned {
+    int32_t _00;
+    int32_t _01;
+    int32_t _02;
+    int32_t _03;
+    int32_t _10;
+    int32_t _11;
+    int32_t _12;
+    int32_t _13;
+    int32_t _20;
+    int32_t _21;
+    int32_t _22;
+    int32_t _23;
+} MATRIX;
+typedef enum {
+    VGA_NO_VGA    = 0,
+    VGA_256_COLOR = 1,
+    VGA_MODEX     = 2,
+    VGA_STANDARD  = 3,
+} VGA_MODE;
+typedef struct __unaligned {
+    LPBITMAPINFO bmp_info;
+    void *bmp_data;
+    HPALETTE hPalette;
+    DWORD flags;
+} BITMAP_RESOURCE;
+typedef struct __unaligned {
+    int32_t width;
+    int32_t height;
+    int32_t bpp;
+    VGA_MODE vga;
+} DISPLAY_MODE;
+typedef struct __unaligned DISPLAY_MODE_NODE {
+    struct DISPLAY_MODE_NODE *next;
+    struct DISPLAY_MODE_NODE *previous;
+    DISPLAY_MODE body;
+} DISPLAY_MODE_NODE;
+typedef struct __unaligned {
+    DISPLAY_MODE_NODE *head;
+    DISPLAY_MODE_NODE *tail;
+    DWORD count;
+} DISPLAY_MODE_LIST;
+typedef struct __unaligned {
+    char *content;
+    bool is_valid;
+} STRING_FLAGGED;
+typedef struct __unaligned {
+    LPGUID adapter_guid_ptr;
+    GUID adapter_guid;
+    STRING_FLAGGED driver_desc;
+    STRING_FLAGGED driver_name;
+    DDCAPS_DX5 driver_caps;
+    DDCAPS_DX5 hel_caps;
+    GUID device_guid;
+    D3DDEVICEDESC_V2 hw_device_desc;
+    DISPLAY_MODE_LIST hw_disp_mode_list;
+    DISPLAY_MODE_LIST sw_disp_mode_list;
+    DISPLAY_MODE vga_mode1;
+    DISPLAY_MODE vga_mode2;
+    uint32_t screen_width;
+    bool hw_render_supported;
+    bool sw_windowed_supported;
+    bool hw_windowed_supported;
+    bool is_vga_mode1_presented;
+    bool is_vga_mode2_presented;
+    bool perspective_correct_supported;
+    bool dither_supported;
+    bool zbuffer_supported;
+    bool linear_filter_supported;
+    bool shade_restricted;
+} DISPLAY_ADAPTER;
+typedef struct __unaligned DISPLAY_ADAPTER_NODE {
+    struct DISPLAY_ADAPTER_NODE *next;
+    struct DISPLAY_ADAPTER_NODE *previous;
+    DISPLAY_ADAPTER body;
+} DISPLAY_ADAPTER_NODE;
+typedef struct __unaligned {
+    DISPLAY_ADAPTER_NODE *head;
+    DISPLAY_ADAPTER_NODE *tail;
+    DWORD count;
+} DISPLAY_ADAPTER_LIST;
+typedef struct __unaligned {
+    GUID *adapter_guid_ptr;
+    GUID adapter_guid;
+    STRING_FLAGGED description;
+    STRING_FLAGGED module;
+} SOUND_ADAPTER;
+typedef struct __unaligned SOUND_ADAPTER_NODE {
+    struct SOUND_ADAPTER_NODE *next;
+    struct SOUND_ADAPTER_NODE *previous;
+    SOUND_ADAPTER body;
+} SOUND_ADAPTER_NODE;
+typedef struct __unaligned {
+    SOUND_ADAPTER_NODE *head;
+    SOUND_ADAPTER_NODE *tail;
+    DWORD count;
+} SOUND_ADAPTER_LIST;
+typedef struct __unaligned {
+    GUID *lpJoystickGuid;
+    GUID joystickGuid;
+    STRING_FLAGGED productName;
+    STRING_FLAGGED instanceName;
+} JOYSTICK;
+typedef struct __unaligned JOYSTICK_NODE {
+    struct JOYSTICK_NODE *next;
+    struct JOYSTICK_NODE *previous;
+    JOYSTICK body;
+} JOYSTICK_NODE;
+typedef struct __unaligned JOYSTICK_LIST {
+    struct JOYSTICK_LIST *head;
+    struct JOYSTICK_LIST *tail;
+    DWORD count;
+} JOYSTICK_LIST;
+typedef enum {
+    RM_UNKNOWN  = 0,
+    RM_SOFTWARE = 1,
+    RM_HARDWARE = 2,
+} RENDER_MODE;
+typedef enum {
+    AM_4_3  = 0,
+    AM_16_9 = 1,
+    AM_ANY  = 2,
+} ASPECT_MODE;
+typedef enum {
+    TAM_DISABLED      = 0,
+    TAM_BILINEAR_ONLY = 1,
+    TAM_ALWAYS        = 2,
+} TEXEL_ADJUST_MODE;
+typedef struct __unaligned {
+    DISPLAY_ADAPTER_NODE *preferred_display_adapter;
+    SOUND_ADAPTER_NODE *preferred_sound_adapter;
+    JOYSTICK_NODE *preferred_joystick;
+    const DISPLAY_MODE_NODE *video_mode;
+    RENDER_MODE render_mode;
+    int32_t window_width;
+    int32_t window_height;
+    ASPECT_MODE aspect_mode;
+    bool perspective_correct;
+    bool dither;
+    bool zbuffer;
+    bool bilinear_filtering;
+    bool triple_buffering;
+    bool fullscreen;
+    bool sound_enabled;
+    bool lara_mic;
+    bool joystick_enabled;
+    bool disable_16bit_textures;
+    bool dont_sort_primitives;
+    bool flip_broken;
+    TEXEL_ADJUST_MODE texel_adjust_mode;
+    int32_t nearest_adjustment;
+    int32_t linear_adjustment;
+} APP_SETTINGS;
+typedef struct __unaligned {
+    LPDDS sys_mem_surface;
+    LPDDS vid_mem_surface;
+    LPDIRECTDRAWPALETTE palette;
+    LPDIRECT3DTEXTURE2 texture_3d;
+    HWR_TEXTURE_HANDLE tex_handle;
+    int32_t width;
+    int32_t height;
+    int32_t status;
+} TEXPAGE_DESC;
+typedef struct __unaligned {
+    union {
+        uint8_t red;
+        uint8_t r;
+    };
+    union {
+        uint8_t green;
+        uint8_t g;
+    };
+    union {
+        uint8_t blue;
+        uint8_t b;
+    };
+} RGB_888;
+typedef struct {
+    struct {
+        uint32_t r;
+        uint32_t g;
+        uint32_t b;
+        uint32_t a;
+    } mask, depth, offset;
+} COLOR_BIT_MASKS;
+typedef struct __unaligned {
+    D3DCOLOR clr[4][4];
+} GOURAUD_FILL;
+typedef struct __unaligned {
+    D3DCOLOR clr[9];
+} GOURAUD_OUTLINE;
+typedef struct __unaligned {
+    uint8_t index[256];
+} DEPTHQ_ENTRY;
+typedef struct __unaligned {
+    uint8_t index[32];
+} GOURAUD_ENTRY;
+typedef struct __unaligned {
+    XYZ_32 pos;
+    XYZ_16 rot;
+} PHD_3DPOS;
+typedef struct __unaligned {
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int32_t r;
+} SPHERE;
+typedef struct __unaligned {
+    union {
+        uint32_t all;
+        struct {
+            uint32_t active:      1;
+            uint32_t flash:       1;
+            uint32_t rotate_h:    1;
+            uint32_t rotate_v:    1;
+            uint32_t centre_h:    1;
+            uint32_t centre_v:    1;
+            uint32_t hide:        1;
+            uint32_t right:       1;
+            uint32_t bottom:      1;
+            uint32_t background:  1;
+            uint32_t outline:     1;
+            uint32_t multiline:   1;
+            uint32_t manual_draw: 1;
+        };
+    } flags;
+    uint16_t text_flags;
+    uint16_t bgnd_flags;
+    uint16_t outl_flags;
+    XYZ_16 pos;
+    int16_t letter_spacing;
+    int16_t word_spacing;
+    struct {
+        int16_t rate;
+        int16_t count;
+    } flash;
+    int16_t bgnd_color;
+    const uint16_t *bgnd_gour;
+    int16_t outl_color;
+    const uint16_t *outl_gour;
+    struct {
+        int16_t x;
+        int16_t y;
+    } bgnd_size;
+    XYZ_16 bgnd_off;
+    struct {
+        int32_t h;
+        int32_t v;
+    } scale;
+    char *content;
+} TEXTSTRING;
+typedef struct __unaligned {
+    float xv;
+    float yv;
+    float zv;
+    float rhw;
+    float xs;
+    float ys;
+    int16_t clip;
+    int16_t g;
+    int16_t u;
+    int16_t v;
+} PHD_VBUF;
+typedef struct __unaligned {
+    uint16_t u;
+    uint16_t v;
+} PHD_UV;
+typedef struct __unaligned {
+    uint16_t draw_type;
+    uint16_t tex_page;
+    PHD_UV uv[4];
+} PHD_TEXTURE;
+typedef struct __unaligned {
+    uint16_t tex_page;
+    uint16_t offset;
+    uint16_t width;
+    uint16_t height;
+    int16_t x0;
+    int16_t y0;
+    int16_t x1;
+    int16_t y1;
+} PHD_SPRITE;
+typedef struct __unaligned {
+    float xv;
+    float yv;
+    float zv;
+    float rhw;
+    float xs;
+    float ys;
+    float u;
+    float v;
+    float g;
+} POINT_INFO;
+typedef struct __unaligned {
+    float x;
+    float y;
+    float rhw;
+    float u;
+    float v;
+    float g;
+} VERTEX_INFO;
+typedef struct __unaligned {
+    uint16_t no_selector : 1;
+    uint16_t ready : 1;
+    uint16_t pad : 14;
+    uint16_t items_count;
+    uint16_t selected;
+    uint16_t visible_count;
+    uint16_t line_offset;
+    uint16_t line_old_offset;
+    uint16_t pix_width;
+    uint16_t line_height;
+    int16_t x_pos;
+    int16_t y_pos;
+    int16_t z_pos;
+    uint16_t item_string_len;
+    char *pitem_strings1;
+    char *pitem_strings2;
+    uint32_t *pitem_flags1;
+    uint32_t *pitem_flags2;
+    uint32_t heading_flags1;
+    uint32_t heading_flags2;
+    uint32_t background_flags;
+    uint32_t moreup_flags;
+    uint32_t moredown_flags;
+    uint32_t item_flags1[24];
+    uint32_t item_flags2[24];
+    TEXTSTRING *heading_text1;
+    TEXTSTRING *heading_text2;
+    TEXTSTRING *background_text;
+    TEXTSTRING *moreup_text;
+    TEXTSTRING *moredown_text;
+    TEXTSTRING *item_texts1[24];
+    TEXTSTRING *item_texts2[24];
+    char heading_string1[32];
+    char heading_string2[32];
+    uint32_t render_width;
+    uint32_t render_height;
+} REQUEST_INFO;
+typedef struct __unaligned {
+    uint32_t best_time[10];
+    uint32_t best_finish[10];
+    uint32_t finish_count;
+} ASSAULT_STATS;
+typedef struct __unaligned {
+    int32_t _0;
+    int32_t _1;
+} SORT_ITEM;
+typedef enum {
+    ST_AVG_Z = 0,
+    ST_MAX_Z = 1,
+    ST_FAR_Z = 2,
+} SORT_TYPE;
+typedef struct __unaligned {
+    int32_t floor;
+    int32_t ceiling;
+    int32_t type;
+} COLL_SIDE;
+typedef struct __unaligned {
+    COLL_SIDE side_mid;
+    COLL_SIDE side_front;
+    COLL_SIDE side_left;
+    COLL_SIDE side_right;
+    int32_t radius;
+    int32_t bad_pos;
+    int32_t bad_neg;
+    int32_t bad_ceiling;
+    XYZ_32 shift;
+    XYZ_32 old;
+    int16_t old_anim_state;
+    int16_t old_anim_num;
+    int16_t old_frame_num;
+    int16_t facing;
+    int16_t quadrant;
+    int16_t coll_type;
+    int16_t *trigger;
+    int8_t x_tilt;
+    int8_t z_tilt;
+    int8_t hit_by_baddie;
+    int8_t hit_static;
+    uint16_t slopes_are_walls:   1;
+    uint16_t slopes_are_pits:    1;
+    uint16_t lava_is_pit:        1;
+    uint16_t enable_baddie_push: 1;
+    uint16_t enable_spaz:        1;
+    uint16_t hit_ceiling:        1;
+    uint16_t pad:                10;
+} COLL_INFO;
+typedef struct __unaligned {
+    int16_t min_x;
+    int16_t max_x;
+    int16_t min_y;
+    int16_t max_y;
+    int16_t min_z;
+    int16_t max_z;
+} BOUNDS_16;
+typedef struct __unaligned {
+    int16_t mesh_idx;
+    uint16_t flags;
+    BOUNDS_16 draw_bounds;
+    BOUNDS_16 collision_bounds;
+} STATIC_INFO;
+typedef struct __unaligned {
+    int32_t floor;
+    uint32_t touch_bits;
+    uint32_t mesh_bits;
+    int16_t object_id;
+    int16_t current_anim_state;
+    int16_t goal_anim_state;
+    int16_t required_anim_state;
+    int16_t anim_num;
+    int16_t frame_num;
+    int16_t room_num;
+    int16_t next_item;
+    int16_t next_active;
+    int16_t speed;
+    int16_t fall_speed;
+    int16_t hit_points;
+    int16_t box_num;
+    int16_t timer;
+    uint16_t flags;
+    int16_t shade_1;
+    int16_t shade_2;
+    int16_t carried_item;
+    void *data;
+    union {
+        struct {
+            XYZ_32 pos;
+            XYZ_16 rot;
+        };
+        PHD_3DPOS pos_full;
+    };
+    uint16_t active:        1;
+    uint16_t status:        2;
+    uint16_t gravity:       1;
+    uint16_t hit_status:    1;
+    uint16_t collidable:    1;
+    uint16_t looked_at:     1;
+    uint16_t dynamic_light: 1;
+    uint16_t killed:        1;
+    uint16_t pad:           7;
+} ITEM;
+typedef struct __unaligned {
+    uint32_t timer;
+    uint32_t shots;
+    uint32_t hits;
+    uint32_t distance;
+    uint16_t kills;
+    uint8_t secrets_flags;
+    uint8_t medipacks;
+} STATISTICS_INFO;
+typedef struct __unaligned {
+    uint16_t pistol_ammo;
+    uint16_t magnum_ammo;
+    uint16_t uzi_ammo;
+    uint16_t shotgun_ammo;
+    uint16_t m16_ammo;
+    uint16_t grenade_ammo;
+    uint16_t harpoon_ammo;
+    uint8_t small_medipacks;
+    uint8_t large_medipacks;
+    uint8_t reserved1;
+    uint8_t flares;
+    uint8_t gun_status;
+    uint8_t gun_type;
+    uint16_t available:   1;
+    uint16_t has_pistols: 1;
+    uint16_t has_magnums: 1;
+    uint16_t has_uzis:    1;
+    uint16_t has_shotgun: 1;
+    uint16_t has_m16:     1;
+    uint16_t has_grenade: 1;
+    uint16_t has_harpoon: 1;
+    uint16_t pad : 8;
+    uint16_t reserved2;
+    STATISTICS_INFO statistics;
+} START_INFO;
+typedef struct __unaligned {
+    START_INFO start[24];
+    STATISTICS_INFO statistics;
+    int16_t current_level;
+    bool bonus_flag;
+    uint8_t num_pickup[2];
+    uint8_t num_puzzle[4];
+    uint8_t num_key[4];
+    uint16_t reserved;
+    char buffer[6272];
+} SAVEGAME_INFO;
+typedef struct __unaligned {
+    uint16_t idx;
+    int16_t box;
+    uint8_t pit_room;
+    int8_t floor;
+    uint8_t sky_room;
+    int8_t ceiling;
+} SECTOR;
+typedef struct __unaligned {
+    int16_t lock_angles[4];
+    int16_t left_angles[4];
+    int16_t right_angles[4];
+    int16_t aim_speed;
+    int16_t shot_accuracy;
+    int32_t gun_height;
+    int32_t damage;
+    int32_t target_dist;
+    int16_t recoil_frame;
+    int16_t flash_time;
+    int16_t sample_num;
+} WEAPON_INFO;
+typedef struct __unaligned {
+    XYZ_32 pos;
+    XYZ_16 rot;
+    int16_t room_num;
+    int16_t object_id;
+    int16_t next_free;
+    int16_t next_active;
+    int16_t speed;
+    int16_t fall_speed;
+    int16_t frame_num;
+    int16_t counter;
+    int16_t shade;
+} EFFECT;
+typedef struct __unaligned {
+    int16_t zone_num;
+    int16_t enemy_zone_num;
+    int32_t distance;
+    int32_t ahead;
+    int32_t bite;
+    int16_t angle;
+    int16_t enemy_facing;
+} AI_INFO;
+typedef struct __unaligned {
+    int16_t exit_box;
+    uint16_t search_num;
+    int16_t next_expansion;
+    int16_t box_num;
+} BOX_NODE;
+typedef struct __unaligned {
+    BOX_NODE *node;
+    int16_t head;
+    int16_t tail;
+    uint16_t search_num;
+    uint16_t block_mask;
+    int16_t step;
+    int16_t drop;
+    int16_t fly;
+    int16_t zone_count;
+    int16_t target_box;
+    int16_t required_box;
+    XYZ_32 target;
+} LOT_INFO;
+typedef enum {
+    GFL_NO_LEVEL  = -1,
+    GFL_TITLE     = 0,
+    GFL_NORMAL    = 1,
+    GFL_SAVED     = 2,
+    GFL_DEMO      = 3,
+    GFL_CUTSCENE  = 4,
+    GFL_STORY     = 5,
+    GFL_QUIET     = 6,
+    GFL_MID_STORY = 7,
+} GAME_FLOW_LEVEL_TYPE;
+typedef struct __unaligned {
+    int16_t timer;
+    int16_t sprite;
+} PICKUP_INFO;
+typedef struct __unaligned {
+    int16_t shape;
+    XYZ_16 pos;
+    int32_t param1;
+    int32_t param2;
+    void *grdptr;
+    int16_t sprite_num;
+} INVENTORY_SPRITE;
+typedef struct __unaligned {
+    char *string;
+    int16_t object_id;
+    int16_t frames_total;
+    int16_t current_frame;
+    int16_t goal_frame;
+    int16_t open_frame;
+    int16_t anim_direction;
+    int16_t anim_speed;
+    int16_t anim_count;
+    int16_t x_rot_pt_sel;
+    int16_t x_rot_pt;
+    int16_t x_rot_sel;
+    int16_t x_rot_nosel;
+    int16_t x_rot;
+    int16_t y_rot_sel;
+    int16_t y_rot;
+    int32_t y_trans_sel;
+    int32_t y_trans;
+    int32_t z_trans_sel;
+    int32_t z_trans;
+    uint32_t meshes_sel;
+    uint32_t meshes_drawn;
+    int16_t inv_pos;
+    INVENTORY_SPRITE **sprite_list;
+    int32_t reserved[4];
+} INVENTORY_ITEM;
+typedef struct __unaligned {
+    int16_t count;
+    int16_t status;
+    int16_t status_target;
+    int16_t radius_target;
+    int16_t radius_rate;
+    int16_t camera_y_target;
+    int16_t camera_y_rate;
+    int16_t camera_pitch_target;
+    int16_t camera_pitch_rate;
+    int16_t rotate_target;
+    int16_t rotate_rate;
+    int16_t item_pt_x_rot_target;
+    int16_t item_pt_x_rot_rate;
+    int16_t item_x_rot_target;
+    int16_t item_x_rot_rate;
+    int32_t item_y_trans_target;
+    int32_t item_y_trans_rate;
+    int32_t item_z_trans_target;
+    int32_t item_z_trans_rate;
+    int32_t misc;
+} IMOTION_INFO;
+typedef struct __unaligned {
+    INVENTORY_ITEM **list;
+    int16_t type;
+    int16_t radius;
+    int16_t camera_pitch;
+    int16_t rotating;
+    int16_t rot_count;
+    int16_t current_object;
+    int16_t target_object;
+    int16_t number_of_objects;
+    int16_t angle_adder;
+    int16_t rot_adder;
+    int16_t rot_adder_l;
+    int16_t rot_adder_r;
+    PHD_3DPOS ring_pos;
+    PHD_3DPOS camera;
+    XYZ_32 light;
+    IMOTION_INFO *imo;
+} RING_INFO;
+typedef enum {
+    MOOD_BORED  = 0,
+    MOOD_ATTACK = 1,
+    MOOD_ESCAPE = 2,
+    MOOD_STALK  = 3,
+} MOOD_TYPE;
+typedef enum {
+    TARGET_NONE      = 0,
+    TARGET_PRIMARY   = 1,
+    TARGET_SECONDARY = 2,
+} TARGET_TYPE;
+typedef struct __unaligned {
+    XYZ_32 pos;
+    int32_t mesh_num;
+} BITE;
+typedef struct __unaligned {
+    int16_t *frame_ptr;
+    int16_t interpolation;
+    int16_t current_anim_state;
+    int32_t velocity;
+    int32_t acceleration;
+    int16_t frame_base;
+    int16_t frame_end;
+    int16_t jump_anim_num;
+    int16_t jump_frame_num;
+    int16_t num_changes;
+    int16_t change_idx;
+    int16_t num_commands;
+    int16_t command_idx;
+} ANIM;
+typedef struct {
+    int16_t goal_anim_state;
+    int16_t num_ranges;
+    int16_t range_idx;
+} ANIM_CHANGE;
+typedef struct {
+    int16_t start_frame;
+    int16_t end_frame;
+    int16_t link_anim_num;
+    int16_t link_frame_num;
+} ANIM_RANGE;
+typedef struct __unaligned {
+    int16_t room;
+    XYZ_16 normal;
+    XYZ_16 vertex[4];
+} PORTAL;
+typedef struct __unaligned {
+    int16_t count;
+    PORTAL portal[];
+} PORTALS;
+typedef struct __unaligned {
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int16_t intensity_1;
+    int16_t intensity_2;
+    int32_t falloff_1;
+    int32_t falloff_2;
+} LIGHT;
+typedef struct __unaligned {
+    XYZ_16 pos;
+    struct __unaligned {
+        int16_t y;
+    } rot;
+    int16_t shade_1;
+    int16_t shade_2;
+    int16_t static_num;
+} MESH;
+typedef struct __unaligned {
+    SECTOR *sector;
+    SECTOR old_sector;
+    int16_t block;
+} DOORPOS_DATA;
+typedef struct __unaligned {
+    int16_t *data;
+    PORTALS *portals;
+    SECTOR *sectors;
+    LIGHT *lights;
+    MESH *meshes;
+    XYZ_32 pos;
+    int32_t min_floor;
+    int32_t max_ceiling;
+    struct __unaligned {
+        int16_t z;
+        int16_t x;
+    } size;
+    int16_t ambient_1;
+    int16_t ambient_2;
+    int16_t light_mode;
+    int16_t num_lights;
+    int16_t num_meshes;
+    int16_t bound_left;
+    int16_t bound_right;
+    int16_t bound_top;
+    int16_t bound_bottom;
+    uint16_t bound_active;
+    int16_t test_left;
+    int16_t test_right;
+    int16_t test_top;
+    int16_t test_bottom;
+    int16_t item_num;
+    int16_t effect_num;
+    int16_t flipped_room;
+    uint16_t flags;
+} ROOM;
+typedef struct __unaligned {
+    int16_t head_rotation;
+    int16_t neck_rotation;
+    int16_t maximum_turn;
+    int16_t flags;
+    int16_t item_num;
+    MOOD_TYPE mood;
+    LOT_INFO lot;
+    XYZ_32 target;
+    ITEM *enemy;
+} CREATURE;
+typedef enum {
+    CAM_CHASE     = 0,
+    CAM_FIXED     = 1,
+    CAM_LOOK      = 2,
+    CAM_COMBAT    = 3,
+    CAM_CINEMATIC = 4,
+    CAM_HEAVY     = 5,
+} CAMERA_TYPE;
+typedef struct __unaligned {
+    union {
+        XYZ_32 pos;
+        struct {
+            int32_t x;
+            int32_t y;
+            int32_t z;
+        };
+    };
+    int16_t room_num;
+    int16_t box_num;
+} GAME_VECTOR;
+typedef struct __unaligned {
+    union {
+        struct __unaligned {
+            int32_t x;
+            int32_t y;
+            int32_t z;
+        };
+        XYZ_32 pos;
+    };
+    int16_t data;
+    int16_t flags;
+} OBJECT_VECTOR;
+typedef struct __unaligned {
+    uint8_t left;
+    uint8_t right;
+    uint8_t top;
+    uint8_t bottom;
+    int16_t height;
+    int16_t overlap_index;
+} BOX_INFO;
+typedef enum {
+    INV_GAME_MODE  = 0,
+    INV_TITLE_MODE = 1,
+    INV_KEYS_MODE  = 2,
+    INV_SAVE_MODE  = 3,
+    INV_LOAD_MODE  = 4,
+    INV_DEATH_MODE = 5,
+} INVENTORY_MODE;
+typedef struct __unaligned {
+    int32_t first_option;
+    int32_t title_replace;
+    int32_t on_death_demo_mode;
+    int32_t on_death_in_game;
+    int32_t no_input_time;
+    int32_t on_demo_interrupt;
+    int32_t on_demo_end;
+    uint16_t reserved1[18];
+    uint16_t num_levels;
+    uint16_t num_pictures;
+    uint16_t num_titles;
+    uint16_t num_fmvs;
+    uint16_t num_cutscenes;
+    uint16_t num_demos;
+    uint16_t title_track;
+    int16_t single_level;
+    uint16_t reserved2[16];
+    uint16_t demo_version:              1;
+    uint16_t title_disabled:            1;
+    uint16_t cheat_mode_check_disabled: 1;
+    uint16_t no_input_timeout:          1;
+    uint16_t load_save_disabled:        1;
+    uint16_t screen_sizing_disabled:    1;
+    uint16_t lockout_option_ring:       1;
+    uint16_t dozy_cheat_enabled:        1;
+    uint16_t cyphered_strings:          1;
+    uint16_t gym_enabled:               1;
+    uint16_t play_any_level:            1;
+    uint16_t cheat_enable:              1;
+    uint16_t reserved3[3];
+    uint8_t cypher_code;
+    uint8_t language;
+    uint8_t secret_track;
+    uint8_t level_complete_track;
+    uint16_t reserved4[2];
+} GAME_FLOW;
+typedef struct __unaligned {
+    int16_t mesh_count;
+    int16_t mesh_idx;
+    int32_t bone_idx;
+    int16_t *frame_base;
+    void (*initialise_func)(int16_t item_num);
+    void (*control_func)(int16_t item_num);
+    void (*floor_height_func)(
+        const ITEM *item, int32_t x, int32_t y, int32_t z,
+        int32_t *out_height);
+    void (*ceiling_height_func)(
+        const ITEM *item, int32_t x, int32_t y, int32_t z,
+        int32_t *out_height);
+    void (*draw_func)(const ITEM *item);
+    void (*collision_func)(int16_t
+        item_num, ITEM *lara_item, COLL_INFO *coll);
+    int16_t anim_idx;
+    int16_t hit_points;
+    int16_t pivot_length;
+    int16_t radius;
+    int16_t shadow_size;
+    union {
+        uint16_t flags;
+        struct {
+            uint16_t loaded:           1;
+            uint16_t intelligent:      1;
+            uint16_t save_position:    1;
+            uint16_t save_hitpoints:   1;
+            uint16_t save_flags:       1;
+            uint16_t save_anim:        1;
+            uint16_t semi_transparent: 1;
+            uint16_t water_creature:   1;
+            uint16_t pad : 8;
+        };
+    };
+} OBJECT;
+typedef struct __unaligned {
+    GAME_VECTOR pos;
+    GAME_VECTOR target;
+    CAMERA_TYPE type;
+    int32_t shift;
+    uint32_t flags;
+    int32_t fixed_camera;
+    int32_t num_frames;
+    int32_t bounce;
+    int32_t underwater;
+    int32_t target_distance;
+    int32_t target_square;
+    int16_t target_angle;
+    int16_t actual_angle;
+    int16_t target_elevation;
+    int16_t box;
+    int16_t num;
+    int16_t last;
+    int16_t timer;
+    int16_t speed;
+    ITEM *item;
+    ITEM *last_item;
+    OBJECT_VECTOR *fixed;
+    int32_t is_lara_mic;
+    XYZ_32 mic_pos;
+} CAMERA_INFO;
+typedef struct __unaligned {
+    int16_t *frame_base;
+    int16_t frame_num;
+    int16_t anim_num;
+    int16_t lock;
+    struct __unaligned {
+        int16_t y;
+        int16_t x;
+        int16_t z;
+    } rot;
+    int16_t flash_gun;
+} LARA_ARM;
+typedef struct __unaligned {
+    int32_t ammo;
+} AMMO_INFO;
+typedef struct __unaligned {
+    int16_t item_num;
+    int16_t gun_status;
+    int16_t gun_type;
+    int16_t request_gun_type;
+    int16_t last_gun_type;
+    int16_t calc_fall_speed;
+    int16_t water_status;
+    int16_t climb_status;
+    int16_t pose_count;
+    int16_t hit_frame;
+    int16_t hit_direction;
+    int16_t air;
+    int16_t dive_count;
+    int16_t death_timer;
+    int16_t current_active;
+    int16_t spaz_effect_count;
+    int16_t flare_age;
+    int16_t skidoo;
+    int16_t weapon_item;
+    int16_t back_gun;
+    int16_t flare_frame;
+    union {
+        uint16_t flags;
+        struct ___unaligned {
+            uint16_t flare_control_left:  1;
+            uint16_t flare_control_right: 1;
+            uint16_t extra_anim:          1;
+            uint16_t look:                1;
+            uint16_t burn:                1;
+            uint16_t pad:                 11;
+        };
+    };
+    int32_t water_surface_dist;
+    XYZ_32 last_pos;
+    EFFECT *spaz_effect;
+    uint32_t mesh_effects;
+    int16_t *mesh_ptrs[15];
+    ITEM *target;
+    int16_t target_angles[2];
+    int16_t turn_rate;
+    int16_t move_angle;
+    int16_t head_y_rot;
+    int16_t head_x_rot;
+    int16_t head_z_rot;
+    int16_t torso_y_rot;
+    int16_t torso_x_rot;
+    int16_t torso_z_rot;
+    LARA_ARM left_arm;
+    LARA_ARM right_arm;
+    AMMO_INFO pistol_ammo;
+    AMMO_INFO magnum_ammo;
+    AMMO_INFO uzi_ammo;
+    AMMO_INFO shotgun_ammo;
+    AMMO_INFO harpoon_ammo;
+    AMMO_INFO grenade_ammo;
+    AMMO_INFO m16_ammo;
+    CREATURE *creature;
+} LARA_INFO;
+typedef struct __unaligned {
+    int16_t tx;
+    int16_t ty;
+    int16_t tz;
+    int16_t cx;
+    int16_t cy;
+    int16_t cz;
+    int16_t fov;
+    int16_t roll;
+} CINE_FRAME;
+typedef struct __unaligned {
+    uint16_t key[14];
+} CONTROL_LAYOUT;
+typedef enum {
+    LGT_UNARMED = 0,
+    LGT_PISTOLS = 1,
+    LGT_MAGNUMS = 2,
+    LGT_UZIS    = 3,
+    LGT_SHOTGUN = 4,
+    LGT_M16     = 5,
+    LGT_GRENADE = 6,
+    LGT_HARPOON = 7,
+    LGT_FLARE   = 8,
+    LGT_SKIDOO  = 9,
+    NUM_WEAPONS = 10,
+} LARA_GUN_TYPE;
+typedef enum {
+    NO_OBJECT               = -1,
+    O_LARA                  = 0,
+    O_LARA_PISTOLS          = 1,
+    O_LARA_HAIR             = 2,
+    O_LARA_SHOTGUN          = 3,
+    O_LARA_MAGNUMS          = 4,
+    O_LARA_UZIS             = 5,
+    O_LARA_M16              = 6,
+    O_LARA_GRENADE          = 7,
+    O_LARA_HARPOON          = 8,
+    O_LARA_FLARE            = 9,
+    O_LARA_SKIDOO           = 10,
+    O_LARA_BOAT             = 11,
+    O_LARA_EXTRA            = 12,
+    O_SKIDOO_FAST           = 13,
+    O_BOAT                  = 14,
+    O_DOG                   = 15,
+    O_CULT_1                = 16,
+    O_CULT_1A               = 17,
+    O_CULT_1B               = 18,
+    O_CULT_2                = 19,
+    O_CULT_3                = 20,
+    O_MOUSE                 = 21,
+    O_DRAGON_FRONT          = 22,
+    O_DRAGON_BACK           = 23,
+    O_GONDOLA               = 24,
+    O_SHARK                 = 25,
+    O_EEL                   = 26,
+    O_BIG_EEL               = 27,
+    O_BARRACUDA             = 28,
+    O_DIVER                 = 29,
+    O_WORKER_1              = 30,
+    O_WORKER_2              = 31,
+    O_WORKER_3              = 32,
+    O_WORKER_4              = 33,
+    O_WORKER_5              = 34,
+    O_JELLY                 = 35,
+    O_SPIDER                = 36,
+    O_BIG_SPIDER            = 37,
+    O_CROW                  = 38,
+    O_TIGER                 = 39,
+    O_BARTOLI               = 40,
+    O_XIAN_SPEARMAN         = 41,
+    O_XIAN_SPEARMAN_STATUE  = 42,
+    O_XIAN_KNIGHT           = 43,
+    O_XIAN_KNIGHT_STATUE    = 44,
+    O_YETI                  = 45,
+    O_BIRD_GUARDIAN         = 46,
+    O_EAGLE                 = 47,
+    O_BANDIT_1              = 48,
+    O_BANDIT_2              = 49,
+    O_BANDIT_2B             = 50,
+    O_SKIDOO_ARMED          = 51,
+    O_SKIDOO_DRIVER         = 52,
+    O_MONK_1                = 53,
+    O_MONK_2                = 54,
+    O_FALLING_BLOCK_1       = 55,
+    O_FALLING_BLOCK_2       = 56,
+    O_FALLING_BLOCK_3       = 57,
+    O_PENDULUM_1            = 58,
+    O_SPIKES                = 59,
+    O_ROLLING_BALL_1        = 60,
+    O_DART                  = 61,
+    O_DART_EMITTER          = 62,
+    O_DRAWBRIDGE            = 63,
+    O_TEETH_TRAP            = 64,
+    O_LIFT                  = 65,
+    O_GENERAL               = 66,
+    O_MOVABLE_BLOCK_1       = 67,
+    O_MOVABLE_BLOCK_2       = 68,
+    O_MOVABLE_BLOCK_3       = 69,
+    O_MOVABLE_BLOCK_4       = 70,
+    O_BIG_BOWL              = 71,
+    O_WINDOW_1              = 72,
+    O_WINDOW_2              = 73,
+    O_WINDOW_3              = 74,
+    O_WINDOW_4              = 75,
+    O_PROPELLER_1           = 76,
+    O_POWER_SAW             = 77,
+    O_HOOK                  = 78,
+    O_FALLING_CEILING       = 79,
+    O_SPINNING_BLADE        = 80,
+    O_BLADE                 = 81,
+    O_KILLER_STATUE         = 82,
+    O_ROLLING_BALL_2        = 83,
+    O_ICICLE                = 84,
+    O_SPIKE_WALL            = 85,
+    O_SPRINGBOARD           = 86,
+    O_CEILING_SPIKES        = 87,
+    O_BELL                  = 88,
+    O_WATER_SPRITE          = 89,
+    O_SNOW_SPRITE           = 90,
+    O_SKIDOO_TRACK          = 91,
+    O_SWITCH_TYPE_AIRLOCK   = 92,
+    O_SWITCH_TYPE_SMALL     = 93,
+    O_PROPELLER_2           = 94,
+    O_PROPELLER_3           = 95,
+    O_PENDULUM_2            = 96,
+    O_MESH_SWAP_1           = 97,
+    O_MESH_SWAP_2           = 98,
+    O_LARA_SWAP             = 99,
+    O_TEXT_BOX              = 100,
+    O_ROLLING_BALL_3        = 101,
+    O_ZIPLINE_HANDLE        = 102,
+    O_SWITCH_TYPE_BUTTON    = 103,
+    O_SWITCH_TYPE_NORMAL    = 104,
+    O_SWITCH_TYPE_UW        = 105,
+    O_DOOR_TYPE_1           = 106,
+    O_DOOR_TYPE_2           = 107,
+    O_DOOR_TYPE_3           = 108,
+    O_DOOR_TYPE_4           = 109,
+    O_DOOR_TYPE_5           = 110,
+    O_DOOR_TYPE_6           = 111,
+    O_DOOR_TYPE_7           = 112,
+    O_DOOR_TYPE_8           = 113,
+    O_TRAPDOOR_TYPE_1       = 114,
+    O_TRAPDOOR_TYPE_2       = 115,
+    O_TRAPDOOR_TYPE_3       = 116,
+    O_BRIDGE_FLAT           = 117,
+    O_BRIDGE_TILT_1         = 118,
+    O_BRIDGE_TILT_2         = 119,
+    O_PASSPORT_OPTION       = 120,
+    O_COMPASS_OPTION        = 121,
+    O_PHOTO_OPTION          = 122,
+    O_PLAYER_1              = 123,
+    O_PLAYER_2              = 124,
+    O_PLAYER_3              = 125,
+    O_PLAYER_4              = 126,
+    O_PLAYER_5              = 127,
+    O_PLAYER_6              = 128,
+    O_PLAYER_7              = 129,
+    O_PLAYER_8              = 130,
+    O_PLAYER_9              = 131,
+    O_PLAYER_10             = 132,
+    O_PASSPORT_CLOSED       = 133,
+    O_COMPASS_ITEM          = 134,
+    O_PISTOL_ITEM           = 135,
+    O_SHOTGUN_ITEM          = 136,
+    O_MAGNUM_ITEM           = 137,
+    O_UZI_ITEM              = 138,
+    O_HARPOON_ITEM          = 139,
+    O_M16_ITEM              = 140,
+    O_GRENADE_ITEM          = 141,
+    O_PISTOL_AMMO_ITEM      = 142,
+    O_SHOTGUN_AMMO_ITEM     = 143,
+    O_MAGNUM_AMMO_ITEM      = 144,
+    O_UZI_AMMO_ITEM         = 145,
+    O_HARPOON_AMMO_ITEM     = 146,
+    O_M16_AMMO_ITEM         = 147,
+    O_GRENADE_AMMO_ITEM     = 148,
+    O_SMALL_MEDIPACK_ITEM   = 149,
+    O_LARGE_MEDIPACK_ITEM   = 150,
+    O_FLARES_ITEM           = 151,
+    O_FLARE_ITEM            = 152,
+    O_DETAIL_OPTION         = 153,
+    O_SOUND_OPTION          = 154,
+    O_CONTROL_OPTION        = 155,
+    O_GAMMA_OPTION          = 156,
+    O_PISTOL_OPTION         = 157,
+    O_SHOTGUN_OPTION        = 158,
+    O_MAGNUM_OPTION         = 159,
+    O_UZI_OPTION            = 160,
+    O_HARPOON_OPTION        = 161,
+    O_M16_OPTION            = 162,
+    O_GRENADE_OPTION        = 163,
+    O_PISTOL_AMMO_OPTION    = 164,
+    O_SHOTGUN_AMMO_OPTION   = 165,
+    O_MAGNUM_AMMO_OPTION    = 166,
+    O_UZI_AMMO_OPTION       = 167,
+    O_HARPOON_AMMO_OPTION   = 168,
+    O_M16_AMMO_OPTION       = 169,
+    O_GRENADE_AMMO_OPTION   = 170,
+    O_SMALL_MEDIPACK_OPTION = 171,
+    O_LARGE_MEDIPACK_OPTION = 172,
+    O_FLARES_OPTION         = 173,
+    O_PUZZLE_ITEM_1         = 174,
+    O_PUZZLE_ITEM_2         = 175,
+    O_PUZZLE_ITEM_3         = 176,
+    O_PUZZLE_ITEM_4         = 177,
+    O_PUZZLE_OPTION_1       = 178,
+    O_PUZZLE_OPTION_2       = 179,
+    O_PUZZLE_OPTION_3       = 180,
+    O_PUZZLE_OPTION_4       = 181,
+    O_PUZZLE_HOLE_1         = 182,
+    O_PUZZLE_HOLE_2         = 183,
+    O_PUZZLE_HOLE_3         = 184,
+    O_PUZZLE_HOLE_4         = 185,
+    O_PUZZLE_DONE_1         = 186,
+    O_PUZZLE_DONE_2         = 187,
+    O_PUZZLE_DONE_3         = 188,
+    O_PUZZLE_DONE_4         = 189,
+    O_SECRET_1              = 190,
+    O_SECRET_2              = 191,
+    O_SECRET_3              = 192,
+    O_KEY_ITEM_1            = 193,
+    O_KEY_ITEM_2            = 194,
+    O_KEY_ITEM_3            = 195,
+    O_KEY_ITEM_4            = 196,
+    O_KEY_OPTION_1          = 197,
+    O_KEY_OPTION_2          = 198,
+    O_KEY_OPTION_3          = 199,
+    O_KEY_OPTION_4          = 200,
+    O_KEY_HOLE_1            = 201,
+    O_KEY_HOLE_2            = 202,
+    O_KEY_HOLE_3            = 203,
+    O_KEY_HOLE_4            = 204,
+    O_PICKUP_ITEM_1         = 205,
+    O_PICKUP_ITEM_2         = 206,
+    O_PICKUP_OPTION_1       = 207,
+    O_PICKUP_OPTION_2       = 208,
+    O_SPHERE_OF_DOOM_1      = 209,
+    O_SPHERE_OF_DOOM_2      = 210,
+    O_SPHERE_OF_DOOM_3      = 211,
+    O_ALARM_SOUND           = 212,
+    O_BIRD_TWEETER_1        = 213,
+    O_DINO                  = 214,
+    O_BIRD_TWEETER_2        = 215,
+    O_CLOCK_CHIMES          = 216,
+    O_DRAGON_BONES_1        = 217,
+    O_DRAGON_BONES_2        = 218,
+    O_DRAGON_BONES_3        = 219,
+    O_HOT_LIQUID            = 220,
+    O_BOAT_BITS             = 221,
+    O_MINE                  = 222,
+    O_INV_BACKGROUND        = 223,
+    O_FX_RESERVED           = 224,
+    O_GONG_BONGER           = 225,
+    O_DETONATOR_1           = 226,
+    O_DETONATOR_2           = 227,
+    O_COPTER                = 228,
+    O_EXPLOSION             = 229,
+    O_SPLASH                = 230,
+    O_BUBBLE                = 231,
+    O_BUBBLE_EMITTER        = 232,
+    O_BLOOD                 = 233,
+    O_DART_EFFECT           = 234,
+    O_FLARE_FIRE            = 235,
+    O_GLOW                  = 236,
+    O_GLOW_RESERVED         = 237,
+    O_RICOCHET              = 238,
+    O_TWINKLE               = 239,
+    O_GUN_FLASH             = 240,
+    O_M16_FLASH             = 241,
+    O_BODY_PART             = 242,
+    O_CAMERA_TARGET         = 243,
+    O_WATERFALL             = 244,
+    O_MISSILE_HARPOON       = 245,
+    O_MISSILE_FLAME         = 246,
+    O_MISSILE_KNIFE         = 247,
+    O_GRENADE               = 248,
+    O_HARPOON_BOLT          = 249,
+    O_EMBER                 = 250,
+    O_EMBER_EMITTER         = 251,
+    O_FLAME                 = 252,
+    O_FLAME_EMITTER         = 253,
+    O_SKYBOX                = 254,
+    O_ALPHABET              = 255,
+    O_DYING_MONK            = 256,
+    O_DING_DONG             = 257,
+    O_LARA_ALARM            = 258,
+    O_MINI_COPTER           = 259,
+    O_WINSTON               = 260,
+    O_ASSAULT_DIGITS        = 261,
+    O_FINAL_LEVEL_COUNTER   = 262,
+    O_CUT_SHOTGUN           = 263,
+    O_EARTHQUAKE            = 264,
+    O_NUMBER_OF             = 265,
+} GAME_OBJECT_ID;
+typedef struct __unaligned {
+    int16_t number;
+    int16_t volume;
+    int16_t randomness;
+    int16_t flags;
+} SAMPLE_INFO;
+typedef enum {
+    GBUF_TEMP_ALLOC               = 0,
+    GBUF_TEXTURE_PAGES            = 1,
+    GBUF_MESH_POINTERS            = 2,
+    GBUF_MESHES                   = 3,
+    GBUF_ANIMS                    = 4,
+    GBUF_STRUCTS                  = 5,
+    GBUF_ANIM_RANGES              = 6,
+    GBUF_ANIM_COMMANDS            = 7,
+    GBUF_ANIM_BONES               = 8,
+    GBUF_ANIM_FRAMES              = 9,
+    GBUF_ROOM_TEXTURES            = 10,
+    GBUF_ROOMS                    = 11,
+    GBUF_ROOM_MESH                = 12,
+    GBUF_ROOM_PORTALS             = 13,
+    GBUF_ROOM_FLOOR               = 14,
+    GBUF_ROOM_LIGHTS              = 15,
+    GBUF_ROOM_STATIC_MESHES       = 16,
+    GBUF_FLOOR_DATA               = 17,
+    GBUF_ITEMS                    = 18,
+    GBUF_CAMERAS                  = 19,
+    GBUF_SOUND_FX                 = 20,
+    GBUF_BOXES                    = 21,
+    GBUF_OVERLAPS                 = 22,
+    GBUF_GROUND_ZONE              = 23,
+    GBUF_FLY_ZONE                 = 24,
+    GBUF_ANIMATING_TEXTURE_RANGES = 25,
+    GBUF_CINEMATIC_FRAMES         = 26,
+    GBUF_LOAD_DEMO_BUFFER         = 27,
+    GBUF_SAVE_DEMO_BUFFER         = 28,
+    GBUF_CINEMATIC_EFFECTS        = 29,
+    GBUF_MUMMY_HEAD_TURN          = 30,
+    GBUF_EXTRA_DOOR_STUFF         = 31,
+    GBUF_EFFECTS_ARRAY            = 32,
+    GBUF_CREATURE_DATA            = 33,
+    GBUF_CREATURE_LOT             = 34,
+    GBUF_SAMPLE_INFOS             = 35,
+    GBUF_SAMPLES                  = 36,
+    GBUF_SAMPLE_OFFSETS           = 37,
+    GBUF_ROLLING_BALL_STUFF       = 38,
+    GBUF_SKIDOO_STUFF             = 39,
+    GBUF_LOAD_PICTURE_BUFFER      = 40,
+    GBUF_FMV_BUFFERS              = 41,
+    GBUF_POLYGON_BUFFERS          = 42,
+    GBUF_ORDER_TABLES             = 43,
+    GBUF_CLUTS                    = 44,
+    GBUF_TEXTURE_INFOS            = 45,
+    GBUF_SPRITE_INFOS             = 46,
+    GBUF_NUM_MALLOC_TYPES         = 47,
+} GAME_BUFFER;
+typedef struct __unaligned {
+    DDPIXELFORMAT pixel_fmt;
+    COLOR_BIT_MASKS color_bit_masks;
+    DWORD bpp;
+} TEXTURE_FORMAT;
+typedef struct __unaligned {
+    int32_t xv;
+    int32_t yv;
+    int32_t zv;
+} PORTAL_VBUF;
+typedef struct __unaligned {
+    BOUNDS_16 bounds;
+    XYZ_16 offset;
+    int16_t mesh_rots[];
+} FRAME_INFO;
+typedef struct __unaligned {
+    XYZ_16 pos;
+    int16_t radius;
+    int16_t poly_count;
+    int16_t vertex_count;
+    XYZ_16 vertex[32];
+} SHADOW_INFO;
+typedef struct __unaligned {
+    int32_t table[32];
+} ROOM_LIGHT_TABLE;
+typedef struct __unaligned {
+    XYZ_32 pos;
+    XYZ_16 rot;
+} HAIR_SEGMENT;
+
+# vars
+0x00463150 d g_IID_IDirectDrawSurface3 GUID g_IID_IDirectDrawSurface3
+0x00463170 d g_IID_IDirect3DTexture2 GUID g_IID_IDirect3DTexture2
+0x00464060 d PerspectiveDistance uint32_t PerspectiveDistance
+0x00464068 d g_PolyDrawRoutines void (*__cdecl g_PolyDrawRoutines[9])(const int16_t *obj_ptr)
+0x0046408C d RhwFactor float RhwFactor
+0x00464090 d g_BirdBite BITE g_BirdBite
+0x004640A0 d g_CrowBite BITE g_CrowBite
+0x004640B0 d CineTrackID int32_t CineTrackID
+0x004640B8 d CineTickRate int32_t CineTickRate
+0x004640BC d CD_TrackID int16_t CD_TrackID
+0x004640C4 d FlipEffect int32_t FlipEffect
+0x00464130 d g_DogBite BITE g_DogBite
+0x00464140 d g_TigerBite BITE g_TigerBite
+0x00464150 d g_DragonMouth BITE g_DragonMouth
+0x00464180 d g_BoxLines int32_t g_BoxLines[12][2]
+0x004641E0 d g_BigEelBite BITE g_BigEelBite
+0x004641F0 d AssaultBestTime uint32_t AssaultBestTime
+0x004641F8 d g_EffectRoutines void (*__cdecl g_EffectRoutines[32])(ITEM *item)
+0x00464278 d g_MonkHit BITE g_MonkHit
+0x00464288 d g_Worker3Hit BITE g_Worker3Hit
+0x00464298 d g_XianSpearmanLeftSpear BITE g_XianSpearmanLeftSpear
+0x004642A8 d g_XianSpearmanRightSpear BITE g_XianSpearmanRightSpear
+0x004642B8 d g_XianKnightSword BITE g_XianKnightSword
+0x004642C8 d g_Cultist2LeftHand BITE g_Cultist2LeftHand
+0x004642D8 d g_Cultist2RightHand BITE g_Cultist2RightHand
+0x004642E8 d GF_NumSecrets int16_t GF_NumSecrets
+0x004642F0 d g_GF_MusicTracks int16_t g_GF_MusicTracks[16]
+0x00464310 d CineTargetAngle int16_t CineTargetAngle
+0x004644E0 d OverlayStatus int32_t OverlayStatus
+0x004644F8 d g_Inv_NFrames int32_t g_Inv_NFrames
+0x00464500 d g_Requester_BackgroundGour1 const uint16_t g_Requester_BackgroundGour1[]
+0x00464520 d g_Requester_BackgroundGour2 const uint16_t g_Requester_BackgroundGour2[]
+0x00464538 d g_Requester_MainGour1 const uint16_t g_Requester_MainGour1[]
+0x00464558 d g_Requester_MainGour2 const uint16_t g_Requester_MainGour2[]
+0x00464590 d g_Requester_SelectionGour2 const uint16_t g_Requester_SelectionGour2[]
+0x004645A8 d g_Requester_UnselectionGour1 const uint16_t g_Requester_UnselectionGour1[]
+0x00464A90 d g_Inv_Item_Stopwatch INVENTORY_ITEM g_Inv_Item_Stopwatch
+0x00464AE0 d g_Inv_Item_Pistols INVENTORY_ITEM g_Inv_Item_Pistols
+0x00464B30 d g_Inv_Item_Flare INVENTORY_ITEM g_Inv_Item_Flare
+0x00464B80 d g_Inv_Item_Shotgun INVENTORY_ITEM g_Inv_Item_Shotgun
+0x00464BD0 d g_Inv_Item_Magnums INVENTORY_ITEM g_Inv_Item_Magnums
+0x00464C20 d g_Inv_Item_Uzis INVENTORY_ITEM g_Inv_Item_Uzis
+0x00464C70 d g_Inv_Item_Harpoon INVENTORY_ITEM g_Inv_Item_Harpoon
+0x00464CC0 d g_Inv_Item_M16 INVENTORY_ITEM g_Inv_Item_M16
+0x00464D10 d g_Inv_Item_Grenade INVENTORY_ITEM g_Inv_Item_Grenade
+0x00464D60 d g_Inv_Item_PistolAmmo INVENTORY_ITEM g_Inv_Item_PistolAmmo
+0x00464DB0 d g_Inv_Item_ShotgunAmmo INVENTORY_ITEM g_Inv_Item_ShotgunAmmo
+0x00464E00 d g_Inv_Item_MagnumAmmo INVENTORY_ITEM g_Inv_Item_MagnumAmmo
+0x00464E50 d g_Inv_Item_UziAmmo INVENTORY_ITEM g_Inv_Item_UziAmmo
+0x00464EA0 d g_Inv_Item_HarpoonAmmo INVENTORY_ITEM g_Inv_Item_HarpoonAmmo
+0x00464EF0 d g_Inv_Item_M16Ammo INVENTORY_ITEM g_Inv_Item_M16Ammo
+0x00464F40 d g_Inv_Item_GrenadeAmmo INVENTORY_ITEM g_Inv_Item_GrenadeAmmo
+0x00464F90 d g_Inv_Item_SmallMedi INVENTORY_ITEM g_Inv_Item_SmallMedi
+0x00464FE0 d g_Inv_Item_LargeMedi INVENTORY_ITEM g_Inv_Item_LargeMedi
+0x00465030 d g_Inv_Item_Pickup1 INVENTORY_ITEM g_Inv_Item_Pickup1
+0x00465080 d g_Inv_Item_Pickup2 INVENTORY_ITEM g_Inv_Item_Pickup2
+0x004650D0 d g_Inv_Item_Puzzle1 INVENTORY_ITEM g_Inv_Item_Puzzle1
+0x00465120 d g_Inv_Item_Puzzle2 INVENTORY_ITEM g_Inv_Item_Puzzle2
+0x00465170 d g_Inv_Item_Puzzle3 INVENTORY_ITEM g_Inv_Item_Puzzle3
+0x004651C0 d g_Inv_Item_Puzzle4 INVENTORY_ITEM g_Inv_Item_Puzzle4
+0x00465210 d g_Inv_Item_Key1 INVENTORY_ITEM g_Inv_Item_Key1
+0x00465260 d g_Inv_Item_Key2 INVENTORY_ITEM g_Inv_Item_Key2
+0x004652B0 d g_Inv_Item_Key3 INVENTORY_ITEM g_Inv_Item_Key3
+0x00465300 d g_Inv_Item_Key4 INVENTORY_ITEM g_Inv_Item_Key4
+0x00465350 d g_Inv_Item_Passport INVENTORY_ITEM g_Inv_Item_Passport
+0x004653A0 d g_Inv_Item_Graphics INVENTORY_ITEM g_Inv_Item_Graphics
+0x004653F0 d g_Inv_Item_Sound INVENTORY_ITEM g_Inv_Item_Sound
+0x00465440 d g_Inv_Item_Controls INVENTORY_ITEM g_Inv_Item_Controls
+0x00465490 d g_Inv_Item_Photo INVENTORY_ITEM g_Inv_Item_Photo
+0x004654E0 d InvMainObjectsCount int16_t InvMainObjectsCount
+0x004654E8 d InvMainQtys int16_t InvMainQtys[]
+0x00465518 d InvMainList INVENTORY_ITEM *InvMainList[]
+0x00465578 d InvKeysQtys int16_t InvKeysQtys[]
+0x004655A8 d InvKeysList INVENTORY_ITEM *InvKeysList[]
+0x00465604 d InvOptionObjectsCount int16_t InvOptionObjectsCount
+0x00465608 d InvOptionList INVENTORY_ITEM *InvOptionList[]
+0x00465618 d GymInvOpenEnabled BOOL GymInvOpenEnabled
+0x00465620 d LoadGameRequester REQUEST_INFO LoadGameRequester
+0x00465838 d SaveGameRequester REQUEST_INFO SaveGameRequester
+0x00465A50 d g_Inv_Chosen int16_t g_Inv_Chosen
+0x00465A54 d g_Inv_Mode INVENTORY_MODE g_Inv_Mode
+0x00465A5C d g_OptionSoundVolume int16_t g_OptionSoundVolume
+0x00465A60 d g_OptionMusicVolume int16_t g_OptionMusicVolume
+0x00465AD4 d g_JumpPermitted int32_t g_JumpPermitted
+0x00465AD8 d g_LaraOldSlideAngle int16_t g_LaraOldSlideAngle
+0x00465AE0 d Weapons WEAPON_INFO Weapons[]
+0x00465CD0 d g_LaraControlRoutines void (*__cdecl g_LaraControlRoutines[71])(ITEM *item, COLL_INFO *coll)
+0x00465DF0 d g_ExtraControlRoutines void (*__cdecl g_ExtraControlRoutines[11])(ITEM *item, COLL_INFO *coll)
+0x00465E20 d g_LaraCollisionRoutines void (*__cdecl g_LaraCollisionRoutines[71])(ITEM *item, COLL_INFO *coll)
+0x00465F40 d g_MovableBlockBounds int16_t g_MovableBlockBounds[]
+0x00465F58 d g_ZiplineHandleBounds int16_t g_ZiplineHandleBounds[]
+0x00465F70 d g_ZiplineHandlePosition XYZ_32 g_ZiplineHandlePosition
+0x00465F80 d g_Cultist1Gun BITE g_Cultist1Gun
+0x00465F90 d g_Cultist3LeftGun BITE g_Cultist3LeftGun
+0x00465FA0 d g_Cultist3RightGun BITE g_Cultist3RightGun
+0x00465FB0 d g_Worker1Gun BITE g_Worker1Gun
+0x00465FC0 d g_Worker2Gun BITE g_Worker2Gun
+0x00465FD0 d g_Bandit1Gun BITE g_Bandit1Gun
+0x00465FE0 d g_Bandit2Gun BITE g_Bandit2Gun
+0x00465FF0 d g_PickupBounds int16_t g_PickupBounds[]
+0x00466008 d g_PickupPosition XYZ_32 g_PickupPosition
+0x00466018 d g_GongBounds int16_t g_GongBounds[]
+0x00466030 d g_PickupBoundsUW int16_t g_PickupBoundsUW[]
+0x00466048 d g_PickupPositionUW XYZ_32 g_PickupPositionUW
+0x00466058 d g_SwitchBounds int16_t g_SwitchBounds[]
+0x00466070 d g_SmallSwitchPosition XYZ_32 g_SmallSwitchPosition
+0x00466080 d g_PushSwitchPosition XYZ_32 g_PushSwitchPosition
+0x00466090 d g_AirlockPosition XYZ_32 g_AirlockPosition
+0x004660A0 d g_SwitchBoundsUW int16_t g_SwitchBoundsUW[]
+0x004660B8 d g_SwitchUWPosition XYZ_32 g_SwitchUWPosition
+0x004660C8 d g_KeyholeBounds int16_t g_KeyholeBounds[]
+0x004660E0 d g_KeyholePosition XYZ_32 g_KeyholePosition
+0x004660F0 d g_PuzzleHoleBounds int16_t g_PuzzleHoleBounds[]
+0x00466108 d g_PuzzleHolePosition XYZ_32 g_PuzzleHolePosition
+0x00466118 d g_MouseBite BITE g_MouseBite
+0x00466210 d g_BarracudaBite BITE g_BarracudaBite
+0x00466220 d g_SharkBite BITE g_SharkBite
+0x00466230 d g_SkidooLeftGun BITE g_SkidooLeftGun
+0x00466240 d g_SkidooRightGun BITE g_SkidooRightGun
+0x00466280 d g_BigSpiderBite BITE g_BigSpiderBite
+0x00466290 d g_TextSpacing int8_t g_TextSpacing[80]
+0x004662E0 d g_TextASCIIMap int8_t g_TextASCIIMap[]
+0x00466360 d g_TeethTrapTeeth1A BITE g_TeethTrapTeeth1A
+0x00466370 d g_TeethTrapTeeth1B BITE g_TeethTrapTeeth1B
+0x00466380 d g_TeethTrapTeeth2A BITE g_TeethTrapTeeth2A
+0x00466390 d g_TeethTrapTeeth2B BITE g_TeethTrapTeeth2B
+0x004663A0 d g_TeethTrapTeeth3A BITE g_TeethTrapTeeth3A
+0x004663B0 d g_TeethTrapTeeth3B BITE g_TeethTrapTeeth3B
+0x004663C0 d g_YetiLBite BITE g_YetiLBite
+0x004663D0 d g_YetiRBite BITE g_YetiRBite
+0x004663E0 d g_BirdGuardianBite BITE g_BirdGuardianBite
+0x00466400 d BGND_PaletteIndex int32_t BGND_PaletteIndex
+0x00466448 d g_GameClassName const char g_GameClassName[]
+0x00466468 d g_GameWindowName const char g_GameWindowName[]
+0x00466480 d GameSizer double GameSizer
+0x00466488 d g_GameSizerCopy double g_GameSizerCopy
+0x00466490 d FadeValue int32_t FadeValue
+0x00466494 d FadeLimit int32_t FadeLimit
+0x00466498 d FadeAdder int32_t FadeAdder
+0x004664E8 d g_ErrorMessages const char *g_ErrorMessages[43]
+0x00466B80 d g_SavedLevels int16_t g_SavedLevels[24]
+0x00466BB0 d g_RandControl int32_t g_RandControl
+0x00466BB4 d g_RandDraw int32_t g_RandDraw
+0x00466BDC d PaletteIndex int32_t PaletteIndex
+0x00466BE4 d DumpX int16_t DumpX
+0x00466BE6 d DumpY int16_t DumpY
+0x00466BE8 d DumpWidth int16_t DumpWidth
+0x00466BEA d DumpHeight int16_t DumpHeight
+0x00466F70 d Layout CONTROL_LAYOUT Layout[2]
+0x00466FA8 d g_KeyNames const char *g_KeyNames[]
+0x0046773C d DetailLevel int32_t DetailLevel
+0x00467768 d g_ShadowInfo SHADOW_INFO g_ShadowInfo
+0x00467DD0 d g_AtanBaseTable const int32_t g_AtanBaseTable[8]
+0x00467DF0 d g_AtanAngleTable const int16_t g_AtanAngleTable[0x800]
+0x00468DF4 d g_SinTable const int16_t g_SinTable[0x402]
+0x0046C300 d MidSort int32_t MidSort
+0x0046C304 d g_ViewportAspectRatio float g_ViewportAspectRatio
+0x0046C308 d XGen_y1 int32_t XGen_y1
+0x0046C30C d g_XGenY2 int32_t g_XGenY2
+0x0046C310 d GouraudTable GOURAUD_ENTRY GouraudTable[256]
+0x0046E310 d PhdWinTop int32_t PhdWinTop
+0x0046E318 d g_PhdSprites PHD_SPRITE g_PhdSprites[512]
+0x00470318 d LsAdder int32_t LsAdder
+0x0047031C d FltWinBottom float FltWinBottom
+0x00470320 d FltResZBuf float FltResZBuf
+0x00470324 d FltResZ float FltResZ
+0x00470328 d g_Output_InsertTransQuad void (*__cdecl g_Output_InsertTransQuad)(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z)
+0x0047032C d PhdWinHeight int32_t PhdWinHeight
+0x00470330 d PhdWinCenterX int32_t PhdWinCenterX
+0x00470334 d PhdWinCenterY int32_t PhdWinCenterY
+0x00470338 d g_LsYaw int16_t g_LsYaw
+0x0047033C d g_Output_InsertTrans8 void (*__cdecl g_Output_InsertTrans8)(const PHD_VBUF *vbuf, int16_t shade)
+0x00470340 d FltWinTop float FltWinTop
+0x00470348 d SortBuffer SORT_ITEM SortBuffer[4000]
+0x00478048 d FltWinLeft float FltWinLeft
+0x0047804C d PhdWinMinY int16_t PhdWinMinY
+0x00478058 d PhdFarZ int32_t PhdFarZ
+0x0047805C d FltRhwOPersp float FltRhwOPersp
+0x00478060 d PhdWinBottom int32_t PhdWinBottom
+0x00478064 d PhdPersp int32_t PhdPersp
+0x00478068 d PhdWinLeft int32_t PhdWinLeft
+0x0047806C d g_Output_InsertFlatRect void (*__cdecl g_Output_InsertFlatRect)(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x00478070 d Info3dBuffer int16_t Info3dBuffer[120000]
+0x004B29F0 d PhdWinMaxX int32_t PhdWinMaxX
+0x004B29F4 d PhdNearZ int32_t PhdNearZ
+0x004B29F8 d FltResZORhw float FltResZORhw
+0x004B29FC d FltFarZ float FltFarZ
+0x004B2A00 d FltWinCenterX float FltWinCenterX
+0x004B2A04 d FltWinCenterY float FltWinCenterY
+0x004B2A08 d PhdScreenHeight int32_t PhdScreenHeight
+0x004B2A0C d PrintSurfacePtr uint8_t *PrintSurfacePtr
+0x004B2A10 d PhdWinMinX int16_t PhdWinMinX
+0x004B2A14 d FltPerspONearZ float FltPerspONearZ
+0x004B2A18 d FltRhwONearZ float FltRhwONearZ
+0x004B2A1C d PhdWinMaxY int32_t PhdWinMaxY
+0x004B2A20 d g_Output_InsertSprite void (*__cdecl g_Output_InsertSprite)(int32_t z, int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t sprite_idx, int16_t shade)
+0x004B2A24 d FltNearZ float FltNearZ
+0x004B2A28 d g_MatrixPtr MATRIX *g_MatrixPtr
+0x004B2A2C d g_Output_DrawObjectGT3 const int16_t *(*__cdecl g_Output_DrawObjectGT3)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x004B2A30 d g_Output_DrawObjectGT4 const int16_t *(*__cdecl g_Output_DrawObjectGT4)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x004B2A38 d RandomTable int32_t RandomTable[32]
+0x004B2AB8 d FltPersp float FltPersp
+0x004B2AC0 d g_W2VMatrix MATRIX g_W2VMatrix
+0x004B2AF0 d Info3dPtr int16_t *Info3dPtr
+0x004B2AF4 d PhdWinWidth int32_t PhdWinWidth
+0x004B2AF8 d g_Output_InsertLine void (*__cdecl g_Output_InsertLine)(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x004B2B00 d g_TextureInfo PHD_TEXTURE g_TextureInfo[0x800]
+0x004BCB00 d PhdViewDistance int32_t PhdViewDistance
+0x004BCB04 d g_LsPitch int16_t g_LsPitch
+0x004BCB08 d g_Output_DrawObjectG4 const int16_t *(*__cdecl g_Output_DrawObjectG4)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x004BCB10 d ShadesTable int16_t ShadesTable[32]
+0x004BCB50 d g_Output_DrawObjectG3 const int16_t *(*__cdecl g_Output_DrawObjectG3)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x004BCB58 d MatrixStack MATRIX MatrixStack[]
+0x004BD2D8 d DepthQTable DEPTHQ_ENTRY DepthQTable[32]
+0x004BF2D8 d DepthQIndex uint8_t DepthQIndex[256]
+0x004BF3D8 d PhdScreenWidth int32_t PhdScreenWidth
+0x004BF3DC d LsDivider int32_t LsDivider
+0x004BF3E0 d PhdVBuf PHD_VBUF PhdVBuf[1500]
+0x004CAF60 d g_XBuffer void *g_XBuffer
+0x004D6AE0 d TexturePageBuffer8 uint8_t *TexturePageBuffer8[32]
+0x004D6B60 d FltWinRight float FltWinRight
+0x004D6B68 d LsVectorView XYZ_32 LsVectorView
+0x004D6B78 d WibbleTable float WibbleTable[32]
+0x004D6BF8 d PhdWinRight int32_t PhdWinRight
+0x004D6BFC d SurfaceCount int32_t SurfaceCount
+0x004D6C00 d Sort3dPtr SORT_ITEM *Sort3dPtr
+0x004D6C0C d WibbleOffset int32_t WibbleOffset
+0x004D6C10 d IsWibbleEffect int32_t IsWibbleEffect
+0x004D6C14 d IsWaterEffect int32_t IsWaterEffect
+0x004D6CD8 d g_VBuffer VERTEX_INFO g_VBuffer[20]
+0x004D6F78 d IsShadeEffect int8_t IsShadeEffect
+0x004D6F80 d g_VBufferD3D D3DTLVERTEX g_VBufferD3D[32]
+0x004D7380 d GamePalette16 PALETTEENTRY GamePalette16[256]
+0x004D7780 d g_CineFrameCurrent int32_t g_CineFrameCurrent
+0x004D7784 d g_CineTickCount int32_t g_CineTickCount
+0x004D7788 d g_OriginalRoom int32_t g_OriginalRoom
+0x004D778C d IsChunkyCamera int32_t IsChunkyCamera
+0x004D7790 d g_HeightType int32_t g_HeightType
+0x004D7794 d NoInputCounter int32_t NoInputCounter
+0x004D7798 d IsResetFlag BOOL IsResetFlag
+0x004D779C d FlipTimer int32_t FlipTimer
+0x004D77A0 d g_LOSNumRooms int32_t g_LOSNumRooms
+0x004D77A4 d StopInventory BOOL StopInventory
+0x004D77AC d IsDemoLevelType BOOL IsDemoLevelType
+0x004D77B0 d IsDemoLoaded BOOL IsDemoLoaded
+0x004D77B4 d g_DemoLevel int32_t g_DemoLevel
+0x004D77B8 d g_DemoLevel2 int32_t g_DemoLevel2
+0x004D77C0 d BoundStart int32_t BoundStart
+0x004D77C4 d BoundEnd int32_t BoundEnd
+0x004D77E0 d IsAssaultTimerDisplay int32_t IsAssaultTimerDisplay
+0x004D77E4 d IsAssaultTimerActive BOOL IsAssaultTimerActive
+0x004D77E8 d IsMonkAngry BOOL IsMonkAngry
+0x004D77EC d g_GF_ScriptVersion int32_t g_GF_ScriptVersion
+0x004D77F0 d GF_LaraStartAnim int32_t GF_LaraStartAnim
+0x004D77F4 d GF_SunsetEnabled int16_t GF_SunsetEnabled
+0x004D77F8 d GF_DeadlyWater int16_t GF_DeadlyWater
+0x004D77FC d GF_NoFloor int16_t GF_NoFloor
+0x004D7800 d GF_RemoveWeapons int16_t GF_RemoveWeapons
+0x004D7804 d GF_RemoveAmmo int16_t GF_RemoveAmmo
+0x004D7808 d GF_Kill2Complete char GF_Kill2Complete
+0x004D780C d GF_StartGame int8_t GF_StartGame
+0x004D7818 d g_GF_Description char g_GF_Description[256]
+0x004D7918 d g_HairWind int32_t g_HairWind
+0x004D791C d g_OldGameTimer int32_t g_OldGameTimer
+0x004D7920 d g_FlashState BOOL g_FlashState
+0x004D7924 d g_FlashCounter int32_t g_FlashCounter
+0x004D7928 d g_OldHitPoints int32_t g_OldHitPoints
+0x004D792C d AmmoTextInfo TEXTSTRING *AmmoTextInfo
+0x004D7930 d DisplayModeTextInfo TEXTSTRING *DisplayModeTextInfo
+0x004D7934 d DisplayModeInfoTimer DWORD DisplayModeInfoTimer
+0x004D7938 d InvMainCurrent UINT16 InvMainCurrent
+0x004D793C d InvKeyObjectsCount UINT16 InvKeyObjectsCount
+0x004D7940 d InvKeysCurrent UINT16 InvKeysCurrent
+0x004D7944 d InvOptionCurrent UINT16 InvOptionCurrent
+0x004D7948 d InvItemText TEXTSTRING *InvItemText[3]
+0x004D7950 d g_Inv_LevelText TEXTSTRING *g_Inv_LevelText
+0x004D7954 d InvRingText TEXTSTRING* InvRingText
+0x004D7958 d g_Inv_TagText TEXTSTRING *g_Inv_TagText
+0x004D795C d InvUpArrow1 TEXTSTRING* InvUpArrow1
+0x004D7960 d InvUpArrow2 TEXTSTRING* InvUpArrow2
+0x004D7964 d InvDownArrow1 TEXTSTRING* InvDownArrow1
+0x004D7968 d InvDownArrow2 TEXTSTRING* InvDownArrow2
+0x004D796C d InputDB uint32_t InputDB
+0x004D7970 d g_OldInputDB int32_t g_OldInputDB
+0x004D7978 d g_Inv_IsActive uint16_t g_Inv_IsActive
+0x004D7980 d g_Inv_ExtraData int32_t g_Inv_ExtraData[8]
+0x004D79A0 d InvDemoMode BOOL InvDemoMode
+0x004D79B4 d g_Inv_IsOptionsDelay BOOL g_Inv_IsOptionsDelay
+0x004D79B8 d InvOptionsDelayCounter int32_t InvOptionsDelayCounter
+0x004D79BC d SoundOptionLine uint16_t SoundOptionLine
+0x004D79C0 d StatsRequester REQUEST_INFO StatsRequester
+0x004D7BD8 d Assault ASSAULT_STATS Assault
+0x004D7C2C d m_ShowGymStatsTextMode int32_t m_ShowGymStatsTextMode
+0x004D7C30 d m_ShowStatsTextMode int32_t m_ShowStatsTextMode
+0x004D7C34 d m_ShowEndStatsTextMode int32_t m_ShowEndStatsTextMode
+0x004D7C38 d LevelItemCount int32_t LevelItemCount
+0x004D7C3C d HealthBarTimer int32_t HealthBarTimer
+0x004D7C50 d g_SlotsUsed int32_t g_SlotsUsed
+0x004D7C58 d g_InteractPosition XYZ_32 g_InteractPosition
+0x004D7C68 d g_DetonatorPosition XYZ_32 g_DetonatorPosition
+0x004D7C74 d g_NumCameras int32_t g_NumCameras
+0x004D7C78 d g_SoundSlots SOUND_SLOT g_SoundSlots[32]
+0x004D7C80 d g_SoundTrackIds int32_t g_SoundTrackIds[128]
+0x004D7E7C d g_DetonateAllMines int32_t g_DetonateAllMines
+0x004D7E88 d BGND_PictureIsReady bool BGND_PictureIsReady
+0x004D7E90 d BGND_TexturePageIndexes int32_t BGND_TexturePageIndexes[5]
+0x004D7EA8 d BGND_PageHandles HWR_TEXTURE_HANDLE BGND_PageHandles[5]
+0x004D7EBC d D3DDev LPDIRECT3DDEVICE2 D3DDev
+0x004D7EC0 d D3D LPDIRECT3D2 D3D
+0x004D7EC4 d D3DView LPDIRECT3DVIEWPORT2 D3DView
+0x004D7EC8 d D3DMaterial LPDIRECT3DMATERIAL2 D3DMaterial
+0x004D7ED0 d MinWindowClientHeight int32_t MinWindowClientHeight
+0x004D7ED4 d DDrawInterface LPDIRECTDRAW DDrawInterface
+0x004D7ED8 d IsGameWindowChanging bool IsGameWindowChanging
+0x004D7EDC d MaxWindowHeight int32_t MaxWindowHeight
+0x004D7EE0 d DDraw LPDIRECTDRAW3 DDraw
+0x004D7EE4 d IsGameWindowCreated bool IsGameWindowCreated
+0x004D7EE8 d IsGameWindowUpdating bool IsGameWindowUpdating
+0x004D7EEC d IsDDrawGameWindowShow bool IsDDrawGameWindowShow
+0x004D7EF0 d MinWindowClientWidth int32_t MinWindowClientWidth
+0x004D7EF4 d IsGameWindowShow bool IsGameWindowShow
+0x004D7EF8 d IsMinWindowSizeSet bool IsMinWindowSizeSet
+0x004D7EFC d MaxWindowClientWidth int32_t MaxWindowClientWidth
+0x004D7F00 d GameWindowWidth int32_t GameWindowWidth
+0x004D7F04 d IsMinMaxInfoSpecial bool IsMinMaxInfoSpecial
+0x004D7F08 d IsGameFullScreen bool IsGameFullScreen
+0x004D7F0C d IsGameWindowMaximized bool IsGameWindowMaximized
+0x004D7F10 d g_GameWindowHandle HWND g_GameWindowHandle
+0x004D7F14 d GameWindowHeight int32_t GameWindowHeight
+0x004D7F18 d PrimaryDisplayAdapter DISPLAY_ADAPTER_NODE* PrimaryDisplayAdapter
+0x004D7F20 d CurrentDisplayAdapter DISPLAY_ADAPTER CurrentDisplayAdapter
+0x004D8338 d LockedBufferCount uint32_t LockedBufferCount
+0x004D833C d GameWindowPositionX int32_t GameWindowPositionX
+0x004D8340 d GameWindowPositionY int32_t GameWindowPositionY
+0x004D8348 d DisplayAdapterList DISPLAY_ADAPTER_LIST DisplayAdapterList
+0x004D8354 d MaxWindowClientHeight int32_t MaxWindowClientHeight
+0x004D8358 d IsMessageLoopClosed bool IsMessageLoopClosed
+0x004D835C d MaxWindowWidth int32_t MaxWindowWidth
+0x004D8360 d IsMaxWindowSizeSet bool IsMaxWindowSizeSet
+0x004D8364 d AppResultCode uint32_t AppResultCode
+0x004D8368 d FullScreenWidth int32_t FullScreenWidth
+0x004D836C d FullScreenHeight int32_t FullScreenHeight
+0x004D8370 d FullScreenBPP int32_t FullScreenBPP
+0x004D8374 d FullScreenVGA int32_t FullScreenVGA
+0x004D8378 d IsGameToExit uint8_t IsGameToExit
+0x004D837C d GameWindow_Y int32_t GameWindow_Y
+0x004D8380 d GameWindow_X int32_t GameWindow_X
+0x004D8384 d IsGameWindowMinimized bool IsGameWindowMinimized
+0x004D8388 d MinWindowWidth int32_t MinWindowWidth
+0x004D838C d MinWindowHeight int32_t MinWindowHeight
+0x004D8390 d IsGameWindowActive bool IsGameWindowActive
+0x004D8394 d g_MessageLoopCounter int32_t g_MessageLoopCounter
+0x004D855C d DInput LPDIRECTINPUT DInput
+0x004D8560 d IDID_SysKeyboard LPDIRECTINPUTDEVICE IDID_SysKeyboard
+0x004D8568 d ScreenSizer int32_t ScreenSizer
+0x004D856C d IsVidSizeLock int32_t IsVidSizeLock
+0x004D8570 d SampleFreqs DWORD SampleFreqs[256]
+0x004D8970 d SoundAdapterList SOUND_ADAPTER_LIST SoundAdapterList
+0x004D8980 d SampleBuffers LPDIRECTSOUNDBUFFER SampleBuffers[256]
+0x004D8D80 d IsSoundEnabled uint8_t IsSoundEnabled
+0x004D8D84 d DSound LPDIRECTSOUND DSound
+0x004D8D88 d ChannelSamples int32_t ChannelSamples[32]
+0x004D8E08 d ChannelBuffers LPDIRECTSOUNDBUFFER ChannelBuffers[32]
+0x004D8E8C d CurrentSoundAdapter SOUND_ADAPTER CurrentSoundAdapter
+0x004D8EAC d PrimarySoundAdapter SOUND_ADAPTER_NODE *PrimarySoundAdapter
+0x004D8EB0 d RenderBufferSurface LPDDS RenderBufferSurface
+0x004D8EB4 d DDrawClipper LPDIRECTDRAWCLIPPER DDrawClipper
+0x004D8EB8 d WinVidPalette PALETTEENTRY WinVidPalette[256]
+0x004D92B8 d ThirdBufferSurface LPDDS ThirdBufferSurface
+0x004D92BC d PictureBufferSurface LPDDS PictureBufferSurface
+0x004D92C0 d ZBufferSurface LPDDS ZBufferSurface
+0x004D92C4 d DDrawPalette LPDIRECTDRAWPALETTE DDrawPalette
+0x004D92C8 d PrimaryBufferSurface LPDDS PrimaryBufferSurface
+0x004D92E8 d ColorBitMasks COLOR_BIT_MASKS ColorBitMasks
+0x004D9318 d GameVidBufRect RECT GameVidBufRect
+0x004D9328 d GameVidRect RECT GameVidRect
+0x004D9338 d GameVidWidth int32_t GameVidWidth
+0x004D933C d GameVidHeight int32_t GameVidHeight
+0x004D9340 d GameVidBPP int32_t GameVidBPP
+0x004D9344 d GameVidBufWidth int32_t GameVidBufWidth
+0x004D9348 d GameVidBufHeight int32_t GameVidBufHeight
+0x004D934C d UvAdd int32_t UvAdd
+0x004D9350 d GameVid_IsVga bool GameVid_IsVga
+0x004D9351 d GameVid_IsWindowedVga int8_t GameVid_IsWindowedVga
+0x004D9352 d GameVid_IsFullscreenVga bool GameVid_IsFullscreenVga
+0x004D9353 d IsWindowedVGA bool IsWindowedVGA
+0x004D9354 d Is16bitTextures bool Is16bitTextures
+0x004D9355 d NeedToReloadTextures bool NeedToReloadTextures
+0x004D9358 d BackBufferSurface LPDDS BackBufferSurface
+0x004D9360 d g_TexturePageCount int32_t g_TexturePageCount
+0x004D93F0 d g_LabTextureUVFlag uint8_t g_LabTextureUVFlag[2048]
+0x004D9BF4 d LevelFilePalettesOffset int32_t LevelFilePalettesOffset
+0x004D9BF8 d LevelFileTexPagesOffset int32_t LevelFileTexPagesOffset
+0x004D9C00 d g_GF_LevelOffsets int16_t g_GF_LevelOffsets[200]
+0x004D9D90 d g_MeshBase int16_t *g_MeshBase
+0x004D9D94 d FloorData int16_t *FloorData
+0x004D9D98 d LevelFileName char LevelFileName[256]
+0x004D9E98 d TextureInfoCount int32_t TextureInfoCount
+0x004D9E9C d LevelFileDepthQOffset int32_t LevelFileDepthQOffset
+0x004D9EAC d IsFmvPlaying int32_t IsFmvPlaying
+0x004D9EB0 d MovieContext void *MovieContext
+0x004D9EB4 d FmvContext void *FmvContext
+0x004D9EB8 d FmvSoundContext void *FmvSoundContext
+0x004D9EBC d g_SavedGames int32_t g_SavedGames
+0x004D9EC0 d CurrentLevel int32_t CurrentLevel
+0x004D9EC4 d g_LevelComplete int32_t g_LevelComplete
+0x004D9EC8 d SaveCounter int32_t SaveCounter
+0x004D9ECC d g_GameMode int32_t g_GameMode
+0x004D9ED8 d HWR_VertexBuffer D3DTLVERTEX HWR_VertexBuffer[0x2000]
+0x00519ED8 d CurrentTexSource D3DTEXTUREHANDLE CurrentTexSource
+0x00519EE0 d HWR_PageHandles HWR_TEXTURE_HANDLE HWR_PageHandles[32]
+0x00519F60 d HWR_VertexPtr D3DTLVERTEX *HWR_VertexPtr
+0x00519F64 d ZEnableState bool ZEnableState
+0x00519F68 d AlphaBlendEnabler D3DRENDERSTATETYPE AlphaBlendEnabler
+0x00519F6C d ColorKeyState bool ColorKeyState
+0x00519F70 d ZWriteEnableState bool ZWriteEnableState
+0x00519F78 d HWR_TexturePageIndexes int32_t HWR_TexturePageIndexes[32]
+0x0051A000 d g_GameBuf_MemCap size_t g_GameBuf_MemCap
+0x0051A004 d g_GameBuf_MemPtr char *g_GameBuf_MemPtr
+0x0051A008 d g_GameBuf_MemUsed size_t g_GameBuf_MemUsed
+0x0051A00C d g_GameBuf_MemFree size_t g_GameBuf_MemFree
+0x0051A0CC d g_GameBuf_MemBase char *g_GameBuf_MemBase
+0x0051A0D0 d ConflictLayout BOOL ConflictLayout[14]
+0x0051A108 d DIKeys uint8_t DIKeys[256]
+0x0051A208 d g_Input int32_t g_Input
+0x0051A20C d IsVidModeLock int8_t IsVidModeLock
+0x0051A210 d JoyKeys int32_t JoyKeys
+0x0051A214 d g_JoyXPos int32_t g_JoyXPos
+0x0051A218 d g_JoyYPos int32_t g_JoyYPos
+0x0051A220 d g_MediPackCooldown int32_t g_MediPackCooldown
+0x0051A224 d g_IsF3Pressed int8_t g_IsF3Pressed
+0x0051A228 d g_IsF4Pressed int8_t g_IsF4Pressed
+0x0051A22C d g_IsF7Pressed int8_t g_IsF7Pressed
+0x0051A230 d g_IsF8Pressed int8_t g_IsF8Pressed
+0x0051A234 d g_IsF11Pressed int8_t g_IsF11Pressed
+0x0051A238 d GameModule HINSTANCE GameModule
+0x0051A23C d g_CmdLine char *g_CmdLine
+0x0051A240 d g_ScreenshotCounter int32_t g_ScreenshotCounter
+0x0051A248 d KeyCursor int32_t KeyCursor
+0x0051A24C d g_KeySelector int32_t g_KeySelector
+0x0051A250 d g_LayoutPage int32_t g_LayoutPage
+0x0051A258 d g_ControlsTextB TEXTSTRING *g_ControlsTextB[14]
+0x0051A290 d m_ControlsTextA TEXTSTRING *m_ControlsTextA[14]
+0x0051A2CC d g_PasswordText1 TEXTSTRING *g_PasswordText1
+0x0051A2D0 d g_PassportMode int32_t g_PassportMode
+0x0051A2D8 d g_DetailText TEXTSTRING *g_DetailText[5]
+0x0051A2F0 d g_SoundText TEXTSTRING *g_SoundText[4]
+0x0051A300 d g_ControlsText TEXTSTRING *g_ControlsText[2]
+0x0051A308 d RoomLightTables ROOM_LIGHT_TABLE RoomLightTables[32]
+0x0051B308 d WaterPalette RGB_888 WaterPalette[256]
+0x0051B608 d g_PicturePalette RGB_888 g_PicturePalette[256]
+0x0051B908 d RoomLightShades int32_t RoomLightShades[4]
+0x0051B918 d PhdWinRect RECT PhdWinRect
+0x0051B928 d HiRes int32_t HiRes
+0x0051B92C d g_AnimTextureRanges int16_t *g_AnimTextureRanges
+0x0051B930 d GamePalette8 RGB_888 GamePalette8[256]
+0x0051BC30 d WinVidNeedToResetBuffers bool WinVidNeedToResetBuffers
+0x0051BC38 d IsWet int32_t IsWet
+0x0051BCC0 d SavedAppSettings APP_SETTINGS SavedAppSettings
+0x0051BD10 d g_CheatTurn int32_t g_CheatTurn
+0x0051BD18 d g_CheatAngle int16_t g_CheatAngle
+0x0051BD1C d g_CheatFlare bool g_CheatFlare
+0x0051BD20 d g_ErrorMessage char g_ErrorMessage[128]
+0x0051BDA0 d IsTitleLoaded BOOL IsTitleLoaded
+0x0051BDA4 d g_CheatMode int32_t g_CheatMode
+0x0051BDA8 d g_MasterVolume int32_t g_MasterVolume
+0x0051BDAC d MciDeviceID MCIDEVICEID MciDeviceID
+0x0051BDB0 d CD_LoopTrack int32_t CD_LoopTrack
+0x0051BDB8 d g_TexturePages TEXPAGE_DESC g_TexturePages[32]
+0x0051C1B8 d TextureFormat TEXTURE_FORMAT TextureFormat
+0x0051C20C d TexturesAlphaChannel bool TexturesAlphaChannel
+0x0051C20D d TexturesHaveCompatibleMasks uint8_t TexturesHaveCompatibleMasks
+0x0051C210 d g_TexturePalettes LPDIRECTDRAWPALETTE g_TexturePalettes[16]
+0x0051C820 d g_TextstringTable TEXTSTRING g_TextstringTable[64]
+0x0051D6A0 d TextStringCount int16_t TextStringCount
+0x0051D6C0 d g_TextstringBuffers char g_TextstringBuffers[64][64]
+0x0051E6C0 d g_NumSampleInfos int32_t g_NumSampleInfos
+0x0051E6C4 d SoundIsActive int32_t SoundIsActive
+0x0051E6E0 d SampleLut int16_t SampleLut[]
+0x0051E9C4 d SampleInfos SAMPLE_INFO *SampleInfos
+0x0051E9C8 d g_SavegameBufPtr char *g_SavegameBufPtr
+0x0051E9E0 d SaveGame SAVEGAME_INFO SaveGame
+0x005206A4 d g_SavegameBufPos int32_t g_SavegameBufPos
+0x005206A8 d g_FinalBossActive int16_t g_FinalBossActive
+0x005206B0 d g_FinalBossItem int16_t g_FinalBossItem[5]
+0x005206BA d g_FinalLevelCount int16_t g_FinalLevelCount
+0x005206BC d g_FinalBossCount int16_t g_FinalBossCount
+0x005206C0 d g_BaddieSlots CREATURE *g_BaddieSlots
+0x005206E0 d Lara LARA_INFO Lara
+0x005207BC d LaraItem ITEM *LaraItem
+0x005207C0 d Effects EFFECT *Effects
+0x005207C4 d g_NextEffectFree int16_t g_NextEffectFree
+0x005207C6 d NextItemFree int16_t NextItemFree
+0x005207C8 d NextItemActive int16_t NextItemActive
+0x005207CA d NextEffectActive int16_t NextEffectActive
+0x005207CC d PrevItemActive int16_t PrevItemActive
+0x005207E0 d g_ValidLevelStrings1 char g_ValidLevelStrings1[]
+0x00520CA0 d g_RequesterFlags2 uint32_t g_RequesterFlags2[24]
+0x00520D00 d g_RequesterFlags1 uint32_t g_RequesterFlags1[24]
+0x005216E0 d g_InvColors uint16_t g_InvColors[17]
+0x00521720 d g_ValidLevelStrings2 char g_ValidLevelStrings2[]
+0x00521BE0 d g_SaveGameReqFlags2 uint32_t g_SaveGameReqFlags2[24]
+0x00521C40 d g_SaveGameReqFlags1 uint32_t g_SaveGameReqFlags1[24]
+0x00521CA0 d g_Pickups PICKUP_INFO g_Pickups[12]
+0x00521CD0 d g_IsFirstHair int32_t g_IsFirstHair
+0x00521CE0 d g_HairVelocity XYZ_32 g_HairVelocity[7]
+0x00521D40 d g_HairSegments HAIR_SEGMENT g_HairSegments[7]
+0x00521DC0 d g_GF_Puzzle1Strings char **g_GF_Puzzle1Strings
+0x00521DC4 d g_GF_CutsceneFileNames char **g_GF_CutsceneFileNames
+0x00521DE0 d g_GameFlow GAME_FLOW g_GameFlow
+0x00521E60 d g_GF_Puzzle4Strings char **g_GF_Puzzle4Strings
+0x00521E64 d g_GF_Pickup1StringsBuf char *g_GF_Pickup1StringsBuf
+0x00521E68 d g_GF_FMVFilenamesBuf char *g_GF_FMVFilenamesBuf
+0x00521E6C d g_GF_Key1StringsBuf char *g_GF_Key1StringsBuf
+0x00521E70 d g_GF_FrontendSequence int16_t *g_GF_FrontendSequence
+0x00521E74 d g_GF_Key2Strings char **g_GF_Key2Strings
+0x00521E78 d g_GF_CutsceneFileNamesBuf char *g_GF_CutsceneFileNamesBuf
+0x00521E7C d g_GF_Key4StringsBuf char *g_GF_Key4StringsBuf
+0x00521E80 d g_GF_SequenceBuf int16_t *g_GF_SequenceBuf
+0x00521E84 d g_GF_Key2StringsBuf char *g_GF_Key2StringsBuf
+0x00521E88 d g_GF_Pickup2StringsBuf char *g_GF_Pickup2StringsBuf
+0x00521E8C d g_GF_PicFilenamesBuf char *g_GF_PicFilenamesBuf
+0x00521E90 d g_GF_Key4Strings char **g_GF_Key4Strings
+0x00521E94 d g_GF_Pickup1Strings char **g_GF_Pickup1Strings
+0x00521E98 d g_GF_Puzzle2Strings char **g_GF_Puzzle2Strings
+0x00521E9C d g_GF_LevelFileNamesBuf char *g_GF_LevelFileNamesBuf
+0x00521EA0 d g_GF_PicFilenames char **g_GF_PicFilenames
+0x00521EA4 d g_GF_Key1Strings char **g_GF_Key1Strings
+0x00521EA8 d g_GF_Puzzle1StringsBuf char *g_GF_Puzzle1StringsBuf
+0x00521EAC d g_GF_LevelNamesBuf char *g_GF_LevelNamesBuf
+0x00521EB0 d g_GF_GameStrings char **g_GF_GameStrings
+0x00521EB4 d g_GF_PCStringsBuf char *g_GF_PCStringsBuf
+0x00521EB8 d g_GF_GameStringsBuf char *g_GF_GameStringsBuf
+0x00521EBC d g_GF_Key3Strings char **g_GF_Key3Strings
+0x00521EC0 d g_GF_Puzzle3Strings char **g_GF_Puzzle3Strings
+0x00521EC4 d g_GF_LevelNames char **g_GF_LevelNames
+0x00521EE0 d GF_ScriptTable int16_t *GF_ScriptTable[24]
+0x00521F40 d g_GF_Puzzle2StringsBuf char *g_GF_Puzzle2StringsBuf
+0x00521F44 d g_GF_Pickup2Strings char **g_GF_Pickup2Strings
+0x00521F48 d g_GF_TitleFileNames char **g_GF_TitleFileNames
+0x00521F4C d g_GF_TitleFileNamesBuf char *g_GF_TitleFileNamesBuf
+0x00521F50 d g_GF_PCStrings char **g_GF_PCStrings
+0x00521F54 d g_GF_LevelFileNames char **g_GF_LevelFileNames
+0x00521F60 d g_GF_ValidDemos int16_t g_GF_ValidDemos[24]
+0x00521F90 d g_GF_Puzzle4StringsBuf char *g_GF_Puzzle4StringsBuf
+0x00521F94 d g_GF_FMVFilenames char **g_GF_FMVFilenames
+0x00521F98 d g_GF_Puzzle3StringsBuf char *g_GF_Puzzle3StringsBuf
+0x00521F9C d g_GF_Key3StringsBuf char *g_GF_Key3StringsBuf
+0x00521FA0 d GF_SecretInvItems char GF_SecretInvItems[27]
+0x00521FC0 d GF_Add2InvItems char GF_Add2InvItems[27]
+0x00521FDC d g_SoundEffectCount int32_t g_SoundEffectCount
+0x00521FE0 d g_SoundEffects OBJECT_VECTOR *g_SoundEffects
+0x00522000 d Objects OBJECT Objects[265]
+0x005251B0 d AnimFrames FRAME_INFO *AnimFrames
+0x005251C0 d DynamicLights LIGHT DynamicLights[10]
+0x005252B0 d Meshes int16_t **Meshes
+0x005252B4 d g_Outside int32_t g_Outside
+0x005252B8 d DrawRoomsCount int32_t DrawRoomsCount
+0x005252C0 d g_IMMatrixStack MATRIX g_IMMatrixStack[256]
+0x005258C0 d g_DoorVBuf PORTAL_VBUF g_DoorVBuf[4]
+0x005258F0 d g_IMFrac int32_t g_IMFrac
+0x005258F4 d Anims ANIM *Anims
+0x00525900 d BoundRooms int32_t BoundRooms[128]
+0x00525B00 d OutsideBottom int32_t OutsideBottom
+0x00525B04 d AnimRanges ANIM_RANGE *AnimRanges
+0x00525B08 d AnimCommands int16_t *AnimCommands
+0x00525B20 d DrawRoomsArray int16_t DrawRoomsArray[100]
+0x00525BE8 d AnimBones int32_t *AnimBones
+0x00525BEC d DynamicLightCount int32_t DynamicLightCount
+0x00525C00 d StaticObjects STATIC_INFO StaticObjects[50]
+0x00526178 d OutsideLeft int32_t OutsideLeft
+0x0052617C d AnimChanges ANIM_CHANGE *AnimChanges
+0x00526180 d RoomCount int32_t RoomCount
+0x00526184 d g_IMRate int32_t g_IMRate
+0x00526188 d g_IMMatrixPtr MATRIX *g_IMMatrixPtr
+0x0052618C d g_Rooms ROOM *g_Rooms
+0x00526190 d g_CameraUnderwater BOOL g_CameraUnderwater
+0x00526194 d SunsetTimer int32_t SunsetTimer
+0x00526198 d OutsideRight int32_t OutsideRight
+0x005261AC d OutsideTop int32_t OutsideTop
+0x005261B0 d DemoPtr uint32_t *DemoPtr
+0x005261B4 d DemoCount int32_t DemoCount
+0x005261C0 d g_MusicTrackFlags uint16_t g_MusicTrackFlags[64]
+0x00526240 d FlipStatus int32_t FlipStatus
+0x00526260 d FlipMaps int32_t FlipMaps[10]
+0x00526288 d g_TriggerIndex int16_t *g_TriggerIndex
+0x005262A0 d g_LOSRooms int32_t g_LOSRooms[20]
+0x005262F0 d Items ITEM *Items
+0x005262F4 d g_CineLoaded int16_t g_CineLoaded
+0x005262F6 d g_NumCineFrames int16_t g_NumCineFrames
+0x005262F8 d g_CineData CINE_FRAME *g_CineData
+0x00526300 d g_CinePos PHD_3DPOS g_CinePos
+0x00526312 d CineLevelID int16_t CineLevelID
+0x00526314 d CineFrameIdx int16_t CineFrameIdx
+0x00526320 d Camera CAMERA_INFO Camera
+0x005263A0 d g_GroundZone int16_t *g_GroundZone[][2]
+0x005263C0 d g_FlyZone int16_t *g_FlyZone[2]
+0x005263C8 d g_Overlap uint16_t *g_Overlap
+0x005263CC d Boxes BOX_INFO *Boxes
+0x005263D0 d g_BoxCount int32_t g_BoxCount
+
+# functions
+0x00401000 + phd_GenerateW2V void __cdecl phd_GenerateW2V(PHD_3DPOS *viewpos)
+0x004011D0 + phd_LookAt void __cdecl phd_LookAt(int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar, int32_t ztar, int16_t roll)
+0x00401250 + phd_GetVectorAngles void __cdecl phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest)
+0x004012D0 + phd_RotX void __cdecl phd_RotX(int16_t rx)
+0x00401380 + phd_RotY void __cdecl phd_RotY(int16_t ry)
+0x00401430 + phd_RotZ void __cdecl phd_RotZ(int16_t rz)
+0x004014E0 + phd_RotYXZ void __cdecl phd_RotYXZ(int16_t ry, int16_t rx, int16_t rz)
+0x004016C0 + phd_RotYXZpack void __cdecl phd_RotYXZpack(uint32_t rpack)
+0x004018B0 + phd_TranslateRel bool __cdecl phd_TranslateRel(int32_t x, int32_t y, int32_t z)
+0x00401960 + phd_TranslateAbs void __cdecl phd_TranslateAbs(int32_t x, int32_t y, int32_t z)
+0x004019E0 + phd_PutPolygons void __cdecl phd_PutPolygons(const int16_t *obj_ptr, int32_t clip)
+0x00401AE0 + S_InsertRoom void __cdecl S_InsertRoom(const int16_t *obj_ptr, int32_t is_outside)
+0x00401BD0 + calc_background_light const int16_t *__cdecl calc_background_light(const int16_t *obj_ptr)
+0x00401C10 + S_InsertBackground void __cdecl S_InsertBackground(const int16_t *obj_ptr)
+0x00401D50 + Output_InsertInventoryBackground void __cdecl Output_InsertInventoryBackground(const int16_t *obj_ptr)
+0x00401D60 + Output_CalcObjectVertices const int16_t *__cdecl Output_CalcObjectVertices(const int16_t *obj_ptr)
+0x00401F40 + Output_CalcVerticeLight const int16_t *__cdecl Output_CalcVerticeLight(const int16_t *obj_ptr)
+0x004020B0 + Output_CalcRoomVertices const int16_t *__cdecl Output_CalcRoomVertices(const int16_t *obj_ptr, int32_t far_clip)
+0x00402330 + Output_RotateLight void __cdecl Output_RotateLight(int16_t pitch, int16_t yaw)
+0x00402400 + Output_InitPolyList void __cdecl Output_InitPolyList(void)
+0x00402430 + Output_SortPolyList void __cdecl Output_SortPolyList(void)
+0x00402470 + Output_QuickSort void __cdecl Output_QuickSort(int32_t left, int32_t right)
+0x00402540 + Output_PrintPolyList void __cdecl Output_PrintPolyList(uint8_t *surface_ptr)
+0x00402580 + Output_AlterFOV void __cdecl Output_AlterFOV(int16_t fov)
+0x00402690 + Output_SetNearZ void __cdecl Output_SetNearZ(int32_t near_z)
+0x004026E0 + Output_SetFarZ void __cdecl Output_SetFarZ(int32_t far_z)
+0x00402700 + Output_Init void __cdecl Output_Init(int16_t x, int16_t y, int32_t width, int32_t height, int32_t near_z, int32_t far_z, int16_t view_angle, int32_t screen_width, int32_t screen_height)
+0x00402970 + Output_DrawPolyLine void __cdecl Output_DrawPolyLine(const int16_t *obj_ptr)
+0x00402B10 + Output_DrawPolyFlat void __cdecl Output_DrawPolyFlat(const int16_t *obj_ptr)
+0x00402B50 + Output_DrawPolyTrans void __cdecl Output_DrawPolyTrans(const int16_t *obj_ptr)
+0x00402B90 + Output_DrawPolyGouraud void __cdecl Output_DrawPolyGouraud(const int16_t *obj_ptr)
+0x00402BD0 + Output_DrawPolyGTMap void __cdecl Output_DrawPolyGTMap(const int16_t *obj_ptr)
+0x00402C10 + Output_DrawPolyWGTMap void __cdecl Output_DrawPolyWGTMap(const int16_t *obj_ptr)
+0x00402C50 + Output_XGenX int32_t __cdecl Output_XGenX(const int16_t *obj_ptr)
+0x00402D30 + Output_XGenXG int32_t __cdecl Output_XGenXG(const int16_t *obj_ptr)
+0x00402E80 + Output_XGenXGUV int32_t __cdecl Output_XGenXGUV(const int16_t *obj_ptr)
+0x004030A0 + Output_XGenXGUVPerspFP int32_t __cdecl Output_XGenXGUVPerspFP(const int16_t *obj_ptr)
+0x00403330 + Output_GTMapPersp32FP void __cdecl Output_GTMapPersp32FP(int32_t y1, int32_t y2, uint8_t *tex_page)
+0x00404300 + Output_WGTMapPersp32FP void __cdecl Output_WGTMapPersp32FP(int32_t y1, int32_t y2, uint8_t *tex_page)
+0x004057D0 + Output_DrawPolyGTMapPersp void __cdecl Output_DrawPolyGTMapPersp(const int16_t *obj_ptr)
+0x00405810 + Output_DrawPolyWGTMapPersp void __cdecl Output_DrawPolyWGTMapPersp(const int16_t *obj_ptr)
+0x00405850 + Output_VisibleZClip int32_t __cdecl Output_VisibleZClip(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2)
+0x004058C0 + Output_ZedClipper int32_t __cdecl Output_ZedClipper(int32_t vtx_count, POINT_INFO *pts, VERTEX_INFO *vtx)
+0x00405A00 + Output_XYGUVClipper int32_t __cdecl Output_XYGUVClipper(int32_t vtx_count, VERTEX_INFO *vtx)
+0x00405F20 + Output_InsertObjectGT4 const int16_t *__cdecl Output_InsertObjectGT4(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x00406980 + Output_InsertObjectGT3 const int16_t *__cdecl Output_InsertObjectGT3(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x00407200 + Output_XYGClipper int32_t __cdecl Output_XYGClipper(int32_t vtx_count, VERTEX_INFO *vtx)
+0x00407630 + Output_InsertObjectG4 const int16_t *__cdecl Output_InsertObjectG4(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x00407A10 + Output_InsertObjectG3 const int16_t *__cdecl Output_InsertObjectG3(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x00407D30 + Output_XYClipper int32_t __cdecl Output_XYClipper(int32_t vtx_count, VERTEX_INFO *vtx)
+0x00408000 + Output_InsertTrans8 void __cdecl Output_InsertTrans8(const PHD_VBUF *vbuf, int16_t shade)
+0x004084B0 + Output_InsertTransQuad void __cdecl Output_InsertTransQuad(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z)
+0x00408590 + Output_InsertFlatRect void __cdecl Output_InsertFlatRect(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x00408660 + Output_InsertLine void __cdecl Output_InsertLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x00408720 + Output_InsertGT3_ZBuffered void __cdecl Output_InsertGT3_ZBuffered(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2, const PHD_TEXTURE *texture, const PHD_UV *uv0, const PHD_UV *uv1, const PHD_UV *uv2)
+0x00408D70 + Output_DrawClippedPoly_Textured void __cdecl Output_DrawClippedPoly_Textured(int32_t vtx_count)
+0x00408EB0 + Output_InsertGT4_ZBuffered void __cdecl Output_InsertGT4_ZBuffered(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2, const PHD_VBUF *vtx3, const PHD_TEXTURE *texture)
+0x00409300 + InsertObjectGT4_ZBuffered const int16_t *__cdecl InsertObjectGT4_ZBuffered(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x004093A0 + InsertObjectGT3_ZBuffered const int16_t *__cdecl InsertObjectGT3_ZBuffered(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x00409450 + InsertObjectG4_ZBuffered const int16_t *__cdecl InsertObjectG4_ZBuffered(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x004097F0 + DrawPoly_Gouraud void __cdecl DrawPoly_Gouraud(int32_t vtx_count, int32_t red, int32_t green, int32_t blue)
+0x004098F0 + InsertObjectG3_ZBuffered const int16_t *__cdecl InsertObjectG3_ZBuffered(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x00409BD0 + InsertFlatRect_ZBuffered void __cdecl InsertFlatRect_ZBuffered(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x00409DA0 + InsertLine_ZBuffered void __cdecl InsertLine_ZBuffered(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x00409EE0 + InsertGT3_Sorted void __cdecl InsertGT3_Sorted(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2, const PHD_TEXTURE *texture, const PHD_UV *uv0, const PHD_UV *uv1, const PHD_UV *uv2, SORT_TYPE sort_type)
+0x0040A5F0 + InsertClippedPoly_Textured void __cdecl InsertClippedPoly_Textured(int32_t vtx_count, float z, int16_t poly_type, int16_t tex_page)
+0x0040A7A0 + InsertGT4_Sorted void __cdecl InsertGT4_Sorted(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2, const PHD_VBUF *vtx3, const PHD_TEXTURE *texture, SORT_TYPE sort_type)
+0x0040AC80 + InsertObjectGT4_Sorted const int16_t *__cdecl InsertObjectGT4_Sorted(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x0040AD10 + InsertObjectGT3_Sorted const int16_t *__cdecl InsertObjectGT3_Sorted(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x0040ADB0 + InsertObjectG4_Sorted const int16_t *__cdecl InsertObjectG4_Sorted(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x0040B1F0 + InsertPoly_Gouraud void __cdecl InsertPoly_Gouraud(int32_t vtx_count, float z, int32_t red, int32_t green, int32_t blue, int16_t poly_type)
+0x0040B370 + InsertObjectG3_Sorted const int16_t *__cdecl InsertObjectG3_Sorted(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type)
+0x0040B6C0 + InsertSprite_Sorted void __cdecl InsertSprite_Sorted(int32_t z, int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t sprite_idx, int16_t shade)
+0x0040BA10 + InsertFlatRect_Sorted void __cdecl InsertFlatRect_Sorted(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x0040BB90 + InsertLine_Sorted void __cdecl InsertLine_Sorted(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx)
+0x0040BCC0 + InsertTrans8_Sorted void __cdecl InsertTrans8_Sorted(const PHD_VBUF *vbuf, int16_t shade)
+0x0040BE60 + InsertTransQuad_Sorted void __cdecl InsertTransQuad_Sorted(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z)
+0x0040BFA0 + InsertSprite void __cdecl InsertSprite(int32_t z, int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t sprite_idx, int16_t shade)
+0x0040C050 + S_DrawSprite void __cdecl S_DrawSprite(uint32_t flags, int32_t x, int32_t y, int32_t z, int16_t sprite_idx, int16_t shade, int16_t scale)
+0x0040C320 + S_DrawPickup void __cdecl S_DrawPickup(int32_t sx, int32_t sy, int32_t scale, int16_t sprite_idx, int16_t shade)
+0x0040C3B0 + ins_room_sprite const int16_t *__cdecl ins_room_sprite(const int16_t *obj_ptr, int32_t vtx_count)
+0x0040C510 + S_DrawScreenSprite2d void __cdecl S_DrawScreenSprite2d(int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v, int16_t sprite_idx, int16_t shade, uint16_t flags)
+0x0040C5B0 + S_DrawScreenSprite void __cdecl S_DrawScreenSprite(int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v, int16_t sprite_idx, int16_t shade, uint16_t flags)
+0x0040C650 + draw_scaled_spriteC void __cdecl draw_scaled_spriteC(const int16_t *obj_ptr)
+0x0040C880 + InitialiseEagle void __cdecl InitialiseEagle(int16_t item_num)
+0x0040C910 + Bird_Control void __cdecl Bird_Control(int16_t item_num)
+0x0040CB30 + InitialiseBoat void __cdecl InitialiseBoat(int16_t item_num)
+0x0040CB70 + BoatCheckGeton int32_t __cdecl BoatCheckGeton(int16_t item_num, COLL_INFO *coll)
+0x0040CCE0 + BoatCollision void __cdecl BoatCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x0040CE40 + TestWaterHeight int32_t __cdecl TestWaterHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos)
+0x0040CF40 + DoBoatShift void __cdecl DoBoatShift(int32_t boat_num)
+0x0040D110 + DoWakeEffect void __cdecl DoWakeEffect(ITEM *boat)
+0x0040D290 + DoBoatDynamics int32_t __cdecl DoBoatDynamics(int32_t height, int32_t fall_speed, int32_t *y)
+0x0040D2E0 + BoatDynamics int32_t __cdecl BoatDynamics(int16_t boat_num)
+0x0040D7C0 + BoatUserControl int32_t __cdecl BoatUserControl(ITEM *boat)
+0x0040D950 + BoatAnimation void __cdecl BoatAnimation(ITEM *boat, int32_t collide)
+0x0040DAC0 + BoatControl void __cdecl BoatControl(int16_t item_num)
+0x0040E0F0 + GondolaControl void __cdecl GondolaControl(int16_t item_num)
+0x0040E1B0 + InitialiseCreature void __cdecl InitialiseCreature(int16_t item_num)
+0x0040E1E0 + CreatureActive int32_t __cdecl CreatureActive(int16_t item_num)
+0x0040E230 + Creature_AIInfo void __cdecl Creature_AIInfo(ITEM *item, AI_INFO *info)
+0x0040E490 + SearchLOT int32_t __cdecl SearchLOT(LOT_INFO *lot, int32_t expansion)
+0x0040E690 + UpdateLOT int32_t __cdecl UpdateLOT(LOT_INFO *lot, int32_t expansion)
+0x0040E700 + TargetBox void __cdecl TargetBox(LOT_INFO *lot, int16_t box_num)
+0x0040E7A0 + StalkBox int32_t __cdecl StalkBox(const ITEM *item, const ITEM *enemy, int16_t box_num)
+0x0040E8A0 + EscapeBox int32_t __cdecl EscapeBox(const ITEM *item, const ITEM *enemy, int16_t box_num)
+0x0040E950 + ValidBox int32_t __cdecl ValidBox(const ITEM *item, int16_t zone_num, int16_t box_num)
+0x0040EA00 + Creature_Mood void __cdecl Creature_Mood(ITEM *item, AI_INFO *info, int32_t violent)
+0x0040EE70 + CalculateTarget TARGET_TYPE __cdecl CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
+0x0040F2D0 + CreatureCreature int32_t __cdecl CreatureCreature(int16_t item_num)
+0x0040F3D0 + BadFloor int32_t __cdecl BadFloor(int32_t x, int32_t y, int32_t z, int32_t box_height, int32_t next_height, int16_t room_num, LOT_INFO *lot)
+0x0040F460 + CreatureDie void __cdecl CreatureDie(int16_t item_num, int32_t explode)
+0x0040F520 + CreatureAnimation int32_t __cdecl CreatureAnimation(int16_t item_num, int16_t angle, int16_t tilt)
+0x0040FDF0 + CreatureTurn int16_t __cdecl CreatureTurn(ITEM *item, int16_t maximum_turn)
+0x0040FED0 + CreatureTilt void __cdecl CreatureTilt(ITEM *item, int16_t angle)
+0x0040FF10 + CreatureHead void __cdecl CreatureHead(ITEM *item, int16_t required)
+0x0040FF60 + CreatureNeck void __cdecl CreatureNeck(ITEM *item, int16_t required)
+0x0040FFB0 + CreatureFloat void __cdecl CreatureFloat(int16_t item_num)
+0x00410060 + CreatureUnderwater void __cdecl CreatureUnderwater(ITEM *item, int32_t depth)
+0x004100B0 + CreatureEffect int16_t __cdecl CreatureEffect(ITEM *item, BITE *bite, int16_t (*__cdecl spawn)(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num))
+0x00410110 + CreatureVault int32_t __cdecl CreatureVault(int16_t item_num, int16_t angle, int32_t vault, int32_t shift)
+0x00410250 + CreatureKill void __cdecl CreatureKill(ITEM *item, int32_t kill_anim, int32_t kill_state, int32_t lara_kill_state)
+0x004103C0 + GetBaddieTarget void __cdecl GetBaddieTarget(int16_t item_num, int32_t goody)
+0x004105A0 + InitialiseCamera void __cdecl InitialiseCamera(void)
+0x00410650 + MoveCamera void __cdecl MoveCamera(const GAME_VECTOR *target, int32_t speed)
+0x004109D0 + ClipCamera void __cdecl ClipCamera(int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y, int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom)
+0x00410AB0 + ShiftCamera void __cdecl ShiftCamera(int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y, int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom)
+0x00410C10 + BadPosition const SECTOR *__cdecl BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num)
+0x00410C60 + SmartShift void __cdecl SmartShift(GAME_VECTOR *target, void (*__cdecl shift)(int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y, int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom))
+0x004113F0 + ChaseCamera void __cdecl ChaseCamera(const ITEM *item)
+0x004114E0 + ShiftClamp int32_t __cdecl ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
+0x00411680 + CombatCamera void __cdecl CombatCamera(const ITEM *item)
+0x00411810 + LookCamera void __cdecl LookCamera(const ITEM *item)
+0x00411A00 + FixedCamera void __cdecl FixedCamera(void)
+0x00411AA0 + CalculateCamera void __cdecl CalculateCamera(void)
+0x00411F50 + SetCutsceneTrack void __cdecl SetCutsceneTrack(int32_t track)
+0x00411F60 + StartCinematic int32_t __cdecl StartCinematic(int32_t level_num)
+0x00412080 + InitCinematicRooms void __cdecl InitCinematicRooms(void)
+0x00412120 + DoCinematic int32_t __cdecl DoCinematic(int32_t nframes)
+0x00412290 + CalculateCinematicCamera void __cdecl CalculateCinematicCamera(void)
+0x004123D0 + GetCinematicRoom int32_t __cdecl GetCinematicRoom(int32_t x, int32_t y, int32_t z)
+0x00412450 + ControlCinematicPlayer void __cdecl ControlCinematicPlayer(int16_t item_num)
+0x00412530 + LaraControlCinematic void __cdecl LaraControlCinematic(int16_t item_num)
+0x004125D0 + InitialisePlayer1 void __cdecl InitialisePlayer1(int16_t item_num)
+0x00412660 + InitialiseGenPlayer void __cdecl InitialiseGenPlayer(int16_t item_num)
+0x004126A0 + InGameCinematicCamera void __cdecl InGameCinematicCamera(void)
+0x004128F0 + Collide_GetCollisionInfo void __cdecl Collide_GetCollisionInfo(COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num, int32_t obj_height)
+0x00412FB0 + FindGridShift int32_t __cdecl FindGridShift(int32_t src, int32_t dst)
+0x00412FE0 + Collide_CollideStaticObjects int32_t __cdecl Collide_CollideStaticObjects(COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num, int32_t height)
+0x004133D0 + GetNearByRooms void __cdecl GetNearByRooms(int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num)
+0x004134A0 + GetNewRoom void __cdecl GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
+0x00413500 + ShiftItem void __cdecl ShiftItem(ITEM *item, COLL_INFO *coll)
+0x00413540 + UpdateLaraRoom void __cdecl UpdateLaraRoom(ITEM *item, int32_t height)
+0x004135A0 + GetTiltType int16_t __cdecl GetTiltType(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
+0x00413640 + LaraBaddieCollision void __cdecl LaraBaddieCollision(ITEM *lara_item, COLL_INFO *coll)
+0x004137E0 + EffectSpaz void __cdecl EffectSpaz(ITEM *lara_item, COLL_INFO *coll)
+0x00413860 + CreatureCollision void __cdecl CreatureCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x004138E0 + ObjectCollision void __cdecl ObjectCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00413940 + DoorCollision void __cdecl DoorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x004139C0 + TrapCollision void __cdecl TrapCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00413A30 + ItemPushLara void __cdecl ItemPushLara(ITEM *item, ITEM *lara_item, COLL_INFO *coll, int32_t spaz_on, int32_t big_push)
+0x00413D40 + TestBoundsCollide int32_t __cdecl TestBoundsCollide(const ITEM *src_item, const ITEM *dst_item, int32_t radius)
+0x00413E10 + TestLaraPosition int32_t __cdecl TestLaraPosition(int16_t *bounds, ITEM *src_item, ITEM *dst_item)
+0x00413F50 + AlignLaraPosition void __cdecl AlignLaraPosition(XYZ_32 *vec, ITEM *src_item, ITEM *dst_item)
+0x00414090 + MoveLaraPosition int32_t __cdecl MoveLaraPosition(XYZ_32 *vec, ITEM *item, ITEM *lara_item)
+0x00414220 + Move3DPosTo3DPos int32_t __cdecl Move3DPosTo3DPos(PHD_3DPOS *src_pos, const PHD_3DPOS *dest_pos, int32_t velocity, int16_t ang_add)
+0x00414390 + Game_Control int32_t __cdecl Game_Control(int32_t nframes, int32_t demo_mode)
+0x004146F0 + Item_Animate void __cdecl Item_Animate(ITEM *item)
+0x00414A60 + Item_GetAnimChange int32_t __cdecl Item_GetAnimChange(ITEM *item, const ANIM *anim)
+0x00414B10 + Item_Translate void __cdecl Item_Translate(ITEM *item, int32_t x, int32_t y, int32_t z)
+0x00414B70 + Room_GetSector SECTOR *__cdecl Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
+0x00414D10 + Room_GetWaterHeight int32_t __cdecl Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
+0x00414E80 + Room_GetHeight int32_t __cdecl Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
+0x00415100 + Camera_RefreshFromTrigger void __cdecl Camera_RefreshFromTrigger(int16_t type, const int16_t *data)
+0x004151F0 + Room_TestTriggers void __cdecl Room_TestTriggers(int16_t *data, int32_t heavy)
+0x004158D0 + Item_IsTriggerActive int32_t __cdecl Item_IsTriggerActive(ITEM *item)
+0x00415930 + Room_GetCeiling int32_t __cdecl Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
+0x00415B90 + Room_GetDoor int16_t __cdecl Room_GetDoor(const SECTOR *sector)
+0x00415BE0 + LOS_Check int32_t __cdecl LOS_Check(const GAME_VECTOR *start, GAME_VECTOR *target)
+0x00415C80 + LOS_CheckZ int32_t __cdecl LOS_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target)
+0x00415F70 + LOS_CheckX int32_t __cdecl LOS_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target)
+0x00416260 + LOS_ClipTarget int32_t __cdecl LOS_ClipTarget(const GAME_VECTOR *start, GAME_VECTOR *target, const SECTOR *sector)
+0x00416340 + LOS_CheckSmashable int32_t __cdecl LOS_CheckSmashable(const GAME_VECTOR *start, GAME_VECTOR *target)
+0x00416640 + Room_FlipMap void __cdecl Room_FlipMap(void)
+0x00416700 + Room_RemoveFlipItems void __cdecl Room_RemoveFlipItems(ROOM *r)
+0x004167A0 + Room_AddFlipItems void __cdecl Room_AddFlipItems(ROOM *r)
+0x00416800 + Room_TriggerMusicTrack void __cdecl Room_TriggerMusicTrack(int16_t value, int16_t flags, int16_t type)
+0x00416830 + Room_TriggerMusicTrackImpl void __cdecl Room_TriggerMusicTrackImpl(int16_t value, int16_t flags, int16_t type)
+0x00416910 + Demo_Control int32_t __cdecl Demo_Control(int32_t level_num)
+0x00416970 + Demo_Start int32_t __cdecl Demo_Start(int32_t level_num)
+0x00416B20 + Demo_LoadLaraPos void __cdecl Demo_LoadLaraPos(void)
+0x00416BF0 + Demo_GetInput void __cdecl Demo_GetInput(void)
+0x00416C20 + Diver_Harpoon int16_t __cdecl Diver_Harpoon(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num)
+0x00416CA0 + Diver_GetWaterSurface int32_t __cdecl Diver_GetWaterSurface(int32_t x, int32_t y, int32_t z, int16_t room_num)
+0x00416DB0 + Diver_Control void __cdecl Diver_Control(int16_t item_num)
+0x00417160 + Dog_Control void __cdecl Dog_Control(int16_t item_num)
+0x00417510 + Tiger_Control void __cdecl Tiger_Control(int16_t item_num)
+0x004177B0 + Twinkle_Control void __cdecl Twinkle_Control(int16_t effect_num)
+0x00417930 + Effect_CreateBartoliLight void __cdecl Effect_CreateBartoliLight(int16_t item_num)
+0x00417A10 + Effect_MissileFlame int16_t __cdecl Effect_MissileFlame(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num)
+0x00417AC0 + Dragon_Collision void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00417DB0 + Dragon_Bones void __cdecl Dragon_Bones(int16_t item_num)
+0x00417E90 + Dragon_Control void __cdecl Dragon_Control(int16_t back_num)
+0x004183E0 + Bartoli_Initialise void __cdecl Bartoli_Initialise(int16_t item_num)
+0x00418500 + Bartoli_Control void __cdecl Bartoli_Control(int16_t item_num)
+0x004186A0 + TRex_Control void __cdecl TRex_Control(int16_t item_num)
+0x00418950 + Game_DrawCinematic int32_t __cdecl Game_DrawCinematic(void)
+0x00418990 + Game_Draw int32_t __cdecl Game_Draw(void)
+0x004189D0 + Room_DrawAllRooms void __cdecl Room_DrawAllRooms(int16_t current_room)
+0x00418C80 + Room_GetBounds void __cdecl Room_GetBounds(void)
+0x00418E50 + Room_SetBounds void __cdecl Room_SetBounds(const int16_t *objptr, int32_t room_num, ROOM *parent)
+0x004191D0 + Room_Clip void __cdecl Room_Clip(ROOM *r)
+0x004195B0 + Room_DrawSingleRoomGeometry void __cdecl Room_DrawSingleRoomGeometry(int16_t room_num)
+0x00419670 + Room_DrawSingleRoomObjects void __cdecl Room_DrawSingleRoomObjects(int16_t room_num)
+0x00419890 + DrawEffect void __cdecl DrawEffect(int16_t effect_num)
+0x004199E0 + DrawSpriteItem void __cdecl DrawSpriteItem(const ITEM *item)
+0x00419A70 + DrawAnimatingItem void __cdecl DrawAnimatingItem(const ITEM *item)
+0x00419DF0 + Lara_Draw void __cdecl Lara_Draw(const ITEM *item)
+0x0041AB20 + Lara_Draw_I void __cdecl Lara_Draw_I(const ITEM *item, const FRAME_INFO *frame1, const FRAME_INFO *frame2, int32_t frac, int32_t rate)
+0x0041B710 + InitInterpolate void __cdecl InitInterpolate(int32_t frac, int32_t rate)
+0x0041B750 + phd_PopMatrix_I void __cdecl phd_PopMatrix_I(void)
+0x0041B780 + phd_PushMatrix_I void __cdecl phd_PushMatrix_I(void)
+0x0041B7B0 + phd_RotY_I void __cdecl phd_RotY_I(int16_t ang)
+0x0041B7F0 + phd_RotX_I void __cdecl phd_RotX_I(int16_t ang)
+0x0041B830 + phd_RotZ_I void __cdecl phd_RotZ_I(int16_t ang)
+0x0041B870 + phd_TranslateRel_I void __cdecl phd_TranslateRel_I(int32_t x, int32_t y, int32_t z)
+0x0041B8C0 + phd_TranslateRel_ID void __cdecl phd_TranslateRel_ID(int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2)
+0x0041B910 + phd_RotYXZ_I void __cdecl phd_RotYXZ_I(int16_t y, int16_t x, int16_t z)
+0x0041B960 + phd_RotYXZsuperpack_I void __cdecl phd_RotYXZsuperpack_I(const int16_t **pprot1, const int16_t **pprot2, int32_t skip)
+0x0041B9A0 + phd_RotYXZsuperpack void __cdecl phd_RotYXZsuperpack(const int16_t **pprot, int32_t skip)
+0x0041BA50 + phd_PutPolygons_I void __cdecl phd_PutPolygons_I(int16_t *ptr, int32_t clip)
+0x0041BA80 + InterpolateMatrix void __cdecl InterpolateMatrix(void)
+0x0041BC30 + InterpolateArmMatrix void __cdecl InterpolateArmMatrix(void)
+0x0041BD30 + Gun_DrawFlash void __cdecl Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip)
+0x0041BEA0 + CalculateObjectLighting void __cdecl CalculateObjectLighting(const ITEM *item, const BOUNDS_16 *bounds)
+0x0041BF90 + GetFrames int32_t __cdecl GetFrames(const ITEM *item, FRAME_INFO *frmptr[], int32_t *rate)
+0x0041C030 + GetBoundsAccurate BOUNDS_16 *__cdecl GetBoundsAccurate(const ITEM *item)
+0x0041C0B0 + GetBestFrame FRAME_INFO *__cdecl GetBestFrame(const ITEM *item)
+0x0041C0F0 + AddDynamicLight void __cdecl AddDynamicLight(int32_t x, int32_t y, int32_t z, int32_t intensity, int32_t falloff)
+0x0041C140 + BigEelControl void __cdecl BigEelControl(int16_t item_num)
+0x0041C2E0 + EelControl void __cdecl EelControl(int16_t item_num)
+0x0041C4D0 + ItemNearLara int32_t __cdecl ItemNearLara(PHD_3DPOS *pos, int32_t distance)
+0x0041C560 + SoundEffects void __cdecl SoundEffects(void)
+0x0041C5D0 + DoBloodSplat int16_t __cdecl DoBloodSplat(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t direction, int16_t room_num)
+0x0041C630 + DoLotsOfBlood void __cdecl DoLotsOfBlood(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t direction, int16_t room_num, int32_t num)
+0x0041C6E0 + ControlBlood1 void __cdecl ControlBlood1(int16_t effect_num)
+0x0041C770 + ControlExplosion1 void __cdecl ControlExplosion1(int16_t effect_num)
+0x0041C7F0 + Richochet void __cdecl Richochet(GAME_VECTOR *pos)
+0x0041C870 + ControlRichochet1 void __cdecl ControlRichochet1(int16_t effect_num)
+0x0041C8A0 + CreateBubble void __cdecl CreateBubble(XYZ_32 *pos, int16_t room_num)
+0x0041C910 + LaraBubbles void __cdecl LaraBubbles(ITEM *item)
+0x0041C990 + ControlBubble1 void __cdecl ControlBubble1(int16_t effect_num)
+0x0041CA90 + Splash void __cdecl Splash(ITEM *item)
+0x0041CB60 + ControlSplash1 void __cdecl ControlSplash1(int16_t effect_num)
+0x0041CBE0 + ControlWaterSprite void __cdecl ControlWaterSprite(int16_t effect_num)
+0x0041CC90 + ControlSnowSprite void __cdecl ControlSnowSprite(int16_t effect_num)
+0x0041CD20 + ControlHotLiquid void __cdecl ControlHotLiquid(int16_t effect_num)
+0x0041CE00 + WaterFall void __cdecl WaterFall(int16_t item_num)
+0x0041CF40 + finish_level_effect void __cdecl finish_level_effect(ITEM *item)
+0x0041CF50 + turn180_effect void __cdecl turn180_effect(ITEM *item)
+0x0041CF70 + floor_shake_effect void __cdecl floor_shake_effect(ITEM *item)
+0x0041D010 + lara_normal_effect void __cdecl lara_normal_effect(ITEM *item)
+0x0041D050 + BoilerFX void __cdecl BoilerFX(ITEM *item)
+0x0041D070 + FloodFX void __cdecl FloodFX(ITEM *item)
+0x0041D100 + RubbleFX void __cdecl RubbleFX(ITEM *item)
+0x0041D130 + ChandelierFX void __cdecl ChandelierFX(ITEM *item)
+0x0041D160 + ExplosionFX void __cdecl ExplosionFX(ITEM *item)
+0x0041D190 + PistonFX void __cdecl PistonFX(ITEM *item)
+0x0041D1B0 + CurtainFX void __cdecl CurtainFX(ITEM *item)
+0x0041D1D0 + StatueFX void __cdecl StatueFX(ITEM *item)
+0x0041D1F0 + SetChangeFX void __cdecl SetChangeFX(ITEM *item)
+0x0041D210 + ControlDingDong void __cdecl ControlDingDong(int16_t item_num)
+0x0041D250 + ControlLaraAlarm void __cdecl ControlLaraAlarm(int16_t item_num)
+0x0041D290 + ControlAlarmSound void __cdecl ControlAlarmSound(int16_t item_num)
+0x0041D300 + ControlBirdTweeter void __cdecl ControlBirdTweeter(int16_t item_num)
+0x0041D360 + DoChimeSound void __cdecl DoChimeSound(const ITEM *item)
+0x0041D3C0 + ControlClockChimes void __cdecl ControlClockChimes(int16_t item_num)
+0x0041D430 + SphereOfDoomCollision void __cdecl SphereOfDoomCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x0041D560 + SphereOfDoom void __cdecl SphereOfDoom(int16_t item_num)
+0x0041D650 + DrawSphereOfDoom void __cdecl DrawSphereOfDoom(const ITEM *item)
+0x0041D780 + lara_hands_free void __cdecl lara_hands_free(ITEM *item)
+0x0041D790 + flip_map_effect void __cdecl flip_map_effect(ITEM *item)
+0x0041D7A0 + draw_right_gun void __cdecl draw_right_gun(ITEM *item)
+0x0041D7F0 + draw_left_gun void __cdecl draw_left_gun(ITEM *item)
+0x0041D840 + swap_meshes_with_meshswap1 void __cdecl swap_meshes_with_meshswap1(ITEM *item)
+0x0041D8B0 + swap_meshes_with_meshswap2 void __cdecl swap_meshes_with_meshswap2(ITEM *item)
+0x0041D920 + swap_meshes_with_meshswap3 void __cdecl swap_meshes_with_meshswap3(ITEM *item)
+0x0041D9C0 + invisibility_on void __cdecl invisibility_on(ITEM *item)
+0x0041D9D0 + invisibility_off void __cdecl invisibility_off(ITEM *item)
+0x0041D9F0 + dynamic_light_on void __cdecl dynamic_light_on(ITEM *item)
+0x0041DA00 + dynamic_light_off void __cdecl dynamic_light_off(ITEM *item)
+0x0041DA10 + reset_hair void __cdecl reset_hair(ITEM *item)
+0x0041DA20 + AssaultStart void __cdecl AssaultStart(ITEM *item)
+0x0041DA50 + AssaultStop void __cdecl AssaultStop(ITEM *item)
+0x0041DA70 + AssaultReset void __cdecl AssaultReset(ITEM *item)
+0x0041DA90 + AssaultFinished void __cdecl AssaultFinished(ITEM *item)
+0x0041DB50 + Knife int16_t __cdecl Knife(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num)
+0x0041DBD0 + Cultist2_Control void __cdecl Cultist2_Control(int16_t item_num)
+0x0041E000 + Monk_Control void __cdecl Monk_Control(int16_t item_num)
+0x0041E4D0 + Worker3_Control void __cdecl Worker3_Control(int16_t item_num)
+0x0041EAE0 + DrawXianLord void __cdecl DrawXianLord(const ITEM *item)
+0x0041EEE0 + XianDamage void __cdecl XianDamage(ITEM *item, CREATURE *xian, int32_t damage)
+0x0041EF90 + InitialiseXianLord void __cdecl InitialiseXianLord(int16_t item_num)
+0x0041EFF0 + XianSpearman_Control void __cdecl XianSpearman_Control(int16_t item_num)
+0x0041F5D0 + WarriorSparkleTrail void __cdecl WarriorSparkleTrail(ITEM *item)
+0x0041F670 + XianKnight_Control void __cdecl XianKnight_Control(int16_t item_num)
+0x0041FA60 + GF_LoadScriptFile int32_t __cdecl GF_LoadScriptFile(const char *fname)
+0x0041FC50 + GF_DoFrontEndSequence int32_t __cdecl GF_DoFrontEndSequence(void)
+0x0041FC70 + GF_DoLevelSequence int32_t __cdecl GF_DoLevelSequence(int32_t level, GAME_FLOW_LEVEL_TYPE type)
+0x0041FCE0 + GF_InterpretSequence int32_t __cdecl GF_InterpretSequence(int16_t *ptr, GAME_FLOW_LEVEL_TYPE type, int32_t seq_type)
+0x004201C0 + GF_ModifyInventory void __cdecl GF_ModifyInventory(int32_t level, int32_t type)
+0x00420EA0 + InitialiseHair void __cdecl InitialiseHair(void)
+0x00420F20 + Lara_Hair_Control void __cdecl Lara_Hair_Control(bool in_cutscene)
+0x00421920 + DrawHair void __cdecl DrawHair(void)
+0x004219A0 + FlashIt BOOL __cdecl FlashIt(void)
+0x004219D0 + DrawAssaultTimer void __cdecl DrawAssaultTimer(void)
+0x00421B20 + DrawGameInfo void __cdecl DrawGameInfo(bool pickup_state)
+0x00421B70 + DrawHealthBar void __cdecl DrawHealthBar(bool flash_state)
+0x00421C20 + DrawAirBar void __cdecl DrawAirBar(bool flash_state)
+0x00421CC0 + MakeAmmoString void __cdecl MakeAmmoString(char *string)
+0x00421CF0 + Overlay_DrawAmmoInfo void __cdecl Overlay_DrawAmmoInfo(void)
+0x00421E40 + InitialisePickUpDisplay void __cdecl InitialisePickUpDisplay(void)
+0x00421E60 + DrawPickups void __cdecl DrawPickups(bool pickup_state)
+0x00421F60 + AddDisplayPickup void __cdecl AddDisplayPickup(GAME_OBJECT_ID object_id)
+0x00421FD0 + DisplayModeInfo void __cdecl DisplayModeInfo(char* string)
+0x00422050 + DrawModeInfo void __cdecl DrawModeInfo(void)
+0x00422080 + Inv_Display int32_t __cdecl Inv_Display(int32_t inventory_mode)
+0x00423310 + Construct_Inventory void __cdecl Construct_Inventory(void)
+0x00423470 + SelectMeshes void __cdecl SelectMeshes(INVENTORY_ITEM *inv_item)
+0x00423500 + AnimateInventoryItem int32_t __cdecl AnimateInventoryItem(INVENTORY_ITEM *inv_item)
+0x00423590 + Inv_DrawInventoryItem void __cdecl Inv_DrawInventoryItem(INVENTORY_ITEM *inv_item)
+0x004239C0 + GetDebouncedInput int32_t __cdecl GetDebouncedInput(int32_t input)
+0x004239E0 + DoInventoryPicture void __cdecl DoInventoryPicture(void)
+0x004239F0 + DoInventoryBackground void __cdecl DoInventoryBackground(void)
+0x00423B30 + InitColours void __cdecl InitColours(void)
+0x00423C40 + RingIsOpen void __cdecl RingIsOpen(RING_INFO *ring)
+0x00423DB0 + RingIsNotOpen void __cdecl RingIsNotOpen(RING_INFO *ring)
+0x00423E40 + Inv_RingNotActive void __cdecl Inv_RingNotActive(INVENTORY_ITEM *inv_item)
+0x004242B0 + RingActive void __cdecl RingActive(void)
+0x004242F0 + Inv_AddItem int32_t __cdecl Inv_AddItem(GAME_OBJECT_ID object_id)
+0x00424B00 + Inv_InsertItem void __cdecl Inv_InsertItem(INVENTORY_ITEM *inv_item)
+0x00424C30 + Inv_RequestItem int32_t __cdecl Inv_RequestItem(GAME_OBJECT_ID object_id)
+0x00424CB0 + Inv_RemoveAllItems void __cdecl Inv_RemoveAllItems(void)
+0x00424CD0 + Inv_RemoveItem int32_t __cdecl Inv_RemoveItem(GAME_OBJECT_ID object_id)
+0x00424DE0 + Inv_GetItemOption int32_t __cdecl Inv_GetItemOption(GAME_OBJECT_ID object_id)
+0x00424FD0 + RemoveInventoryText void __cdecl RemoveInventoryText(void)
+0x00425000 + Inv_RingInit void __cdecl Inv_RingInit(RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty, int16_t current, IMOTION_INFO *imo)
+0x00425110 + Inv_RingGetView void __cdecl Inv_RingGetView(RING_INFO *ring, PHD_3DPOS *viewer)
+0x00425170 + Inv_RingLight void __cdecl Inv_RingLight(RING_INFO *ring)
+0x004251B0 + Inv_RingCalcAdders void __cdecl Inv_RingCalcAdders(RING_INFO *ring, int16_t rotation_duration)
+0x004251E0 + Inv_RingDoMotions void __cdecl Inv_RingDoMotions(RING_INFO *ring)
+0x00425320 + Inv_RingRotateLeft void __cdecl Inv_RingRotateLeft(RING_INFO *ring)
+0x00425350 + Inv_RingRotateRight void __cdecl Inv_RingRotateRight(RING_INFO *ring)
+0x00425380 + Inv_RingMotionInit void __cdecl Inv_RingMotionInit(RING_INFO *ring, int16_t frames, int16_t status, int16_t status_target)
+0x004253F0 + Inv_RingMotionSetup void __cdecl Inv_RingMotionSetup(RING_INFO *ring, int16_t status, int16_t status_target, int16_t frames)
+0x00425420 + Inv_RingMotionRadius void __cdecl Inv_RingMotionRadius(RING_INFO *ring, int16_t target)
+0x00425450 + Inv_RingMotionRotation void __cdecl Inv_RingMotionRotation(RING_INFO *ring, int16_t rotation, int16_t target)
+0x00425480 + Inv_RingMotionCameraPos void __cdecl Inv_RingMotionCameraPos(RING_INFO *ring, int16_t target)
+0x004254B0 + Inv_RingMotionCameraPitch void __cdecl Inv_RingMotionCameraPitch(RING_INFO *ring, int16_t target)
+0x004254D0 + Inv_RingMotionItemSelect void __cdecl Inv_RingMotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
+0x00425530 + Inv_RingMotionItemDeselect void __cdecl Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
+0x004255A0 + Init_Requester void __cdecl Init_Requester(REQUEST_INFO *req)
+0x00425630 + Remove_Requester void __cdecl Remove_Requester(REQUEST_INFO *req)
+0x004256E0 + ReqItemCentreAlign void __cdecl ReqItemCentreAlign(REQUEST_INFO *req, TEXTSTRING *txt)
+0x00425700 + ReqItemLeftAlign void __cdecl ReqItemLeftAlign(REQUEST_INFO *req, TEXTSTRING *txt)
+0x00425760 + ReqItemRightAlign void __cdecl ReqItemRightAlign(REQUEST_INFO *req, TEXTSTRING *txt)
+0x004257C0 + Display_Requester int32_t __cdecl Display_Requester(REQUEST_INFO *req, int32_t des, int32_t backgrounds)
+0x00426030 + SetRequesterHeading void __cdecl SetRequesterHeading(REQUEST_INFO *req, char *text1, uint32_t flags1, char *text2, uint32_t flags2)
+0x004260E0 + RemoveAllReqItems void __cdecl RemoveAllReqItems(REQUEST_INFO *req)
+0x00426100 + ChangeRequesterItem void __cdecl ChangeRequesterItem(REQUEST_INFO *req, int32_t item, const char *text1, uint32_t flags1, const char *text2, uint32_t flags2)
+0x004261C0 + AddRequesterItem void __cdecl AddRequesterItem(REQUEST_INFO *req, const char *text1, uint32_t flags1, const char *text2, uint32_t flags2)
+0x00426270 + SetPCRequesterSize void __cdecl SetPCRequesterSize(REQUEST_INFO *req, int32_t maxlines, int32_t ypos)
+0x004262B0 + AddAssaultTime int32_t __cdecl AddAssaultTime(uint32_t time)
+0x00426340 + ShowGymStatsText void __cdecl ShowGymStatsText(char *time_str, int32_t type)
+0x00426520 + ShowStatsText void __cdecl ShowStatsText(char *time_str, int32_t type)
+0x004268C0 + ShowEndStatsText void __cdecl ShowEndStatsText(void)
+0x00426CF0 + InitialiseItemArray void __cdecl InitialiseItemArray(int32_t num_items)
+0x00426D50 + KillItem void __cdecl KillItem(int16_t item_num)
+0x00426E70 + CreateItem int16_t __cdecl CreateItem(void)
+0x00426EB0 + InitialiseItem void __cdecl InitialiseItem(int16_t item_num)
+0x00427070 + RemoveActiveItem void __cdecl RemoveActiveItem(int16_t item_num)
+0x00427100 + RemoveDrawnItem void __cdecl RemoveDrawnItem(int16_t item_num)
+0x00427170 + AddActiveItem void __cdecl AddActiveItem(int16_t item_num)
+0x004271D0 + ItemNewRoom void __cdecl ItemNewRoom(int16_t item_num, int16_t room_num)
+0x00427270 + GlobalItemReplace int32_t __cdecl GlobalItemReplace(GAME_OBJECT_ID src_object_id, GAME_OBJECT_ID dst_object_id)
+0x004272F0 + InitialiseFXArray void __cdecl InitialiseFXArray(void)
+0x00427320 + CreateEffect int16_t __cdecl CreateEffect(int16_t room_num)
+0x00427390 + KillEffect void __cdecl KillEffect(int16_t effect_num)
+0x00427480 + EffectNewRoom void __cdecl EffectNewRoom(int16_t effect_num, int16_t room_num)
+0x00427520 + ClearBodyBag void __cdecl ClearBodyBag(void)
+0x00427580 + LaraAboveWater void __cdecl LaraAboveWater(ITEM *item, COLL_INFO *coll)
+0x00427720 + LookUpDown void __cdecl LookUpDown(void)
+0x00427790 + LookLeftRight void __cdecl LookLeftRight(void)
+0x00427810 + ResetLook void __cdecl ResetLook(void)
+0x004278A0 + lara_as_walk void __cdecl lara_as_walk(ITEM *item, COLL_INFO *coll)
+0x00427930 + lara_as_run void __cdecl lara_as_run(ITEM *item, COLL_INFO *coll)
+0x00427A80 + lara_as_stop void __cdecl lara_as_stop(ITEM *item, COLL_INFO *coll)
+0x00427BD0 + lara_as_forwardjump void __cdecl lara_as_forwardjump(ITEM *item, COLL_INFO *coll)
+0x00427CB0 + lara_as_fastback void __cdecl lara_as_fastback(ITEM *item, COLL_INFO *coll)
+0x00427D10 + lara_as_turn_r void __cdecl lara_as_turn_r(ITEM *item, COLL_INFO *coll)
+0x00427DA0 + lara_as_turn_l void __cdecl lara_as_turn_l(ITEM *item, COLL_INFO *coll)
+0x00427E30 + lara_as_death void __cdecl lara_as_death(ITEM *item, COLL_INFO *coll)
+0x00427E50 + lara_as_fastfall void __cdecl lara_as_fastfall(ITEM *item, COLL_INFO *coll)
+0x00427E90 + lara_as_hang void __cdecl lara_as_hang(ITEM *item, COLL_INFO *coll)
+0x00427EF0 + lara_as_reach void __cdecl lara_as_reach(ITEM *item, COLL_INFO *coll)
+0x00427F10 + lara_as_splat void __cdecl lara_as_splat(ITEM *item, COLL_INFO *coll)
+0x00427F20 + lara_as_compress void __cdecl lara_as_compress(ITEM *item, COLL_INFO *coll)
+0x00428030 + lara_as_back void __cdecl lara_as_back(ITEM *item, COLL_INFO *coll)
+0x004280C0 + lara_as_null void __cdecl lara_as_null(ITEM *item, COLL_INFO *coll)
+0x004280D0 + lara_as_fastturn void __cdecl lara_as_fastturn(ITEM *item, COLL_INFO *coll)
+0x00428120 + lara_as_stepright void __cdecl lara_as_stepright(ITEM *item, COLL_INFO *coll)
+0x004281A0 + lara_as_stepleft void __cdecl lara_as_stepleft(ITEM *item, COLL_INFO *coll)
+0x00428220 + lara_as_slide void __cdecl lara_as_slide(ITEM *item, COLL_INFO *coll)
+0x00428250 + lara_as_backjump void __cdecl lara_as_backjump(ITEM *item, COLL_INFO *coll)
+0x004282A0 + lara_as_rightjump void __cdecl lara_as_rightjump(ITEM *item, COLL_INFO *coll)
+0x004282E0 + lara_as_leftjump void __cdecl lara_as_leftjump(ITEM *item, COLL_INFO *coll)
+0x00428320 + lara_as_upjump void __cdecl lara_as_upjump(ITEM *item, COLL_INFO *coll)
+0x00428340 + lara_as_fallback void __cdecl lara_as_fallback(ITEM *item, COLL_INFO *coll)
+0x00428370 + lara_as_hangleft void __cdecl lara_as_hangleft(ITEM *item, COLL_INFO *coll)
+0x004283B0 + lara_as_hangright void __cdecl lara_as_hangright(ITEM *item, COLL_INFO *coll)
+0x004283F0 + lara_as_slideback void __cdecl lara_as_slideback(ITEM *item, COLL_INFO *coll)
+0x00428410 + lara_as_pushblock void __cdecl lara_as_pushblock(ITEM *item, COLL_INFO *coll)
+0x00428440 + lara_as_ppready void __cdecl lara_as_ppready(ITEM *item, COLL_INFO *coll)
+0x00428470 + lara_as_pickup void __cdecl lara_as_pickup(ITEM *item, COLL_INFO *coll)
+0x004284A0 + lara_as_pickupflare void __cdecl lara_as_pickupflare(ITEM *item, COLL_INFO *coll)
+0x00428500 + lara_as_switchon void __cdecl lara_as_switchon(ITEM *item, COLL_INFO *coll)
+0x00428540 + lara_as_usekey void __cdecl lara_as_usekey(ITEM *item, COLL_INFO *coll)
+0x00428570 + lara_as_special void __cdecl lara_as_special(ITEM *item, COLL_INFO *coll)
+0x00428590 + lara_as_swandive void __cdecl lara_as_swandive(ITEM *item, COLL_INFO *coll)
+0x004285C0 + lara_as_fastdive void __cdecl lara_as_fastdive(ITEM *item, COLL_INFO *coll)
+0x00428620 + lara_as_waterout void __cdecl lara_as_waterout(ITEM *item, COLL_INFO *coll)
+0x00428640 + lara_as_wade void __cdecl lara_as_wade(ITEM *item, COLL_INFO *coll)
+0x00428710 + lara_as_deathslide void __cdecl lara_as_deathslide(ITEM *item, COLL_INFO *coll)
+0x004287B0 + extra_as_breath void __cdecl extra_as_breath(ITEM *item, COLL_INFO *coll)
+0x00428800 + extra_as_yetikill void __cdecl extra_as_yetikill(ITEM *item, COLL_INFO *coll)
+0x00428850 + extra_as_sharkkill void __cdecl extra_as_sharkkill(ITEM *item, COLL_INFO *coll)
+0x004288F0 + extra_as_airlock void __cdecl extra_as_airlock(ITEM *item, COLL_INFO *coll)
+0x00428910 + extra_as_gongbong void __cdecl extra_as_gongbong(ITEM *item, COLL_INFO *coll)
+0x00428930 + extra_as_dinokill void __cdecl extra_as_dinokill(ITEM *item, COLL_INFO *coll)
+0x00428990 + extra_as_pulldagger void __cdecl extra_as_pulldagger(ITEM *item, COLL_INFO *coll)
+0x00428A50 + extra_as_startanim void __cdecl extra_as_startanim(ITEM *item, COLL_INFO *coll)
+0x00428AA0 + extra_as_starthouse void __cdecl extra_as_starthouse(ITEM *item, COLL_INFO *coll)
+0x00428B50 + extra_as_finalanim void __cdecl extra_as_finalanim(ITEM *item, COLL_INFO *coll)
+0x00428C00 + LaraFallen int32_t __cdecl LaraFallen(ITEM *item, COLL_INFO *coll)
+0x00428C60 + Lara_CollideStop void __cdecl Lara_CollideStop(ITEM *item, COLL_INFO *coll)
+0x00428D20 + lara_col_walk void __cdecl lara_col_walk(ITEM *item, COLL_INFO *coll)
+0x00428EC0 + lara_col_run void __cdecl lara_col_run(ITEM *item, COLL_INFO *coll)
+0x00429040 + lara_col_stop void __cdecl lara_col_stop(ITEM *item, COLL_INFO *coll)
+0x004290D0 + lara_col_forwardjump void __cdecl lara_col_forwardjump(ITEM *item, COLL_INFO *coll)
+0x004291B0 + lara_col_fastback void __cdecl lara_col_fastback(ITEM *item, COLL_INFO *coll)
+0x00429270 + lara_col_turn_r void __cdecl lara_col_turn_r(ITEM *item, COLL_INFO *coll)
+0x00429310 + lara_col_turn_l void __cdecl lara_col_turn_l(ITEM *item, COLL_INFO *coll)
+0x00429330 + lara_col_death void __cdecl lara_col_death(ITEM *item, COLL_INFO *coll)
+0x004293A0 + lara_col_fastfall void __cdecl lara_col_fastfall(ITEM *item, COLL_INFO *coll)
+0x00429440 + lara_col_hang void __cdecl lara_col_hang(ITEM *item, COLL_INFO *coll)
+0x00429570 + lara_col_reach void __cdecl lara_col_reach(ITEM *item, COLL_INFO *coll)
+0x00429600 + lara_col_splat void __cdecl lara_col_splat(ITEM *item, COLL_INFO *coll)
+0x00429660 + Lara_Col_Land void __cdecl Lara_Col_Land(ITEM *item, COLL_INFO *coll)
+0x00429680 + Lara_Col_Compress void __cdecl Lara_Col_Compress( ITEM *item, COLL_INFO *coll )
+0x00429720 + Lara_Col_Back void __cdecl Lara_Col_Back(ITEM *item, COLL_INFO *coll)
+0x00429820 + lara_col_stepright void __cdecl lara_col_stepright(ITEM *item, COLL_INFO *coll)
+0x004298E0 + lara_col_stepleft void __cdecl lara_col_stepleft(ITEM *item, COLL_INFO *coll)
+0x00429900 + lara_col_slide void __cdecl lara_col_slide(ITEM *item, COLL_INFO *coll)
+0x00429920 + lara_col_backjump void __cdecl lara_col_backjump(ITEM *item, COLL_INFO *coll)
+0x00429950 + lara_col_rightjump void __cdecl lara_col_rightjump(ITEM *item, COLL_INFO *coll)
+0x00429980 + lara_col_leftjump void __cdecl lara_col_leftjump(ITEM *item, COLL_INFO *coll)
+0x004299B0 + Lara_Col_UpJump void __cdecl Lara_Col_UpJump(ITEM *item, COLL_INFO *coll)
+0x00429AD0 + lara_col_fallback void __cdecl lara_col_fallback(ITEM *item, COLL_INFO *coll)
+0x00429B60 + lara_col_hangleft void __cdecl lara_col_hangleft(ITEM *item, COLL_INFO *coll)
+0x00429BA0 + lara_col_hangright void __cdecl lara_col_hangright(ITEM *item, COLL_INFO *coll)
+0x00429BE0 + lara_col_slideback void __cdecl lara_col_slideback(ITEM *item, COLL_INFO *coll)
+0x00429C10 + Lara_Col_Null void __cdecl Lara_Col_Null(ITEM *item, COLL_INFO *coll)
+0x00429C30 + Lara_Col_Roll void __cdecl Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
+0x00429CC0 + Lara_Col_Roll2 void __cdecl Lara_Col_Roll2(ITEM *item, COLL_INFO *coll)
+0x00429D80 + Lara_Col_SwanDive void __cdecl Lara_Col_SwanDive(ITEM *item, COLL_INFO *coll)
+0x00429DF0 + Lara_Col_FastDive void __cdecl Lara_Col_FastDive(ITEM *item, COLL_INFO *coll)
+0x00429E70 + Lara_Col_Wade void __cdecl Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
+0x00429FE0 + Lara_Col_Default void __cdecl Lara_Col_Default(ITEM *item, COLL_INFO *coll)
+0x0042A020 + Lara_Col_Jumper void __cdecl Lara_Col_Jumper(ITEM *item, COLL_INFO *coll)
+0x0042A0A0 + Lara_GetCollisionInfo void __cdecl Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll)
+0x0042A0E0 + Lara_SlideSlope void __cdecl Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
+0x0042A1D0 + Lara_HitCeiling int32_t __cdecl Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
+0x0042A240 + Lara_DeflectEdge int32_t __cdecl Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
+0x0042A2C0 + Lara_DeflectEdgeJump void __cdecl Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
+0x0042A440 + Lara_SlideEdgeJump void __cdecl Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll)
+0x0042A530 + Lara_TestWall int32_t __cdecl Lara_TestWall(ITEM *item, int32_t front, int32_t right, int32_t down)
+0x0042A640 + Lara_TestHangOnClimbWall int32_t __cdecl Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll)
+0x0042A750 + Lara_TestClimbStance int32_t __cdecl Lara_TestClimbStance(ITEM *item, COLL_INFO *coll)
+0x0042A810 + Lara_HangTest void __cdecl Lara_HangTest(ITEM *item, COLL_INFO *coll)
+0x0042AB70 + Lara_TestEdgeCatch int32_t __cdecl Lara_TestEdgeCatch(ITEM *item, COLL_INFO *coll, int32_t *edge)
+0x0042AC20 + Lara_TestHangJumpUp int32_t __cdecl Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
+0x0042AD90 + Lara_TestHangJump int32_t __cdecl Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
+0x0042AF30 + Lara_TestHangSwingIn int32_t __cdecl Lara_TestHangSwingIn(ITEM *item, int16_t angle)
+0x0042AFF0 + Lara_TestVault int32_t __cdecl Lara_TestVault(ITEM *item, COLL_INFO *coll)
+0x0042B2E0 + Lara_TestSlide int32_t __cdecl Lara_TestSlide(ITEM *item, COLL_INFO *coll)
+0x0042B410 + Lara_FloorFront int16_t __cdecl Lara_FloorFront(ITEM *item, int16_t ang, int32_t dist)
+0x0042B490 + Lara_LandedBad int32_t __cdecl Lara_LandedBad(ITEM *item, COLL_INFO *coll)
+0x0042B550 + Lara_GetJointAbsPosition void __cdecl Lara_GetJointAbsPosition(XYZ_32 *vec, int32_t joint)
+0x0042B8E0 + Lara_GetJointAbsPosition_I void __cdecl Lara_GetJointAbsPosition_I(ITEM *item, XYZ_32 *vec, int16_t *frame1, int16_t *frame2, int32_t frac, int32_t rate)
+0x0042BC00 + Gun_Rifle_DrawMeshes void __cdecl Gun_Rifle_DrawMeshes(LARA_GUN_TYPE weapon_type)
+0x0042BC40 + Gun_Rifle_UndrawMeshes void __cdecl Gun_Rifle_UndrawMeshes(LARA_GUN_TYPE weapon_type)
+0x0042BC70 + Gun_Rifle_Ready void __cdecl Gun_Rifle_Ready(LARA_GUN_TYPE weapon_type)
+0x0042BCE0 + Gun_Rifle_Control void __cdecl Gun_Rifle_Control(LARA_GUN_TYPE weapon_type)
+0x0042BDE0 + Gun_Rifle_FireShotgun void __cdecl Gun_Rifle_FireShotgun(void)
+0x0042BEE0 + Gun_Rifle_FireM16 void __cdecl Gun_Rifle_FireM16(bool running)
+0x0042BF60 + Gun_Rifle_FireHarpoon void __cdecl Gun_Rifle_FireHarpoon(void)
+0x0042C0F0 + HarpoonBolt_Control void __cdecl HarpoonBolt_Control(int16_t item_num)
+0x0042C440 + Gun_Rifle_FireGrenade void __cdecl Gun_Rifle_FireGrenade(void)
+0x0042C530 + Grenade_Control void __cdecl Grenade_Control(int16_t item_num)
+0x0042C930 + Gun_Rifle_Draw void __cdecl Gun_Rifle_Draw(LARA_GUN_TYPE weapon_type)
+0x0042CAA0 + Gun_Rifle_Undraw void __cdecl Gun_Rifle_Undraw(LARA_GUN_TYPE weapon_type)
+0x0042CBB0 + Gun_Rifle_Animate void __cdecl Gun_Rifle_Animate(LARA_GUN_TYPE weapon_type)
+0x0042CF60 + Gun_Pistols_SetArmInfo void __cdecl Gun_Pistols_SetArmInfo(LARA_ARM *arm, int32_t frame)
+0x0042CFB0 + Gun_Pistols_Draw void __cdecl Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
+0x0042D030 + Gun_Pistols_Undraw void __cdecl Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
+0x0042D260 + Gun_Pistols_Ready void __cdecl Gun_Pistols_Ready(LARA_GUN_TYPE weapon_type)
+0x0042D2C0 + Gun_Pistols_DrawMeshes void __cdecl Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)
+0x0042D310 + Gun_Pistols_UndrawMeshLeft void __cdecl Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type)
+0x0042D350 + Gun_Pistols_UndrawMeshRight void __cdecl Gun_Pistols_UndrawMeshRight(LARA_GUN_TYPE weapon_type)
+0x0042D390 + Gun_Pistols_Control void __cdecl Gun_Pistols_Control(LARA_GUN_TYPE weapon_type)
+0x0042D520 + Gun_Pistols_Animate void __cdecl Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
+0x0042D850 + Lara_State_ClimbLeft void __cdecl Lara_State_ClimbLeft(ITEM *item, COLL_INFO *coll)
+0x0042D890 + Lara_State_ClimbRight void __cdecl Lara_State_ClimbRight(ITEM *item, COLL_INFO *coll)
+0x0042D8D0 + Lara_State_ClimbStance void __cdecl Lara_State_ClimbStance(ITEM *item, COLL_INFO *coll)
+0x0042D950 + Lara_State_Climbing void __cdecl Lara_State_Climbing(ITEM *item, COLL_INFO *coll)
+0x0042D970 + Lara_State_ClimbEnd void __cdecl Lara_State_ClimbEnd(ITEM *item, COLL_INFO *coll)
+0x0042D990 + Lara_State_ClimbDown void __cdecl Lara_State_ClimbDown(ITEM *item, COLL_INFO *coll)
+0x0042D9B0 + Lara_Col_ClimbLeft void __cdecl Lara_Col_ClimbLeft(ITEM *item, COLL_INFO *coll)
+0x0042DA10 + Lara_Col_ClimbRight void __cdecl Lara_Col_ClimbRight(ITEM *item, COLL_INFO *coll)
+0x0042DA70 + Lara_Col_ClimbStance void __cdecl Lara_Col_ClimbStance(ITEM *item, COLL_INFO *coll)
+0x0042DC80 + Lara_Col_Climbing void __cdecl Lara_Col_Climbing(ITEM *item, COLL_INFO *coll)
+0x0042DDD0 + Lara_Col_ClimbDown void __cdecl Lara_Col_ClimbDown(ITEM *item, COLL_INFO *coll)
+0x0042DF70 + Lara_CheckForLetGo int32_t __cdecl Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll)
+0x0042E020 + Lara_TestClimb int32_t __cdecl Lara_TestClimb(int32_t x, int32_t y, int32_t z, int32_t xfront, int32_t zfront, int32_t item_height, int16_t item_room, int32_t *shift)
+0x0042E290 + Lara_TestClimbPos int32_t __cdecl Lara_TestClimbPos(ITEM *item, int32_t front, int32_t right, int32_t origin, int32_t height, int32_t *shift)
+0x0042E360 + Lara_DoClimbLeftRight void __cdecl Lara_DoClimbLeftRight(ITEM *item, COLL_INFO *coll, int32_t result, int32_t shift)
+0x0042E450 + Lara_TestClimbUpPos int32_t __cdecl Lara_TestClimbUpPos(ITEM *item, int32_t front, int32_t right, int32_t *shift, int32_t *ledge)
+0x0042E6A0 + Gun_Control void __cdecl Gun_Control(void)
+0x0042EC10 + Gun_CheckForHoldingState int32_t __cdecl Gun_CheckForHoldingState(int32_t state)
+0x0042EC50 + Gun_InitialiseNewWeapon void __cdecl Gun_InitialiseNewWeapon(void)
+0x0042ED90 + Gun_TargetInfo void __cdecl Gun_TargetInfo(const WEAPON_INFO *winfo)
+0x0042EF30 + Gun_GetNewTarget void __cdecl Gun_GetNewTarget(WEAPON_INFO *winfo)
+0x0042F150 + Gun_FindTargetPoint void __cdecl Gun_FindTargetPoint(const ITEM *item, GAME_VECTOR *target)
+0x0042F200 + Gun_AimWeapon void __cdecl Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
+0x0042F2D0 + Gun_FireWeapon int32_t __cdecl Gun_FireWeapon(LARA_GUN_TYPE weapon_type, ITEM *target, const ITEM *src, const int16_t *angles)
+0x0042F640 + Gun_HitTarget void __cdecl Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int32_t damage)
+0x0042F6E0 + Gun_SmashItem void __cdecl Gun_SmashItem(int16_t item_num, LARA_GUN_TYPE weapon_type)
+0x0042F740 + Gun_GetWeaponAnim GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
+0x0042F7A0 + Flare_DoLight int32_t __cdecl Flare_DoLight(XYZ_32 *pos, int32_t flare_age)
+0x0042F840 + Flare_DoInHand void __cdecl Flare_DoInHand(int32_t flare_age)
+0x0042F920 + Flare_DrawInAir void __cdecl Flare_DrawInAir(const ITEM *item)
+0x0042FA20 + Flare_Create void __cdecl Flare_Create(int32_t thrown)
+0x0042FC00 + Flare_SetArm void __cdecl Flare_SetArm(int32_t frame)
+0x0042FC50 + Flare_Draw void __cdecl Flare_Draw(void)
+0x0042FDC0 + Flare_Undraw void __cdecl Flare_Undraw(void)
+0x0042FFF0 + Flare_DrawMeshes void __cdecl Flare_DrawMeshes(void)
+0x00430010 + Flare_UndrawMeshes void __cdecl Flare_UndrawMeshes(void)
+0x00430030 + Flare_Ready void __cdecl Flare_Ready(void)
+0x00430070 + Flare_Control void __cdecl Flare_Control(int16_t item_num)
+0x004302E0 + Lara_Control void __cdecl Lara_Control(int16_t item_num)
+0x00430970 + Lara_Animate void __cdecl Lara_Animate(ITEM *item)
+0x00430C70 + Lara_UseItem void __cdecl Lara_UseItem(GAME_OBJECT_ID object_id)
+0x00430E30 + Lara_CheatGetStuff void __cdecl Lara_CheatGetStuff(void)
+0x00430EF0 + Lara_ControlExtra void __cdecl Lara_ControlExtra(int16_t item_num)
+0x00430F10 + Lara_InitialiseLoad void __cdecl Lara_InitialiseLoad(int16_t item_num)
+0x00430F40 + Lara_Initialise void __cdecl Lara_Initialise(int32_t type)
+0x00431200 + Lara_InitialiseInventory void __cdecl Lara_InitialiseInventory(int32_t level_num)
+0x00431570 + Lara_InitialiseMeshes void __cdecl Lara_InitialiseMeshes(int32_t level_num)
+0x00431670 + Lara_HandleSurface void __cdecl Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
+0x004317D0 + Lara_State_SurfSwim void __cdecl Lara_State_SurfSwim(ITEM *item, COLL_INFO *coll)
+0x00431840 + Lara_State_SurfBack void __cdecl Lara_State_SurfBack(ITEM *item, COLL_INFO *coll)
+0x004318A0 + Lara_State_SurfLeft void __cdecl Lara_State_SurfLeft(ITEM *item, COLL_INFO *coll)
+0x00431900 + lara_as_surfback void __cdecl lara_as_surfback(ITEM *item, COLL_INFO *coll)
+0x00431960 + Lara_State_SurfTread void __cdecl Lara_State_SurfTread(ITEM *item, COLL_INFO *coll)
+0x00431A50 + Lara_Col_SurfSwim void __cdecl Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll)
+0x00431A90 + Lara_Col_SurfBack void __cdecl Lara_Col_SurfBack(ITEM *item, COLL_INFO *coll)
+0x00431AC0 + Lara_Col_SurfLeft void __cdecl Lara_Col_SurfLeft(ITEM *item, COLL_INFO *coll)
+0x00431AF0 + Lara_Col_SurfRight void __cdecl Lara_Col_SurfRight(ITEM *item, COLL_INFO *coll)
+0x00431B20 + Lara_Col_SurfTread void __cdecl Lara_Col_SurfTread(ITEM *item, COLL_INFO *coll)
+0x00431B40 + LaraSurfaceCollision void __cdecl LaraSurfaceCollision(ITEM *item, COLL_INFO *coll)
+0x00431C40 + LaraTestWaterStepOut int32_t __cdecl LaraTestWaterStepOut(ITEM *item, COLL_INFO *coll)
+0x00431D30 + LaraTestWaterClimbOut int32_t __cdecl LaraTestWaterClimbOut(ITEM *item, COLL_INFO *coll)
+0x00431F50 + LaraUnderWater void __cdecl LaraUnderWater(ITEM *item, COLL_INFO *coll)
+0x00432180 + SwimTurn void __cdecl SwimTurn(ITEM *item)
+0x00432210 + lara_as_swim void __cdecl lara_as_swim(ITEM *item, COLL_INFO *coll)
+0x00432280 + lara_as_glide void __cdecl lara_as_glide(ITEM *item, COLL_INFO *coll)
+0x00432300 + lara_as_tread void __cdecl lara_as_tread(ITEM *item, COLL_INFO *coll)
+0x00432390 + lara_as_dive void __cdecl lara_as_dive(ITEM *item, COLL_INFO *coll)
+0x004323B0 + lara_as_uwdeath void __cdecl lara_as_uwdeath(ITEM *item, COLL_INFO *coll)
+0x00432410 + lara_as_waterroll void __cdecl lara_as_waterroll(ITEM *item, COLL_INFO *coll)
+0x00432420 + lara_col_swim void __cdecl lara_col_swim(ITEM *item, COLL_INFO *coll)
+0x00432440 + lara_col_uwdeath void __cdecl lara_col_uwdeath(ITEM *item, COLL_INFO *coll)
+0x004324A0 + GetWaterDepth int32_t __cdecl GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num)
+0x00432640 + LaraTestWaterDepth void __cdecl LaraTestWaterDepth(ITEM *item, COLL_INFO *coll)
+0x00432710 + LaraSwimCollision void __cdecl LaraSwimCollision(ITEM *item, COLL_INFO *coll)
+0x00432870 + LaraWaterCurrent void __cdecl LaraWaterCurrent(COLL_INFO *coll)
+0x00432A60 + InitialiseLOTarray void __cdecl InitialiseLOTarray(void)
+0x00432AC0 + DisableBaddieAI void __cdecl DisableBaddieAI(int16_t item_num)
+0x00432B10 + EnableBaddieAI bool __cdecl EnableBaddieAI(int16_t item_num, bool always)
+0x00432CC0 + LOT_InitialiseSlot void __cdecl LOT_InitialiseSlot(int16_t item_num, int32_t slot)
+0x00432ED0 + CreateZone void __cdecl CreateZone(ITEM *item)
+0x00432F90 + ClearLOT void __cdecl ClearLOT(LOT_INFO *lot)
+0x00432FE0 + ControlMissile void __cdecl ControlMissile(int16_t effect_num)
+0x004332B0 + ShootAtLara void __cdecl ShootAtLara(EFFECT *effect)
+0x00433360 + ExplodingDeath int32_t __cdecl ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage)
+0x004336F0 + ControlBodyPart void __cdecl ControlBodyPart(int16_t effect_num)
+0x004338F0 + InitialiseMovingBlock void __cdecl InitialiseMovingBlock(int16_t item_num)
+0x00433920 + MovableBlock void __cdecl MovableBlock(int16_t item_num)
+0x00433A70 + MovableBlock_Collision void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00433CD0 + TestBlockMovable int32_t __cdecl TestBlockMovable(ITEM *item, int32_t block_height)
+0x00433D20 + MovableBlock_TestPush int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant)
+0x00433E70 + MovableBlock_TestPull int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant)
+0x004340B0 + AlterFloorHeight void __cdecl AlterFloorHeight(ITEM *item, int32_t height)
+0x00434170 + DrawMovableBlock void __cdecl DrawMovableBlock(const ITEM *item)
+0x004341A0 + DrawUnclippedItem void __cdecl DrawUnclippedItem(const ITEM *item)
+0x00434210 + EarthQuake void __cdecl EarthQuake(int16_t item_num)
+0x004342F0 + ControlCutShotgun void __cdecl ControlCutShotgun(int16_t item_num)
+0x00434330 + InitialiseFinalLevel void __cdecl InitialiseFinalLevel(void)
+0x00434400 + FinalLevelCounter void __cdecl FinalLevelCounter(int16_t item_num)
+0x00434610 + MiniCopterControl void __cdecl MiniCopterControl(int16_t item_num)
+0x004346F0 + InitialiseDyingMonk void __cdecl InitialiseDyingMonk(int16_t item_num)
+0x00434770 + DyingMonk void __cdecl DyingMonk(int16_t item_num)
+0x00434800 + ControlGongBonger void __cdecl ControlGongBonger(int16_t item_num)
+0x004348C0 + DeathSlideCollision void __cdecl DeathSlideCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00434980 + ControlDeathSlide void __cdecl ControlDeathSlide(int16_t item_num)
+0x00434C10 + BigBowlControl void __cdecl BigBowlControl(int16_t item_num)
+0x00434D00 + BellControl void __cdecl BellControl(int16_t item_num)
+0x00434D80 + InitialiseWindow void __cdecl InitialiseWindow(int16_t item_num)
+0x00434E00 + SmashWindow void __cdecl SmashWindow(int16_t item_num)
+0x00434ED0 + WindowControl void __cdecl WindowControl(int16_t item_num)
+0x00434F70 + SmashIceControl void __cdecl SmashIceControl(int16_t item_num)
+0x00435050 + ShutThatDoor void __cdecl ShutThatDoor(DOORPOS_DATA *d)
+0x004350A0 + OpenThatDoor void __cdecl OpenThatDoor(DOORPOS_DATA *d)
+0x004350E0 + InitialiseDoor void __cdecl InitialiseDoor(int16_t item_num)
+0x004354C0 + DoorControl void __cdecl DoorControl(int16_t item_num)
+0x00435590 + OnDrawBridge int32_t __cdecl OnDrawBridge(const ITEM *item, int32_t x, int32_t y)
+0x00435650 + DrawBridgeFloor void __cdecl DrawBridgeFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435690 + DrawBridgeCeiling void __cdecl DrawBridgeCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x004356D0 + DrawBridgeCollision void __cdecl DrawBridgeCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00435700 + InitialiseLift void __cdecl InitialiseLift(int16_t item_num)
+0x00435740 + LiftControl void __cdecl LiftControl(int16_t item_num)
+0x00435820 + LiftFloorCeiling void __cdecl LiftFloorCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling)
+0x004359A0 + LiftFloor void __cdecl LiftFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x004359E0 + LiftCeiling void __cdecl LiftCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435A20 + BridgeFlatFloor void __cdecl BridgeFlatFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435A40 + BridgeFlatCeiling void __cdecl BridgeFlatCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435A60 + GetOffset int32_t __cdecl GetOffset(const ITEM *item, int32_t x, int32_t z)
+0x00435AA0 + BridgeTilt1Floor void __cdecl BridgeTilt1Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435AD0 + BridgeTilt1Ceiling void __cdecl BridgeTilt1Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435B10 + BridgeTilt2Floor void __cdecl BridgeTilt2Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435B40 + BridgeTilt2Ceiling void __cdecl BridgeTilt2Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00435B80 + CopterControl void __cdecl CopterControl(int16_t item_num)
+0x00435C90 + GeneralControl void __cdecl GeneralControl(int16_t item_num)
+0x00435D70 + DetonatorControl void __cdecl DetonatorControl(int16_t item_num)
+0x00435E00 + Targetable bool __cdecl Targetable(const ITEM *item, const AI_INFO *info)
+0x00435E90 + ControlGlow void __cdecl ControlGlow(int16_t effect_num)
+0x00435ED0 + ControlGunShot void __cdecl ControlGunShot(int16_t effect_num)
+0x00435F20 + GunShot int16_t __cdecl GunShot(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num)
+0x00435F90 + GunHit int16_t __cdecl GunHit(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num)
+0x00436050 + GunMiss int16_t __cdecl GunMiss(int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot, int16_t room_num)
+0x00436100 + ShotLara int32_t __cdecl ShotLara(ITEM *item, AI_INFO *info, BITE *gun, int16_t extra_rotation, int32_t damage)
+0x004362D0 + InitialiseCult1 void __cdecl InitialiseCult1(int16_t item_num)
+0x00436320 + Cultist1_Control void __cdecl Cultist1_Control(int16_t item_num)
+0x00436750 + InitialiseCult3 void __cdecl InitialiseCult3(int16_t item_num)
+0x004367A0 + Cultist3_Control void __cdecl Cultist3_Control(int16_t item_num)
+0x00436D10 + Worker1_Control void __cdecl Worker1_Control(int16_t item_num)
+0x00437110 + Worker2_Control void __cdecl Worker2_Control(int16_t item_num)
+0x00437570 + Bandit1_Control void __cdecl Bandit1_Control(int16_t item_num)
+0x004378B0 + Bandit2_Control void __cdecl Bandit2_Control(int16_t item_num)
+0x00437CF0 + WinstonControl void __cdecl WinstonControl(int16_t item_num)
+0x00437E70 + PickUpCollision void __cdecl PickUpCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x004382F0 + SwitchCollision void __cdecl SwitchCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00438500 + SwitchCollision2 void __cdecl SwitchCollision2(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00438600 + DetonatorCollision void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00438840 + Keyhole_Collision void __cdecl Keyhole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00438A80 + PuzzleHole_Collision void __cdecl PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x00438D40 + SwitchControl void __cdecl SwitchControl(int16_t item_num)
+0x00438D80 + SwitchTrigger int32_t __cdecl SwitchTrigger(int16_t item_num, int16_t timer)
+0x00438E40 + KeyTrigger int32_t __cdecl KeyTrigger(int16_t item_num)
+0x00438E80 + PickupTrigger int32_t __cdecl PickupTrigger(int16_t item_num)
+0x00438EC0 + SecretControl void __cdecl SecretControl(int16_t item_num)
+0x00438EF0 + Mouse_Control void __cdecl Mouse_Control(int16_t item_num)
+0x004390E0 + InitialiseStartInfo void __cdecl InitialiseStartInfo(void)
+0x00439150 + ModifyStartInfo void __cdecl ModifyStartInfo(int32_t level_num)
+0x00439230 + CreateStartInfo void __cdecl CreateStartInfo(int32_t level_num)
+0x00439440 + CreateSaveGameInfo void __cdecl CreateSaveGameInfo(void)
+0x00439970 + ExtractSaveGameInfo void __cdecl ExtractSaveGameInfo(void)
+0x0043A1D0 + ResetSG void __cdecl ResetSG(void)
+0x0043A1F0 + WriteSG void __cdecl WriteSG(const void *pointer, int32_t size)
+0x0043A240 + ReadSG void __cdecl ReadSG(void *pointer, int32_t size)
+0x0043A280 + InitialiseLevel int32_t __cdecl InitialiseLevel(int32_t level_num, int32_t level_type)
+0x0043A3E0 + InitialiseGameFlags void __cdecl InitialiseGameFlags(void)
+0x0043A450 + InitialiseLevelFlags void __cdecl InitialiseLevelFlags(void)
+0x0043A480 + BaddyObjects void __cdecl BaddyObjects(void)
+0x0043B4C0 + TrapObjects void __cdecl TrapObjects(void)
+0x0043BAC0 + ObjectObjects void __cdecl ObjectObjects(void)
+0x0043C710 + InitialiseObjects void __cdecl InitialiseObjects(void)
+0x0043C780 + GetCarriedItems void __cdecl GetCarriedItems(void)
+0x0043C850 + JellyControl void __cdecl JellyControl(int16_t item_num)
+0x0043C970 + Barracuda_Control void __cdecl Barracuda_Control(int16_t item_num)
+0x0043CBA0 + Shark_Control void __cdecl Shark_Control(int16_t item_num)
+0x0043CE30 + InitialiseSkidoo void __cdecl InitialiseSkidoo(int16_t item_num)
+0x0043CE70 + SkidooCheckGeton int32_t __cdecl SkidooCheckGeton(int16_t item_num, COLL_INFO *coll)
+0x0043CF60 + SkidooCollision void __cdecl SkidooCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll)
+0x0043D060 + SkidooBaddieCollision void __cdecl SkidooBaddieCollision(const ITEM *skidoo)
+0x0043D260 + TestHeight int32_t __cdecl TestHeight(const ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos)
+0x0043D320 + DoShift int32_t __cdecl DoShift(ITEM *skidoo, XYZ_32 *pos, XYZ_32 *old)
+0x0043D5A0 + DoDynamics int32_t __cdecl DoDynamics(int32_t height, int32_t fall_speed, int32_t *y)
+0x0043D600 + GetCollisionAnim int32_t __cdecl GetCollisionAnim(ITEM *skidoo, XYZ_32 *moved)
+0x0043D690 + DoSnowEffect void __cdecl DoSnowEffect(ITEM *skidoo)
+0x0043D7D0 + SkidooDynamics int32_t __cdecl SkidooDynamics(ITEM *skidoo)
+0x0043DC70 + SkidooUserControl int32_t __cdecl SkidooUserControl(ITEM *skidoo, int32_t height, int32_t *pitch)
+0x0043DE30 + SkidooCheckGetOffOK int32_t __cdecl SkidooCheckGetOffOK(int32_t direction)
+0x0043DF40 + Skidoo_Animation void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead)
+0x0043E220 + SkidooExplode void __cdecl SkidooExplode(const ITEM *skidoo)
+0x0043E2A0 + SkidooCheckGetOff int32_t __cdecl SkidooCheckGetOff(void)
+0x0043E4E0 + SkidooGuns void __cdecl SkidooGuns(void)
+0x0043E600 + Skidoo_Control int32_t __cdecl Skidoo_Control(void)
+0x0043EA60 + DrawSkidoo void __cdecl DrawSkidoo(const ITEM *item)
+0x0043ED40 + SkidooDriver_Initialise void __cdecl SkidooDriver_Initialise(int16_t item_num)
+0x0043EDD0 + SkidooDriver_Control void __cdecl SkidooDriver_Control(int16_t rider_num)
+0x0043F1D0 + SkidmanPush void __cdecl SkidmanPush(const ITEM *item, ITEM *lara_item, int32_t radius)
+0x0043F2F0 + SkidmanCollision void __cdecl SkidmanCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+0x0043F380 + GetRealTrack int32_t __cdecl GetRealTrack(int32_t track)
+0x0043F3C0 + Sound_Effect void __cdecl Sound_Effect(int32_t sample_id, const XYZ_32 *pos, uint32_t flags)
+0x0043F860 + StopSoundEffect void __cdecl StopSoundEffect(int32_t sample_id)
+0x0043F8C0 + SOUND_EndScene void __cdecl SOUND_EndScene(void)
+0x0043F950 + SOUND_Stop void __cdecl SOUND_Stop(void)
+0x0043F980 + SOUND_Init void __cdecl SOUND_Init(void)
+0x0043F9B0 + TestCollision int32_t __cdecl TestCollision(ITEM *item, const ITEM *lara_item)
+0x0043FAE0 + GetSpheres int32_t __cdecl GetSpheres(const ITEM *item, SPHERE *spheres, bool world_space)
+0x0043FDC0 + GetJointAbsPosition void __cdecl GetJointAbsPosition(const ITEM *item, XYZ_32 *out_vec, int32_t joint)
+0x0043FF60 + BaddieBiteEffect void __cdecl BaddieBiteEffect(ITEM *item, const BITE *bite)
+0x0043FFC0 + SpiderLeap void __cdecl SpiderLeap(int16_t item_num, int16_t angle)
+0x00440070 + Spider_Control void __cdecl Spider_Control(int16_t item_num)
+0x00440290 + BigSpider_Control void __cdecl BigSpider_Control(int16_t item_num)
+0x00440450 + Text_Init void __cdecl Text_Init(void)
+0x00440480 + Text_Create TEXTSTRING *__cdecl Text_Create(int32_t x, int32_t y, int32_t z, const char *text)
+0x00440590 + Text_ChangeText void __cdecl Text_ChangeText(TEXTSTRING *string, const char *text)
+0x004405D0 + Text_SetScale void __cdecl Text_SetScale(TEXTSTRING *string, int32_t scale_h, int32_t scale_v)
+0x004405F0 + Text_Flash void __cdecl Text_Flash(TEXTSTRING *string, int16_t enable, int16_t rate)
+0x00440620 + Text_AddBackground void __cdecl Text_AddBackground(TEXTSTRING *string, int16_t x_size, int16_t y_size, int16_t x_off, int16_t y_off, int16_t z_off, int16_t color, uint16_t *gour_ptr, uint16_t flags)
+0x004406B0 + Text_RemoveBackground void __cdecl Text_RemoveBackground(TEXTSTRING *string)
+0x004406C0 + Text_AddOutline void __cdecl Text_AddOutline(TEXTSTRING *string, int16_t enable, int16_t color, uint16_t *gour_ptr, uint16_t flags)
+0x004406F0 + Text_RemoveOutline void __cdecl Text_RemoveOutline(TEXTSTRING *string)
+0x00440700 + Text_CentreH void __cdecl Text_CentreH(TEXTSTRING *string, int16_t enable)
+0x00440720 + Text_CentreV void __cdecl Text_CentreV(TEXTSTRING *string, int16_t enable)
+0x00440740 + Text_AlignRight void __cdecl Text_AlignRight(TEXTSTRING *string, int16_t enable)
+0x00440760 + Text_AlignBottom void __cdecl Text_AlignBottom(TEXTSTRING *string, int16_t enable)
+0x00440780 + Text_GetWidth int32_t __cdecl Text_GetWidth(TEXTSTRING *string)
+0x00440890 + Text_Remove int32_t __cdecl Text_Remove(TEXTSTRING *string)
+0x004408C0 + Text_GetTextLength int16_t __cdecl Text_GetTextLength(const char *text)
+0x004408F0 + Text_Draw void __cdecl Text_Draw(void)
+0x00440920 + Text_DrawBorder void __cdecl Text_DrawBorder(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height)
+0x00440AB0 + Text_DrawText void __cdecl Text_DrawText(const TEXTSTRING *string)
+0x00440E90 + Text_GetScaleH uint32_t __cdecl Text_GetScaleH(uint32_t value)
+0x00440ED0 + Text_GetScaleV uint32_t __cdecl Text_GetScaleV(uint32_t value)
+0x00440F10 + MineControl void __cdecl MineControl(int16_t mine_num)
+0x00441110 + ControlSpikeWall void __cdecl ControlSpikeWall(int16_t item_num)
+0x00441250 + ControlCeilingSpikes void __cdecl ControlCeilingSpikes(int16_t item_num)
+0x00441370 + HookControl void __cdecl HookControl(int16_t item_num)
+0x00441400 + PropellerControl void __cdecl PropellerControl(int16_t item_num)
+0x00441590 + SpinningBlade void __cdecl SpinningBlade(int16_t item_num)
+0x00441710 + IcicleControl void __cdecl IcicleControl(int16_t item_num)
+0x00441810 + InitialiseBlade void __cdecl InitialiseBlade(int16_t item_num)
+0x00441850 + BladeControl void __cdecl BladeControl(int16_t item_num)
+0x004418F0 + InitialiseKillerStatue void __cdecl InitialiseKillerStatue(int16_t item_num)
+0x00441940 + KillerStatueControl void __cdecl KillerStatueControl(int16_t item_num)
+0x00441A50 + SpringBoardControl void __cdecl SpringBoardControl(int16_t item_num)
+0x00441B30 + InitialiseRollingBall void __cdecl InitialiseRollingBall(int16_t item_num)
+0x00441B70 + RollingBallControl void __cdecl RollingBallControl(int16_t item_num)
+0x00441EC0 + RollingBallCollision void __cdecl RollingBallCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll)
+0x00442110 + SpikeCollision void __cdecl SpikeCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll)
+0x00442270 + TrapDoorControl void __cdecl TrapDoorControl(int16_t item_num)
+0x004422C0 + TrapDoorFloor void __cdecl TrapDoorFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00442300 + TrapDoorCeiling void __cdecl TrapDoorCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00442340 + OnTrapDoor int32_t __cdecl OnTrapDoor(const ITEM *item, int32_t x, int32_t z)
+0x004423F0 + Pendulum void __cdecl Pendulum(int16_t item_num)
+0x00442500 + FallingBlock void __cdecl FallingBlock(int16_t item_num)
+0x00442610 + FallingBlockFloor void __cdecl FallingBlockFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x00442650 + FallingBlockCeiling void __cdecl FallingBlockCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height)
+0x004426A0 + TeethTrap void __cdecl TeethTrap(int16_t item_num)
+0x00442760 + FallingCeiling void __cdecl FallingCeiling(int16_t item_num)
+0x00442840 + DartEmitterControl void __cdecl DartEmitterControl(int16_t item_num)
+0x00442980 + DartsControl void __cdecl DartsControl(int16_t item_num)
+0x00442AE0 + DartEffectControl void __cdecl DartEffectControl(int16_t effect_num)
+0x00442B30 + FlameEmitterControl void __cdecl FlameEmitterControl(int16_t item_num)
+0x00442BC0 + FlameControl void __cdecl FlameControl(int16_t effect_num)
+0x00442D30 + LaraBurn void __cdecl LaraBurn(void)
+0x00442D80 + LavaBurn void __cdecl LavaBurn(ITEM *item)
+0x00442E70 + LavaSpray void __cdecl LavaSpray(int16_t item_num)
+0x00442F40 + ControlLavaBlob void __cdecl ControlLavaBlob(int16_t effect_num)
+0x00443050 + BirdGuardian_Control void __cdecl BirdGuardian_Control(int16_t item_num)
+0x00443350 + Yeti_Control void __cdecl Yeti_Control(int16_t item_num)
+0x00443990 + BGND_Make640x480 void __cdecl BGND_Make640x480(uint8_t *bitmap, RGB_888 *palette)
+0x00443B50 + BGND_AddTexture int32_t __cdecl BGND_AddTexture(int32_t tile_idx, BYTE *bitmap, int32_t pal_index, RGB_888 *bmp_pal)
+0x00443C10 + BGND_GetPageHandles void __cdecl BGND_GetPageHandles(void)
+0x00443C50 + BGND_DrawInGameBlack void __cdecl BGND_DrawInGameBlack(void)
+0x00443CB0 + DrawQuad void __cdecl DrawQuad(float sx, float sy, float width, float height, D3DCOLOR color)
+0x00443D90 + BGND_DrawInGameBackground void __cdecl BGND_DrawInGameBackground(void)
+0x00443FB0 + DrawTextureTile void __cdecl DrawTextureTile(int32_t sx, int32_t sy, int32_t width, int32_t height, HWR_TEXTURE_HANDLE tex_source, int32_t tu, int32_t tv, int32_t t_width, int32_t t_height, D3DCOLOR color0, D3DCOLOR color1, D3DCOLOR color2, D3DCOLOR color3)
+0x00444210 + BGND_CenterLighting D3DCOLOR __cdecl BGND_CenterLighting(int32_t x, int32_t y, int32_t width, int32_t height)
+0x004444C0 + BGND_Free void __cdecl BGND_Free(void)
+0x00444510 + BGND_Init bool __cdecl BGND_Init(void)
+0x00444540 + Enumerate3DDevices void __cdecl Enumerate3DDevices(DISPLAY_ADAPTER *adapter)
+0x00444570 + D3DCreate bool __cdecl D3DCreate(void)
+0x004445B0 + Enum3DDevicesCallback HRESULT __stdcall Enum3DDevicesCallback(GUID *lpGuid, LPTSTR lpDeviceDescription, LPTSTR lpDeviceName, LPD3DDEVICEDESC lpD3DHWDeviceDesc, LPD3DDEVICEDESC lpD3DHELDeviceDesc, LPVOID lpContext)
+0x00444670 + D3DIsSupported bool __cdecl D3DIsSupported(LPD3DDEVICEDESC desc)
+0x004446B0 + D3DSetViewport bool __cdecl D3DSetViewport(void)
+0x00444770 + D3DDeviceCreate void __cdecl D3DDeviceCreate(LPDDS lpBackBuffer)
+0x00444930 + Direct3DRelease void __cdecl Direct3DRelease(void)
+0x00444980 + Direct3DInit bool __cdecl Direct3DInit(void)
+0x00444990 -
+0x004449A0 -
+0x004449D0 -
+0x00444AA0 -
+0x00444AB0 -
+0x00444B20 -
+0x00444BB0 -
+0x00444BC0 -
+0x00444BD0 + DDrawCreate bool __cdecl DDrawCreate(LPGUID lpGUID)
+0x00444C30 + DDrawRelease void __cdecl DDrawRelease(void)
+0x00444C70 + GameWindowCalculateSizeFromClient void __cdecl GameWindowCalculateSizeFromClient(int32_t *width, int32_t *height)
+0x00444CF0 + GameWindowCalculateSizeFromClientByZero void __cdecl GameWindowCalculateSizeFromClientByZero(int32_t *width, int32_t *height)
+0x00444D60 + WinVidSetMinWindowSize void __cdecl WinVidSetMinWindowSize(int32_t width, int32_t height)
+0x00444DB0 + WinVidClearMinWindowSize void __cdecl WinVidClearMinWindowSize(void)
+0x00444DC0 + WinVidSetMaxWindowSize void __cdecl WinVidSetMaxWindowSize(int32_t width, int32_t height)
+0x00444E10 + WinVidClearMaxWindowSize void __cdecl WinVidClearMaxWindowSize(void)
+0x00444E20 + CalculateWindowWidth int32_t __cdecl CalculateWindowWidth(int32_t width, int32_t height)
+0x00444E70 + CalculateWindowHeight int32_t __cdecl CalculateWindowHeight(int32_t width, int32_t height)
+0x00444EA0 + WinVidGetMinMaxInfo bool __cdecl WinVidGetMinMaxInfo(LPMINMAXINFO info)
+0x00444FB0 + WinVidFindGameWindow HWND __cdecl WinVidFindGameWindow(void)
+0x00444FD0 + WinVidSpinMessageLoop bool __cdecl WinVidSpinMessageLoop(bool needWait)
+0x004450C0 + WinVidShowGameWindow void __cdecl WinVidShowGameWindow(int32_t nCmdShow)
+0x00445110 + WinVidHideGameWindow void __cdecl WinVidHideGameWindow(void)
+0x00445150 + WinVidSetGameWindowSize void __cdecl WinVidSetGameWindowSize(int32_t width, int32_t height)
+0x00445190 + ShowDDrawGameWindow bool __cdecl ShowDDrawGameWindow(bool active)
+0x00445240 + HideDDrawGameWindow bool __cdecl HideDDrawGameWindow(void)
+0x004452D0 + DDrawSurfaceCreate HRESULT __cdecl DDrawSurfaceCreate(LPDDSDESC dsp, LPDDS *surface)
+0x00445320 + DDrawSurfaceRestoreLost HRESULT __cdecl DDrawSurfaceRestoreLost(LPDDS surface1, LPDDS surface2, bool blank)
+0x00445370 + WinVidClearBuffer bool __cdecl WinVidClearBuffer(LPDDS surface, LPRECT rect, DWORD fill_color)
+0x004453C0 + WinVidBufferLock HRESULT __cdecl WinVidBufferLock(LPDDS surface, LPDDSDESC desc, DWORD flags)
+0x00445400 + WinVidBufferUnlock HRESULT __cdecl WinVidBufferUnlock(LPDDS surface, LPDDSDESC desc)
+0x00445430 + WinVidCopyBitmapToBuffer bool __cdecl WinVidCopyBitmapToBuffer(LPDDS surface, const BYTE *bitmap)
+0x004454C0 + GetRenderBitDepth DWORD __cdecl GetRenderBitDepth(DWORD dwRGBBitCount)
+0x00445550 + WinVidGetColorBitMasks void __thiscall WinVidGetColorBitMasks(COLOR_BIT_MASKS *bm, LPDDPIXELFORMAT pixel_format)
+0x004455D0 + BitMaskGetNumberOfBits void __cdecl BitMaskGetNumberOfBits(uint32_t bit_mask, uint32_t *bit_depth, uint32_t *bit_offset)
+0x00445620 + CalculateCompatibleColor DWORD __cdecl CalculateCompatibleColor(COLOR_BIT_MASKS *mask, int32_t red, int32_t green, int32_t blue, int32_t alpha)
+0x00445690 + WinVidGetDisplayMode bool __cdecl WinVidGetDisplayMode(DISPLAY_MODE *disp_mode)
+0x00445720 + WinVidGoFullScreen bool __cdecl WinVidGoFullScreen(DISPLAY_MODE *disp_mode)
+0x004457B0 + WinVidGoWindowed bool __cdecl WinVidGoWindowed(int32_t width, int32_t height, DISPLAY_MODE *dispMode)
+0x004458C0 + WinVidSetDisplayAdapter void __cdecl WinVidSetDisplayAdapter(DISPLAY_ADAPTER *disp_adapter)
+0x004459A0 + CompareVideoModes bool __thiscall CompareVideoModes(const DISPLAY_MODE *mode1, const DISPLAY_MODE *mode2)
+0x004459F0 + WinVidGetDisplayModes bool __cdecl WinVidGetDisplayModes(void)
+0x00445A50 + EnumDisplayModesCallback HRESULT __stdcall EnumDisplayModesCallback(LPDDSDESC lpDDSurfaceDesc, LPVOID lpContext)
+0x00445E10 + WinVidInit bool __cdecl WinVidInit(void)
+0x00445E50 + WinVidGetDisplayAdapters bool __cdecl WinVidGetDisplayAdapters(void)
+0x00445F00 + FlaggedStringDelete void __thiscall FlaggedStringDelete(STRING_FLAGGED *string)
+0x00445F20 + EnumerateDisplayAdapters bool __cdecl EnumerateDisplayAdapters(DISPLAY_ADAPTER_LIST *displayAdapterList)
+0x00445F40 + EnumDisplayAdaptersCallback BOOL __stdcall EnumDisplayAdaptersCallback(GUID *lpGUID, LPTSTR lpDriverDescription, LPTSTR lpDriverName, LPVOID lpContext)
+0x00446100 + FlaggedStringsCreate void __thiscall FlaggedStringsCreate(DISPLAY_ADAPTER *adapter)
+0x00446140 + WinVidRegisterGameWindowClass bool __cdecl WinVidRegisterGameWindowClass(void)
+0x004461B0 + WinVidGameWindowProc LRESULT __stdcall WinVidGameWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+0x004467C0 + WinVidResizeGameWindow void __cdecl WinVidResizeGameWindow(HWND hWnd, int32_t edge, LPRECT rect)
+0x004469A0 + WinVidCheckGameWindowPalette bool __cdecl WinVidCheckGameWindowPalette(HWND hWnd)
+0x00446A60 + WinVidCreateGameWindow bool __cdecl WinVidCreateGameWindow(void)
+0x00446B30 + WinVidFreeWindow void __cdecl WinVidFreeWindow(void)
+0x00446B60 + WinVidExitMessage void __cdecl WinVidExitMessage(void)
+0x00446BB0 + WinVidGetDisplayAdapter DISPLAY_ADAPTER_NODE *__cdecl WinVidGetDisplayAdapter(GUID *lpGuid)
+0x00446C00 + WinVidStart void __cdecl WinVidStart(void)
+0x00446F80 + WinVidFinish void __cdecl WinVidFinish(void)
+0x00446FA0 + DisplayModeListInit void __thiscall DisplayModeListInit(DISPLAY_MODE_LIST *pList)
+0x00446FB0 + DisplayModeListDelete void __thiscall DisplayModeListDelete(DISPLAY_MODE_LIST *pList)
+0x00446FF0 + InsertDisplayMode DISPLAY_MODE *__thiscall InsertDisplayMode(DISPLAY_MODE_LIST *modeList, DISPLAY_MODE_NODE *before)
+0x00447010 + InsertDisplayModeInListHead DISPLAY_MODE *__thiscall InsertDisplayModeInListHead(DISPLAY_MODE_LIST *modeList)
+0x00447060 + InsertDisplayModeInListTail DISPLAY_MODE *__thiscall InsertDisplayModeInListTail(DISPLAY_MODE_LIST *modeList)
+0x004470B0 -
+0x004470C0 -
+0x004470F0 -
+0x00447160 -
+0x00447170 -
+0x004471C0 -
+0x004471F0 + DInputCreate bool __cdecl DInputCreate(void)
+0x00447220 + DInputRelease void __cdecl DInputRelease(void)
+0x00447240 + WinInReadKeyboard void __cdecl WinInReadKeyboard(LPVOID lpInputData)
+0x004472A0 + WinInReadJoystick DWORD __cdecl WinInReadJoystick(int32_t *x, int32_t *y)
+0x004473A0 -
+0x004473B0 + WinInputInit bool __cdecl WinInputInit(void)
+0x00447430 + DInputEnumDevices bool __cdecl DInputEnumDevices(JOYSTICK_LIST *joystickList)
+0x00447460 + DInputEnumDevicesCallback BOOL __stdcall DInputEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
+0x00447550 + FlaggedStringCreate void __thiscall FlaggedStringCreate(STRING_FLAGGED *string, int32_t size)
+0x00447570 + GetJoystick JOYSTICK_NODE *__cdecl GetJoystick(GUID *lpGuid)
+0x004475C0 + DInputKeyboardCreate void __cdecl DInputKeyboardCreate(void)
+0x00447690 + DInputKeyboardRelease void __cdecl DInputKeyboardRelease(void)
+0x004476C0 + DInputJoystickCreate bool __cdecl DInputJoystickCreate(void)
+0x004477B0 + WinInStart void __cdecl WinInStart(void)
+0x004477E0 + WinInFinish void __cdecl WinInFinish(void)
+0x004477F0 + WinInRunControlPanel void __cdecl WinInRunControlPanel(HWND hWnd)
+0x00447810 + IncreaseScreenSize void __cdecl IncreaseScreenSize(void)
+0x00447880 + DecreaseScreenSize void __cdecl DecreaseScreenSize(void)
+0x004478F0 + setup_screen_size void __cdecl setup_screen_size(void)
+0x00447990 + TempVideoAdjust void __cdecl TempVideoAdjust(int32_t hires, double sizer)
+0x004479D0 + TempVideoRemove void __cdecl TempVideoRemove(void)
+0x00447A10 + S_FadeInInventory void __cdecl S_FadeInInventory(BOOL isFade)
+0x00447A50 + S_FadeOutInventory void __cdecl S_FadeOutInventory(BOOL isFade)
+0x00447A80 -
+0x00447A90 -
+0x00447AC0 -
+0x00447B30 -
+0x00447B40 -
+0x00447B90 -
+0x00447BC0 + GetSoundAdapter const SOUND_ADAPTER_NODE *__cdecl GetSoundAdapter(GUID *guid)
+0x00447C10 + WinSndFreeAllSamples void __cdecl WinSndFreeAllSamples(void)
+0x00447C40 + WinSndMakeSample bool __cdecl WinSndMakeSample(int32_t sample_id, LPWAVEFORMATEX format, const void *data, int32_t data_size)
+0x00447D50 + WinSndIsChannelPlaying bool __cdecl WinSndIsChannelPlaying(int32_t track_id)
+0x00447DA0 + WinSndPlaySample int32_t __cdecl WinSndPlaySample(int32_t sample_id, int32_t volume, int32_t pitch, int32_t pan, int32_t flags)
+0x00447E90 + WinSndGetFreeChannelIndex int32_t __cdecl WinSndGetFreeChannelIndex(void)
+0x00447ED0 + WinSndAdjustVolumeAndPan void __cdecl WinSndAdjustVolumeAndPan(int32_t track_id, int32_t volume, int32_t pan)
+0x00447F00 + WinSndAdjustPitch void __cdecl WinSndAdjustPitch(int32_t track_id, int32_t pitch)
+0x00447F40 + S_Audio_Sample_CloseTrack void __cdecl S_Audio_Sample_CloseTrack(int32_t track_id)
+0x00447FA0 -
+0x00447FB0 + WinSndInit bool __cdecl WinSndInit(void)
+0x00448050 + DSoundEnumerate bool __cdecl DSoundEnumerate(SOUND_ADAPTER_LIST *adapter_list)
+0x00448070 + DSoundEnumCallback BOOL __stdcall DSoundEnumCallback(LPGUID guid, LPCTSTR description, LPCTSTR module, LPVOID context)
+0x00448160 + WinSndStart void __cdecl WinSndStart(HWND hwnd)
+0x004482E0 + DSoundCreate bool __cdecl DSoundCreate(GUID *guid)
+0x00448300 + DSoundBufferTest bool __cdecl DSoundBufferTest(void)
+0x004483D0 + WinSndFinish void __cdecl WinSndFinish(void)
+0x00448400 + S_Audio_Sample_IsEnabled bool __cdecl S_Audio_Sample_IsEnabled(void)
+0x00448410 -
+0x00448420 -
+0x00448430 + CreateScreenBuffers void __cdecl CreateScreenBuffers(void)
+0x00448570 + CreatePrimarySurface void __cdecl CreatePrimarySurface(void)
+0x00448610 + CreateBackBuffer void __cdecl CreateBackBuffer(void)
+0x004486B0 + CreateClipper void __cdecl CreateClipper(void)
+0x00448750 + CreateWindowPalette void __cdecl CreateWindowPalette(void)
+0x00448830 + CreateZBuffer void __cdecl CreateZBuffer(void)
+0x004488F0 + GetZBufferDepth DWORD __cdecl GetZBufferDepth(void)
+0x00448920 + CreateRenderBuffer void __cdecl CreateRenderBuffer(void)
+0x004489D0 + CreatePictureBuffer void __cdecl CreatePictureBuffer(void)
+0x00448A40 + ClearBuffers void __cdecl ClearBuffers(DWORD flags, DWORD fill_color)
+0x00448BF0 + RestoreLostBuffers void __cdecl RestoreLostBuffers(void)
+0x00448D30 + UpdateFrame void __cdecl UpdateFrame(bool need_run_message_loop, LPRECT rect)
+0x00448E00 + WaitPrimaryBufferFlip void __cdecl WaitPrimaryBufferFlip(void)
+0x00448E40 + RenderInit bool __cdecl RenderInit(void)
+0x00448E50 + RenderStart void __cdecl RenderStart(bool is_reset)
+0x00449200 + RenderFinish void __cdecl RenderFinish(bool need_to_clear_textures)
+0x004492F0 + ApplySettings bool __cdecl ApplySettings(APP_SETTINGS *new_settings)
+0x00449500 + FmvBackToGame void __cdecl FmvBackToGame(void)
+0x00449610 + GameApplySettings void __cdecl GameApplySettings(APP_SETTINGS *new_settings)
+0x00449850 + UpdateGameResolution void __cdecl UpdateGameResolution(void)
+0x004498C0 + DecodeErrorMessage LPCTSTR __cdecl DecodeErrorMessage(DWORD error_code)
+0x004498D0 + ReadFileSync BOOL __cdecl ReadFileSync(HANDLE handle, LPVOID lpBuffer, DWORD nBytesToRead, LPDWORD lpnBytesRead, LPOVERLAPPED lpOverlapped)
+0x00449920 + LoadTexturePages BOOL __cdecl LoadTexturePages(HANDLE handle)
+0x00449AB0 + LoadRooms BOOL __cdecl LoadRooms(HANDLE handle)
+0x00449E50 + AdjustTextureUVs void __cdecl AdjustTextureUVs(bool reset_uv_add)
+0x00449EF0 + LoadObjects BOOL __cdecl LoadObjects(HANDLE handle)
+0x0044A470 + LoadSprites BOOL __cdecl LoadSprites(HANDLE handle)
+0x0044A5B0 + LoadItems BOOL __cdecl LoadItems(HANDLE handle)
+0x0044A790 + LoadDepthQ BOOL __cdecl LoadDepthQ(HANDLE handle)
+0x0044A920 + LoadPalettes BOOL __cdecl LoadPalettes(HANDLE handle)
+0x0044A9A0 + LoadCameras BOOL __cdecl LoadCameras(HANDLE handle)
+0x0044AA00 + LoadSoundEffects BOOL __cdecl LoadSoundEffects(HANDLE handle)
+0x0044AA60 + LoadBoxes BOOL __cdecl LoadBoxes(HANDLE handle)
+0x0044AC90 + LoadAnimatedTextures BOOL __cdecl LoadAnimatedTextures(HANDLE handle)
+0x0044ACF0 + LoadCinematic BOOL __cdecl LoadCinematic(HANDLE handle)
+0x0044AD70 + LoadDemo BOOL __cdecl LoadDemo(HANDLE handle)
+0x0044AE00 + LoadDemoExternal void __cdecl LoadDemoExternal(LPCTSTR level_name)
+0x0044AEA0 + LoadSamples BOOL __cdecl LoadSamples(HANDLE handle)
+0x0044B110 + ChangeFileNameExtension void __cdecl ChangeFileNameExtension(char *file_name, const char *file_ext)
+0x0044B150 + GetFullPath LPCTSTR __cdecl GetFullPath(LPCTSTR file_name)
+0x0044B180 + SelectDrive BOOL __cdecl SelectDrive(void)
+0x0044B260 + LoadLevel bool __cdecl LoadLevel(const char *file_name, int32_t level_num)
+0x0044B4B0 + S_LoadLevelFile BOOL __cdecl S_LoadLevelFile(LPCTSTR file_name, int32_t level_num, GAME_FLOW_LEVEL_TYPE level_type)
+0x0044B4D0 + S_UnloadLevelFile void __cdecl S_UnloadLevelFile(void)
+0x0044B500 + S_AdjustTexelCoordinates void __cdecl S_AdjustTexelCoordinates(void)
+0x0044B520 + S_ReloadLevelGraphics BOOL __cdecl S_ReloadLevelGraphics(BOOL reload_palettes, BOOL reload_tex_pages)
+0x0044B5F0 + Read_Strings BOOL __cdecl Read_Strings(DWORD count, char **string_table, char **string_buf, LPDWORD buf_size, HANDLE handle)
+0x0044B6C0 + S_LoadGameFlow BOOL __cdecl S_LoadGameFlow(const char *file_name)
+0x0044BDA0 + PlayFMV bool __cdecl PlayFMV(const char *file_name)
+0x0044BE10 + WinPlayFMV void __cdecl WinPlayFMV(const char *file_name, bool is_playback)
+0x0044C0F0 + WinStopFMV void __cdecl WinStopFMV(bool is_playback)
+0x0044C140 + IntroFMV bool __cdecl IntroFMV(const char *file_name1, const char *file_name2)
+0x0044C1D0 + S_COLOUR uint16_t __cdecl S_COLOUR(int32_t red, int32_t green, int32_t blue)
+0x0044C200 + S_DrawScreenLine void __cdecl S_DrawScreenLine(int32_t x, int32_t y, int32_t z, int32_t x_len, int32_t y_len, BYTE color_idx, D3DCOLOR *gour, uint16_t flags)
+0x0044C240 + S_DrawScreenBox void __cdecl S_DrawScreenBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_OUTLINE *gour, uint16_t flags)
+0x0044C360 + S_DrawScreenFBox void __cdecl S_DrawScreenFBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_FILL *gour, uint16_t flags)
+0x0044C390 + S_FinishInventory void __cdecl S_FinishInventory(void)
+0x0044C3A0 + S_FadeToBlack void __cdecl S_FadeToBlack(void)
+0x0044C3F0 + S_Wait void __cdecl S_Wait(int32_t timeout, BOOL input_check)
+0x0044C450 + S_PlayFMV bool __cdecl S_PlayFMV(const char *file_name)
+0x0044C460 + S_IntroFMV bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2)
+0x0044C480 + StartGame int16_t __cdecl StartGame(int32_t level_num, GAME_FLOW_LEVEL_TYPE level_type)
+0x0044C5D0 + GameLoop int32_t __cdecl GameLoop(bool demo_mode)
+0x0044C670 + LevelCompleteSequence int32_t __cdecl LevelCompleteSequence(void)
+0x0044C680 + LevelStats int32_t __cdecl LevelStats(int32_t level_num)
+0x0044C850 + GameStats int32_t __cdecl GameStats(int32_t level_num)
+0x0044C970 + GetRandomControl int32_t __cdecl GetRandomControl(void)
+0x0044C990 + SeedRandomControl void __cdecl SeedRandomControl(int32_t seed)
+0x0044C9A0 + GetRandomDraw int32_t __cdecl GetRandomDraw(void)
+0x0044C9C0 + SeedRandomDraw void __cdecl SeedRandomDraw(int32_t seed)
+0x0044C9D0 + GetValidLevelsList void __cdecl GetValidLevelsList(REQUEST_INFO *req)
+0x0044CA20 + GetSavedGamesList void __cdecl GetSavedGamesList(REQUEST_INFO *req)
+0x0044CA70 + DisplayCredits void __cdecl DisplayCredits(void)
+0x0044CCB0 + S_FrontEndCheck BOOL __cdecl S_FrontEndCheck(void)
+0x0044CE20 + S_SaveGame int32_t __cdecl S_SaveGame(const void *save_data, uint32_t save_size, int32_t slot_num)
+0x0044CF40 + S_LoadGame int32_t __cdecl S_LoadGame(void *save_data, uint32_t save_size, int32_t slot_num)
+0x0044CFE0 + HWR_InitState void __cdecl HWR_InitState(void)
+0x0044D110 + HWR_ResetTexSource void __cdecl HWR_ResetTexSource(void)
+0x0044D140 + HWR_ResetColorKey void __cdecl HWR_ResetColorKey(void)
+0x0044D170 + HWR_ResetZBuffer void __cdecl HWR_ResetZBuffer(void)
+0x0044D1D0 + HWR_TexSource void __cdecl HWR_TexSource(HWR_TEXTURE_HANDLE tex_source)
+0x0044D200 + HWR_EnableColorKey void __cdecl HWR_EnableColorKey(bool state)
+0x0044D250 + HWR_EnableZBuffer void __cdecl HWR_EnableZBuffer(bool z_write_enable, bool z_enable)
+0x0044D2E0 + HWR_BeginScene void __cdecl HWR_BeginScene(void)
+0x0044D310 + HWR_DrawPolyList void __cdecl HWR_DrawPolyList(void)
+0x0044D490 + HWR_LoadTexturePages void __cdecl HWR_LoadTexturePages(int32_t pages_count, void *pages_buf, RGB_888 *palette)
+0x0044D520 + HWR_FreeTexturePages void __cdecl HWR_FreeTexturePages(void)
+0x0044D570 + HWR_GetPageHandles void __cdecl HWR_GetPageHandles(void)
+0x0044D5B0 + HWR_VertexBufferFull bool __cdecl HWR_VertexBufferFull(void)
+0x0044D5E0 + HWR_Init bool __cdecl HWR_Init(void)
+0x0044D610 + S_InitialiseSystem BOOL __cdecl S_InitialiseSystem(void)
+0x0044D670 + ShutdownGame void __cdecl ShutdownGame(void)
+0x0044D690 + init_game_malloc void __cdecl init_game_malloc(void)
+0x0044D6C0 + GameBuf_Alloc void *__cdecl GameBuf_Alloc(size_t alloc_size, GAME_BUFFER buf_index)
+0x0044D740 + game_free void __cdecl game_free(size_t free_size)
+0x0044D780 + CalculateWibbleTable void __cdecl CalculateWibbleTable(void)
+0x0044D870 + S_SeedRandom void __cdecl S_SeedRandom(void)
+0x0044D8F0 + Key BOOL __cdecl Key(KEYMAP keymap)
+0x0044DA10 + S_UpdateInput bool __cdecl S_UpdateInput(void)
+0x0044E4E0 + RenderErrorBox int32_t __cdecl RenderErrorBox(int32_t error_code)
+0x0044E520 + WinMain int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int32_t nShowCmd)
+0x0044E6F0 -
+0x0044E700 + GameInit int32_t __cdecl GameInit(bool skip_cd_init)
+0x0044E770 + Shell_Cleanup void __cdecl Shell_Cleanup(void)
+0x0044E7A0 + WinGameStart int32_t __cdecl WinGameStart(void)
+0x0044E820 + Shell_Shutdown void __cdecl Shell_Shutdown(void)
+0x0044E860 -
+0x0044E880 -
+0x0044E890 + Shell_ExitSystem void __cdecl Shell_ExitSystem(const char *message)
+0x0044E8E0 + ScreenShotPCX void __cdecl ScreenShotPCX(void)
+0x0044E9F0 + CompPCX DWORD __cdecl CompPCX(BYTE *bitmap, DWORD width, DWORD height, RGB_888 *palette, BYTE **pcx_data)
+0x0044EAA0 + EncodeLinePCX DWORD __cdecl EncodeLinePCX(BYTE *src, DWORD width, BYTE *dst)
+0x0044EB80 + EncodePutPCX DWORD __cdecl EncodePutPCX(BYTE value, BYTE num, BYTE *buffer)
+0x0044EBC0 + ScreenShot void __cdecl ScreenShot(LPDDS screen)
+0x0044EDC0 + Option_DoInventory void __cdecl Option_DoInventory(INVENTORY_ITEM *item)
+0x0044EED0 + do_passport_option void __cdecl do_passport_option(INVENTORY_ITEM *item)
+0x0044F520 + do_detail_option void __cdecl do_detail_option(INVENTORY_ITEM *item)
+0x0044F800 + do_sound_option void __cdecl do_sound_option(INVENTORY_ITEM *item)
+0x0044FCA0 + do_compass_option void __cdecl do_compass_option(INVENTORY_ITEM *item)
+0x0044FD60 + FlashConflicts void __cdecl FlashConflicts(void)
+0x0044FDE0 + DefaultConflict void __cdecl DefaultConflict(void)
+0x0044FE20 + Option_Controls void __cdecl Option_Controls(INVENTORY_ITEM *item)
+0x00450530 + S_ShowControls void __cdecl S_ShowControls(void)
+0x00450A00 + S_ChangeCtrlText void __cdecl S_ChangeCtrlText(void)
+0x00450AA0 + S_RemoveCtrlText void __cdecl S_RemoveCtrlText(void)
+0x00450AE0 + GetRenderHeight int32_t __cdecl GetRenderHeight(void)
+0x00450AF0 + GetRenderWidth int32_t __cdecl GetRenderWidth(void)
+0x00450B00 + S_InitialisePolyList void __cdecl S_InitialisePolyList(BOOL clear_back_buffer)
+0x00450BF0 + S_DumpScreen DWORD __cdecl S_DumpScreen(void)
+0x00450C30 + S_ClearScreen void __cdecl S_ClearScreen(void)
+0x00450C40 + S_InitialiseScreen void __cdecl S_InitialiseScreen(GAME_FLOW_LEVEL_TYPE level_type)
+0x00450C80 + S_OutputPolyList void __cdecl S_OutputPolyList(void)
+0x00450CC0 + S_GetObjectBounds int32_t __cdecl S_GetObjectBounds(const BOUNDS_16 *bounds)
+0x00450F30 + S_InsertBackPolygon void __cdecl S_InsertBackPolygon(int32_t x0, int32_t y0, int32_t x1, int32_t y1)
+0x00450F80 + S_PrintShadow void __cdecl S_PrintShadow(int16_t radius, const BOUNDS_16 *bounds, const ITEM *item)
+0x00451180 + S_CalculateLight void __cdecl S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
+0x00451480 + S_CalculateStaticLight void __cdecl S_CalculateStaticLight(int16_t adder)
+0x004514C0 + S_CalculateStaticMeshLight void __cdecl S_CalculateStaticMeshLight(int32_t x, int32_t y, int32_t z, int32_t shade_1, int32_t shade_2, ROOM *room)
+0x004515F0 + S_LightRoom void __cdecl S_LightRoom(ROOM *room)
+0x00451800 + S_DrawHealthBar void __cdecl S_DrawHealthBar(int32_t percent)
+0x004519D0 + S_DrawAirBar void __cdecl S_DrawAirBar(int32_t percent)
+0x00451BD0 + AnimateTextures void __cdecl AnimateTextures(int32_t ticks)
+0x00451C90 + S_SetupBelowWater void __cdecl S_SetupBelowWater(bool underwater)
+0x00451CF0 + S_SetupAboveWater void __cdecl S_SetupAboveWater(bool underwater)
+0x00451D20 + S_AnimateTextures void __cdecl S_AnimateTextures(int32_t ticks)
+0x00451DE0 + S_DisplayPicture void __cdecl S_DisplayPicture(const char *file_name, BOOL is_title)
+0x00451EF0 + S_SyncPictureBufferPalette void __cdecl S_SyncPictureBufferPalette(void)
+0x00451F70 + S_DontDisplayPicture void __cdecl S_DontDisplayPicture(void)
+0x00451F80 + ScreenDump void __cdecl ScreenDump(void)
+0x00451F90 + ScreenPartialDump void __cdecl ScreenPartialDump(void)
+0x00451FA0 + FadeToPal void __cdecl FadeToPal(int32_t fade_value, RGB_888 *palette)
+0x00452170 + ScreenClear void __cdecl ScreenClear(bool is_phd_win_size)
+0x004521A0 + S_CopyScreenToBuffer void __cdecl S_CopyScreenToBuffer(void)
+0x00452250 + S_CopyBufferToScreen void __cdecl S_CopyBufferToScreen(void)
+0x004522A0 + DecompPCX BOOL __cdecl DecompPCX(const uint8_t *pcx, size_t pcx_size, LPBYTE pic, RGB_888 *pal)
+0x004523A0 -
+0x004523B0 -
+0x004523C0 + OpenGameRegistryKey bool __cdecl OpenGameRegistryKey(LPCTSTR key)
+0x00452410 + CloseGameRegistryKey LONG __cdecl CloseGameRegistryKey(void)
+0x00452420 + SE_WriteAppSettings bool __cdecl SE_WriteAppSettings(APP_SETTINGS *settings)
+0x00452690 + SE_ReadAppSettings int32_t __cdecl SE_ReadAppSettings(APP_SETTINGS *settings)
+0x004529E0 + SE_GraphicsTestStart bool __cdecl SE_GraphicsTestStart(void)
+0x00452AB0 + SE_GraphicsTestFinish void __cdecl SE_GraphicsTestFinish(void)
+0x00452AD0 + SE_GraphicsTestExecute int32_t __cdecl SE_GraphicsTestExecute(void)
+0x00452AE0 + SE_GraphicsTest int32_t __cdecl SE_GraphicsTest(void)
+0x00452B40 + SE_SoundTestStart bool __cdecl SE_SoundTestStart(void)
+0x00452C00 + SE_SoundTestFinish void __cdecl SE_SoundTestFinish(void)
+0x00452C10 + SE_SoundTestExecute int32_t __cdecl SE_SoundTestExecute(void)
+0x00452C50 + SE_SoundTest int32_t __cdecl SE_SoundTest(void)
+0x00452CB0 + SE_PropSheetCallback int32_t __stdcall SE_PropSheetCallback(HWND hwndDlg, UINT uMsg, LPARAM lParam)
+0x00452CF0 + SE_NewPropSheetWndProc LRESULT __stdcall SE_NewPropSheetWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+0x00452D50 + SE_ShowSetupDialog bool __cdecl SE_ShowSetupDialog(HWND hParent, bool isDefault)
+0x00453030 + SE_GraphicsDlgProc INT_PTR __stdcall SE_GraphicsDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+0x004533F0 + SE_GraphicsDlgFullScreenModesUpdate void __cdecl SE_GraphicsDlgFullScreenModesUpdate(HWND hwndDlg)
+0x004535E0 + SE_GraphicsAdapterSet void __cdecl SE_GraphicsAdapterSet(HWND hwndDlg, DISPLAY_ADAPTER_NODE *adapter)
+0x00453600 + SE_GraphicsDlgUpdate void __cdecl SE_GraphicsDlgUpdate(HWND hwndDlg)
+0x00453D40 + SE_GraphicsDlgInit void __cdecl SE_GraphicsDlgInit(HWND hwndDlg)
+0x00453EC0 + SE_SoundDlgProc INT_PTR __stdcall SE_SoundDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+0x00454050 + SE_SoundAdapterSet void __cdecl SE_SoundAdapterSet(HWND hwndDlg, SOUND_ADAPTER_NODE *adapter)
+0x00454060 + SE_SoundDlgUpdate void __cdecl SE_SoundDlgUpdate(HWND hwndDlg)
+0x00454180 + SE_SoundDlgInit void __cdecl SE_SoundDlgInit(HWND hwndDlg)
+0x00454240 + SE_ControlsDlgProc INT_PTR __stdcall SE_ControlsDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+0x00454350 + SE_ControlsJoystickSet void __cdecl SE_ControlsJoystickSet(HWND hwndDlg, JOYSTICK_NODE *joystick)
+0x00454360 + SE_ControlsDlgUpdate void __cdecl SE_ControlsDlgUpdate(HWND hwndDlg)
+0x004543D0 + SE_ControlsDlgInit void __cdecl SE_ControlsDlgInit(HWND hwndDlg)
+0x00454490 + SE_OptionsDlgProc INT_PTR __stdcall SE_OptionsDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+0x00454520 + SE_OptionsDlgUpdate void __cdecl SE_OptionsDlgUpdate(HWND hwndDlg)
+0x00454760 + SE_OptionsStrCat void __cdecl SE_OptionsStrCat(LPTSTR *dstString, bool isEnabled, bool *isNext, LPCTSTR srcString)
+0x004547B0 + SE_AdvancedDlgProc INT_PTR __stdcall SE_AdvancedDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+0x004548B0 + SE_AdvancedDlgUpdate void __cdecl SE_AdvancedDlgUpdate(HWND hwndDlg)
+0x00454950 + SE_AdvancedDlgInit void __cdecl SE_AdvancedDlgInit(HWND hwndDlg)
+0x00454960 + SE_FindSetupDialog HWND __cdecl SE_FindSetupDialog(void)
+0x00454980 + GameMain BOOL __cdecl GameMain(void)
+0x00454C50 + TitleSequence int16_t __cdecl TitleSequence(void)
+0x00454D60 + Lara_Cheat_CheckKeys void __cdecl Lara_Cheat_CheckKeys(void)
+0x004550C0 + S_SaveSettings void __cdecl S_SaveSettings(void)
+0x00455140 + S_LoadSettings void __cdecl S_LoadSettings(void)
+0x00455220 + S_SoundPlaySample int32_t __cdecl S_SoundPlaySample(int32_t sample_id, uint16_t volume, int32_t pitch, int32_t pan)
+0x00455270 + S_Sound_CalculateSampleVolume int32_t __cdecl S_Sound_CalculateSampleVolume(int32_t volume)
+0x004552A0 + S_Sound_CalculateSamplePan int32_t __cdecl S_Sound_CalculateSamplePan(int16_t pan)
+0x004552D0 + S_SoundPlaySampleLooped int32_t __cdecl S_SoundPlaySampleLooped(int32_t track_id, uint16_t volume, int32_t pitch, int32_t pan)
+0x00455320 + S_SoundSetPanAndVolume void __cdecl S_SoundSetPanAndVolume(int32_t track_id, int32_t pan, uint16_t volume)
+0x00455360 + S_SoundSetPitch void __cdecl S_SoundSetPitch(int32_t track_id, int32_t pitch)
+0x00455380 + S_SoundSetMasterVolume void __cdecl S_SoundSetMasterVolume(int32_t volume)
+0x00455390 + S_SoundStopSample void __cdecl S_SoundStopSample(int32_t track_id)
+0x004553B0 + S_Audio_Sample_OutCloseAllTracks void __cdecl S_Audio_Sample_OutCloseAllTracks(void)
+0x004553C0 + S_SoundSampleIsPlaying BOOL __cdecl S_SoundSampleIsPlaying(int32_t track_id)
+0x004553E0 + Music_Init bool __cdecl Music_Init(void)
+0x00455460 + Music_Shutdown void __cdecl Music_Shutdown(void)
+0x00455500 + Music_Play void __cdecl Music_Play(int16_t track_id, bool is_looped)
+0x00455570 + S_CDStop void __cdecl S_CDStop(void)
+0x004555B0 + StartSyncedAudio bool __cdecl StartSyncedAudio(int32_t track_id)
+0x00455640 + S_CDGetLoc int32_t __cdecl S_CDGetLoc(void)
+0x004556B0 + Music_SetVolume void __cdecl Music_SetVolume(int32_t volume)
+0x004557A0 + CopyBitmapPalette void __cdecl CopyBitmapPalette(RGB_888 *src_pal, BYTE *src_bitmap, int32_t bitmap_size, RGB_888 *dest_pal)
+0x004558E0 + FindNearestPaletteEntry BYTE __cdecl FindNearestPaletteEntry(RGB_888 *palette, int32_t red, int32_t green, int32_t blue, bool ignore_sys_palette)
+0x004559B0 + SyncSurfacePalettes void __cdecl SyncSurfacePalettes(void *src_data, int32_t width, int32_t height, int32_t src_pitch, RGB_888 *src_palette, void *dst_data, int32_t dst_pitch, RGB_888 *dst_palette, bool preserve_sys_palette)
+0x00455A60 + CreateTexturePalette int32_t __cdecl CreateTexturePalette(const RGB_888 *pal)
+0x00455AF0 + GetFreePaletteIndex int32_t __cdecl GetFreePaletteIndex(void)
+0x00455B10 + FreePalette void __cdecl FreePalette(int32_t palette_idx)
+0x00455B40 + SafeFreePalette void __cdecl SafeFreePalette(int32_t palette_idx)
+0x00455B90 + CreateTexturePage int32_t __cdecl CreateTexturePage(int32_t width, int32_t height, LPDIRECTDRAWPALETTE palette)
+0x00455C00 + GetFreeTexturePageIndex int32_t __cdecl GetFreeTexturePageIndex(void)
+0x00455C20 + CreateTexturePageSurface bool __cdecl CreateTexturePageSurface(TEXPAGE_DESC *desc)
+0x00455CC0 + TexturePageInit bool __cdecl TexturePageInit(TEXPAGE_DESC *page)
+0x00455E40 + Create3DTexture LPDIRECT3DTEXTURE2 __cdecl Create3DTexture(LPDDS surface)
+0x00455E70 + SafeFreeTexturePage void __cdecl SafeFreeTexturePage(int32_t page_idx)
+0x00455E90 + FreeTexturePage void __cdecl FreeTexturePage(int32_t page_idx)
+0x00455ED0 + TexturePageReleaseVidMemSurface void __cdecl TexturePageReleaseVidMemSurface(TEXPAGE_DESC *page)
+0x00455F10 + FreeTexturePages void __cdecl FreeTexturePages(void)
+0x00455F40 + LoadTexturePage bool __cdecl LoadTexturePage(int32_t page_idx, bool reset)
+0x00455FF0 + ReloadTextures bool __cdecl ReloadTextures(bool reset)
+0x00456030 + GetTexturePageHandle HWR_TEXTURE_HANDLE __cdecl GetTexturePageHandle(int32_t page_idx)
+0x00456070 + AddTexturePage8 int32_t __cdecl AddTexturePage8(int32_t width, int32_t height, const uint8_t *page_buf, int32_t pal_idx)
+0x00456170 + AddTexturePage16 int32_t __cdecl AddTexturePage16(int32_t width, int32_t height, const uint8_t *page_buf)
+0x00456310 + EnumTextureFormatsCallback HRESULT __stdcall EnumTextureFormatsCallback(LPDDSDESC lpDdsd, LPVOID lpContext)
+0x00456430 + EnumerateTextureFormats HRESULT __cdecl EnumerateTextureFormats(void)
+0x00456460 + CleanupTextures void __cdecl CleanupTextures(void)
+0x00456470 + InitTextures bool __cdecl InitTextures(void)
+0x00456490 + UpdateTicks void __cdecl UpdateTicks(void)
+0x004564D0 + TIME_Init bool __cdecl TIME_Init(void)
+0x00456530 + Sync DWORD __cdecl Sync(void)
+0x00456590 + UT_LoadResource LPVOID __cdecl UT_LoadResource(LPCTSTR lpName, LPCTSTR lpType)
+0x004565D0 + UT_InitAccurateTimer void __cdecl UT_InitAccurateTimer(void)
+0x00456630 + UT_Microseconds double __cdecl UT_Microseconds(void)
+0x00456680 + UT_CenterWindow BOOL __cdecl UT_CenterWindow(HWND hWnd)
+0x004566F0 + UT_FindArg LPTSTR __cdecl UT_FindArg(LPCTSTR str)
+0x00456720 + UT_MessageBox int32_t __cdecl UT_MessageBox(LPCTSTR lpText, HWND hWnd)
+0x00456740 + UT_ErrorBox int32_t __cdecl UT_ErrorBox(UINT uID, HWND hWnd)
+0x00456790 + GuidBinaryToString LPCTSTR __cdecl GuidBinaryToString(GUID *guid)
+0x004567F0 + GuidStringToBinary bool __cdecl GuidStringToBinary(LPCTSTR lpString, GUID *guid)
+0x004568A0 + OpenRegistryKey BOOL __cdecl OpenRegistryKey(LPCTSTR lpSubKey)
+0x004568D0 + IsNewRegistryKeyCreated bool __cdecl IsNewRegistryKeyCreated(void)
+0x004568E0 + CloseRegistryKey LONG __cdecl CloseRegistryKey(void)
+0x004568F0 + SetRegistryDwordValue LONG __cdecl SetRegistryDwordValue(LPCTSTR lpValueName, DWORD value)
+0x00456910 + SetRegistryBoolValue LONG __cdecl SetRegistryBoolValue(LPCTSTR lpValueName, bool value)
+0x00456940 + SetRegistryFloatValue LONG __cdecl SetRegistryFloatValue(LPCTSTR lpValueName, double value)
+0x00456980 + SetRegistryBinaryValue LONG __cdecl SetRegistryBinaryValue(LPCTSTR lpValueName, LPBYTE value, DWORD valueSize)
+0x004569C0 + SetRegistryStringValue LONG __cdecl SetRegistryStringValue(LPCTSTR lpValueName, LPCTSTR value, int32_t length)
+0x00456A10 + DeleteRegistryValue LONG __cdecl DeleteRegistryValue(LPCTSTR lpValueName)
+0x00456A30 + GetRegistryDwordValue bool __cdecl GetRegistryDwordValue(LPCTSTR lpValueName, DWORD *pValue, DWORD defaultValue)
+0x00456A90 + GetRegistryBoolValue bool __cdecl GetRegistryBoolValue(LPCTSTR lpValueName, bool *pValue, bool defaultValue)
+0x00456B10 + GetRegistryFloatValue bool __cdecl GetRegistryFloatValue(LPCTSTR lpValueName, double *value, double defaultValue)
+0x00456B70 + GetRegistryBinaryValue bool __cdecl GetRegistryBinaryValue(LPCTSTR lpValueName, LPBYTE value, DWORD valueSize, LPBYTE defaultValue)
+0x00456BF0 + GetRegistryStringValue bool __cdecl GetRegistryStringValue(LPCTSTR lpValueName, LPTSTR value, DWORD maxSize, LPCTSTR defaultValue)
+0x00456C90 + GetRegistryGuidValue bool __cdecl GetRegistryGuidValue(LPCTSTR lpValueName, GUID *value, GUID *defaultValue)
+0x00456D30 + SE_ReleaseBitmapResource void __thiscall SE_ReleaseBitmapResource(BITMAP_RESOURCE *bmpRsrc)
+0x00456D70 + SE_LoadBitmapResource void __thiscall SE_LoadBitmapResource(BITMAP_RESOURCE *bmpRsrc, LPCTSTR lpName)
+0x00456E40 + SE_DrawBitmap void __thiscall SE_DrawBitmap(BITMAP_RESOURCE *bmpRsrc, HDC hdc, int32_t x, int32_t y)
+0x00456EB0 + SE_UpdateBitmapPalette void __thiscall SE_UpdateBitmapPalette(BITMAP_RESOURCE *bmpRsrc, HWND hWnd, HWND hSender)
+0x00456ED0 + SE_ChangeBitmapPalette void __thiscall SE_ChangeBitmapPalette(BITMAP_RESOURCE *bmpRsrc, HWND hWnd)
+0x00456F30 + SE_RegisterSetupWindowClass bool __cdecl SE_RegisterSetupWindowClass(void)
+0x00456FA0 + SE_SetupWindowProc LRESULT __stdcall SE_SetupWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+0x004571E0 + SE_PassMessageToImage void __cdecl SE_PassMessageToImage(HWND hWnd, UINT uMsg, WPARAM wParam)
+0x00457210 + UT_MemBlt void __cdecl UT_MemBlt(BYTE *dstBuf, DWORD dstX, DWORD dstY, DWORD width, DWORD height, DWORD dstPitch, BYTE *srcBuf, DWORD srcX, DWORD srcY, DWORD srcPitch)
+0x00457280 + phd_PushMatrix void __cdecl phd_PushMatrix(void)
+0x0045729E + phd_PushUnitMatrix void __cdecl phd_PushUnitMatrix(void)
+0x004572D4 + flatA void __fastcall flatA(int32_t y0, int32_t y1, uint8_t color_idx)
+0x00457335 + transA void __fastcall transA(int32_t y0, int32_t y1, uint8_t depth_q)
+0x0045746F + gourA void __fastcall gourA(int32_t y0, int32_t y1, uint8_t color_idx)
+0x004575CF + gtmapA void __fastcall gtmapA(int32_t y0, int32_t y1, uint8_t *tex_page)
+0x004578CC + wgtmapA void __fastcall wgtmapA(int32_t y0, int32_t y1, uint8_t *tex_page)
+0x00457C10 + phd_atan int32_t __fastcall phd_atan(int32_t x, int32_t y)
+0x00457C58 + phd_cos int32_t __fastcall phd_cos(int16_t angle)
+0x00457C5E + Math_Sin int32_t __fastcall Math_Sin(int16_t angle)
+0x00457C79 + Math_SinImpl int32_t __fastcall Math_SinImpl(int16_t angle)
+0x00457C93 + Math_Sqrt uint32_t  __fastcall Math_Sqrt(uint32_t n)
+0x00458D00 + Player_PlayFrame int __cdecl Player_PlayFrame(LPVOID, LPVOID, LPVOID, DWORD, LPCRECT, DWORD, DWORD, DWORD)
+0x00458D06 + Movie_GetTotalFrames int __cdecl Movie_GetTotalFrames(LPVOID)
+0x00458D0C + Movie_GetCurrentFrame int __cdecl Movie_GetCurrentFrame(LPVOID)
+0x00458D12 + Player_StartTimer int __cdecl Player_StartTimer(LPVOID)
+0x00458D18 + Player_InitMoviePlayback int __cdecl Player_InitMoviePlayback(LPVOID, LPVOID, LPVOID)
+0x00458D1E + Movie_SetSyncAdjust int __cdecl Movie_SetSyncAdjust(LPVOID, LPVOID, DWORD)
+0x00458D24 + Player_InitSound int __cdecl Player_InitSound(LPVOID, DWORD, DWORD, BOOL, DWORD, DWORD, DWORD, DWORD, DWORD)
+0x00458D2A + Movie_GetSoundChannels int __cdecl Movie_GetSoundChannels(LPVOID)
+0x00458D30 + Movie_GetSoundRate int __cdecl Movie_GetSoundRate(LPVOID)
+0x00458D36 + Movie_GetSoundPrecision int __cdecl Movie_GetSoundPrecision(LPVOID)
+0x00458D3C + Player_GetDSErrorCode int __cdecl Player_GetDSErrorCode(void)
+0x00458D42 + Player_InitSoundSystem int __cdecl Player_InitSoundSystem(HWND)
+0x00458D48 + Player_BlankScreen int __cdecl Player_BlankScreen(DWORD, DWORD, DWORD, DWORD)
+0x00458D4E + Player_InitPlaybackMode int __cdecl Player_InitPlaybackMode(HWND, LPVOID, DWORD, DWORD)
+0x00458D54 + Player_InitVideo int __cdecl Player_InitVideo(LPVOID, LPVOID, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD)
+0x00458D5A + Movie_GetXSize int __cdecl Movie_GetXSize(LPVOID)
+0x00458D60 + Movie_GetYSize int __cdecl Movie_GetYSize(LPVOID)
+0x00458D66 + Movie_GetFormat int __cdecl Movie_GetFormat(LPVOID)
+0x00458D6C + Player_InitMovie int __cdecl Player_InitMovie(LPVOID, DWORD, DWORD, LPCTSTR, DWORD)
+0x00458D72 + Player_PassInDirectDrawObject int __cdecl Player_PassInDirectDrawObject(LPDIRECTDRAW3)
+0x00458D78 + Player_ReturnPlaybackMode int __cdecl Player_ReturnPlaybackMode(BOOL)
+0x00458D7E + Player_ShutDownSoundSystem int __cdecl Player_ShutDownSoundSystem(void)
+0x00458D84 + Player_ShutDownMovie int __cdecl Player_ShutDownMovie(LPVOID)
+0x00458D8A + Player_ShutDownVideo int __cdecl Player_ShutDownVideo(LPVOID)
+0x00458D90 + Player_ShutDownSound int __cdecl Player_ShutDownSound(LPVOID)
+0x00458D96 + Player_StopTimer int __cdecl Player_StopTimer(LPVOID)
