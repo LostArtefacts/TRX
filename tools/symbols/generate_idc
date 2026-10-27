@@ -1,0 +1,388 @@
+#!/usr/bin/env python3
+"""Writes an IDC script that applies a symbol manifest from docs/symbols to an
+IDA database. The script runs in IDA Free and reads the manifest when it runs,
+so a manifest edited afterwards needs no new script.
+"""
+import argparse
+from pathlib import Path
+
+HEADER = """#include <idc.idc>
+
+// ---------------------------------------------------------------------------
+// Applies {manifest} to the database. That is all it does.
+//
+//   # types        C declarations, parsed into local types
+//   # vars         0xADDR d NAME TYPE
+//   # functions    0xADDR + NAME PROTO   name and type (keeps an existing name)
+//                  0xADDR ! NAME PROTO   name and type (overrides an existing name)
+//                  0xADDR x              delete this function
+//                  0xADDR -              not identified yet, ignored
+//
+// Results are written to {log}
+// ---------------------------------------------------------------------------
+
+#define MANIFEST "{manifest}"
+#define LOGFILE  "{log}"
+#define TYPETMP  "{types}"
+"""
+
+BODY = r"""
+static tt_hexval(c)
+{
+    auto v;
+
+    v = ord(c);
+
+    if (v >= 48 && v <= 57)  return v - 48;
+    if (v >= 97 && v <= 102) return v - 87;
+    if (v >= 65 && v <= 70)  return v - 55;
+
+    return -1;
+}
+
+static tt_parse_hex(s)
+{
+    auto i, n, d, v;
+
+    n = strlen(s);
+    i = 0;
+    v = 0;
+
+    if (n > 2 && substr(s, 0, 2) == "0x")
+        i = 2;
+
+    if (i >= n)
+        return BADADDR;
+
+    while (i < n)
+    {
+        d = tt_hexval(substr(s, i, i + 1));
+
+        if (d < 0)
+            break;
+
+        v = v * 16 + d;
+        i = i + 1;
+    }
+
+    return v;
+}
+
+static tt_trim(s)
+{
+    auto a, b, c;
+
+    a = 0;
+    b = strlen(s);
+
+    while (a < b)
+    {
+        c = substr(s, a, a + 1);
+
+        if (c == " " || c == "\t")
+            a = a + 1;
+        else
+            break;
+    }
+
+    while (b > a)
+    {
+        c = substr(s, b - 1, b);
+
+        if (c == " " || c == "\t" || c == "\n" || c == "\r")
+            b = b - 1;
+        else
+            break;
+    }
+
+    return substr(s, a, b);
+}
+
+// IDA's own placeholder names, which a manifest name replaces even with +
+static tt_is_auto(nm)
+{
+    if (nm == "")                                return 1;
+    if (substr(nm, 0, 4) == "sub_")              return 1;
+    if (substr(nm, 0, 1) == "_")                 return 1;
+    if (substr(nm, 0, 2) == "j_")                return 1;
+    if (substr(nm, 0, 8) == "nullsub_")          return 1;
+    if (substr(nm, 0, 16) == "unknown_libname_") return 1;
+    if (substr(nm, 0, 12) == "StartAddress")     return 1;
+    if (substr(nm, 0, 10) == "DialogFunc")       return 1;
+    if (substr(nm, 0, 10) == "fnCallback")       return 1;
+    if (substr(nm, 0, 8) == "Callback")          return 1;
+    if (substr(nm, 0, 15) == "CompareFunction")  return 1;
+    if (substr(nm, 0, 15) == "pDSEnumCallback")  return 1;
+    // The games are C; a C++ library signature on one of their functions
+    // is a misfire.
+    if (substr(nm, 0, 1) == "?")                 return 1;
+    return 0;
+}
+
+static main()
+{
+    auto fp, log, tf, line, s, sp, addr, flag, rest, want, ty, nm, mode, tybuf;
+    auto n_name, n_keep, n_diff, n_type, n_typebad, n_data, n_del, n_unk, n_bad, holder;
+
+    log = fopen(LOGFILE, "w");
+
+    if (log == 0)
+    {
+        msg("cannot write %s\n", LOGFILE);
+        return;
+    }
+
+    fp = fopen(MANIFEST, "r");
+
+    if (fp == 0)
+    {
+        fprintf(log, "cannot read %s\n", MANIFEST);
+        fclose(log);
+        msg("cannot read %s\n", MANIFEST);
+        return;
+    }
+
+    mode = 0; tybuf = "";
+    n_name = 0; n_keep = 0; n_diff = 0; n_type = 0; n_typebad = 0;
+    n_data = 0; n_del = 0; n_unk = 0; n_bad = 0;
+
+    while (1)
+    {
+        line = readstr(fp);
+
+        if (line == -1 || line == "")
+            break;
+
+        s = tt_trim(line);
+
+        if (s == "# types")
+        {
+            mode = 1;
+            tybuf = "";
+            continue;
+        }
+
+        if (s == "# vars" || s == "# functions")
+        {
+            if (mode == 1 && tybuf != "")
+            {
+                tf = fopen(TYPETMP, "w");
+
+                if (tf != 0)
+                {
+                    fprintf(tf, "%s", tybuf);
+                    fclose(tf);
+
+                    add_default_til("mssdk_win7");
+                    fprintf(log, "types: parsed, %d errors\n", parse_decls(TYPETMP, 1));
+                }
+            }
+
+            mode = 0;
+            continue;
+        }
+
+        if (mode == 1)
+        {
+            tybuf = tybuf + line;
+            continue;
+        }
+
+        if (s == "" || substr(s, 0, 1) == "#")
+            continue;
+
+        sp = strstr(s, " ");
+
+        if (sp < 1)
+        {
+            fprintf(log, "BAD  %s\n", s);
+            n_bad = n_bad + 1;
+            continue;
+        }
+
+        addr = tt_parse_hex(tt_trim(substr(s, 0, sp)));
+        rest = tt_trim(substr(s, sp + 1, strlen(s)));
+        flag = substr(rest, 0, 1);
+
+        if (addr == BADADDR)
+        {
+            fprintf(log, "BAD  %s\n", s);
+            n_bad = n_bad + 1;
+            continue;
+        }
+
+        if (flag == "-")
+        {
+            n_unk = n_unk + 1;
+            continue;
+        }
+
+        if (flag == "x" || flag == "X")
+        {
+            if (get_func_attr(addr, FUNCATTR_START) == addr)
+            {
+                fprintf(log, "DEL  %08X  %s\n", addr, get_func_name(addr));
+                del_func(addr);
+                n_del = n_del + 1;
+            }
+
+            continue;
+        }
+
+        rest = tt_trim(substr(rest, 1, strlen(rest)));
+        sp = strstr(rest, " ");
+
+        if (sp < 1)
+        {
+            want = rest;
+            ty = "";
+        }
+        else
+        {
+            want = tt_trim(substr(rest, 0, sp));
+            ty = tt_trim(substr(rest, sp + 1, strlen(rest)));
+        }
+
+        if (want == "")
+        {
+            fprintf(log, "BAD  %s\n", s);
+            n_bad = n_bad + 1;
+            continue;
+        }
+
+        // ---- global variable ----
+        if (flag == "d")
+        {
+            nm = get_name(addr);
+
+            if (nm != want)
+            {
+                if (!set_name(addr, want, SN_NOWARN))
+                {
+                    holder = get_name_ea_simple(want);
+
+                    if (holder != BADADDR && holder != addr)
+                        set_name(holder, "", SN_NOWARN);
+
+                    del_items(addr, DELIT_SIMPLE, 1);
+                }
+
+                if (set_name(addr, want, SN_NOWARN))
+                    n_data = n_data + 1;
+                else
+                    fprintf(log, "DERR %08X  could not name %s\n", addr, want);
+            }
+
+            if (ty != "" && !SetType(addr, ty))
+                fprintf(log, "DTYP %08X  %-24s rejected: %s\n", addr, want, ty);
+
+            continue;
+        }
+
+        if (flag != "+" && flag != "!")
+        {
+            fprintf(log, "BAD  %s\n", s);
+            n_bad = n_bad + 1;
+            continue;
+        }
+
+        // ---- function ----
+        if (get_func_attr(addr, FUNCATTR_START) != addr)
+        {
+            del_items(addr, DELIT_SIMPLE, 1);
+            create_insn(addr);
+
+            if (!add_func(addr, BADADDR))
+            {
+                fprintf(log, "NOFN %08X  %s (could not create)\n", addr, want);
+                n_bad = n_bad + 1;
+                continue;
+            }
+
+            fprintf(log, "NEW  %08X  created function for %s\n", addr, want);
+        }
+
+        nm = get_func_name(addr);
+
+        if (nm == want)
+        {
+            n_keep = n_keep + 1;
+        }
+        else if (flag != "!" && !tt_is_auto(nm))
+        {
+            fprintf(log, "DIFF %08X  kept=%-30s manifest=%s\n", addr, nm, want);
+            n_diff = n_diff + 1;
+            ty = "";
+        }
+        else
+        {
+            if (!set_name(addr, want, SN_NOWARN))
+            {
+                // the name is held elsewhere (a swap); release it and retry
+                holder = get_name_ea_simple(want);
+
+                if (holder != BADADDR && holder != addr)
+                    set_name(holder, "", SN_NOWARN);
+            }
+
+            if (set_name(addr, want, SN_NOWARN))
+            {
+                fprintf(log, "OK   %08X  %-32s <- %s\n", addr, want, nm);
+                n_name = n_name + 1;
+            }
+            else
+            {
+                fprintf(log, "ERR  %08X  could not set %s\n", addr, want);
+                n_bad = n_bad + 1;
+                ty = "";
+            }
+        }
+
+        if (ty != "")
+        {
+            if (SetType(addr, ty))
+                n_type = n_type + 1;
+            else
+            {
+                fprintf(log, "TYPE %08X  %-28s rejected: %s\n", addr, want, ty);
+                n_typebad = n_typebad + 1;
+            }
+        }
+    }
+
+    fclose(fp);
+
+    fprintf(log, "\nfunctions: %d named, %d already correct, %d refused, %d deleted, %d unidentified\n",
+            n_name, n_keep, n_diff, n_del, n_unk);
+    fprintf(log, "types:     %d applied, %d rejected\n", n_type, n_typebad);
+    fprintf(log, "vars:      %d named\n", n_data);
+    fprintf(log, "problems:  %d\n", n_bad);
+    fclose(log);
+
+    msg("manifest applied -- see %s\n", LOGFILE);
+}
+"""
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("manifest", type=Path, help="a manifest, such as docs/symbols/tr4.txt")
+    parser.add_argument("-o", "--output", type=Path, help="the script to write; the manifest name with .idc by default, in the current directory")
+    parser.add_argument("--manifest-path", help="the manifest path as IDA sees it, where IDA runs on another machine")
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    manifest = args.manifest_path or str(args.manifest.resolve())
+    output = args.output or Path(args.manifest.stem + ".idc")
+    stem = manifest.rsplit(".", 1)[0]
+    output.write_text(
+        HEADER.format(manifest=manifest, log=stem + ".log", types=stem + "_types.h")
+        + BODY
+    )
+    print(f"wrote {output}")
+
+
+if __name__ == "__main__":
+    main()
