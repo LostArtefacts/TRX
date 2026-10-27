@@ -275,14 +275,16 @@ function M.open(ctx)
   end
 
   -- The list opens with no saves too, as the original shows its empty slots.
+  -- A pick keeps the list on screen while the title fades out.
   local function load_game()
     go_away(function(_, on_close)
       return saves.push(ctx, saves.Kind.LOAD, function(done)
-        on_close()
         if done then
           leave()
+        else
+          on_close()
         end
-      end)
+      end, true)
     end)
   end
 

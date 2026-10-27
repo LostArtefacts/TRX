@@ -224,6 +224,33 @@ test("loading a save leaves the title menu hidden as it fades", function()
   assert(not shown, "the title menu showed again as it faded")
 end)
 
+test("loading a save keeps the saves on screen as the title fades", function()
+  local shows_main = require("common.ui.title_page").shows_main
+  local heading =
+    accent.text(L("general/passport/load_game"), accent.Role.MENU_HEADING)
+  open()
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  ticks(SETTLE_TICKS)
+  press(Role.MENU_CONFIRM)
+  local logo = false
+  local lost = false
+  local ended = false
+  for _ = 1, SETTLE_TICKS do
+    logo = logo or shows_main:get()
+    lost = lost or not shows(heading)
+    fake.tick()
+    if fake.take_choice(MENU) ~= nil then
+      ended = true
+      break
+    end
+  end
+  finish()
+  assert(ended, "the title did not end")
+  assert(not logo, "the logo showed as the title faded")
+  assert(not lost, "the saves went away as the title faded")
+end)
+
 test("back on the title menu does nothing", function()
   open()
   press(Role.MENU_BACK)
