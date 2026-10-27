@@ -11,14 +11,12 @@ public static class InstallMappings
         ["tr1"] =
         [
             new(@"data/*.phd", @"games\tr1\levels\*.phd"),
-            new(@"data/*.pcx", @"games\tr1\images\*.pcx"),
             new(@"fmv/*", @"games\tr1\fmv\*"),
             new(@"music/*", @"games\tr1\music\*"),
         ],
         ["tr1-ub"] =
         [
             new(@"data/*.phd", @"games\tr1-ub\levels\*.phd"),
-            new(@"data/*.pcx", @"games\tr1-ub\images\*.pcx"),
         ],
         ["tr1-demo-pc"] =
         [
@@ -28,7 +26,6 @@ public static class InstallMappings
         [
             new(@"data/main.sfx", @"games\tr2\main.sfx"),
             new(@"data/*.tr2", @"games\tr2\levels\*.tr2"),
-            new(@"data/*.pcx", @"games\tr2\images\*.pcx"),
             new(@"fmv/*", @"games\tr2\fmv\*"),
             new(@"music/*", @"games\tr2\music\*"),
         ],
@@ -36,7 +33,6 @@ public static class InstallMappings
         [
             new(@"data/main_gm.sfx", @"games\tr2-gm\main_gm.sfx"),
             new(@"data/*.tr2", @"games\tr2-gm\levels\*.tr2"),
-            new(@"data/*.pcx", @"games\tr2-gm\images\*.pcx"),
         ],
         ["tr3"] =
         [
@@ -66,7 +62,6 @@ public static class InstallMappings
             new(@"fmv/*", @"games\tr3\fmv\*"),
             new(@"audio/*", @"games\tr3\audio\*"),
             new(@"cuts/*", @"games\tr3\cuts\*"),
-            new(@"pix/*", @"games\tr3\images\*"),
         ],
         ["tr3-la"] =
         [
@@ -80,7 +75,6 @@ public static class InstallMappings
             new(@"data/title_la.tr2", @"games\tr3-la\levels\title.tr2"),
             new(@"data/main.sfx", @"games\tr3-la\main.sfx"),
             new(@"data/main_la.sfx", @"games\tr3-la\main.sfx"),
-            new(@"pix/*", @"games\tr3-la\images\*"),
         ],
         ["tr4"] =
         [

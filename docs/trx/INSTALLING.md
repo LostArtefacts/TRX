@@ -137,6 +137,14 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   └── vision.rpl
 │   │   ├── images
 │   │   │   ├── og
+│   │   │   │   ├── pc
+│   │   │   │   │   ├── credits_1.webp
+│   │   │   │   │   ├── credits_2.webp
+│   │   │   │   │   ├── credits_3.webp
+│   │   │   │   │   ├── eidos.webp
+│   │   │   │   │   ├── end.webp
+│   │   │   │   │   ├── install.webp
+│   │   │   │   │   └── title.webp
 │   │   │   │   └── ps1
 │   │   │   │       ├── atlantis.webp
 │   │   │   │       ├── credits_ps1.webp
@@ -436,6 +444,10 @@ If you install everything correctly, your game directory should look more or les
 │   │   └── strings.json5
 │   ├── tr1-ub
 │   │   ├── images
+│   │   │   ├── og
+│   │   │   │   └── pc
+│   │   │   │       ├── credits_ub.webp
+│   │   │   │       └── title_ub.webp
 │   │   │   ├── credits_ub.webp
 │   │   │   ├── title_ub.webp
 │   │   │   ├── ub_loading1.webp
@@ -508,24 +520,25 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── title_us.webp
 │   │   │   │   └── venice.webp
 │   │   │   ├── og
-│   │   │   │   ├── china.webp
-│   │   │   │   ├── credit01.webp
-│   │   │   │   ├── credit02.webp
-│   │   │   │   ├── credit03.webp
-│   │   │   │   ├── credit04.webp
-│   │   │   │   ├── credit05.webp
-│   │   │   │   ├── credit06.webp
-│   │   │   │   ├── credit07.webp
-│   │   │   │   ├── credit08.webp
-│   │   │   │   ├── end.webp
-│   │   │   │   ├── legal.webp
-│   │   │   │   ├── mansion.webp
-│   │   │   │   ├── rig.webp
-│   │   │   │   ├── tibet.webp
-│   │   │   │   ├── titan.webp
-│   │   │   │   ├── title_eu.webp
-│   │   │   │   ├── title_us.webp
-│   │   │   │   └── venice.webp
+│   │   │   │   └── pc
+│   │   │   │       ├── china.webp
+│   │   │   │       ├── credit01.webp
+│   │   │   │       ├── credit02.webp
+│   │   │   │       ├── credit03.webp
+│   │   │   │       ├── credit04.webp
+│   │   │   │       ├── credit05.webp
+│   │   │   │       ├── credit06.webp
+│   │   │   │       ├── credit07.webp
+│   │   │   │       ├── credit08.webp
+│   │   │   │       ├── end.webp
+│   │   │   │       ├── legal.webp
+│   │   │   │       ├── mansion.webp
+│   │   │   │       ├── rig.webp
+│   │   │   │       ├── tibet.webp
+│   │   │   │       ├── titan.webp
+│   │   │   │       ├── title_eu.webp
+│   │   │   │       ├── title_us.webp
+│   │   │   │       └── venice.webp
 │   │   │   ├── china.webp
 │   │   │   ├── credit01.webp
 │   │   │   ├── credit02.webp
@@ -901,10 +914,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── title_eu_gm.webp
 │   │   │   │   └── title_us_gm.webp
 │   │   │   ├── og
-│   │   │   │   ├── credit00_gm.webp
-│   │   │   │   ├── credit07_gm.webp
-│   │   │   │   ├── title_eu_gm.webp
-│   │   │   │   └── title_us_gm.webp
+│   │   │   │   └── pc
+│   │   │   │       ├── credit00_gm.webp
+│   │   │   │       ├── credit07_gm.webp
+│   │   │   │       ├── title_eu_gm.webp
+│   │   │   │       └── title_us_gm.webp
 │   │   │   ├── credit00_gm.webp
 │   │   │   ├── credit07_gm.webp
 │   │   │   ├── gm_level1.webp
@@ -1015,27 +1029,28 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── title_eu.webp
 │   │   │   │   └── title_us.webp
 │   │   │   ├── og
-│   │   │   │   ├── antarc.webp
-│   │   │   │   ├── credit01.webp
-│   │   │   │   ├── credit02.webp
-│   │   │   │   ├── credit03.webp
-│   │   │   │   ├── credit04.webp
-│   │   │   │   ├── credit05.webp
-│   │   │   │   ├── credit06.webp
-│   │   │   │   ├── credit07.webp
-│   │   │   │   ├── credit08.webp
-│   │   │   │   ├── credit09.webp
-│   │   │   │   ├── house.webp
-│   │   │   │   ├── india.webp
-│   │   │   │   ├── legal_eu.webp
-│   │   │   │   ├── legal_us.webp
-│   │   │   │   ├── london.webp
-│   │   │   │   ├── nevada.webp
-│   │   │   │   ├── southpac.webp
-│   │   │   │   ├── theend2.webp
-│   │   │   │   ├── theend.webp
-│   │   │   │   ├── title_eu.webp
-│   │   │   │   └── title_us.webp
+│   │   │   │   └── pc
+│   │   │   │       ├── antarc.webp
+│   │   │   │       ├── credit01.webp
+│   │   │   │       ├── credit02.webp
+│   │   │   │       ├── credit03.webp
+│   │   │   │       ├── credit04.webp
+│   │   │   │       ├── credit05.webp
+│   │   │   │       ├── credit06.webp
+│   │   │   │       ├── credit07.webp
+│   │   │   │       ├── credit08.webp
+│   │   │   │       ├── credit09.webp
+│   │   │   │       ├── house.webp
+│   │   │   │       ├── india.webp
+│   │   │   │       ├── legal_eu.webp
+│   │   │   │       ├── legal_us.webp
+│   │   │   │       ├── london.webp
+│   │   │   │       ├── nevada.webp
+│   │   │   │       ├── southpac.webp
+│   │   │   │       ├── theend2.webp
+│   │   │   │       ├── theend.webp
+│   │   │   │       ├── title_eu.webp
+│   │   │   │       └── title_us.webp
 │   │   │   ├── antarc.webp
 │   │   │   ├── credit01.webp
 │   │   │   ├── credit02.webp
@@ -1316,6 +1331,26 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── undersea.webp
 │   │   │   │   ├── willard.webp
 │   │   │   │   └── zoo.webp
+│   │   │   ├── og
+│   │   │   │   └── pc
+│   │   │   │       ├── chunnel.webp
+│   │   │   │       ├── credit01_us_la.webp
+│   │   │   │       ├── credit02_la.webp
+│   │   │   │       ├── credit03_la.webp
+│   │   │   │       ├── credit04_la.webp
+│   │   │   │       ├── credit05_la.webp
+│   │   │   │       ├── credit06_la.webp
+│   │   │   │       ├── credit07_la.webp
+│   │   │   │       ├── credit08_la.webp
+│   │   │   │       ├── credit09_la.webp
+│   │   │   │       ├── highland.webp
+│   │   │   │       ├── legal_eu_la.webp
+│   │   │   │       ├── slinc.webp
+│   │   │   │       ├── theend_la.webp
+│   │   │   │       ├── title_eu_la.webp
+│   │   │   │       ├── undersea.webp
+│   │   │   │       ├── willard.webp
+│   │   │   │       └── zoo.webp
 │   │   │   ├── chunnel.webp
 │   │   │   ├── credit01_eu_la.webp
 │   │   │   ├── credit01_us_la.webp
@@ -1742,6 +1777,14 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   └── vision.rpl
     │   │   │   ├── images
     │   │   │   │   ├── og
+    │   │   │   │   │   ├── pc
+    │   │   │   │   │   │   ├── credits_1.webp
+    │   │   │   │   │   │   ├── credits_2.webp
+    │   │   │   │   │   │   ├── credits_3.webp
+    │   │   │   │   │   │   ├── eidos.webp
+    │   │   │   │   │   │   ├── end.webp
+    │   │   │   │   │   │   ├── install.webp
+    │   │   │   │   │   │   └── title.webp
     │   │   │   │   │   └── ps1
     │   │   │   │   │       ├── atlantis.webp
     │   │   │   │   │       ├── credits_ps1.webp
@@ -2041,6 +2084,10 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   └── strings.json5
     │   │   ├── tr1-ub
     │   │   │   ├── images
+    │   │   │   │   ├── og
+    │   │   │   │   │   └── pc
+    │   │   │   │   │       ├── credits_ub.webp
+    │   │   │   │   │       └── title_ub.webp
     │   │   │   │   ├── credits_ub.webp
     │   │   │   │   ├── title_ub.webp
     │   │   │   │   ├── ub_loading1.webp
@@ -2113,24 +2160,25 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── title_us.webp
     │   │   │   │   │   └── venice.webp
     │   │   │   │   ├── og
-    │   │   │   │   │   ├── china.webp
-    │   │   │   │   │   ├── credit01.webp
-    │   │   │   │   │   ├── credit02.webp
-    │   │   │   │   │   ├── credit03.webp
-    │   │   │   │   │   ├── credit04.webp
-    │   │   │   │   │   ├── credit05.webp
-    │   │   │   │   │   ├── credit06.webp
-    │   │   │   │   │   ├── credit07.webp
-    │   │   │   │   │   ├── credit08.webp
-    │   │   │   │   │   ├── end.webp
-    │   │   │   │   │   ├── legal.webp
-    │   │   │   │   │   ├── mansion.webp
-    │   │   │   │   │   ├── rig.webp
-    │   │   │   │   │   ├── tibet.webp
-    │   │   │   │   │   ├── titan.webp
-    │   │   │   │   │   ├── title_eu.webp
-    │   │   │   │   │   ├── title_us.webp
-    │   │   │   │   │   └── venice.webp
+    │   │   │   │   │   └── pc
+    │   │   │   │   │       ├── china.webp
+    │   │   │   │   │       ├── credit01.webp
+    │   │   │   │   │       ├── credit02.webp
+    │   │   │   │   │       ├── credit03.webp
+    │   │   │   │   │       ├── credit04.webp
+    │   │   │   │   │       ├── credit05.webp
+    │   │   │   │   │       ├── credit06.webp
+    │   │   │   │   │       ├── credit07.webp
+    │   │   │   │   │       ├── credit08.webp
+    │   │   │   │   │       ├── end.webp
+    │   │   │   │   │       ├── legal.webp
+    │   │   │   │   │       ├── mansion.webp
+    │   │   │   │   │       ├── rig.webp
+    │   │   │   │   │       ├── tibet.webp
+    │   │   │   │   │       ├── titan.webp
+    │   │   │   │   │       ├── title_eu.webp
+    │   │   │   │   │       ├── title_us.webp
+    │   │   │   │   │       └── venice.webp
     │   │   │   │   ├── china.webp
     │   │   │   │   ├── credit01.webp
     │   │   │   │   ├── credit02.webp
@@ -2506,10 +2554,11 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── title_eu_gm.webp
     │   │   │   │   │   └── title_us_gm.webp
     │   │   │   │   ├── og
-    │   │   │   │   │   ├── credit00_gm.webp
-    │   │   │   │   │   ├── credit07_gm.webp
-    │   │   │   │   │   ├── title_eu_gm.webp
-    │   │   │   │   │   └── title_us_gm.webp
+    │   │   │   │   │   └── pc
+    │   │   │   │   │       ├── credit00_gm.webp
+    │   │   │   │   │       ├── credit07_gm.webp
+    │   │   │   │   │       ├── title_eu_gm.webp
+    │   │   │   │   │       └── title_us_gm.webp
     │   │   │   │   ├── credit00_gm.webp
     │   │   │   │   ├── credit07_gm.webp
     │   │   │   │   ├── gm_level1.webp
@@ -2620,27 +2669,28 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── title_eu.webp
     │   │   │   │   │   └── title_us.webp
     │   │   │   │   ├── og
-    │   │   │   │   │   ├── antarc.webp
-    │   │   │   │   │   ├── credit01.webp
-    │   │   │   │   │   ├── credit02.webp
-    │   │   │   │   │   ├── credit03.webp
-    │   │   │   │   │   ├── credit04.webp
-    │   │   │   │   │   ├── credit05.webp
-    │   │   │   │   │   ├── credit06.webp
-    │   │   │   │   │   ├── credit07.webp
-    │   │   │   │   │   ├── credit08.webp
-    │   │   │   │   │   ├── credit09.webp
-    │   │   │   │   │   ├── house.webp
-    │   │   │   │   │   ├── india.webp
-    │   │   │   │   │   ├── legal_eu.webp
-    │   │   │   │   │   ├── legal_us.webp
-    │   │   │   │   │   ├── london.webp
-    │   │   │   │   │   ├── nevada.webp
-    │   │   │   │   │   ├── southpac.webp
-    │   │   │   │   │   ├── theend2.webp
-    │   │   │   │   │   ├── theend.webp
-    │   │   │   │   │   ├── title_eu.webp
-    │   │   │   │   │   └── title_us.webp
+    │   │   │   │   │   └── pc
+    │   │   │   │   │       ├── antarc.webp
+    │   │   │   │   │       ├── credit01.webp
+    │   │   │   │   │       ├── credit02.webp
+    │   │   │   │   │       ├── credit03.webp
+    │   │   │   │   │       ├── credit04.webp
+    │   │   │   │   │       ├── credit05.webp
+    │   │   │   │   │       ├── credit06.webp
+    │   │   │   │   │       ├── credit07.webp
+    │   │   │   │   │       ├── credit08.webp
+    │   │   │   │   │       ├── credit09.webp
+    │   │   │   │   │       ├── house.webp
+    │   │   │   │   │       ├── india.webp
+    │   │   │   │   │       ├── legal_eu.webp
+    │   │   │   │   │       ├── legal_us.webp
+    │   │   │   │   │       ├── london.webp
+    │   │   │   │   │       ├── nevada.webp
+    │   │   │   │   │       ├── southpac.webp
+    │   │   │   │   │       ├── theend2.webp
+    │   │   │   │   │       ├── theend.webp
+    │   │   │   │   │       ├── title_eu.webp
+    │   │   │   │   │       └── title_us.webp
     │   │   │   │   ├── antarc.webp
     │   │   │   │   ├── credit01.webp
     │   │   │   │   ├── credit02.webp
@@ -2921,6 +2971,26 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── undersea.webp
     │   │   │   │   │   ├── willard.webp
     │   │   │   │   │   └── zoo.webp
+    │   │   │   │   ├── og
+    │   │   │   │   │   └── pc
+    │   │   │   │   │       ├── chunnel.webp
+    │   │   │   │   │       ├── credit01_us_la.webp
+    │   │   │   │   │       ├── credit02_la.webp
+    │   │   │   │   │       ├── credit03_la.webp
+    │   │   │   │   │       ├── credit04_la.webp
+    │   │   │   │   │       ├── credit05_la.webp
+    │   │   │   │   │       ├── credit06_la.webp
+    │   │   │   │   │       ├── credit07_la.webp
+    │   │   │   │   │       ├── credit08_la.webp
+    │   │   │   │   │       ├── credit09_la.webp
+    │   │   │   │   │       ├── highland.webp
+    │   │   │   │   │       ├── legal_eu_la.webp
+    │   │   │   │   │       ├── slinc.webp
+    │   │   │   │   │       ├── theend_la.webp
+    │   │   │   │   │       ├── title_eu_la.webp
+    │   │   │   │   │       ├── undersea.webp
+    │   │   │   │   │       ├── willard.webp
+    │   │   │   │   │       └── zoo.webp
     │   │   │   │   ├── chunnel.webp
     │   │   │   │   ├── credit01_eu_la.webp
     │   │   │   │   ├── credit01_us_la.webp

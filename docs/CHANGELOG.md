@@ -146,6 +146,8 @@
 - Added a `final_shot_damage` property to RX-Tech gunmen and armed MPs (TRX178)
 - Added a `blow_time` property to the `fire_head` object, replacing OG TR3's trigger timer setup; refer to the migration guide (#6828 / TRX1717)
 - Added support for levels with more than 16,384 pathfinding overlaps, which level editors can now pass through an injection (TRX3)
+- Added the original PC pictures of TR1, Unfinished Business and The Lost Artifact to the images folder, beside those of the other games, which move to `og/pc` (TRX1911)
+- Changed the installer to no longer copy the original pictures from the game folder, as the images folder holds them (TRX1911)
 - Fixed birds placed in mid-air always shifting to the floor when triggered in custom levels (Gameplay → Fixes → Fix bird start positions)
 - Fixed birds placed over slopes not being able to pathfind when they are triggered (OG bug)
 - Fixed a crash if Lara tried to aim at an enemy who had invalid animation data (#6744 / TRX1632)
