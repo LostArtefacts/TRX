@@ -4,6 +4,8 @@
 -- The panel is built once and updated through signals, like the rest of the
 -- overlay. The frame is painted only while photo mode is open.
 
+local accent = require("common.ui.accent")
+
 trx.locale.declare({
   ["general/photo_mode/title_camera_pos"] = "Photo Mode",
   ["general/photo_mode/title_lara_pos"] = "Moving Lara",
@@ -84,9 +86,11 @@ function M.setup()
     spacing = 8,
     children = {
       ui.widgets.Label({
-        text = per_target(
-          trx.locale.text("general/photo_mode/title_camera_pos"),
-          trx.locale.text("general/photo_mode/title_lara_pos")
+        text = accent.signal(
+          per_target(
+            trx.locale.text("general/photo_mode/title_camera_pos"),
+            trx.locale.text("general/photo_mode/title_lara_pos")
+          )
         ),
       }),
       ui.widgets.InputHint({
