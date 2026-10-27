@@ -302,8 +302,8 @@ static void M_Control(const int16_t item_num)
 finish:
     Creature_Tilt(item, tilt);
     if (is_tr3) {
-        Creature_Joint(item, 0, head / 2);
-        Creature_Joint(item, 1, head / 2);
+        Creature_Joint(item, 0, head >> 1);
+        Creature_Joint(item, 1, head >> 1);
         Creature_Joint(item, 2, neck);
         Creature_Joint(item, 3, neck);
     } else {
