@@ -98,6 +98,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         // runs, so it advances again for as long as the menu is up.
         if (p->live_scene) {
             Random_FreezeDraw(false);
+            Game_SetIsLiveScene(true);
         }
     } else {
         // The snapshot re-renders the scene, so it must happen before the
@@ -204,6 +205,7 @@ static void M_End(PHASE *const phase)
             FlybyMode_Deactivate();
         }
         Random_FreezeDraw(true);
+        Game_SetIsLiveScene(false);
     }
     if (g_Config.input.enable_buffering_inventory) {
         g_OldInputDB = (INPUT_STATE) {};

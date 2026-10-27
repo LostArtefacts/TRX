@@ -8,6 +8,7 @@
 #include <trx/game/random.h>
 
 static bool m_IsPlaying = false;
+static bool m_IsLiveScene = false;
 static bool m_IsSettingUpItems = false;
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GAME_BONUS_FLAG m_BonusFlag = GBF_NONE;
@@ -27,6 +28,16 @@ void Game_SetIsPlaying(const bool is_playing)
 bool Game_IsPlaying(void)
 {
     return m_IsPlaying;
+}
+
+void Game_SetIsLiveScene(const bool is_live_scene)
+{
+    m_IsLiveScene = is_live_scene;
+}
+
+bool Game_IsLiveScene(void)
+{
+    return m_IsLiveScene;
 }
 
 void Game_SetIsSettingUpItems(const bool value)
