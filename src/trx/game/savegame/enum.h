@@ -76,6 +76,9 @@ typedef enum {
     // items by the parts their objects asked for.
     SG_VERSION_22 = 22,
 
+    // Lara's maximum hit points no longer follow her starting health.
+    SG_VERSION_23 = 23,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_22,
+    SG_CURRENT_VERSION = SG_VERSION_23,
 } SAVEGAME_VERSION;

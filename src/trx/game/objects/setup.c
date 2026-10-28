@@ -1,4 +1,3 @@
-#include <trx/config.h>
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/effects.h>
@@ -29,12 +28,6 @@ static void M_SetupLara(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(LARA_MAX_HITPOINTS));
-    ObjectProperty_SetObjectValueRaw(
-        obj, "max_hit_points",
-        (TRX_VALUE) {
-            .type = TVT_S32,
-            .as_int = g_Config.gameplay.start_lara_hitpoints,
-        });
 }
 
 static void M_SetupLaraStartPos(OBJECT *const obj)
