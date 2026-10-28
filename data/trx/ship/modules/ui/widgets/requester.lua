@@ -8,6 +8,7 @@
 --   local req = requester.new({ title = "Load Game", rows = rows })
 --   ctx:push({ root = req.widget, place = req.place, on_input = ... })
 
+local accent = require("common.ui.accent")
 local metrics = require("common.ui.metrics")
 local window = require("common.ui.widgets.window")
 
@@ -149,6 +150,7 @@ function M.new(settings)
     row_spacing = fitting.row_spacing,
     row_height = metrics.line_height(),
     hint_height = metrics.HINT_HEIGHT,
+    hint_color = accent.color_of(accent.Role.SCROLL),
     rule_overhang = metrics.rule_overhang(),
     frame_overhang = metrics.frame_overhang(),
     scroll_hints = settings.arrows ~= false,
