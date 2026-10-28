@@ -87,6 +87,7 @@
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
 - Fixed enemies in New Game+ losing their doubled health in some levels, such as Diving Area in TR2 (TRX1702, regression from 1.10)
 - Fixed enemies losing track of Lara in large custom levels (regression from 1.11)
+- Fixed Lara being able to push or pull a block out from under another block when the stack reaches the ceiling (regression from TR1X 4.15 / TR2X 1.5)
 
 **Saves and settings**
 - Changed the Saving crystal modes to offer a save at the end of each level, after the statistics, rather than at the start of the next one, like the PS1 releases (Gameplay → General → Crystal mode) (#6159 / TRX1011)
