@@ -235,7 +235,14 @@ static bool M_TestCurrentSector(
         return false;
     }
 
-    return true;
+    // Checks for a block on top separately, because a block flush against the
+    // ceiling leaves the floor height at its base unchanged.
+    VECTOR *const stack = Vector_Create(sizeof(int16_t));
+    M_GetStack(
+        stack, item->pos, item->pos.y - block_height, -WALL_L, item->room_num);
+    const bool has_block_on_top = stack->count > 0;
+    Vector_Free(stack);
+    return !has_block_on_top;
 }
 
 static bool M_IsFloorHeight(const XYZ_32 pos, int16_t room_num)
