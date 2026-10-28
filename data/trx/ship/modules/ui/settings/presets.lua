@@ -44,7 +44,7 @@ local function read(path)
     return a.key < b.key
   end)
   return {
-    title = trx.locale.text(data.name_gs),
+    title = trx.locale.get(data.name_gs),
     name_gs = data.name_gs,
     settings = settings,
   }
