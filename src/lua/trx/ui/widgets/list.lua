@@ -209,6 +209,10 @@ end
 -- Draws an arrow with its line centred on the room for the arrow, then moved
 -- by `nudge`.
 local function list_hint(list, glyph, nudge, x, y, w, scale)
+  local color = value_of(list.hint_color)
+  if color ~= nil then
+    glyph = "\\{color " .. color .. "}" .. glyph
+  end
   local gw, gh = primitive.measure_text(glyph, LIST_HINT_SCALE)
   local slack = setting(list, "hint_height") * scale - gh
   primitive.text(
@@ -303,6 +307,7 @@ end
 ---@field row_spacing? any The gap between two rows, or a signal that holds it. `3` by default.
 ---@field row_height? any The height of a row, or a signal that holds it. `15` by default.
 ---@field hint_height? any The height of the arrows that say the list runs past its rows, or a signal that holds it. `7` by default.
+---@field hint_color? any The colour of those arrows, as the text markup names a colour, or a signal that holds it. The colour text is drawn in where it names none by default.
 ---@field rule_overhang? any How far a rule between rows reaches past each side of the list, or a signal that holds it. `7` by default.
 ---@field frame_overhang? any How far the frame of the row under the cursor reaches above and below the row, or a signal that holds it. `0` by default.
 ---@field scroll_hints? any Whether to show arrows where the list runs past its rows, or a signal that holds that value. `true` by default.
