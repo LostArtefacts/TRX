@@ -1,0 +1,95 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "objects": {
+        "quest_item_1": {
+            "name": "Mano de Rathmore",
+            "description": "",
+        }
+    },
+    "levels": [
+        {
+            "title": "Hogar de Lara",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la pista de carreras",
+                }
+            }
+        },
+        {
+            "title": "Aventura en las Highlands",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Palanca",
+                },
+                "puzzle_item_2": {
+                    "name": "Piedra de cardo",
+                }
+            }
+        },
+        {
+            "title": "La guarida de Willard",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del túmulo",
+                },
+                "puzzle_item_1": {
+                    "name": "Palanca",
+                }
+            }
+        },
+        {
+            "title": "El acantilado de Shakespeare",
+            "objects": {
+                "key_item_1": {
+                    "name": "Tarjeta de activación del taladro",
+                },
+                "puzzle_item_1": {
+                    "name": "Disco de acceso a la bomba",
+                }
+            }
+        },
+        {
+            "title": "Durmiendo con los peces",
+            "objects": {
+                "orca": {
+                    "name": "Delfín",
+                },
+                "puzzle_item_1": {
+                    "name": "Bombilla de circuito",
+                },
+                "puzzle_item_2": {
+                    "name": "Muestra mutante",
+                },
+                "puzzle_item_3": {
+                    "name": "Muestra mutante",
+                },
+                "puzzle_item_4": {
+                    "name": "Bombilla de circuito",
+                }
+            }
+        },
+        {
+            "title": "¡Esto es un manicomio!",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del zoo",
+                },
+                "key_item_4": {
+                    "name": "Llave del aviario",
+                },
+                "puzzle_item_1": {
+                    "name": "Mano de Rathmore",
+                }
+            }
+        },
+        {
+            "title": "Reunión",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Mano de Rathmore",
+                }
+            }
+        }
+    ]
+}

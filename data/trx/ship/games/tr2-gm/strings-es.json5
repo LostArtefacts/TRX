@@ -1,0 +1,79 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "levels": [
+        {
+            "title": "Hogar de Lara",
+        },
+        {
+            "title": "La guerra fría",
+            "objects": {
+                "tiger": {
+                    "name": "Leopardo de las nieves",
+                },
+                "key_item_1": {
+                    "name": "Llave del cuerpo de guardia",
+                },
+                "key_item_2": {
+                    "name": "Llave del pozo 'B'",
+                }
+            }
+        },
+        {
+            "title": "El oro de los tontos",
+            "objects": {
+                "key_item_1": {
+                    "name": "Tarjeta llave 1",
+                },
+                "key_item_4": {
+                    "name": "Tarjeta llave 2",
+                },
+                "puzzle_item_1": {
+                    "name": "Placa de circuito",
+                }
+            }
+        },
+        {
+            "title": "El horno de los dioses",
+            "objects": {
+                "big_spider": {
+                    "name": "Oso polar",
+                },
+                "spider": {
+                    "name": "Lobo",
+                },
+                "puzzle_item_1": {
+                    "name": "Máscara de Tornarsuk",
+                },
+                "puzzle_item_2": {
+                    "name": "Pepita de oro",
+                }
+            }
+        },
+        {
+            "title": "El reino",
+            "objects": {
+                "tiger": {
+                    "name": "Leopardo de las nieves",
+                },
+                "puzzle_item_1": {
+                    "name": "Máscara de Tornarsuk",
+                }
+            }
+        },
+        {
+            "title": "Pesadilla en Las Vegas",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del hotel",
+                },
+                "puzzle_item_1": {
+                    "name": "Caja de conexiones del ascensor",
+                },
+                "puzzle_item_2": {
+                    "name": "Circuito de la puerta",
+                }
+            }
+        }
+    ]
+}

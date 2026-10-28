@@ -1,0 +1,347 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "globe_select": {
+            "area_1": "India",
+            "area_2": "Islas del Pacífico Sur",
+            "area_3": "Nevada",
+            "area_4": " ",
+            "area_5": "Londres",
+            "area_6": "Antártida",
+        },
+        "misc": {
+            "empty_slot_fmt": "- Ranura vacía -",
+        }
+    },
+    "objects": {
+        "large_medipack_item": {
+            "name": "Botiquín grande",
+        },
+        "quest_item_1": {
+            "name": "Piedra de Infada",
+            "description": "",
+        },
+        "quest_item_2": {
+            "name": "Elemento 115",
+            "description": "",
+        },
+        "quest_item_3": {
+            "name": "Ojo de Isis",
+            "description": "",
+        },
+        "quest_item_4": {
+            "name": "Daga de Ora",
+            "description": "",
+        },
+        "small_medipack_item": {
+            "name": "Botiquín pequeño",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Secuencia de vídeo 1",
+        },
+        {
+            "title": "Secuencia de vídeo 2",
+        },
+        {
+            "title": "Secuencia de vídeo 3",
+        },
+        {
+            "title": "Secuencia de vídeo 4",
+        },
+        {
+            "title": "Secuencia de vídeo 5",
+        },
+        {
+            "title": "Secuencia de vídeo 6",
+        },
+        {
+            "title": "Secuencia de vídeo 7",
+        },
+        {
+            "title": "Secuencia de vídeo 8",
+        },
+        {
+            "title": "Secuencia de vídeo 9",
+        },
+        {
+            "title": "Secuencia de vídeo 10",
+        },
+        {
+            "title": "Secuencia de vídeo 11",
+        }
+    ],
+    "levels": [
+        {
+            "title": "Hogar de Lara",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la pista de carreras",
+                }
+            }
+        },
+        {
+            "title": "La jungla",
+            "objects": {
+                "key_item_4": {
+                    "name": "Llave de Indra",
+                }
+            }
+        },
+        {
+            "title": "Ruinas del templo",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de Ganesha",
+                },
+                "puzzle_item_1": {
+                    "name": "Cimitarra",
+                },
+                "puzzle_item_2": {
+                    "name": "Cimitarra",
+                }
+            }
+        },
+        {
+            "title": "El río Ganges",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la verja",
+                }
+            }
+        },
+        {
+            "title": "Cuevas de Kaliya",
+        },
+        {
+            "title": "Aldea costera",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del contrabandista",
+                },
+                "puzzle_item_1": {
+                    "name": "Piedra de la serpiente",
+                }
+            }
+        },
+        {
+            "title": "Lugar del accidente",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del comandante Bishop",
+                },
+                "key_item_2": {
+                    "name": "Llave del tte. Tuckerman",
+                },
+                "pickup_item_1": {
+                    "name": "Mapa del pantano",
+                    "description": "",
+                }
+            }
+        },
+        {
+            "title": "Garganta de Madubu",
+        },
+        {
+            "title": "Templo de Puna",
+        },
+        {
+            "title": "Muelles del Támesis",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la sala de calderas",
+                },
+                "key_item_2": {
+                    "name": "Llave de la catedral",
+                }
+            }
+        },
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de mantenimiento",
+                },
+                "key_item_2": {
+                    "name": "Llave de Salomón",
+                },
+                "key_item_3": {
+                    "name": "Llave de Salomón",
+                },
+                "puzzle_item_1": {
+                    "name": "Penique antiguo",
+                },
+                "puzzle_item_2": {
+                    "name": "Billete",
+                },
+                "puzzle_item_3": {
+                    "name": "Mazo masónico",
+                },
+                "puzzle_item_4": {
+                    "name": "Estrella ornamentada",
+                }
+            }
+        },
+        {
+            "title": "Puerta de Lud",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la sala de máquinas",
+                },
+                "puzzle_item_1": {
+                    "name": "Líquido de embalsamar",
+                }
+            }
+        },
+        {
+            "title": "La City",
+        },
+        {
+            "title": "Desierto de Nevada",
+            "objects": {
+                "key_item_1": {
+                    "name": "Acceso al generador",
+                },
+                "key_item_2": {
+                    "name": "Interruptor del detonador",
+                }
+            }
+        },
+        {
+            "title": "Compuesto de alta seguridad",
+            "objects": {
+                "key_item_1": {
+                    "name": "Tarjeta llave Tipo A",
+                },
+                "key_item_2": {
+                    "name": "Tarjeta llave Tipo B",
+                },
+                "puzzle_item_1": {
+                    "name": "Pase de seguridad azul",
+                },
+                "puzzle_item_2": {
+                    "name": "Pase de seguridad amarillo",
+                }
+            }
+        },
+        {
+            "title": "Área 51",
+            "objects": {
+                "key_item_1": {
+                    "name": "Pase de código de lanzamiento",
+                },
+                "puzzle_item_1": {
+                    "name": "Llave de acceso a la torre",
+                },
+                "puzzle_item_2": {
+                    "name": "Disco de autorización de código",
+                },
+                "puzzle_item_3": {
+                    "name": "Disco de autorización de código",
+                },
+                "puzzle_item_4": {
+                    "name": "Llave de acceso al hangar",
+                }
+            }
+        },
+        {
+            "title": "Antártida",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la cabaña",
+                },
+                "puzzle_item_1": {
+                    "name": "Palanca",
+                },
+                "puzzle_item_2": {
+                    "name": "Llave de control de la verja",
+                }
+            }
+        },
+        {
+            "title": "Minas de RX-Tech",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Palanca",
+                },
+                "puzzle_item_2": {
+                    "name": "Batería de plomo-ácido",
+                },
+                "puzzle_item_3": {
+                    "name": "Arranque del cabrestante",
+                }
+            }
+        },
+        {
+            "title": "Ciudad oculta de Tinnos",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave Uli",
+                },
+                "puzzle_item_1": {
+                    "name": "Máscara oceánica",
+                }
+            }
+        },
+        {
+            "title": "Caverna del meteorito",
+        },
+        {
+            "title": "All Hallows",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la cámara",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de mantenimiento",
+                },
+                "key_item_2": {
+                    "name": "Llave de Salomón",
+                },
+                "key_item_3": {
+                    "name": "Llave de Salomón",
+                },
+                "puzzle_item_1": {
+                    "name": "Penique antiguo",
+                },
+                "puzzle_item_2": {
+                    "name": "Billete",
+                },
+                "puzzle_item_3": {
+                    "name": "Mazo masónico",
+                },
+                "puzzle_item_4": {
+                    "name": "Estrella ornamentada",
+                }
+            }
+        },
+        {
+            "title": "El río Ganges",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la verja",
+                }
+            }
+        },
+        {
+            "title": "Desierto de Nevada",
+            "objects": {
+                "key_item_1": {
+                    "name": "Acceso al generador",
+                },
+                "key_item_2": {
+                    "name": "Interruptor del detonador",
+                }
+            }
+        }
+    ]
+}
