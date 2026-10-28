@@ -30,6 +30,7 @@ typedef struct {
     // to show, as for the keys of a lock when Lara carries none.
     bool is_shown;
     bool music_paused;
+    bool sounds_paused;
     // The title level keeps running behind the menu, with its flyby camera.
     bool live_scene;
 } M_PRIV;
@@ -107,9 +108,10 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         Output_Overlay_CaptureGameSnapshot();
         if (!g_Config.audio.enable_music_in_inventory) {
             Music_Pause();
-            Sound_PauseAll();
             p->music_paused = true;
         }
+        Sound_PauseAll();
+        p->sounds_paused = true;
     }
     Output_SetInventoryLightingMode(true);
     Interpolation_Remember();
@@ -128,6 +130,8 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     if (!p->is_shown) {
         if (p->music_paused) {
             Music_Unpause();
+        }
+        if (p->sounds_paused) {
             Sound_UnpauseAll();
         }
         return (PHASE_CONTROL) {
@@ -146,9 +150,13 @@ static PHASE_CONTROL M_Leave(M_PRIV *const p, GF_COMMAND gf_cmd)
         gf_cmd = GF_GetOverrideCommand();
         GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP }, true);
     }
-    if (p->music_paused && gf_cmd.action == GF_NOOP) {
-        Music_Unpause();
-        Sound_UnpauseAll();
+    if (gf_cmd.action == GF_NOOP) {
+        if (p->music_paused) {
+            Music_Unpause();
+        }
+        if (p->sounds_paused) {
+            Sound_UnpauseAll();
+        }
     }
     return (PHASE_CONTROL) { .action = PHASE_ACTION_END, .gf_cmd = gf_cmd };
 }

@@ -105,6 +105,7 @@
 - Added an option to choose the dub apart from the text language, which plays FMVs, music and speech from a language folder beside the retail files (Sound → Voice language) (#1021 / TRX1710)
 - Added an option to crossfade looping ambience tracks into each other rather than cutting them off (Sound Options → Misc → Ambience crossfade) (#5331 / TRX169)
 - Added an option to muffle the ambience or all music while the camera is underwater (Sound Options → Misc → Muffle music underwater) (#5504 / TRX302)
+- Fixed sound effects such as the clock in the TR2 gym continuing to play while the inventory is open (#7048)
 
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
