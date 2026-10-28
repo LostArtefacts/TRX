@@ -42,6 +42,9 @@ M.Role = {
   DIM = "dim",
   -- The option the player is on, where no frame marks it.
   PICKED = "picked",
+  -- The arrows that say a list goes on past its edge, and the page a text is
+  -- on.
+  SCROLL = "scroll",
   -- The heading of a flat menu.
   MENU_HEADING = "menu_heading",
   -- What a flat menu points out: the values of its statistics and its arrows.
@@ -144,6 +147,7 @@ local STYLES = {
     readout = { small = true },
     dim = { color = "dim" },
     picked = { color = "pulse" },
+    scroll = { color = "orange" },
     menu_heading = { color = "orange" },
     menu_accent = { color = "orange" },
     menu_option = { color = "silver" },
