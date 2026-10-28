@@ -126,7 +126,10 @@ local function page_indicator(self)
     return page < n
   end)
   local text = trx.signal.combine(self.page, count, function(page, n)
-    return trx.locale.text("general/misc/pagination_nav", page, n)
+    return accent.text(
+      trx.locale.text("general/misc/pagination_nav", page, n),
+      accent.Role.SCROLL
+    )
   end)
   return trx.ui.widgets.Stack({
     align = trx.ui.HAlign.RIGHT,
@@ -139,12 +142,12 @@ local function page_indicator(self)
         orientation = trx.ui.Orientation.HORIZONTAL,
         children = {
           trx.ui.widgets.Label({
-            text = "\\{button left} ",
+            text = accent.text("\\{button left} ", accent.Role.SCROLL),
             visible = has_left,
           }),
           trx.ui.widgets.Label({ text = text }),
           trx.ui.widgets.Label({
-            text = " \\{button right}",
+            text = accent.text(" \\{button right}", accent.Role.SCROLL),
             visible = has_right,
           }),
         },

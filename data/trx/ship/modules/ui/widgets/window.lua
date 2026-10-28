@@ -7,6 +7,7 @@
 --   local window = require("common.ui.widgets.window")
 --   local root = window.new({ title = "Sound", content = rows, scroll = list })
 
+local accent = require("common.ui.accent")
 local metrics = require("common.ui.metrics")
 
 local M = {}
@@ -113,13 +114,13 @@ function M.new(settings)
         end
       )
     up = hint_row(
-      "\\{arrow up}",
+      accent.text("\\{arrow up}", accent.Role.SCROLL),
       metrics.HINT_NUDGE_UP,
       hints,
       ~scroll:more_above()
     )
     down = hint_row(
-      "\\{arrow down}",
+      accent.text("\\{arrow down}", accent.Role.SCROLL),
       metrics.HINT_NUDGE_DOWN,
       hints,
       ~scroll:more_below()
