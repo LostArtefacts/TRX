@@ -1,0 +1,17 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "levels": [
+        {
+            "title": "Ciudad de Vilcabamba",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de plata",
+                },
+                "puzzle_item_1": {
+                    "name": "Ídolo de oro",
+                }
+            }
+        }
+    ]
+}

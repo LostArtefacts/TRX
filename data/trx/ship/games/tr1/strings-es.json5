@@ -1,0 +1,231 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "misc": {
+            "empty_slot_fmt": "- RANURA VACÍA %d -",
+        },
+        "stats": {
+            "secrets": "Secretos",
+        }
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Activa la iluminación dinámica generada por los disparos y explosiones, similar a TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Corrige los errores originales en La Cisterna y la Tumba de Tihocan donde los sprites de plantas en zonas de agua no se animaban.",
+        }
+    },
+    "objects": {
+        "large_medipack_item": {
+            "name": "Botiquín grande",
+        },
+        "small_medipack_item": {
+            "name": "Botiquín pequeño",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Secuencia de vídeo 1",
+        },
+        {
+            "title": "Secuencia de vídeo 2",
+        },
+        {
+            "title": "Secuencia de vídeo 3",
+        },
+        {
+            "title": "Secuencia de vídeo 4",
+        }
+    ],
+    "levels": [
+        {
+            "title": "Hogar de Lara",
+        },
+        {
+            "title": "Las Cavernas",
+        },
+        {
+            "title": "Ciudad de Vilcabamba",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de plata",
+                },
+                "puzzle_item_1": {
+                    "name": "Ídolo de oro",
+                }
+            }
+        },
+        {
+            "title": "El Valle Perdido",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Engranaje",
+                }
+            }
+        },
+        {
+            "title": "Tumba de Qualopec",
+        },
+        {
+            "title": "Palacio de Francis",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de Neptuno",
+                },
+                "key_item_2": {
+                    "name": "Llave de Atlas",
+                },
+                "key_item_3": {
+                    "name": "Llave de Damocles",
+                },
+                "key_item_4": {
+                    "name": "Llave de Thor",
+                }
+            }
+        },
+        {
+            "title": "El Coliseo",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave oxidada",
+                }
+            }
+        },
+        {
+            "title": "Palacio de Midas",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Lingote de oro",
+                }
+            }
+        },
+        {
+            "title": "La Cisterna",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de oro",
+                },
+                "key_item_2": {
+                    "name": "Llave de plata",
+                },
+                "key_item_3": {
+                    "name": "Llave oxidada",
+                }
+            }
+        },
+        {
+            "title": "Tumba de Tihocan",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de oro",
+                },
+                "key_item_2": {
+                    "name": "Llave oxidada",
+                },
+                "key_item_3": {
+                    "name": "Llave oxidada",
+                }
+            }
+        },
+        {
+            "title": "Ciudad de Khamoon",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de zafiro",
+                }
+            }
+        },
+        {
+            "title": "Obelisco de Khamoon",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de zafiro",
+                },
+                "puzzle_item_1": {
+                    "name": "Ojo de Horus",
+                },
+                "puzzle_item_2": {
+                    "name": "Escarabajo",
+                },
+                "puzzle_item_3": {
+                    "name": "Sello de Anubis",
+                },
+                "puzzle_item_4": {
+                    "name": "Ankh",
+                }
+            }
+        },
+        {
+            "title": "Santuario del Scion",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de oro",
+                },
+                "puzzle_item_1": {
+                    "name": "Ankh",
+                },
+                "puzzle_item_2": {
+                    "name": "Escarabajo",
+                }
+            }
+        },
+        {
+            "title": "Minas de Natla",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Fusible",
+                },
+                "puzzle_item_2": {
+                    "name": "Llave de la pirámide",
+                }
+            }
+        },
+        {
+            "title": "Atlántida",
+        },
+        {
+            "title": "La Gran Pirámide",
+        },
+        {
+            "title": "Ficticio",
+        },
+        {
+            "title": "Ficticio",
+        },
+        {
+            "title": "Ficticio",
+        },
+        {
+            "title": "Ficticio",
+        },
+        {
+            "title": "Título",
+        },
+        {
+            "title": "Posición actual",
+        }
+    ],
+    "demos": [
+        {
+            "title": "Ciudad de Vilcabamba",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de plata",
+                },
+                "puzzle_item_1": {
+                    "name": "Ídolo de oro",
+                }
+            }
+        },
+        {
+            "title": "El Valle Perdido",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Engranaje",
+                }
+            }
+        }
+    ]
+}

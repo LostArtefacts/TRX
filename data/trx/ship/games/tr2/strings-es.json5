@@ -1,0 +1,339 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Corrige el ataque de zarpazo del oso en The Golden Mask para que no falle al golpear a Lara.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Corrige los errores originales en 40 brazas, El naufragio del Maria Doria y Sobre cubierta donde los sprites de plantas en zonas de agua no se animaban.",
+        }
+    },
+    "objects": {
+        "large_medipack_item": {
+            "name": "Botiquín grande",
+        },
+        "small_medipack_item": {
+            "name": "Botiquín pequeño",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Secuencia de vídeo 1",
+        },
+        {
+            "title": "Secuencia de vídeo 2",
+        },
+        {
+            "title": "Secuencia de vídeo 3",
+        },
+        {
+            "title": "Secuencia de vídeo 4",
+        }
+    ],
+    "levels": [
+        {
+            "title": "Hogar de Lara",
+        },
+        {
+            "title": "La Gran Muralla",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del cuerpo de guardia",
+                },
+                "key_item_2": {
+                    "name": "Llave oxidada",
+                }
+            }
+        },
+        {
+            "title": "Venecia",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del cobertizo",
+                },
+                "key_item_2": {
+                    "name": "Llave de acero",
+                },
+                "key_item_3": {
+                    "name": "Llave de hierro",
+                }
+            }
+        },
+        {
+            "title": "El escondite de Bartoli",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la biblioteca",
+                },
+                "key_item_2": {
+                    "name": "Llave del detonador",
+                }
+            }
+        },
+        {
+            "title": "El teatro de la ópera",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave ornamentada",
+                },
+                "puzzle_item_1": {
+                    "name": "Caja de relés",
+                },
+                "puzzle_item_2": {
+                    "name": "Placa de circuito",
+                }
+            }
+        },
+        {
+            "title": "Plataforma marina",
+            "objects": {
+                "key_item_1": {
+                    "name": "Tarjeta de acceso roja",
+                },
+                "key_item_2": {
+                    "name": "Tarjeta de acceso amarilla",
+                },
+                "key_item_3": {
+                    "name": "Tarjeta de acceso verde",
+                }
+            }
+        },
+        {
+            "title": "Área de inmersión",
+            "objects": {
+                "key_item_1": {
+                    "name": "Tarjeta de acceso roja",
+                },
+                "key_item_4": {
+                    "name": "Tarjeta de acceso azul",
+                },
+                "puzzle_item_1": {
+                    "name": "Chip de máquina",
+                }
+            }
+        },
+        {
+            "title": "40 brazas",
+        },
+        {
+            "title": "El naufragio del Maria Doria",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de los aseos",
+                },
+                "key_item_2": {
+                    "name": "Llave oxidada",
+                },
+                "key_item_3": {
+                    "name": "Llave del camarote",
+                },
+                "puzzle_item_1": {
+                    "name": "Disyuntor",
+                }
+            }
+        },
+        {
+            "title": "Alojamientos",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del teatro",
+                },
+                "key_item_2": {
+                    "name": "Llave oxidada",
+                }
+            }
+        },
+        {
+            "title": "Sobre cubierta",
+            "objects": {
+                "key_item_2": {
+                    "name": "Llave de popa",
+                },
+                "key_item_3": {
+                    "name": "Llave del almacén",
+                },
+                "key_item_4": {
+                    "name": "Llave del camarote",
+                },
+                "puzzle_item_4": {
+                    "name": "El Serafín",
+                }
+            }
+        },
+        {
+            "title": "Colinas del Tíbet",
+            "objects": {
+                "tiger": {
+                    "name": "Leopardo de las nieves",
+                },
+                "key_item_1": {
+                    "name": "Llave del puente levadizo",
+                },
+                "key_item_2": {
+                    "name": "Llave de la cabaña",
+                },
+                "puzzle_item_4": {
+                    "name": "El Serafín",
+                }
+            }
+        },
+        {
+            "title": "Monasterio de Barkhang",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de la cámara acorazada",
+                },
+                "key_item_2": {
+                    "name": "Llave de la trampilla",
+                },
+                "key_item_3": {
+                    "name": "Llave de los tejados",
+                },
+                "key_item_4": {
+                    "name": "Llave de la sala principal",
+                },
+                "puzzle_item_1": {
+                    "name": "Molinillos de oración",
+                },
+                "puzzle_item_2": {
+                    "name": "Piedras preciosas",
+                },
+                "puzzle_item_4": {
+                    "name": "El Serafín",
+                }
+            }
+        },
+        {
+            "title": "Catacumbas del Talión",
+            "objects": {
+                "tiger": {
+                    "name": "Leopardo de las nieves",
+                },
+                "pickup_item_1": {
+                    "name": "Martillo del gong",
+                },
+                "puzzle_item_1": {
+                    "name": "Máscara tibetana",
+                }
+            }
+        },
+        {
+            "title": "El Palacio de Hielo",
+            "objects": {
+                "tiger": {
+                    "name": "Tigre blanco",
+                },
+                "key_item_2": {
+                    "name": "Martillo del gong",
+                },
+                "pickup_item_2": {
+                    "name": "Talión",
+                },
+                "puzzle_item_1": {
+                    "name": "Máscara tibetana",
+                }
+            }
+        },
+        {
+            "title": "Templo de Xian",
+            "objects": {
+                "key_item_2": {
+                    "name": "Llave de oro",
+                },
+                "key_item_3": {
+                    "name": "Llave de plata",
+                },
+                "key_item_4": {
+                    "name": "Llave de la cámara principal",
+                },
+                "puzzle_item_1": {
+                    "name": "El Sello del Dragón",
+                }
+            }
+        },
+        {
+            "title": "Islas Flotantes",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Placa mística",
+                },
+                "puzzle_item_2": {
+                    "name": "Placa mística",
+                }
+            }
+        },
+        {
+            "title": "La Guarida del Dragón",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Placa mística",
+                },
+                "puzzle_item_2": {
+                    "name": "Daga de Xian",
+                }
+            }
+        },
+        {
+            "title": "Hogar, dulce hogar",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del armero",
+                },
+                "puzzle_item_1": {
+                    "name": "Daga de Xian",
+                }
+            }
+        }
+    ],
+    "demos": [
+        {
+            "title": "Venecia",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave del cobertizo",
+                },
+                "key_item_2": {
+                    "name": "Llave de acero",
+                },
+                "key_item_3": {
+                    "name": "Llave de hierro",
+                }
+            }
+        },
+        {
+            "title": "El naufragio del Maria Doria",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de los aseos",
+                },
+                "key_item_2": {
+                    "name": "Llave oxidada",
+                },
+                "key_item_3": {
+                    "name": "Llave del camarote",
+                },
+                "puzzle_item_1": {
+                    "name": "Disyuntor",
+                }
+            }
+        },
+        {
+            "title": "Colinas del Tíbet",
+            "objects": {
+                "tiger": {
+                    "name": "Leopardo de las nieves",
+                },
+                "key_item_1": {
+                    "name": "Llave del puente levadizo",
+                },
+                "key_item_2": {
+                    "name": "Llave de la cabaña",
+                },
+                "puzzle_item_4": {
+                    "name": "El Serafín",
+                }
+            }
+        }
+    ]
+}

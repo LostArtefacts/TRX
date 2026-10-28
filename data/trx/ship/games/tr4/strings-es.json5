@@ -1,0 +1,1013 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "enums": {
+        "input_role": {
+            "equip_grenade_launcher": "Equipar lanzagranadas",
+            "equip_uzis": "Equipar Uzi",
+        }
+    },
+    "objects": {
+        "crossbow_ammo_1_item": {
+            "name": "Munición normal de ballesta",
+        },
+        "crossbow_ammo_2_item": {
+            "name": "Munición de veneno de ballesta",
+        },
+        "crossbow_ammo_3_item": {
+            "name": "Munición explosiva de ballesta",
+        },
+        "flare_item": {
+            "name": "Bengalas",
+        },
+        "grenade_ammo_2_item": {
+            "name": "Munición super de lanzagranadas",
+        },
+        "grenade_ammo_3_item": {
+            "name": "Munición cegadora de lanzagranadas",
+        },
+        "grenade_ammo_item": {
+            "name": "Munición normal de lanzagranadas",
+        },
+        "grenade_gun_item": {
+            "name": "Lanzagranadas",
+        },
+        "pistols_ammo_item": {
+            "name": "Munición de pistola",
+        },
+        "quest_item_1": {
+            "name": "Amuleto de Horus",
+        },
+        "shotgun_ammo_2_item": {
+            "name": "Cartuchos de perdigones de escopeta",
+        },
+        "shotgun_ammo_item": {
+            "name": "Munición normal de escopeta",
+        },
+        "uzis_ammo_item": {
+            "name": "Munición de Uzi",
+        },
+        "uzis_item": {
+            "name": "Uzi",
+        }
+    },
+    "cutscenes": [],
+    "levels": [
+        {
+            "title": "Angkor Wat",
+            "general": {
+                "legend": "Camboya, 1984",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Calavera de oro",
+                }
+            }
+        },
+        {
+            "title": "La carrera por el Iris",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Calavera de oro",
+                }
+            }
+        },
+        {
+            "title": "La tumba de Seth",
+            "general": {
+                "legend": "Egipto, en la actualidad",
+            },
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Ojo de Horus",
+                },
+                "puzzle_item_2": {
+                    "name": "Las arenas eternas",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Fragmento del ojo",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Fragmento del ojo",
+                }
+            }
+        },
+        {
+            "title": "Cámaras funerarias",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "La mano de Orión",
+                },
+                "puzzle_item_2": {
+                    "name": "La mano de Sirio",
+                },
+                "puzzle_item_3": {
+                    "name": "Talismán del escarabajo",
+                },
+                "puzzle_item_4": {
+                    "name": "La serpiente de oro",
+                }
+            }
+        },
+        {
+            "title": "El Valle de los Reyes",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Llave de contacto",
+                }
+            }
+        },
+        {
+            "title": "KV5",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Llave de contacto",
+                }
+            }
+        },
+        {
+            "title": "Templo de Karnak",
+            "objects": {
+                "key_item_2": {
+                    "name": "Llave de la sala hipóstila",
+                },
+                "puzzle_item_1": {
+                    "name": "Talismán del Sol",
+                },
+                "puzzle_item_2": {
+                    "name": "Vaso canopo 1",
+                },
+                "puzzle_item_3": {
+                    "name": "Vaso canopo 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Disco solar",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Diosa del Sol",
+                }
+            }
+        },
+        {
+            "title": "La gran sala hipóstila",
+            "objects": {
+                "key_item_2": {
+                    "name": "Llave de la sala hipóstila",
+                },
+                "puzzle_item_1": {
+                    "name": "Talismán del Sol",
+                },
+                "puzzle_item_2": {
+                    "name": "Vaso canopo 1",
+                },
+                "puzzle_item_3": {
+                    "name": "Vaso canopo 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Disco solar",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Diosa del Sol",
+                }
+            }
+        },
+        {
+            "title": "El lago sagrado",
+            "objects": {
+                "key_item_2": {
+                    "name": "Llave de la sala hipóstila",
+                },
+                "puzzle_item_1": {
+                    "name": "Talismán del Sol",
+                },
+                "puzzle_item_2": {
+                    "name": "Vaso canopo 1",
+                },
+                "puzzle_item_3": {
+                    "name": "Vaso canopo 2",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Disco solar",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Diosa del Sol",
+                }
+            }
+        },
+        {
+            "title": "Lago 2",
+        },
+        {
+            "title": "La tumba de Semerkhet",
+            "objects": {
+                "puzzle_item_4": {
+                    "name": "Cartucho de Ba",
+                },
+                "puzzle_item_5": {
+                    "name": "Cartucho de Ra",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Fragmento de cartucho 1",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Fragmento de cartucho 2",
+                },
+                "examine_item_2": {
+                    "name": "Las reglas del Senet",
+                    "description": "Para ganar la partida, saca todas tus fichas del tablero haciendo que caigan en la casilla final del ankh. En tu turno, haz girar los bastoncillos. Tu tirada será el número de caras blancas que queden a la vista.\n\nSi no se muestra ninguna cara blanca, tu tirada contará como un seis. Si sacas un seis o caes en una casilla del ankh, obtendrás un turno adicional. Si caes en la ficha de un oponente, esta regresará a la casilla de salida.",
+                }
+            }
+        },
+        {
+            "title": "El guardián de Semerkhet",
+            "objects": {
+                "puzzle_item_6": {
+                    "name": "Uraeus de oro",
+                },
+                "puzzle_item_7": {
+                    "name": "Llave del guardián",
+                }
+            }
+        },
+        {
+            "title": "Un ferrocarril en el desierto",
+        },
+        {
+            "title": "Alejandría",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ficha",
+                },
+                "key_item_10": {
+                    "name": "Llave de la verja",
+                },
+                "puzzle_item_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_item_2": {
+                    "name": "Partitura musical",
+                },
+                "puzzle_item_3": {
+                    "name": "Estrella de oro",
+                },
+                "puzzle_item_4": {
+                    "name": "Gancho y pértiga",
+                },
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_6": {
+                    "name": "Gema del jinete",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_11": {
+                    "name": "Columna del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Gancho de pared",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Mango roto",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                }
+            }
+        },
+        {
+            "title": "Ruinas costeras",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ficha",
+                },
+                "key_item_10": {
+                    "name": "Llave de la verja",
+                },
+                "puzzle_item_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_item_2": {
+                    "name": "Partitura musical",
+                },
+                "puzzle_item_3": {
+                    "name": "Estrella de oro",
+                },
+                "puzzle_item_4": {
+                    "name": "Gancho y pértiga",
+                },
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_6": {
+                    "name": "Gema del jinete",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_11": {
+                    "name": "Columna del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Gancho de pared",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Mango roto",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                }
+            }
+        },
+        {
+            "title": "Faro, templo de Isis",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ficha",
+                },
+                "key_item_10": {
+                    "name": "Llave de la verja",
+                },
+                "puzzle_item_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_item_2": {
+                    "name": "Partitura musical",
+                },
+                "puzzle_item_3": {
+                    "name": "Estrella de oro",
+                },
+                "puzzle_item_4": {
+                    "name": "Gancho y pértiga",
+                },
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_6": {
+                    "name": "Gema del jinete",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_11": {
+                    "name": "Columna del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_4_combo_1": {
+                    "name": "Gancho de pared",
+                },
+                "puzzle_item_4_combo_2": {
+                    "name": "Mango roto",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                }
+            }
+        },
+        {
+            "title": "Palacios de Cleopatra",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                }
+            }
+        },
+        {
+            "title": "Catacumbas",
+            "objects": {
+                "key_item_1": {
+                    "name": "Ficha",
+                },
+                "key_item_10": {
+                    "name": "Llave de la verja",
+                },
+                "puzzle_item_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_item_2": {
+                    "name": "Partitura musical",
+                },
+                "puzzle_item_3": {
+                    "name": "Estrella de oro",
+                },
+                "puzzle_item_4": {
+                    "name": "Gancho y pértiga",
+                },
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_6": {
+                    "name": "Gema del jinete",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_11": {
+                    "name": "Columna del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                }
+            }
+        },
+        {
+            "title": "Templo de Poseidón",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_item_2": {
+                    "name": "Partitura musical",
+                },
+                "puzzle_item_3": {
+                    "name": "Estrella de oro",
+                },
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_6": {
+                    "name": "Gema del jinete",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_11": {
+                    "name": "Columna del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                }
+            }
+        },
+        {
+            "title": "La biblioteca perdida",
+            "objects": {
+                "puzzle_item_2": {
+                    "name": "Partitura musical",
+                },
+                "puzzle_item_3": {
+                    "name": "Estrella de oro",
+                },
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_6": {
+                    "name": "Gema del jinete",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_11": {
+                    "name": "Columna del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                },
+                "examine_item_3": {
+                    "name": "Pergamino del círculo de fuego",
+                    "description": "Para que las serpientes vivan, primero hay que calmarlas a todas. Provoca a cada una a su vez y el círculo arderá por completo.",
+                }
+            }
+        },
+        {
+            "title": "Sala de Demetrio",
+            "objects": {
+                "puzzle_item_5": {
+                    "name": "Guardián del portal",
+                },
+                "puzzle_item_10": {
+                    "name": "Nudo del Faro",
+                },
+                "puzzle_item_11": {
+                    "name": "Columna del Faro",
+                },
+                "puzzle_item_12": {
+                    "name": "Escarabajo negro",
+                },
+                "puzzle_item_5_combo_1": {
+                    "name": "Mango ornamentado",
+                },
+                "puzzle_item_5_combo_2": {
+                    "name": "Efigie de Hathor",
+                },
+                "pickup_item_1": {
+                    "name": "Escarabajo roto",
+                },
+                "pickup_item_2": {
+                    "name": "Gafas rotas",
+                }
+            }
+        },
+        {
+            "title": "Ciudad de los Muertos",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Alimentador de óxido nitroso",
+                },
+                "puzzle_item_2": {
+                    "name": "Gato mecánico",
+                },
+                "puzzle_item_4": {
+                    "name": "Llave del tejado",
+                },
+                "puzzle_item_5": {
+                    "name": "Llave del código de armas",
+                },
+                "puzzle_item_8": {
+                    "name": "Detonador de minas",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Tubo de válvula",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Bombona de óxido nitroso",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Cuerpo del gato",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Palanca del gato",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Cuerpo del detonador",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Datos de posición de minas",
+                }
+            }
+        },
+        {
+            "title": "Las Trincheras",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Alimentador de óxido nitroso",
+                },
+                "puzzle_item_2": {
+                    "name": "Gato mecánico",
+                },
+                "puzzle_item_4": {
+                    "name": "Llave del tejado",
+                },
+                "puzzle_item_5": {
+                    "name": "Llave del código de armas",
+                },
+                "puzzle_item_8": {
+                    "name": "Detonador de minas",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Tubo de válvula",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Bombona de óxido nitroso",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Cuerpo del gato",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Palanca del gato",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Cuerpo del detonador",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Datos de posición de minas",
+                }
+            }
+        },
+        {
+            "title": "Cámaras de Tulun",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Alimentador de óxido nitroso",
+                },
+                "puzzle_item_2": {
+                    "name": "Gato mecánico",
+                },
+                "puzzle_item_4": {
+                    "name": "Llave del tejado",
+                },
+                "puzzle_item_5": {
+                    "name": "Llave del código de armas",
+                },
+                "puzzle_item_8": {
+                    "name": "Detonador de minas",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Tubo de válvula",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Bombona de óxido nitroso",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Cuerpo del gato",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Palanca del gato",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Cuerpo del detonador",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Datos de posición de minas",
+                }
+            }
+        },
+        {
+            "title": "Bazar de la Calle",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Alimentador de óxido nitroso",
+                },
+                "puzzle_item_2": {
+                    "name": "Gato mecánico",
+                },
+                "puzzle_item_4": {
+                    "name": "Llave del tejado",
+                },
+                "puzzle_item_5": {
+                    "name": "Llave del código de armas",
+                },
+                "puzzle_item_8": {
+                    "name": "Detonador de minas",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Tubo de válvula",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Bombona de óxido nitroso",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Cuerpo del gato",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Palanca del gato",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Cuerpo del detonador",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Datos de posición de minas",
+                }
+            }
+        },
+        {
+            "title": "Puerta de la Ciudadela",
+            "objects": {
+                "puzzle_item_1": {
+                    "name": "Alimentador de óxido nitroso",
+                },
+                "puzzle_item_2": {
+                    "name": "Gato mecánico",
+                },
+                "puzzle_item_4": {
+                    "name": "Llave del tejado",
+                },
+                "puzzle_item_5": {
+                    "name": "Llave del código de armas",
+                },
+                "puzzle_item_8": {
+                    "name": "Detonador de minas",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Tubo de válvula",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Bombona de óxido nitroso",
+                },
+                "puzzle_item_2_combo_1": {
+                    "name": "Cuerpo del gato",
+                },
+                "puzzle_item_2_combo_2": {
+                    "name": "Palanca del gato",
+                },
+                "puzzle_item_8_combo_1": {
+                    "name": "Cuerpo del detonador",
+                },
+                "puzzle_item_8_combo_2": {
+                    "name": "Datos de posición de minas",
+                }
+            }
+        },
+        {
+            "title": "La Ciudadela",
+        },
+        {
+            "title": "Complejo de la Esfinge",
+            "objects": {
+                "key_item_1": {
+                    "name": "Llave de plata",
+                },
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_1": {
+                    "name": "Pala",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                },
+                "puzzle_item_1_combo_1": {
+                    "name": "Hoja de metal",
+                },
+                "puzzle_item_1_combo_2": {
+                    "name": "Mango de madera",
+                }
+            }
+        },
+        {
+            "title": "El templo del valle",
+        },
+        {
+            "title": "Bajo la Esfinge",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_1": {
+                    "name": "Piedra de Maat",
+                },
+                "puzzle_item_2": {
+                    "name": "Piedra de Khepri",
+                },
+                "puzzle_item_3": {
+                    "name": "Piedra de Atum",
+                },
+                "puzzle_item_4": {
+                    "name": "Piedra de Ra",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                },
+                "examine_item_1": {
+                    "name": "Trozo de papel",
+                    "description": "",
+                }
+            }
+        },
+        {
+            "title": "Pirámide de Micerino",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                }
+            }
+        },
+        {
+            "title": "Interior de la pirámide de Micerino",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                }
+            }
+        },
+        {
+            "title": "Las Mastabas",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                },
+                "puzzle_item_7": {
+                    "name": "Llave del pozo norte",
+                },
+                "puzzle_item_8": {
+                    "name": "Llave del pozo sur",
+                },
+                "pickup_item_1": {
+                    "name": "Bolsa de arena",
+                },
+                "pickup_item_2": {
+                    "name": "Bidón de gasolina",
+                }
+            }
+        },
+        {
+            "title": "La Gran Pirámide",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                },
+                "puzzle_item_7": {
+                    "name": "Llave del pozo norte",
+                },
+                "puzzle_item_8": {
+                    "name": "Llave del pozo sur",
+                }
+            }
+        },
+        {
+            "title": "Pirámides de las reinas de Jufu",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                },
+                "puzzle_item_7": {
+                    "name": "Llave del pozo norte",
+                },
+                "puzzle_item_8": {
+                    "name": "Llave del pozo sur",
+                },
+                "puzzle_item_9": {
+                    "name": "Llave del pozo este",
+                }
+            }
+        },
+        {
+            "title": "Interior de la Gran Pirámide",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                },
+                "puzzle_item_6": {
+                    "name": "Llave del pozo oeste",
+                },
+                "puzzle_item_7": {
+                    "name": "Llave del pozo norte",
+                },
+                "puzzle_item_8": {
+                    "name": "Llave del pozo sur",
+                },
+                "puzzle_item_9": {
+                    "name": "Llave del pozo este",
+                }
+            }
+        },
+        {
+            "title": "Templo de Horus",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                },
+                "puzzle_item_5": {
+                    "name": "Sagradas Escrituras",
+                }
+            }
+        },
+        {
+            "title": "Templo de Horus",
+            "objects": {
+                "key_item_11": {
+                    "name": "Llave de la armería",
+                },
+                "key_item_12": {
+                    "name": "Llaves de los guardias",
+                }
+            }
+        }
+    ]
+}
