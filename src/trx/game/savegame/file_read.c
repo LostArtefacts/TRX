@@ -665,7 +665,12 @@ static RESULT M_ReadItemAt(JSON_READ_IO *const io, const int16_t item_num)
 
     if (JSON_ReadIO_HasKey(io, "hitpoints")) {
         MUST(JSON_READ(io, "hitpoints", &item->hit_points));
-        MUST(JSON_READ(io, "max_hitpoints", &item->max_hit_points));
+        // Saves before SG_VERSION_23 hold Lara's starting health as her
+        // maximum, so she keeps the maximum the level gave her.
+        if (JSON_ReadIO_GetVersion(io) >= SG_VERSION_23
+            || object_id != O_LARA) {
+            MUST(JSON_READ(io, "max_hitpoints", &item->max_hit_points));
+        }
     }
     MUST(ObjectProperty_ReadItemOverrides(io, item));
 

@@ -63,6 +63,7 @@
 - Fixed the change outfit key changing Lara's outfit in the inventory, pause, save and load screens (TRX1854, regression from 1.2)
 - Fixed Lara's braid hanging away from her head behind the inventory when a keyhole or puzzle hole opens it (OG bug) (TRX438)
 - Fixed a thin dark line splitting the fill of the second bar at some resolutions, such as 4K (#6749)
+- Fixed the health bar showing as full when Lara starts a level with reduced health (Gameplay → Mods → Lara's starting health) (TRX1922, regression from 1.3.1)
 
 **Controls**
 - Changed the default controller layout to follow the PS1 releases: TR3 and TR4 sprint with R2, crouch with L2 and have no side steps, and TR2 to TR4 light a flare with R1 and Select together (#6019 / TRX864)
