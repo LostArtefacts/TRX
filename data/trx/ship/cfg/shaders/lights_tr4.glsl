@@ -85,28 +85,30 @@ vec3 lightOwnTR4(float shade)
     return I_TR4_AMBIENT.rgb * (shade8 / 255.0) * (255.0 / 256.0);
 }
 
-// Port of the OG room dynamic lighting (drawroom.cpp:185-210). Returns the
-// contribution in the "128 = neutral" L scale. Note the OG quirk: the
-// vertex normal is rotated into view space but dotted with the room-space
-// light direction, and the (1 - dot) term brightens faces pointing away
-// from the light. Kept faithfully.
-vec3 lightDynamicRoomTR4(vec3 rawNormal, vec4 vertexPos)
+// Port of the retail room dynamic lighting, which hands each light to
+// Direct3D as a point light (InitDynamicLighting). The light fades linearly
+// to its range and reaches only faces turned towards it, so it does not
+// show through walls. Billboards have no normal and keep the plain falloff.
+// Returns the contribution in the "128 = neutral" L scale.
+vec3 lightDynamicRoomTR4(vec3 rawNormal, vec4 vertexPos, bool isBillboard)
 {
     vec3 add = vec3(0.0);
-    vec3 nView = mat3(uMatView) * safeNormalize(rawNormal / float(1 << 14));
+    vec3 n = safeNormalize(rawNormal / float(1 << 14));
     for (int i = 0; i < uNumLights; i++) {
         float falloff = uLights[i].falloff * 0.625; // (f >> 1) + (f >> 3)
         if (falloff <= 0.0) {
             continue;
         }
-        vec3 d = vertexPos.xyz - uLights[i].pos.xyz;
+        vec3 d = uLights[i].pos.xyz - vertexPos.xyz;
         float distSq = dot(d, d);
         if (distSq >= falloff * falloff) {
             continue;
         }
         float dist = sqrt(distSq);
         float val2 = (falloff - dist) / falloff;
-        float val = val2 * (1.0 - dot(nView, d / dist));
+        float val = isBillboard
+            ? val2
+            : val2 * max(dot(n, d / max(dist, 1.0)), 0.0) * (255.0 / 128.0);
         add += uLights[i].color.rgb * val;
     }
     return add;
@@ -151,7 +153,8 @@ LightingResult light(
     }
 
     if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
-        result.add += lightDynamicRoomTR4(normal, pos);
+        result.add += lightDynamicRoomTR4(
+            normal, pos, (flags & VERT_BILLBOARD) != 0u);
     } else if (
         (flags & VERT_USE_OWN_LIGHT) != 0u && uStaticLightingEnabled != 0) {
         result.add += lightDynamicStaticTR4(pos);
