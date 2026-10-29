@@ -48,6 +48,26 @@ static M_ARMS M_GetArms(const LARA_GUN_TYPE gun_type)
     }
 }
 
+// Returns the position of Lara's torso in the pose that overrides her
+// animation, such as the pose a cutscene gives her.
+static XYZ_32 M_GetPosedTorsoPos(
+    const ITEM *const item, const LARA_POSE *const pose)
+{
+    const ANIM_BONE *const bone = Lara_Skin_GetBoneBase();
+    Matrix_PushUnit();
+    Matrix_Rot16(item->interp.result.rot);
+    Matrix_TranslateRel16(pose->offset);
+    Matrix_Rot16(pose->rots[LM_HIPS]);
+    Matrix_TranslateRel32(bone[LM_TORSO - 1].pos);
+    const XYZ_32 pos = {
+        .x = item->interp.result.pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
+        .y = item->interp.result.pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
+        .z = item->interp.result.pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+    };
+    Matrix_Pop();
+    return pos;
+}
+
 static void M_CalculateLight(
     const ITEM *const item, const ANIM_FRAME *const frame)
 {
@@ -56,7 +76,13 @@ static void M_CalculateLight(
             .pos = { 0, 0, 0 },
             .room_num = item->room_num,
         };
-        if (!Lara_GetMeshPos(LM_TORSO, &sample_pos.pos)) {
+        // Takes a posed Lara's position from her pose, because the cached mesh
+        // positions still hold the last frame, which can be far away on the
+        // frame a cutscene moves her.
+        const LARA_POSE *const pose = Lara_Pose_Get();
+        if (pose != nullptr) {
+            sample_pos.pos = M_GetPosedTorsoPos(item, pose);
+        } else if (!Lara_GetMeshPos(LM_TORSO, &sample_pos.pos)) {
             Lara_GetJointAbsPosition(&sample_pos.pos, LM_TORSO);
         }
         Room_GetSector(sample_pos.pos, &sample_pos.room_num);
