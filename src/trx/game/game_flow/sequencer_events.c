@@ -24,6 +24,7 @@
 #include <trx/game/phase/phase_loading_camera.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
+#include <trx/game/waypoint.h>
 #include <trx/version.h>
 
 #define M_GF_HANDLER(name)                                                     \
@@ -139,6 +140,9 @@ M_GF_HANDLER(M_HandleLevelComplete)
     }
     M_StoreGameToNextLevel(current_level, next_level);
     GF_InventoryModifier_ApplyHubReset(current_level, next_level);
+    if (GF_IsHubReset(current_level, next_level)) {
+        Waypoint_Reset();
+    }
     RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
     if (next_resume != nullptr) {
         next_resume->prev_level = current_level->num;
