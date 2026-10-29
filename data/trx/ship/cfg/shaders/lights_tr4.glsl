@@ -88,7 +88,8 @@ vec3 lightOwnTR4(float shade)
 // Port of the retail room dynamic lighting, which hands each light to
 // Direct3D as a point light (InitDynamicLighting). The light fades linearly
 // to its range and reaches only faces turned towards it, so it does not
-// show through walls. Billboards have no normal and keep the plain falloff.
+// show through walls. The material is white, so the sum on faces clamps at
+// full brightness. Billboards have no normal and keep the plain falloff.
 // Returns the contribution in the "128 = neutral" L scale.
 vec3 lightDynamicRoomTR4(vec3 rawNormal, vec4 vertexPos, bool isBillboard)
 {
@@ -108,10 +109,13 @@ vec3 lightDynamicRoomTR4(vec3 rawNormal, vec4 vertexPos, bool isBillboard)
         float val2 = (falloff - dist) / falloff;
         float val = isBillboard
             ? val2
-            : val2 * max(dot(n, d / max(dist, 1.0)), 0.0) * (255.0 / 128.0);
+            : val2 * max(dot(n, d / max(dist, 1.0)), 0.0);
         add += uLights[i].color.rgb * val;
     }
-    return add;
+    if (isBillboard) {
+        return add;
+    }
+    return min(add, vec3(1.0)) * (255.0 / 128.0);
 }
 
 // Port of the tomb4 static mesh dynamic lighting (output.cpp:314-338):
