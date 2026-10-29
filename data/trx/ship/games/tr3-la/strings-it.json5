@@ -3,7 +3,7 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
         "quest_item_1": {
-            "name": "\\{review}Mano di Rathmore",
+            "name": "Mano di Rathmore",
             "description": "",
         }
     },

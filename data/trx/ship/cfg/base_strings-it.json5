@@ -177,7 +177,7 @@
         },
         "settings": {
             "common": {
-                "chroma": "Chroma",
+                "chroma": "Crominanza",
                 "edit_value": "Modifica",
                 "frozen_option_disclaimer": "Questa impostazione è applicata dal generatore di livelli e non può essere modificata.",
                 "hue": "Tonalità",
@@ -954,7 +954,7 @@
         "underwater_muffle_mode": {
             "all": "Tutta la musica",
             "ambient": "Solo ambientale",
-            "off": "Disattivato",
+            "off": "Disabilitato",
         },
         "vertex_snap_mode": {
             "disabled": "Disabilitato",
@@ -991,7 +991,7 @@
         },
         "audio.enable_music_in_inventory": {
             "title": "Musica nell'inventario",
-            "description": "\\{review}Permette di riprodurre gli effetti ambientali e la musica nella schermata dell'inventario.",
+            "description": "Permette di riprodurre gli effetti ambientali e la musica nella schermata dell'inventario.",
         },
         "audio.enable_music_in_menu": {
             "title": "Musica menu principale",
@@ -1077,7 +1077,7 @@
         },
         "audio.underwater_muffle": {
             "title": "Attenua musica sott'acqua",
-            "description": "Attenua la musica quando la telecamera è sott'acqua.\n\n- Disattivato: la musica viene riprodotta normalmente.\n- Solo ambientale: viene attenuata solo la traccia audio ambientale.\n- Tutta la musica: vengono attenuate sia la traccia musicale che quella ambientale.",
+            "description": "Attenua la musica quando la telecamera è sott'acqua.\n\n- Disabilitato: la musica viene riprodotta normalmente.\n- Solo ambientale: viene attenuata solo la traccia audio ambientale.\n- Tutta la musica: vengono attenuate sia la traccia musicale che quella ambientale.",
         },
         "audio.underwater_music_volume": {
             "title": "Volume musica (sott'acqua)",
@@ -1665,7 +1665,7 @@
         },
         "rendering.enable_ps1_blending": {
             "title": "Fusione PlayStation",
-            "description": "\\{review}Fonde alcuni effetti e superfici con la scena, come avviene su PlayStation. Fumo, ombre e impronte sottraggono il proprio colore dalla scena, scurendo ogni canale cromatico in egual misura e producendo un risultato più saturo. In TR1 e TR2, elementi come superfici dell'acqua, vetro e lampi degli spari, ed effetti come schizzi, fiamme ed esplosioni, vengono miscelati con la scena in rapporto 50:50. In TR3, anche il sangue viene miscelato con la scena in rapporto 50:50. Se l'opzione è disattivata, tutti questi elementi vengono renderizzati come nella versione per PC.",
+            "description": "Fonde alcuni effetti e superfici con la scena, come avviene su PlayStation. Fumo, ombre e impronte sottraggono il proprio colore dalla scena, scurendo ogni canale cromatico in egual misura e producendo un risultato più saturo. In TR1 e TR2, elementi come superfici dell'acqua, vetro e lampi degli spari, ed effetti come schizzi, fiamme ed esplosioni, vengono miscelati con la scena in rapporto 50:50. In TR3, anche il sangue viene miscelato con la scena in rapporto 50:50. Se l'opzione è disattivata, tutti questi elementi vengono renderizzati come nella versione per PC.",
         },
         "rendering.enable_ps1_fog": {
             "title": "Nebbia PlayStation",
@@ -1999,8 +1999,8 @@
             "description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D.",
         },
         "visuals.enable_all_upv_wakes": {
-            "title": "\\{review}Scia su ogni UPV",
-            "description": "\\{review}Ogni UPV lascerà una scia dietro le sue manopole. Se disabilitato, solo un UPV attivato da un trigger lascia la scia, come nella versione PC.",
+            "title": "Scie su ogni UPV",
+            "description": "Tutti i veicoli a propulsione subacquea (o UPV) lasceranno delle scie dietro i loro manubri. Se questa opzione è disabilitata, solo gli UPV azionati ​​da punti di attivazione lasceranno delle scie, come nella versione PC.",
         },
         "visuals.enable_droplets": {
             "title": "Gocce d'acqua",
@@ -2087,8 +2087,8 @@
             "description": "Corregge diversi problemi presenti nei giochi originali causati da un posizionamento o una configurazione errati degli oggetti, tra cui rotazioni, posizioni e assegnazioni delle stanze.",
         },
         "visuals.fix_projectile_brightness": {
-            "title": "\\{review}Correggi luminosità proiettili",
-            "description": "\\{review}Corregge i proiettili come coltelli, arpioni e granate disegnati alla massima luminosità, invece di essere illuminati dalla stanza circostante.",
+            "title": "Correggi luminosità proiettili",
+            "description": "Risolve il problema per cui proiettili come coltelli, arpioni e granate vengono visualizzati alla massima luminosità, anziché essere illuminati dall'ambiente circostante.",
         },
         "visuals.fix_smoke_emitters": {
             "title": "Correggi emettitori di fumo",
@@ -3065,7 +3065,7 @@
             "name": "Animazione Motoslitta",
         },
         "lara_upv": {
-            "name": "Animazione Mini Sottomarino",
+            "name": "Animazione Veicolo di Propulsione Subacquea",
         },
         "lara_uzis": {
             "name": "Animazione Uzi",
@@ -3930,7 +3930,7 @@
             "name": "Porta Subacquea",
         },
         "upv": {
-            "name": "Mini Sottomarino",
+            "name": "Veicolo di Propulsione Subacquea|Mini sottomarino",
         },
         "uzis_ammo_item": {
             "name": "Caricatori per Uzi",
