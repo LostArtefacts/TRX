@@ -302,6 +302,7 @@
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed objects and Lara being lit differently from the original, such as blocks and the title screen pulpit looking too dark, the doors in Tomb of Seth looking black, and flares lighting Lara from the wrong side (TRX786, TRX954, TRX1578)
 - Fixed Lara's footprints looking too dark (TRX768)
+- Fixed walls and floors looking too bright where the light of several fires, flares or other effects overlaps
 - Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
 - Fixed water particles appearing in dry rooms that have an alternate underwater room (TRX1830)
 - Fixed the lighting on Lara and objects changing too abruptly when moving between lights (TRX1896)
