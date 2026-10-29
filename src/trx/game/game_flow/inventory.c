@@ -263,18 +263,12 @@ int32_t GF_GetSecretRewardCount(const GF_LEVEL *const level)
     return sum;
 }
 
-void GF_InventoryModifier_ApplyHubReset(
+bool GF_IsHubReset(
     const GF_LEVEL *const level, const GF_LEVEL *const next_level)
 {
     if (level == nullptr || next_level == nullptr) {
-        return;
+        return false;
     }
-    RESUME_INFO *const resume = SG_Resume_GetEntry(next_level);
-    if (resume == nullptr) {
-        return;
-    }
-
-    bool resets = false;
     for (int32_t i = 0; i < level->sequence.length; i++) {
         const GF_SEQUENCE_EVENT *const event = &level->sequence.events[i];
         if (event->type != GFS_RESET_HUB) {
@@ -282,11 +276,20 @@ void GF_InventoryModifier_ApplyHubReset(
         }
         const int32_t level_idx = (int32_t)(intptr_t)event->data;
         if (GF_GetLevel(GFLT_MAIN, level_idx - 1) == next_level) {
-            resets = true;
-            break;
+            return true;
         }
     }
-    if (!resets) {
+    return false;
+}
+
+void GF_InventoryModifier_ApplyHubReset(
+    const GF_LEVEL *const level, const GF_LEVEL *const next_level)
+{
+    if (!GF_IsHubReset(level, next_level)) {
+        return;
+    }
+    RESUME_INFO *const resume = SG_Resume_GetEntry(next_level);
+    if (resume == nullptr) {
         return;
     }
 
