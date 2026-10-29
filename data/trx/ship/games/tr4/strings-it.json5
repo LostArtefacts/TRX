@@ -21,13 +21,13 @@
             "name": "Razzi di Segnalazione",
         },
         "grenade_ammo_2_item": {
-            "name": "Granate Potenziate",
+            "name": "Granate Potenziate per Lanciagranate",
         },
         "grenade_ammo_3_item": {
-            "name": "Granate Accecanti",
+            "name": "Granate Accecanti per Lanciagranate",
         },
         "grenade_ammo_item": {
-            "name": "Granate Normali",
+            "name": "Granate Normali per Lanciagranate",
         },
         "grenade_gun_item": {
             "name": "Lanciagranate",
@@ -39,7 +39,7 @@
             "name": "Amuleto di Horus",
         },
         "shotgun_ammo_2_item": {
-            "name": "Cartucce ad Ampia Dispersione per Fucile a Pompa",
+            "name": "Cartucce a Rosata Ampia per Fucile a Pompa",
         },
         "shotgun_ammo_item": {
             "name": "Cartucce Normali per Fucile a Pompa",
@@ -48,7 +48,7 @@
             "name": "Caricatori per Uzi",
         },
         "uzis_item": {
-            "name": "\\{review}Uzi",
+            "name": "Uzi",
         }
     },
     "cutscenes": [],
