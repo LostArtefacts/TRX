@@ -76,6 +76,12 @@ static bool M_CanEnter(void)
         && g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_PHOTO_MODE;
 }
 
+static bool M_IsLaraStill(const ITEM *const lara_item)
+{
+    return lara_item->current_anim_state == LS(LS_STOP)
+        || lara_item->current_anim_state == LS(LS_CROUCH_IDLE);
+}
+
 // Whether Lara can look through the laser sight of the weapon she holds:
 // she holds it ready, the weapon carries its attachment, and she stands or
 // crouches still. The original refuses while the crouch key is held, and the
@@ -87,9 +93,7 @@ static bool M_CanEnterLaserSight(void)
     return lara_item->hit_points > 0 && lara_info->gun_status == LGS_READY
         && Inv_HasAttachment(lara_info->gun_type)
         && lara_info->water_status == LWS_ABOVE_WATER
-        && Lara_Vehicle_GetItem() == nullptr
-        && (lara_item->current_anim_state == LS(LS_STOP)
-            || lara_item->current_anim_state == LS(LS_CROUCH_IDLE))
+        && Lara_Vehicle_GetItem() == nullptr && M_IsLaraStill(lara_item)
         && g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_PHOTO_MODE;
 }
 
@@ -119,7 +123,9 @@ static void M_RefuseRequest(void)
 }
 
 // The look key closes the laser sight view as it is pressed again where the
-// view toggles, and as it is let go otherwise, as in the original.
+// view toggles, and as it is let go otherwise, as in the original. The view
+// also closes as Lara stops standing or crouching still, such as when the
+// floor gives way under her.
 static bool M_ShouldExitLaserSight(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -131,7 +137,7 @@ static bool M_ShouldExitLaserSight(void)
         || g_InputDB.quick_save || g_InputDB.quick_load
         || lara_item->hit_points <= 0 || Lara_Vehicle_GetItem() != nullptr
         || lara_info->gun_status != LGS_READY
-        || !Inv_HasAttachment(lara_info->gun_type);
+        || !Inv_HasAttachment(lara_info->gun_type) || !M_IsLaraStill(lara_item);
 }
 
 static bool M_ShouldExit(void)
