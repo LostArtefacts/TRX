@@ -2200,6 +2200,18 @@
         }
     },
     "objects": {
+        "actor_1_speech_head_1": {
+            "name": "Testa Dialogo 1 Attore 1",
+        },
+        "actor_1_speech_head_2": {
+            "name": "Testa Dialogo 2 Attore 1",
+        },
+        "actor_2_speech_head_1": {
+            "name": "Testa Dialogo 1 Attore 2",
+        },
+        "actor_2_speech_head_2": {
+            "name": "Testa Dialogo 2 Attore 2",
+        },
         "alarm_sound": {
             "name": "Allarme",
         },
@@ -2690,7 +2702,7 @@
             "name": "Blocco Cedevole 2|Pavimento Fragile 2|Piastrelle Fragili 2",
         },
         "falling_block_3": {
-            "name": "Blocco Cedevole 3|Pavimento Fragile 3|Piastrelle Fragili 3|Tavole Allentate",
+            "name": "Blocco Cedevole 3|Pavimento Fragile 3|Piastrelle Fragili 3",
         },
         "falling_ceiling_1": {
             "name": "Soffitto Cedevole 1",
@@ -2978,7 +2990,7 @@
             "name": "Porta da Sfondare 2",
         },
         "kill_all_triggered": {
-            "name": "Eliminazione totale attivata",
+            "name": "Eliminazione Totale Attivata",
         },
         "killer_statue": {
             "name": "Statua con Spada",
@@ -3053,7 +3065,7 @@
             "name": "Animazione Revolver (Mirino Laser)",
         },
         "lara_rib": {
-            "name": "Animazione Gommone a Motore",
+            "name": "Animazione Gommone a Chiglia Rigida",
         },
         "lara_rocket_gun": {
             "name": "Animazione Lanciarazzi",
@@ -3063,6 +3075,18 @@
         },
         "lara_skidoo": {
             "name": "Animazione Motoslitta",
+        },
+        "lara_speech_head_1": {
+            "name": "Testa Dialogo Lara 1",
+        },
+        "lara_speech_head_2": {
+            "name": "Testa Dialogo Lara 2",
+        },
+        "lara_speech_head_3": {
+            "name": "Testa Dialogo Lara 3",
+        },
+        "lara_speech_head_4": {
+            "name": "Testa Dialogo Lara 4",
         },
         "lara_upv": {
             "name": "Animazione Veicolo di Propulsione Subacquea",
@@ -3588,7 +3612,7 @@
             "name": "Revolver",
         },
         "rib": {
-            "name": "Gommone a Motore",
+            "name": "Gommone a Chiglia Rigida|RIB",
         },
         "ricochet": {
             "name": "Rimbalzo",
@@ -3630,7 +3654,7 @@
             "name": "Operaio RX 2",
         },
         "rx_worker_3": {
-            "name": "Operaio RX 3",
+            "name": "Operaio RX 3|Lanciafiamme",
         },
         "sarcophagus": {
             "name": "Sarcofago",
@@ -3729,16 +3753,16 @@
             "name": "Scorpione Piccolo",
         },
         "smashable_1": {
-            "name": "Finestra Frangibile 1",
+            "name": "Oggetto Frantumabile 1|Finestra Frangibile 1",
         },
         "smashable_2": {
-            "name": "Finestra Frangibile 2",
+            "name": "Oggetto Frantumabile 2|Finestra Frangibile 2",
         },
         "smashable_3": {
-            "name": "Finestra Frangibile 3",
+            "name": "Oggetto Frantumabile 3|Finestra Frangibile 3",
         },
         "smashable_4": {
-            "name": "Finestra Frangibile 4",
+            "name": "Oggetto Frantumabile 4|Finestra Frangibile 4",
         },
         "smashable_vehicle_wall": {
             "name": "Parete Distruttibile con Veicolo",
@@ -3813,7 +3837,7 @@
             "name": "Ascia Oscillante",
         },
         "switch_type_airlock": {
-            "name": "Interruttore Camera Stagna",
+            "name": "Interruttore Camera Stagna|Interruttore",
         },
         "switch_type_button": {
             "name": "Pulsante|Pulsante a Pressione|Interruttore",
@@ -3843,25 +3867,25 @@
             "name": "Interruttore Generico 6|Leva|Interruttore",
         },
         "switch_type_jump": {
-            "name": "Interruttore a Salto",
+            "name": "Interruttore a Salto|Interruttore",
         },
         "switch_type_normal": {
             "name": "Leva|Interruttore",
         },
         "switch_type_pulley": {
-            "name": "Interruttore a Puleggia",
+            "name": "Interruttore a Puleggia|Interruttore",
         },
         "switch_type_small": {
-            "name": "Interruttore Piccolo",
+            "name": "Interruttore Piccolo|Interruttore",
         },
         "switch_type_uw": {
-            "name": "Leva Subacquea|Interruttore Subacqueo",
+            "name": "Leva Subacquea|Interruttore Subacqueo|Leva|Interruttore",
         },
         "switch_type_uw_ceiling": {
-            "name": "Leva a Soffitto Subacquea|Interruttore a Soffitto Subacqueo",
+            "name": "Leva a Soffitto Subacquea|Interruttore a Soffitto Subacqueo|Leva|Interruttore",
         },
         "switch_type_wheel": {
-            "name": "Interruttore Rotante|Interruttore a Puleggia|Interruttore a Valvola",
+            "name": "Interruttore Rotante|Interruttore a Puleggia|Interruttore a Valvola|Interruttore",
         },
         "teeth_trap": {
             "name": "Trappola con Spuntoni|Porta che sbatte",
@@ -3940,6 +3964,9 @@
         },
         "vole": {
             "name": "Arvicola|Ratto Acquatico",
+        },
+        "von_croy": {
+            "name": "Von Croy",
         },
         "vulture": {
             "name": "Avvoltoio",
