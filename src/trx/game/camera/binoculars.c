@@ -82,10 +82,21 @@ static bool M_IsLaraStill(const ITEM *const lara_item)
         || lara_item->current_anim_state == LS(LS_CROUCH_IDLE);
 }
 
+// Returns true while Lara stands still, or crouches still with the crouch key
+// let go, as under a low ceiling or with toggle crouch enabled. The original
+// refuses while the crouch key is held, because that key also zooms out.
+static bool M_IsLaraStillForLaserSight(const ITEM *const lara_item)
+{
+    if (lara_item->current_anim_state == LS(LS_STOP)) {
+        return true;
+    }
+    return lara_item->current_anim_state == LS(LS_CROUCH_IDLE)
+        && lara_item->goal_anim_state == LS(LS_CROUCH_IDLE) && !g_Input.crouch;
+}
+
 // Whether Lara can look through the laser sight of the weapon she holds:
-// she holds it ready, the weapon carries its attachment, and she stands or
-// crouches still. The original refuses while the crouch key is held, and the
-// view instead holds off the zoom until that key is let go.
+// she holds it ready, the weapon carries its attachment, and she stands
+// still or crouches still without the crouch key.
 static bool M_CanEnterLaserSight(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -93,7 +104,8 @@ static bool M_CanEnterLaserSight(void)
     return lara_item->hit_points > 0 && lara_info->gun_status == LGS_READY
         && Inv_HasAttachment(lara_info->gun_type)
         && lara_info->water_status == LWS_ABOVE_WATER
-        && Lara_Vehicle_GetItem() == nullptr && M_IsLaraStill(lara_item)
+        && Lara_Vehicle_GetItem() == nullptr
+        && M_IsLaraStillForLaserSight(lara_item)
         && g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_PHOTO_MODE;
 }
 
