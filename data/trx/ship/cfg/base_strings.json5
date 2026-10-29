@@ -991,7 +991,7 @@
         },
         "audio.enable_music_in_inventory": {
             "title": "Play music in inventory",
-            "description": "Lets game sounds, ambient and music continue playing in the inventory screen.",
+            "description": "Lets ambient and music continue playing in the inventory screen.",
         },
         "audio.enable_music_in_menu": {
             "title": "Main menu music",

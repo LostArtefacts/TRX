@@ -991,7 +991,7 @@
         },
         "audio.enable_music_in_inventory": {
             "title": "\\{review}Musik im Inventar abspielen",
-            "description": "\\{review}Lässt Spielgeräusche, Umgebungsgeräusche und Musik im Inventarbildschirm weiterlaufen.",
+            "description": "\\{review}Lässt Umgebungsgeräusche und Musik im Inventarbildschirm weiterlaufen.",
         },
         "audio.enable_music_in_menu": {
             "title": "Hauptmenü-Musik",

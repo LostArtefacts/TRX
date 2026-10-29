@@ -991,7 +991,7 @@
         },
         "audio.enable_music_in_inventory": {
             "title": "\\{review}Musique dans l'inventaire",
-            "description": "\\{review}Permet aux sons du jeu, à l'ambiance et à la musique de continuer à jouer dans l'écran d'inventaire.",
+            "description": "\\{review}Permet à l'ambiance et à la musique de continuer à jouer dans l'écran d'inventaire.",
         },
         "audio.enable_music_in_menu": {
             "title": "Musique du menu principal",
