@@ -1424,6 +1424,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── angkor_fd.bin
 │   │   │   ├── angkor_textures.bin
 │   │   │   ├── burial_animating_bounds.bin
+│   │   │   ├── burial_fd.bin
 │   │   │   ├── burial_textures.bin
 │   │   │   ├── controls_models.bin
 │   │   │   ├── font.bin
@@ -3077,6 +3078,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── angkor_fd.bin
     │   │   │   │   ├── angkor_textures.bin
     │   │   │   │   ├── burial_animating_bounds.bin
+    │   │   │   │   ├── burial_fd.bin
     │   │   │   │   ├── burial_textures.bin
     │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── font.bin
