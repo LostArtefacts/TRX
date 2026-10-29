@@ -991,7 +991,7 @@
         },
         "audio.enable_music_in_inventory": {
             "title": "Musica nell'inventario",
-            "description": "Permette di riprodurre i suoni di gioco, gli effetti ambientali e la musica nella schermata dell'inventario.",
+            "description": "\\{review}Permette di riprodurre gli effetti ambientali e la musica nella schermata dell'inventario.",
         },
         "audio.enable_music_in_menu": {
             "title": "Musica menu principale",

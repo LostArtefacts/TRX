@@ -991,7 +991,7 @@
         },
         "audio.enable_music_in_inventory": {
             "title": "Cluich ceòl anns an stòras",
-            "description": "Leig le fuaimean a' gheama, fuaimean àrainneachd agus ceòl a bhith a' cluich fhathast air an sgrion clàr-stòraidh.",
+            "description": "\\{review}Leig le fuaimean àrainneachd agus ceòl a bhith a' cluich fhathast air an sgrion clàr-stòraidh.",
         },
         "audio.enable_music_in_menu": {
             "title": "Ceòl sa phrìomh chlàr",

@@ -991,7 +991,7 @@
         },
         "audio.enable_music_in_inventory": {
             "title": "\\{review}Muzyka w ekwipunku",
-            "description": "Pozwala na odtwarzanie dźwięków gry, dźwięków otoczenia i muzyki podczas przeglądania ekwipunku.",
+            "description": "\\{review}Pozwala na odtwarzanie dźwięków otoczenia i muzyki podczas przeglądania ekwipunku.",
         },
         "audio.enable_music_in_menu": {
             "title": "Muzyka w menu głównym",

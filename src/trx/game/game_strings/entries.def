@@ -468,7 +468,7 @@ GS_DEFINE(settings/audio.ambient_volume/description,                    "Adjusts
 GS_DEFINE(settings/audio.cutscene_volume/description,                   "Adjusts the ingame cutscenes volume.")
 GS_DEFINE(settings/audio.enable_ambient_crossfade/description,          "Fades one looping ambience track into the next when they change, instead of cutting the first one off.")
 GS_DEFINE(settings/audio.enable_lara_mic/description,                   "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position.")
-GS_DEFINE(settings/audio.enable_music_in_inventory/description,         "Lets game sounds, ambient and music continue playing in the inventory screen.")
+GS_DEFINE(settings/audio.enable_music_in_inventory/description,         "Lets ambient and music continue playing in the inventory screen.")
 GS_DEFINE(settings/audio.enable_music_in_menu/description,              "Plays music in the main menu.")
 GS_DEFINE(settings/audio.enable_music_on_death/description,             "Keeps the active music track playing when Lara dies.")
 GS_DEFINE(settings/audio.enable_pitched_sounds/description,             "Allows sound effects to be randomly, slightly pitched to vary the game sounds.")
