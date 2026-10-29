@@ -280,6 +280,7 @@
 - Added a skybox to the title screen (TRX1394)
 - Changed the title screen to show puffs of smoke when Lara pushes the mummy into spikes rather than blood (Gameplay → Fixes → Fix texture issues) (TRX1745)
 - Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)
+- Fixed the flame in Burial Chambers room 66 sometimes staying unlit (OG bug) (TRX1937)
 - Fixed kills made by Von Croy not registering in the statistics (TRX1689, regression from 1.10)
 - Fixed the total kills showing as 3 in Race for the Iris, rather than 0 (TRX1689, regression from 1.10)
 - Fixed the title screen camera flying through the void before a cutscene starts (TRX1770, regression from 1.11)

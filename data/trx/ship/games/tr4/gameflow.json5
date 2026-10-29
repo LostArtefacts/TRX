@@ -125,6 +125,7 @@
             ],
             "injections": [
                 "burial_animating_bounds.bin",
+                "burial_fd.bin",
                 "burial_textures.bin",
             ],
             "unobtainable_kills": 7,
