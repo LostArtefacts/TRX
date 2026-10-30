@@ -373,7 +373,9 @@ static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
     const bool stashed_immediate = GF_IsOverrideImmediate();
     GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP }, true);
 
-    Music_Stop();
+    // Pauses rather than stops the music, because a saved game has already
+    // restored its music by the time the camera shows.
+    Music_Pause();
     PHASE *const phase =
         Phase_LoadingCamera_Create((PHASE_LOADING_CAMERA_ARGS) {
             .source = data->source,
@@ -385,6 +387,7 @@ static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
         });
     const GF_COMMAND gf_cmd = PhaseExecutor_Run(phase);
     Phase_LoadingCamera_Destroy(phase);
+    Music_Unpause();
 
     // A command raised during the camera, such as a console command, is about
     // what the player just did and wins over the stashed one. The executor
