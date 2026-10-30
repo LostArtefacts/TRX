@@ -33,7 +33,7 @@ local EXIT_HOLD_TICKS = 3
 
 local function question(title, first, second)
   local req = requester.new({
-    title = trx.locale.text(title),
+    title = accent.text(trx.locale.text(title)),
     rows = {
       { text = trx.locale.text(first) },
       { text = trx.locale.text(second) },

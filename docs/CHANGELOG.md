@@ -39,7 +39,7 @@
 - Changed the inventory and pause screens in TR4 to no longer fade in and out by default, as in the original game (Graphic Options → UI)
 - Changed the TR4 inventory to open on the item it was left on by default, and to keep that item in saved games, as in the original game (Gameplay → General → Remember inventory position) (TRX1843)
 - Changed the names and counts of the items in the TR4 inventory, and in its combine and ammo dialogs, to show in gold, as in the original game (TRX1890)
-- Changed the headings, values and scroll arrows of the TR4 option dialogs, save lists, new game lists, statistics and photo mode, and the page numbers of examined items, to show in orange, as in the original game (TRX1853, TRX1906, TRX1928)
+- Changed the headings, values and scroll arrows of the TR4 option dialogs, save lists, new game lists, statistics and photo mode, the page numbers of examined items, and the questions to delete a save and to exit to the title screen, to show in orange, as in the original game (TRX1853, TRX1906, TRX1928, TRX1945)
 - Changed the TR4 font and arrows to look as in the original game (TRX1845)
 - Changed the texts of the examined items in TR4 to show in the colours of the original game (TRX484)
 - Changed the examine screen to show its hide dialog prompt where the rotate prompt shows, and to no longer repeat the name of the item over its description

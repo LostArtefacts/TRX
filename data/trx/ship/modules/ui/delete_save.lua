@@ -13,6 +13,7 @@
 --     end
 --   end
 
+local accent = require("common.ui.accent")
 local hold_button = require("common.ui.widgets.hold_button")
 local requester = require("common.ui.widgets.requester")
 
@@ -50,7 +51,9 @@ end
 ---@return common.ui.Requester
 function M.confirm_req(place)
   local req = requester.new({
-    title = trx.locale.text("general/passport/delete_save_confirm"),
+    title = accent.text(
+      trx.locale.text("general/passport/delete_save_confirm")
+    ),
     rows = {
       {
         text = trx.locale.text("general/passport/delete_save_yes"),
