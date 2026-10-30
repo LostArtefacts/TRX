@@ -2070,6 +2070,10 @@
             "title": "Skyboxes",
             "description": "Enables the skybox in supported levels.",
         },
+        "visuals.enable_spherical_fog": {
+            "title": "Spherical fog",
+            "description": "Makes fog depend on the distance from the camera, so turning the camera does not change how far you can see. When disabled, fog depends on the depth along the view direction, as in the original games, and the screen edges show farther than the middle.",
+        },
         "visuals.enable_static_lighting": {
             "title": "Static mesh lighting",
             "description": "Lets flames and other dynamic lights illuminate static meshes. The original TR4 lights only room geometry.",

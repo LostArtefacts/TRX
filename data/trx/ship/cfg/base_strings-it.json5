@@ -2070,6 +2070,10 @@
             "title": "Cieli",
             "description": "Abilita il cielo nei livelli supportati.",
         },
+        "visuals.enable_spherical_fog": {
+            "title": "\\{review}Nebbia sferica",
+            "description": "\\{review}Fa dipendere la nebbia dalla distanza dalla telecamera, così ruotare la telecamera non cambia quanto lontano si vede. Se disattivata, la nebbia dipende dalla profondità lungo la direzione di vista, come nei giochi originali, e i bordi dello schermo mostrano più lontano del centro.",
+        },
         "visuals.enable_static_lighting": {
             "title": "Illuminazione mesh statiche",
             "description": "Consente alle fiamme e alle altre luci dinamiche di illuminare le maglie poligonali statiche. Nella versione originale di TR4, viene illuminata solo la geometria delle stanze.",

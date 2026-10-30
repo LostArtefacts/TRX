@@ -2070,6 +2070,10 @@
             "title": "Bogsa-nan-Speuran",
             "description": "Cuiridh seo bogsa-nan-speuran an comas ann an ìrean far a bheil e freagarrach.",
         },
+        "visuals.enable_spherical_fog": {
+            "title": "\\{review}Ceò cruinne",
+            "description": "\\{review}Bidh an ceò a rèir an astair on chamara, gus nach atharraich tionndadh a' chamara cho fada 's a chì thu. Nuair a bhios e dheth, bidh an ceò a rèir an doimhneachd air slighe an t-seallaidh, mar anns na geamannan tùsail, agus chì thu nas fhaide aig oirean na sgrìn na sa mheadhan.",
+        },
         "visuals.enable_static_lighting": {
             "title": "Solas air mogalan statach",
             "description": "Leigidh seo le lasraichean is solais fiùghantach eile mogalan statach a shoillseachadh. Chan eil TR4 tùsail a' soillseachadh ach geoimeatraidh nan seòmraichean.",
