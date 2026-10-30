@@ -241,4 +241,28 @@ test("backing out of the second question keeps the cursor on quit", function()
   finish()
 end)
 
+test("the questions show in orange in TR4 only", function()
+  local orange = require("common.ui.accent").color("", "#c08040 #401000")
+  for _, case in ipairs({ { version = 4, prefix = orange }, { version = 1 } }) do
+    fake.set_tr_version(case.version)
+    local prefix = case.prefix or ""
+    open()
+    assert(
+      has(texts(), prefix .. L("general/pause/exit_to_title")),
+      ("TR%d asks whether to leave in the wrong colour"):format(case.version)
+    )
+    press(Role.MENU_DOWN)
+    press(Role.MENU_CONFIRM)
+    assert(
+      has(texts(), prefix .. L("general/pause/are_you_sure")),
+      ("TR%d asks whether the player is sure in the wrong colour"):format(
+        case.version
+      )
+    )
+    press(Role.MENU_BACK)
+    press(Role.MENU_BACK)
+    finish()
+  end
+end)
+
 return h.report()
