@@ -26,6 +26,10 @@ void Output_CalculateObjectRoomLighting(
 void Output_BrightenLight(int32_t shade);
 void Output_CalculateObjectLightingAt(
     const ITEM *item, const GAME_VECTOR sample_pos);
+// Lights a cutscene actor from the room at the sample position, rather than
+// from the room the item is in.
+void Output_CalculateActorLightingAt(
+    const ITEM *item, const GAME_VECTOR sample_pos);
 int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);
 
 int32_t Output_GetSunsetDuration(void);

@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/math/geom.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq/playback.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
@@ -85,6 +86,18 @@ static void M_CalculateLight(
         } else if (!Lara_GetMeshPos(LM_TORSO, &sample_pos.pos)) {
             Lara_GetJointAbsPosition(&sample_pos.pos, LM_TORSO);
         }
+
+        // Lights Lara in a cutscene from the room her torso is in. Her item
+        // stays at the origin of the cutscene, which can be in another room.
+        if (CutSeq_IsPlaying()) {
+            const int16_t room_num = Room_GetIndexFromPos(sample_pos.pos);
+            if (room_num != NO_ROOM) {
+                sample_pos.room_num = room_num;
+            }
+            Output_CalculateActorLightingAt(item, sample_pos);
+            return;
+        }
+
         Room_GetSector(sample_pos.pos, &sample_pos.room_num);
         Output_CalculateObjectLightingAt(item, sample_pos);
     } else {

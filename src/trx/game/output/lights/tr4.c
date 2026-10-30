@@ -615,8 +615,9 @@ static void M_PrepareItemLight(M_ITEM_LIGHT *const il)
     }
 }
 
-static void M_CalculateObjectLightingAt(
-    const ITEM *const item, const GAME_VECTOR sample_pos)
+static void M_CalculateItemLighting(
+    const ITEM *const item, const GAME_VECTOR sample_pos,
+    const bool use_sample_room)
 {
     M_ITEM_LIGHT *const il = M_GetItemLight(item);
     M_PrepareItemLight(il);
@@ -630,7 +631,9 @@ static void M_CalculateObjectLightingAt(
         int16_t room_num = sample_pos.room_num;
         Room_GetSector(sample_pos.pos, &room_num);
         M_CalcAmbientLight(il, Room_Get(room_num)->ambient_rgb);
-        M_CreateLightList(il, item != nullptr ? item->room_num : room_num);
+        M_CreateLightList(
+            il,
+            item != nullptr && !use_sample_room ? item->room_num : room_num);
     }
 
     m_CurrentItemLight = il;
@@ -640,6 +643,20 @@ static void M_CalculateObjectLightingAt(
     m_CurrentHasList = true;
 
     M_SetScalarFallback(il->ambient);
+}
+
+static void M_CalculateObjectLightingAt(
+    const ITEM *const item, const GAME_VECTOR sample_pos)
+{
+    M_CalculateItemLighting(item, sample_pos, false);
+}
+
+// Port of the OG CalculateObjectLightingLaraCutSeq, which takes the lights of
+// the room at the sample position.
+static void M_CalculateActorLightingAt(
+    const ITEM *const item, const GAME_VECTOR sample_pos)
+{
+    M_CalculateItemLighting(item, sample_pos, true);
 }
 
 // For effects and other list-less callers: ambient only, like the OG
@@ -941,6 +958,7 @@ const LIGHTING_MODEL g_LightingModelTR4 = {
     .observe_room_flip = M_ObserveRoomFlip,
     .calculate_light = M_CalculateLight,
     .calculate_object_lighting_at = M_CalculateObjectLightingAt,
+    .calculate_actor_lighting_at = M_CalculateActorLightingAt,
     .calculate_static_light = M_CalculateStaticLight,
     .calculate_static_light_rgb15 = M_CalculateStaticLightRGB15,
     .calculate_static_light_rgb_f = M_CalculateStaticLightRGB_F,

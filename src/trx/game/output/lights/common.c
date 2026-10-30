@@ -278,6 +278,17 @@ void Output_CalculateObjectLightingAt(
     Output_Lights_GetModel()->calculate_object_lighting_at(item, sample_pos);
 }
 
+void Output_CalculateActorLightingAt(
+    const ITEM *const item, const GAME_VECTOR sample_pos)
+{
+    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
+    if (model->calculate_actor_lighting_at != nullptr) {
+        model->calculate_actor_lighting_at(item, sample_pos);
+    } else {
+        model->calculate_object_lighting_at(item, sample_pos);
+    }
+}
+
 void Output_Lights_Init(void)
 {
     if (m_DynamicLights == nullptr) {
