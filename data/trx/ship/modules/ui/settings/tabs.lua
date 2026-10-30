@@ -182,6 +182,7 @@ local TABS = {
   graphic_visuals = {
     "visuals.fog_start",
     "visuals.fog_end",
+    "visuals.enable_spherical_fog",
     "visuals.fog_transparency",
     "visuals.fog_color",
     "visuals.enable_fog_bulbs",

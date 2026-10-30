@@ -53,6 +53,7 @@ layout(std140) uniform Globals {
     int uTexturesEnabled; // bool
     int uVertexSnapEnabled; // bool
     int uPS1FogEnabled; // bool
+    int uSphericalFogEnabled; // bool
     int uLightingCurve;
     int uAffineMappingEnabled; // bool
     int uTRVersion;
@@ -64,6 +65,13 @@ layout(std140) uniform Matrices {
     mat4 uMatProj;
     mat4 uMatView;
 };
+
+// Returns the distance that fog grows with: from the eye, or along the view
+// axis as in the original games.
+float fogDistance(vec3 eyePos)
+{
+    return uSphericalFogEnabled != 0 ? length(eyePos) : eyePos.z;
+}
 
 vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
 {

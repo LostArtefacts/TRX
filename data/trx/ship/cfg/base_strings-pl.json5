@@ -2070,6 +2070,10 @@
             "title": "Niebo",
             "description": "Włącza niebo w obsługiwanych poziomach.",
         },
+        "visuals.enable_spherical_fog": {
+            "title": "\\{review}Sferyczna mgła",
+            "description": "\\{review}Uzależnia mgłę od odległości od kamery, więc obracanie kamery nie zmienia zasięgu widzenia. Po wyłączeniu mgła zależy od głębokości wzdłuż kierunku patrzenia, jak w oryginalnych grach, a na krawędziach ekranu widać dalej niż na środku.",
+        },
         "visuals.enable_static_lighting": {
             "title": "\\{review}Oświetlenie statycznych meshy",
             "description": "\\{review}Pozwala płomieniom i innym dynamicznym światłom oświetlać statyczne meshe. Oryginalny TR4 oświetla wyłącznie geometrię pomieszczeń.",

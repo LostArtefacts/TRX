@@ -2070,6 +2070,10 @@
             "title": "Ciel",
             "description": "Active le ciel dans les niveaux pris en charge.",
         },
+        "visuals.enable_spherical_fog": {
+            "title": "\\{review}Brouillard sphérique",
+            "description": "\\{review}Fait dépendre le brouillard de la distance à la caméra, de sorte que tourner la caméra ne change pas la distance de vue. Désactivé, le brouillard dépend de la profondeur dans l'axe de la vue, comme dans les jeux originaux, et les bords de l'écran montrent plus loin que le centre.",
+        },
         "visuals.enable_static_lighting": {
             "title": "\\{review}Éclairage des meshes statiques",
             "description": "\\{review}Permet aux flammes et aux autres lumières dynamiques d'éclairer les meshes statiques. Le TR4 original n'éclaire que la géométrie des salles.",

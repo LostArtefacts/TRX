@@ -2070,6 +2070,10 @@
             "title": "Cajas de cielo (Skyboxes)",
             "description": "Activa la caja de cielo en los niveles compatibles.",
         },
+        "visuals.enable_spherical_fog": {
+            "title": "\\{review}Niebla esférica",
+            "description": "\\{review}Hace que la niebla dependa de la distancia a la cámara, así que girar la cámara no cambia lo lejos que se ve. Si se desactiva, la niebla depende de la profundidad en la dirección de la vista, como en los juegos originales, y los bordes de la pantalla muestran más lejos que el centro.",
+        },
         "visuals.enable_static_lighting": {
             "title": "Iluminación de mallas estáticas",
             "description": "Permite que las llamas y otras luces dinámicas iluminen las mallas estáticas. El TR4 original solo ilumina la geometría de las salas.",

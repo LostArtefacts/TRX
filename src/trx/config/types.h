@@ -109,6 +109,7 @@ typedef struct {
         RGB_888 fog_color;
         int32_t fog_start;
         int32_t fog_end;
+        bool enable_spherical_fog;
         bool enable_fog_bulbs;
     } visuals;
 

@@ -2070,6 +2070,10 @@
             "title": "Skyboxes",
             "description": "Aktiviert die Skybox in unterstützten Leveln.",
         },
+        "visuals.enable_spherical_fog": {
+            "title": "\\{review}Kugelförmiger Nebel",
+            "description": "\\{review}Lässt den Nebel vom Abstand zur Kamera abhängen, sodass ein Drehen der Kamera die Sichtweite nicht ändert. Wenn deaktiviert, hängt der Nebel wie in den Originalspielen von der Tiefe entlang der Blickrichtung ab, und an den Bildrändern sieht man weiter als in der Mitte.",
+        },
         "visuals.enable_static_lighting": {
             "title": "\\{review}Beleuchtung statischer Meshes",
             "description": "\\{review}Lässt Flammen und andere dynamische Lichter statische Meshes beleuchten. Das originale TR4 beleuchtet nur die Raumgeometrie.",

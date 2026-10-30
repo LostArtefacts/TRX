@@ -2,6 +2,7 @@
     "name_gs": "dynamic/config_presets/tr2_pc",
     "config": {
         "rendering.dither_mode": "disabled",
+        "visuals.enable_spherical_fog": false,
         "rendering.enable_ps1_fog": false,
         "rendering.enable_ps1_blending": false,
         "rendering.enable_hall_of_mirrors": true,

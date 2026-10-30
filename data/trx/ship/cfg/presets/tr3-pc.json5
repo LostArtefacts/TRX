@@ -2,6 +2,7 @@
     "name_gs": "dynamic/config_presets/tr3_pc",
     "config": {
         "rendering.dither_mode": "disabled",
+        "visuals.enable_spherical_fog": false,
         "rendering.enable_ps1_fog": false,
         "rendering.enable_ps1_blending": false,
         "rendering.lighting_curve": "flat",
