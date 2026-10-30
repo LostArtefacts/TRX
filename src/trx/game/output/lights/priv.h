@@ -48,6 +48,8 @@ typedef struct {
     void (*calculate_light)(XYZ_32 pos, int16_t room_num);
     void (*calculate_object_lighting_at)(
         const ITEM *item, GAME_VECTOR sample_pos);
+    void (*calculate_actor_lighting_at)(
+        const ITEM *item, GAME_VECTOR sample_pos); // nullable
     void (*calculate_static_light)(int16_t adder);
     void (*calculate_static_light_rgb15)(int16_t rgb15); // nullable
     void (*calculate_static_light_rgb_f)(RGB_F rgb); // nullable
