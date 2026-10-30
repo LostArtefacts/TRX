@@ -617,6 +617,7 @@ void Lara_Animate(ITEM *const item)
         }
         item->fall_speed -= item->fall_speed / 4;
         CLAMPL(item->fall_speed, 4);
+        item->pos.y += item->fall_speed;
     } else {
         int32_t speed = anim->velocity + anim->acceleration * (rel_frame - 1);
         item->speed -= (int16_t)(speed >> 16);

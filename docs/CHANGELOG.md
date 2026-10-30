@@ -19,6 +19,7 @@
 - Fixed Lara getting thrown to the side of a pole after dismount (OG bug) (TRX1753)
 - Fixed Lara embedding slightly into the floor after descending a pole and dismounting (TRX1763, regression from 1.9)
 - Fixed Lara being able to pull up from ladders into very small gaps (#6999 / TRX1881, regression from 1.10)
+- Fixed Lara sinking into swamps more slowly than in the original game after jumping into them (TRX1941, regression from 1.1)
 
 **UI**
 - Added a Ukrainian translation (TRX1901)
