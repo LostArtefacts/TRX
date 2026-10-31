@@ -1053,8 +1053,6 @@ function M.open_save_load(ctx)
 end
 
 -- Opens the menu in the game, or to use an entry at a lock.
--- At a lock, it opens only when Lara carries the item that fits it, as in the
--- original.
 -- On the title screen, it opens the title menu.
 -- Once Lara has died, it opens the menu that follows.
 ---@param ctx trx.ui.MenuContext
@@ -1074,13 +1072,6 @@ function M.open(ctx)
     and ctx.mode ~= MenuMode.KEYS
     and not saving
     and not loading
-  then
-    return nil
-  end
-  if
-    ctx.mode == MenuMode.KEYS
-    and ctx.key ~= nil
-    and not trx.inventory.has(ctx.key)
   then
     return nil
   end

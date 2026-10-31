@@ -18,6 +18,15 @@ for object, inv_pos in pairs({
     inv_pos = inv_pos,
   })
 end
+for object, inv_pos in pairs({
+  [objects.KEY_OPTION_1] = 110,
+  [objects.KEY_OPTION_2] = 111,
+}) do
+  require("common.ui.ring.entries").declare({
+    object_id = trx.catalog.key(trx.catalog.Context.OBJECTS, object),
+    inv_pos = inv_pos,
+  })
+end
 require("common.ui.ring.entries").declare({
   object_id = "compass_option",
   inv_pos = 0,
@@ -630,6 +639,49 @@ test("the ring draws the menu unless the flat menu is picked", function()
   ticks(SETTLE_TICKS)
   local heading = require("common.ui.ring").signals.heading:get()
   assert(heading ~= nil, "the ring did not open")
+  finish()
+end)
+
+-- Offers the menu at a lock that the second key fits, while Lara carries the
+-- first key, and returns whether a menu opened.
+local function offer_at_lock(system, version)
+  trx.inventory.give(objects.KEY_OPTION_1)
+  trx.config.set("ui.text_scale", 1)
+  trx.config.set("ui.menu_system", system)
+  fake.set_tr_version(version)
+  local opened =
+    fake.offer(MENU, { mode = MenuMode.KEYS, key = objects.KEY_OPTION_2 })
+  ticks(SETTLE_TICKS)
+  return opened
+end
+
+for _, system in ipairs({ "flat", "ring" }) do
+  test(
+    ("no %s menu opens in TR4 at a lock without its item"):format(system),
+    function()
+      assert(not offer_at_lock(system, 4), "a menu opened")
+      local heading = require("common.ui.ring").signals.heading:get()
+      assert(heading == nil, "the ring opened")
+      fake.set_tr_version(1)
+      finish()
+    end
+  )
+end
+
+test("the ring opens in TR1 at a lock without its item", function()
+  assert(offer_at_lock("ring", 1), "no menu opened")
+  local heading = require("common.ui.ring").signals.heading:get()
+  assert(heading ~= nil, "the ring did not open")
+  finish()
+end)
+
+test("the flat menu opens in TR4 at a lock with its item", function()
+  carry()
+  trx.inventory.give(objects.KEY_OPTION_2)
+  assert(offer_at_lock("flat", 4), "no menu opened")
+  local heading = require("common.ui.ring").signals.heading:get()
+  assert(heading == nil, "the ring opened instead")
+  fake.set_tr_version(1)
   finish()
 end)
 
