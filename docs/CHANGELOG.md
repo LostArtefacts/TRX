@@ -109,6 +109,7 @@
 - Added an option to crossfade looping ambience tracks into each other rather than cutting them off (Sound Options → Misc → Ambience crossfade) (#5331 / TRX169)
 - Added an option to muffle the ambience or all music while the camera is underwater (Sound Options → Misc → Muffle music underwater) (#5504 / TRX302)
 - Changed the inventory to always pause sound effects, such as the clock in the TR2 gym and hissing in TR3, while music and ambience follow the music option (Sound Options → Misc → Play music in inventory) (#5519, #7048)
+- Fixed some sound effects, such as the spikes at the start of Race for the Isis, being quiet or silent at high resolutions (TRX1954)
 
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
