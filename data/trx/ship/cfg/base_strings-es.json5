@@ -1671,6 +1671,10 @@
             "title": "Niebla de PlayStation",
             "description": "Mezcla la geometría lejana con el color de la niebla de la misma forma que lo hacía el indicador de profundidad de PlayStation: a lo largo de 1/distancia en lugar de la distancia, y calculado por vértice, de modo que el gradiente forma franjas en superficies grandes.",
         },
+        "rendering.enable_ps1_pixel_aspect": {
+            "title": "\\{review}Relación de aspecto de píxel de PlayStation",
+            "description": "\\{review}Muestra el mundo del juego más estrecho, como lo hacía la PlayStation en un televisor. La imagen sigue llenando la pantalla. La interfaz no cambia.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtro trapezoidal",
             "description": "Corrige el renderizado de los cuadriláteros.",

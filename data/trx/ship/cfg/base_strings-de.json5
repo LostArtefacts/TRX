@@ -1671,6 +1671,10 @@
             "title": "\\{review}PlayStation-Nebel",
             "description": "\\{review}Blendet entfernte Geometrie so zur Nebelfarbe über, wie es die Tiefenabstufung der PlayStation tat: entlang 1/Entfernung statt der Entfernung und pro Vertex berechnet, sodass der Verlauf über große Flächen Stufen bildet.",
         },
+        "rendering.enable_ps1_pixel_aspect": {
+            "title": "\\{review}PlayStation-Pixelseitenverhältnis",
+            "description": "\\{review}Zeigt die Spielwelt schmaler, wie es die PlayStation auf einem Fernseher tat. Das Bild füllt weiterhin den Bildschirm. Die Oberfläche ändert sich nicht.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Trapezoid-Filter",
             "description": "Korrigiert das Rendern von Vierecken.",
