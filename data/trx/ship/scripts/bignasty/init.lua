@@ -527,7 +527,24 @@ trx.objects.declare(ball, {
   control = control,
 })
 
-if trx.weapons.get("mp5") == nil then
+-- The weapon builds on the MP5 where the game has one, and on the grenade gun
+-- otherwise, as TR4 has no MP5.
+local BASES = {
+  { weapon = "mp5", anim = "lara_mp5" },
+  { weapon = "grenade", anim = "lara_grenade_gun" },
+}
+
+local function find_base()
+  for _, candidate in ipairs(BASES) do
+    if trx.weapons.get(candidate.weapon) ~= nil then
+      return candidate
+    end
+  end
+  return nil
+end
+
+local base = find_base()
+if base == nil then
   return
 end
 
@@ -570,7 +587,7 @@ trx.events.on_game_start(function()
 end)
 
 trx.weapons.declare(WEAPON_KEY, {
-  base = "mp5",
+  base = base.weapon,
   kind = "rifle",
   is_launcher = true,
   is_machine_gun = false,
@@ -581,7 +598,7 @@ trx.weapons.declare(WEAPON_KEY, {
   objects = {
     pickup = GUN_KEY,
     ammo = AMMO_KEY,
-    anim = "lara_mp5",
+    anim = base.anim,
     projectile = BALL_KEY,
   },
   meshes = {
