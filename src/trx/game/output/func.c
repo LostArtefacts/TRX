@@ -149,11 +149,17 @@ void Output_ApplyFOV(void)
         ASSERT_FAIL();
     }
 
+    g_PhdPersp = Output_GetPerspective(fov_width, fov);
+}
+
+int32_t Output_GetPerspective(const int32_t width, const int32_t fov)
+{
     const int16_t c = Math_Cos(fov / 2);
     const int16_t s = Math_Sin(fov / 2);
-    g_PhdPersp = fov_width / 2;
+    int32_t persp = width / 2;
     if (s != 0) {
-        g_PhdPersp *= c;
-        g_PhdPersp /= s;
+        persp *= c;
+        persp /= s;
     }
+    return persp;
 }
