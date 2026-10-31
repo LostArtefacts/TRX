@@ -210,7 +210,7 @@ static float M_GetScreenAspectRatio(void)
     if (w <= 0 || h <= 0) {
         return 1.0f;
     }
-    return w / (float)h;
+    return w * Viewport_GetPixelAspect(VIEWPORT_GAME) / (float)h;
 }
 
 static bool M_PrepareViewportCopy(

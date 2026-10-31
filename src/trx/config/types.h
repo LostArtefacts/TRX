@@ -315,6 +315,7 @@ typedef struct {
         bool enable_lighting;
         bool enable_ps1_blending;
         bool enable_ps1_fog;
+        bool enable_ps1_pixel_aspect;
         bool enable_textures;
         TEXTURE_FILTER ui_filter;
         TEXTURE_FILTER texture_filter;
