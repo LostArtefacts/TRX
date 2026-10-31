@@ -1671,6 +1671,10 @@
             "title": "PlayStation fog",
             "description": "Blends distant geometry toward the fog color the way the PlayStation depth cue did: along 1/distance rather than distance, and worked out per vertex, so the ramp bands across large surfaces.",
         },
+        "rendering.enable_ps1_pixel_aspect": {
+            "title": "PlayStation pixel aspect ratio",
+            "description": "Shows the game world narrower, as the PlayStation did on a TV. The picture still fills the screen. The interface does not change.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Trapezoid filter",
             "description": "Corrects rendering of quadrilaterals.",

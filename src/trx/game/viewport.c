@@ -7,6 +7,13 @@
 #include <trx/game/output/vars.h>
 #include <trx/game/shell.h>
 
+#include <math.h>
+
+// The PlayStation versions show a 384 pixel wide picture, or a 512 pixel wide
+// picture with its height scaled by 3/4, across a 4:3 screen. In both cases,
+// each pixel is shown 5/6 as wide as it is tall.
+#define M_PS1_PIXEL_ASPECT (5.0f / 6.0f)
+
 #define L_DEFAULT_VIEWPORT                                                     \
     { .width = SHELL_HEADLESS_WIDTH, .height = SHELL_HEADLESS_HEIGHT }
 static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
@@ -68,7 +75,9 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 
     scene->x = x;
     scene->y = y;
-    scene->width = width / g_Config.rendering.upscaling_factor;
+    scene->width = roundf(
+        width / g_Config.rendering.upscaling_factor
+        / Viewport_GetPixelAspect(VIEWPORT_SCENE));
     scene->height = height / g_Config.rendering.upscaling_factor;
 
     const int32_t supersampling_factor =
@@ -83,6 +92,20 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
     g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+}
+
+float Viewport_GetPixelAspect(const VIEWPORT_SPACE space)
+{
+    if (!g_Config.rendering.enable_ps1_pixel_aspect) {
+        return 1.0f;
+    }
+    switch (space) {
+    case VIEWPORT_SCENE:
+    case VIEWPORT_GAME:
+        return M_PS1_PIXEL_ASPECT;
+    default:
+        return 1.0f;
+    }
 }
 
 int16_t Viewport_GetSystemFOV(void)

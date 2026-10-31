@@ -3,6 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output/shaders/generic.h>
+#include <trx/game/viewport.h>
 #include <trx/gl/utils.h>
 
 #include <GL/glew.h>
@@ -133,6 +134,15 @@ static void M_ApplyFilter(const OUTPUT_QUAD *const r)
         r->filter_mode == TEXTURE_FILTER_BILINEAR ? GL_LINEAR : GL_NEAREST;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter);
+}
+
+// The shader fits the source against the aspect ratio of VIEWPORT_GAME, so the
+// source aspect ratio is divided by the pixel aspect ratio of that space.
+static void M_UploadSrcAspect(const OUTPUT_QUAD *const r)
+{
+    glUniform1f(
+        r->loc[M_UNIFORM_SRC_ASPECT],
+        r->src_aspect / Viewport_GetPixelAspect(VIEWPORT_GAME));
 }
 
 static void M_UploadVertices(OUTPUT_QUAD *const r)
@@ -532,7 +542,6 @@ void Output_Quad_SetFit(
 
     M_BindProgram(r);
     glUniform1i(r->loc[M_UNIFORM_FIT_MODE], (int32_t)fit_mode);
-    glUniform1f(r->loc[M_UNIFORM_SRC_ASPECT], src_aspect);
     TRX_GL_CheckError();
 }
 
@@ -547,7 +556,6 @@ void Output_Quad_ClearFit(OUTPUT_QUAD *const r)
     r->src_aspect = 1.0f;
     M_BindProgram(r);
     glUniform1i(r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
-    glUniform1f(r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
     TRX_GL_CheckError();
 }
 
@@ -557,6 +565,7 @@ void Output_Quad_Render(OUTPUT_QUAD *const r)
 
     M_BindProgram(r);
     glUniform1i(r->loc[M_UNIFORM_EFFECT], r->effect);
+    M_UploadSrcAspect(r);
     glBindVertexArray(r->vao);
     glBindBuffer(GL_ARRAY_BUFFER, r->vbo);
 
@@ -604,6 +613,7 @@ void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
 
     M_BindProgram(r);
     glUniform1i(r->loc[M_UNIFORM_EFFECT], r->effect);
+    M_UploadSrcAspect(r);
     glBindVertexArray(r->vao);
     glBindBuffer(GL_ARRAY_BUFFER, r->vbo);
 

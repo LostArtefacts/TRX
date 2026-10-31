@@ -1671,6 +1671,10 @@
             "title": "Nebbia PlayStation",
             "description": "Fonde la geometria distante con il colore della nebbia seguendo la stessa logica degli indici di profondità della versione PlayStation: basandosi sul reciproco della distanza (1/distanza) anziché sulla distanza stessa, con il calcolo eseguito per singolo vertice, il che genera bande di sfumatura sulle superfici estese.",
         },
+        "rendering.enable_ps1_pixel_aspect": {
+            "title": "\\{review}Proporzioni dei pixel PlayStation",
+            "description": "\\{review}Mostra il mondo di gioco più stretto, come faceva la PlayStation su un televisore. L'immagine riempie comunque lo schermo. L'interfaccia non cambia.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtro trapezoidale",
             "description": "Corregge la renderizzazione dei quadrilateri.",
