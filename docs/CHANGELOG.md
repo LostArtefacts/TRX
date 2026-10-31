@@ -126,6 +126,7 @@
 - Fixed the screen not fading to black after a skipped FMV (TRX1613)
 - Fixed a brief stutter after FMVs with a high supersampling factor (TRX1912, regression from 1.10)
 - Fixed static objects keeping the underwater tint and lighting after their room drains (TRX1630, regression from 1.11)
+- Fixed Lara taking the water tint in TR3 swamps with the Responsive water tint (TRX1948, regression from 1.11)
 - Fixed dynamic lights, such as a flare in Lara's hand, not lighting the room once more than 32 were active, for example in the Temple of Horus (OG bug) (TRX1533)
 - Fixed the level behind the TR4 title menu, and Lara in its cutscenes, moving unevenly at 60 FPS (TRX1913)
 - Fixed the title screen picture looking squashed after switching to fullscreen from a maximized window (#6914)
