@@ -100,6 +100,9 @@ static WATER_LARA_MESH M_DecideLaraMesh(
         return (WATER_LARA_MESH) { .tint = M_GetPerMeshTint(pos) };
 
     case WATER_TINT_MODE_RESPONSIVE: {
+        if (g_Camera.underwater) {
+            return (WATER_LARA_MESH) { .tint = Output_GetTint() };
+        }
         const int32_t surface = M_FindMeshWaterSurface(pos, radius);
         if (surface == NO_HEIGHT) {
             return (WATER_LARA_MESH) { .tint = COLOR_RGBA_F_WHITE };
