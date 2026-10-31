@@ -59,7 +59,22 @@ local function begin(ctx)
   return system == "flat"
 end
 
+-- Returns whether no menu opens, so that Lara refuses the lock. In TR4, a
+-- menu opens at a lock only when Lara carries the item that fits it, as in
+-- the original.
+---@param ctx trx.ui.MenuContext
+---@return boolean
+local function refuses(ctx)
+  return trx.game.version == 4
+    and ctx.mode == trx.ui.MenuMode.KEYS
+    and ctx.key ~= nil
+    and not trx.inventory.has(ctx.key)
+end
+
 local function open(ctx)
+  if refuses(ctx) then
+    return nil
+  end
   if begin(ctx) then
     local layer = flat_menu.open(ctx)
     if layer ~= nil then

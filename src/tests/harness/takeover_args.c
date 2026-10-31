@@ -32,6 +32,7 @@ UI_TAKEOVER_ARGS TakeoverArgs_Read(lua_State *const L, const int idx)
         return args;
     }
     args.object_id = (OBJECT_ID)M_IntField(L, idx, "object", NO_OBJECT);
+    args.key_id = (OBJECT_ID)M_IntField(L, idx, "key", NO_OBJECT);
     args.mode = (INVENTORY_MODE)M_IntField(L, idx, "mode", 0);
     lua_getfield(L, idx, "level");
     if (!lua_isnil(L, -1)) {
