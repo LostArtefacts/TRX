@@ -98,6 +98,7 @@
 - Fixed items dropped by enemies sometimes being swapped between them, or a collected one coming back, after loading a save (TRX1677)
 
 **Weapons and ammunition**
+- Added the BFG9000 to TR4, called in with the `/bignasty` console command (TRX1951)
 - Fixed the BFG9000 blast passing through friendly creatures
 - Fixed the BFG9000 filling the log with errors when shot at a creature on the ground (#6703 / TRX1595)
 - Fixed level completion after explosive weapon kills (#6685 / TRX1584)
