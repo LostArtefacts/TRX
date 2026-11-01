@@ -400,7 +400,7 @@ static void M_DrawWorldFrame(const OUTPUT_UI_MESH *const mesh)
                 .r = 1.0f,
                 .g = 1.0f,
                 .b = 1.0f,
-                .a = world->mesh_opacity[i],
+                .a = world->mesh_opacity[i] * world->opacity,
             });
         }
         M_DrawWorldPose(
