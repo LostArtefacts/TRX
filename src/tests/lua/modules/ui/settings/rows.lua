@@ -143,4 +143,12 @@ test("the compass statistics leave the flat menu system", function()
   end)
 end)
 
+test("the instant save screen greys out with the flat menu", function()
+  local key = "ui.instant_save_load_screen"
+  assert(rows.available(key), "greyed out with the ring")
+  with("ui.menu_system", "flat", function()
+    assert(not rows.available(key), "offered with the flat menu")
+  end)
+end)
+
 return h.report()
