@@ -279,6 +279,12 @@ local HANDLERS = {
       return get("ui.menu_system") ~= "flat"
     end,
   },
+  -- The flat menu shows the save slots on their own either way.
+  ["ui.instant_save_load_screen"] = {
+    available = function()
+      return get("ui.menu_system") ~= "flat"
+    end,
+  },
   ["gameplay.fix_flare_throw_priority"] = { available = flare },
   ["window.is_borderless"] = {
     visible = function()
