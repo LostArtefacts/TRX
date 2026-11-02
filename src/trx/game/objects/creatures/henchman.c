@@ -428,13 +428,13 @@ static void M_Control(const int16_t item_num)
 
     M_TargetEquipment(item, creature);
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points <= 0) {
         M_HandleDeath(item, creature);
         goto finish;
     }
 
     ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->ai_bits != 0) {
         Creature_GetAITarget(creature);
     } else if (creature->enemy == nullptr) {
