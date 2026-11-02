@@ -1,5 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.12...develop) - ××××-××-××
 
+## [1.12](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...trx-1.12) - 2026-11-02
+Showcase: https://youtu.be/80O5jT7Q1FY
 **Lara's movement**
 - Added the ability for Lara to look up and down while idle on monkey bars, as per TR4+
 - Added an option to allow Lara to deflect off monkey bar edges when moving forward, as per TR4+ (Gameplay → Controls → Monkey bar deflect)
