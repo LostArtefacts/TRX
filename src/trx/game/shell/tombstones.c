@@ -42,7 +42,7 @@ static void M_Sweep(const char *const rel_path, const JSON_ARRAY *const hashes)
         return;
     }
 
-    uint64_t hash;
+    uint64_t hash = 0;
     if (!SHOULD(M_HashFile(path, &hash), "The obsolete file stays in place")) {
         return;
     }
