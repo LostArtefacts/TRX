@@ -37,12 +37,7 @@ static void M_TriggerPlasmaBallFlame(
     const int16_t effect_num, const M_TYPE type, const XYZ_32 vel)
 {
     const EFFECT *const effect = Effect_Get(effect_num);
-    const ITEM *const lara_item = Lara_GetItem();
-
-    const int32_t dx = lara_item->pos.x - effect->pos.x;
-    const int32_t dz = lara_item->pos.z - effect->pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(effect->pos, 16)) {
         return;
     }
 

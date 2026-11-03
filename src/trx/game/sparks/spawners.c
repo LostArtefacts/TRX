@@ -42,11 +42,7 @@ void Sparks_TriggerBubble(
     const int32_t x, const int32_t y, const int32_t z, const int32_t size,
     const int32_t size_range, const int16_t effect_num)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - x;
-    const int32_t dz = lara_item->pos.z - z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange((XYZ_32) { x, 0, z }, 16)) {
         return;
     }
 
@@ -311,11 +307,7 @@ void Sparks_TriggerBreath(
 void Sparks_TriggerFireFlame(
     const XYZ_32 pos, const int32_t body_part, const int32_t type)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 20 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 20)) {
         return;
     }
 
@@ -482,11 +474,7 @@ void Sparks_TriggerFireFlame(
 void Sparks_TriggerFireSmoke(
     const XYZ_32 pos, const int32_t body_part, const int32_t type)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 20 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 20)) {
         return;
     }
 
@@ -561,11 +549,7 @@ void Sparks_TriggerFireSmoke(
 
 void Sparks_TriggerStaticFlame(const XYZ_32 pos, const int32_t size)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 20 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 20)) {
         return;
     }
 
@@ -612,11 +596,7 @@ void Sparks_TriggerSideFlame(
     const XYZ_32 pos, const int32_t angle, const int32_t speed,
     const bool pilot)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 20 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 20)) {
         return;
     }
 
@@ -881,11 +861,7 @@ void Sparks_TriggerUnderwaterExplosionAt(
 void Sparks_TriggerExplosionSparks(
     XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 30 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 30)) {
         return;
     }
 
@@ -1002,11 +978,7 @@ void Sparks_TriggerExplosionSparks(
 
 void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 30 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 30)) {
         return;
     }
 
@@ -1061,11 +1033,7 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
 void Sparks_TriggerExplosionSmoke(
     const XYZ_32 pos, const bool uw, const int16_t room_num)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 30 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 30)) {
         return;
     }
 
@@ -1186,11 +1154,7 @@ void Sparks_TriggerFlashSmoke(const XYZ_32 pos, const int16_t room_num)
 void Sparks_TriggerExplosionSmokeEnd(
     const XYZ_32 pos, const bool uw, const int16_t room_num)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 30 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 30)) {
         return;
     }
 
@@ -1277,11 +1241,7 @@ void Sparks_TriggerExplosionSmokeEnd(
 
 void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 16)) {
         return;
     }
 
@@ -1371,11 +1331,7 @@ void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
 
 void Sparks_TriggerPickupAid(const XYZ_32 pos, const XZ_32 vel)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 16)) {
         return;
     }
 
@@ -1447,11 +1403,7 @@ void Sparks_TriggerPickupAid(const XYZ_32 pos, const XZ_32 vel)
 void Sparks_TriggerFlareSparks(
     const XYZ_32 pos, const XYZ_32 vel, const bool smoke)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 16)) {
         return;
     }
 
@@ -2018,11 +1970,7 @@ void Sparks_TriggerRocketFlame(
 
 void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 16)) {
         return;
     }
 
@@ -2084,11 +2032,7 @@ void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
 
 void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 16)) {
         return;
     }
 

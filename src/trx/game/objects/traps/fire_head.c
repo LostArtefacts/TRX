@@ -85,11 +85,7 @@ static void M_SetBlowTime(ITEM *const item, const TRX_VALUE *const in)
 static void M_TriggerFlame(
     const XYZ_32 pos, const int32_t angle, const int32_t speed)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(pos, 16)) {
         return;
     }
 

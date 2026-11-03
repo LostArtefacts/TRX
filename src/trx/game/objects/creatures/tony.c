@@ -88,15 +88,10 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "attack_toggle", p->attack_toggle);
 }
 
-static void M_TriggerFlame(int16_t item_num, int32_t node)
+static void M_TriggerFlame(const int16_t item_num, const int32_t node)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-
-    ITEM *const item = Item_Get(item_num);
-    const int32_t dx = lara_item->pos.x - item->pos.x;
-    const int32_t dz = lara_item->pos.z - item->pos.z;
-
-    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+    const ITEM *const item = Item_Get(item_num);
+    if (!Sparks_IsPosInRange(item->pos, 16)) {
         return;
     }
 

@@ -46,10 +46,7 @@ static const BITE m_Gun = {
 
 static void M_TriggerPilotFlame(const ITEM *const item)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - item->pos.x;
-    const int32_t dz = lara_item->pos.z - item->pos.z;
-    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+    if (!Sparks_IsPosInRange(item->pos, 16)) {
         return;
     }
 

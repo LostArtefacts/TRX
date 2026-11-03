@@ -20,7 +20,6 @@
 #define M_TOUCH_BITS     0b0100100'00000000
 #define M_IGNITE_COUNT   3
 #define M_RADIUS         (WALL_L / 10)          // = 102
-#define M_MAX_FIRE_DIST  (WALL_L * 16)          // = 16384
 #define M_ALERT_DIST     SQUARE(WALL_L)         // = 1048576
 #define M_ALERT_HEIGHT   (STEP_L * 5)           // = 1280
 #define M_WALK_DIST      SQUARE(WALL_L)         // = 1048576
@@ -121,12 +120,7 @@ static void M_InitialiseStick(ITEM *const punk_item)
 
 static void M_TriggerFireSparks(const ITEM *const item)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const XZ_32 delta = {
-        .x = lara_item->pos.x - item->pos.x,
-        .z = lara_item->pos.z - item->pos.z,
-    };
-    if (ABS(delta.x) > M_MAX_FIRE_DIST || ABS(delta.z) > M_MAX_FIRE_DIST) {
+    if (!Sparks_IsPosInRange(item->pos, 16)) {
         return;
     }
 

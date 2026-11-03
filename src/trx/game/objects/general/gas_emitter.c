@@ -4,8 +4,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 
-#define M_DISTANCE (16 * WALL_L) // = 16384
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -15,10 +13,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - item->pos.x;
-    const int32_t dz = lara_item->pos.z - item->pos.z;
-    if (ABS(dx) > M_DISTANCE || ABS(dz) > M_DISTANCE) {
+    if (!Sparks_IsPosInRange(item->pos, 16)) {
         return;
     }
 

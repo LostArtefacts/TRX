@@ -348,14 +348,11 @@ static bool M_TriggerLizard(M_PRIV *const p)
 static void M_TriggerElectricSparks(
     const ITEM *const item, const XYZ_32 pos, const bool shield)
 {
-    M_PRIV *const p = item->priv;
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-    if (dx < -0x5000 || dx > 0x5000 || dz < -0x5000 || dz > 0x5000) {
+    if (!Sparks_IsPosInRange(pos, 20)) {
         return;
     }
 
+    M_PRIV *const p = item->priv;
     p->trig_dynamics[1] = pos;
 
     SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_ELECTRICITY);
