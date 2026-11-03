@@ -6,6 +6,9 @@
 - Fixed `/play` showing the wrong level number on the stats screen, such as "1 of 18" in Venice (regression from 1.9)
 - Fixed `/play` making the TR3 globe offer the areas before the played level again
 
+**TR3**
+- Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
+
 **Lua**
 - Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished
 
