@@ -1,4 +1,10 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.12...develop) - ××××-××-××
+**Developer console**
+- Fixed `/play` showing the wrong level number on the stats screen, such as "1 of 18" in Venice (regression from 1.9)
+- Fixed `/play` making the TR3 globe offer the areas before the played level again
+
+**Lua**
+- Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished
 
 ## [1.12](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...trx-1.12) - 2026-11-02
 Showcase: https://youtu.be/80O5jT7Q1FY
