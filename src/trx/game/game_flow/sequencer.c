@@ -251,6 +251,7 @@ RESULT GF_InterpretSequence(
                     if (tmp_level == level) {
                         break;
                     }
+                    SG_Resume_GetEntry(tmp_level)->level_completed = true;
 
                     const GF_LEVEL *const next_level =
                         M_GetCanonicalNextLevel(tmp_level);
