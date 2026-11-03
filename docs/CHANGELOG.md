@@ -1,4 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.12...develop) - ××××-××-××
+**Rendering**
+- Fixed certain sparks, such as smoke and gas, not being drawn during fixed or cinematic camera sequences when Lara is far from the spawn position (OG bug) (TRX1966)
+
 **Developer console**
 - Fixed `/play` showing the wrong level number on the stats screen, such as "1 of 18" in Venice (regression from 1.9)
 - Fixed `/play` making the TR3 globe offer the areas before the played level again

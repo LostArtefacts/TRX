@@ -6,6 +6,7 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/camera.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -830,11 +831,7 @@ void Sparks_DetachItem(const int16_t item_num)
 
 bool Sparks_IsPosInRange(const XYZ_32 pos, const int32_t num_sectors)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return false;
-    }
-    const XYZ_32 base_pos = lara_item->pos;
+    const XYZ_32 base_pos = g_Camera.target.pos;
     const XYZ_32 delta = XYZ_32_Subtract(base_pos, pos);
     const int32_t range = num_sectors * WALL_L;
     return ABS(delta.x) <= range && ABS(delta.z) <= range;
