@@ -268,12 +268,7 @@ static void M_TriggerPlasma(
     const int16_t item_num, const int32_t node, int32_t size)
 {
     const ITEM *const item = Item_Get(item_num);
-    const ITEM *const lara_item = Lara_GetItem();
-
-    const int32_t dx = lara_item->pos.x - item->pos.x;
-    const int32_t dz = lara_item->pos.z - item->pos.z;
-    const int32_t max_dist = 16 * WALL_L;
-    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+    if (!Sparks_IsPosInRange(item->pos, 16)) {
         return;
     }
 

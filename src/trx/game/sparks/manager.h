@@ -56,3 +56,5 @@ void Sparks_FreeDynamic(int8_t idx);
 XZ_32 Sparks_GetSmokeWind(void);
 void Sparks_SetSmokeWind(XZ_32 wind);
 int32_t Sparks_GetHairWindZ(void);
+
+bool Sparks_IsPosInRange(XYZ_32 pos, int32_t num_sectors);

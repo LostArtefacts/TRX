@@ -26,12 +26,8 @@ static void M_TriggerFireBallFlame(
     const int16_t effect_num, const int32_t type, const int32_t xv,
     const int32_t yv, const int32_t zv)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-
     const EFFECT *const effect = Effect_Get(effect_num);
-    const int32_t dx = lara_item->pos.x - effect->pos.x;
-    const int32_t dz = lara_item->pos.z - effect->pos.z;
-    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+    if (!Sparks_IsPosInRange(effect->pos, 16)) {
         return;
     }
 

@@ -17,7 +17,6 @@
 // clang-format off
 #define M_DEFAULT_AXE_DAMAGE      100
 #define M_DEFAULT_PENDULUM_DAMAGE 50
-#define M_MAX_FIRE_DIST           (WALL_L * 16) // = 16384
 #define M_FIRE_FALLOFF            11
 // clang-format on
 
@@ -73,12 +72,7 @@ static void M_InitialiseFire(ITEM *const pendulum_item)
 
 static void M_TriggerFireSparks(const ITEM *const item)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const XZ_32 delta = {
-        .x = lara_item->pos.x - item->pos.x,
-        .z = lara_item->pos.z - item->pos.z,
-    };
-    if (ABS(delta.x) > M_MAX_FIRE_DIST || ABS(delta.z) > M_MAX_FIRE_DIST) {
+    if (!Sparks_IsPosInRange(item->pos, 16)) {
         return;
     }
 

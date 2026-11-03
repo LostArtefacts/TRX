@@ -14,7 +14,6 @@
 #define M_RADIUS     (STEP_L * 2)  // = 512
 #define M_TURN       (DEG_90 / 16) // = 1024
 #define M_VELOCITY   (STEP_L / 4)  // = 64
-#define M_MAX_DIST   (WALL_L * 20) // = 20480
 // clang-format on
 
 typedef struct {
@@ -67,12 +66,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_TriggerSparks(
     const XYZ_32 pos, const int16_t item_num, const int16_t node)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const XZ_32 delta = {
-        .x = lara_item->pos.x - pos.x,
-        .z = lara_item->pos.z - pos.z,
-    };
-    if (ABS(delta.x) > M_MAX_DIST || ABS(delta.z) > M_MAX_DIST) {
+    if (!Sparks_IsPosInRange(pos, 20)) {
         return;
     }
 

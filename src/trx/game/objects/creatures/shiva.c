@@ -88,11 +88,7 @@ static ITEM_HIT_EFFECT M_GetHitEffect(const ITEM *const item)
 
 static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - pos.x;
-    const int32_t dz = lara_item->pos.z - pos.z;
-
-    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+    if (!Sparks_IsPosInRange(pos, 16)) {
         return;
     }
 
