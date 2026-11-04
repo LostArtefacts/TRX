@@ -17,6 +17,7 @@
 
 #define M_MAX_SPARKS 400
 #define M_MAX_SPARK_DYNAMICS 32
+#define M_NO_SLOT (-1)
 
 // Half a turn in the 4096-unit angle space of the TR3 wind.
 #define M_TR3_WIND_START_ANGLE 2048
@@ -27,6 +28,13 @@ typedef struct {
     RGB_888 color;
     uint8_t flags;
 } M_SPARK_DYNAMIC;
+
+// Ranks the sparks for their slots when the pool is full. Each level below
+// M_PRIORITY_NORMAL keeps a queue of its sparks, oldest first.
+typedef enum {
+    M_PRIORITY_LOW,
+    M_PRIORITY_NORMAL,
+} M_PRIORITY;
 
 static SPARK m_Sparks[M_MAX_SPARKS];
 static uint32_t m_SparkGens[M_MAX_SPARKS];
@@ -40,6 +48,13 @@ static M_SPARK_DYNAMIC m_Dynamics[M_MAX_SPARK_DYNAMICS];
 static int32_t m_FreshSlot = 0;
 static int16_t m_FreeSlots[M_MAX_SPARKS];
 static int32_t m_FreeCount = 0;
+static bool m_IsQueued[M_MAX_SPARKS];
+static M_PRIORITY m_SlotPriority[M_MAX_SPARKS];
+static int16_t m_QueuePrev[M_MAX_SPARKS];
+static int16_t m_QueueNext[M_MAX_SPARKS];
+static int32_t m_QueueCount[M_PRIORITY_NORMAL];
+static int16_t m_QueueHead[M_PRIORITY_NORMAL];
+static int16_t m_QueueTail[M_PRIORITY_NORMAL];
 static XZ_32 m_SmokeWind = {};
 static int32_t m_HairWindZ = 0;
 static int32_t m_TR3Wind = 0;
@@ -78,8 +93,94 @@ static void M_RebuildFreeSlots(void)
     }
 }
 
+// Rain floods the pool, so a rain spark only ever takes the slot of another
+// rain spark.
+static M_PRIORITY M_GetPriority(const SPARK_CONTEXT context)
+{
+    switch (context) {
+    case SPARK_CONTEXT_RAIN:
+        return M_PRIORITY_LOW;
+    default:
+        return M_PRIORITY_NORMAL;
+    }
+}
+
+static void M_Enqueue(const int32_t idx, const M_PRIORITY priority)
+{
+    if (priority == M_PRIORITY_NORMAL) {
+        return;
+    }
+
+    m_IsQueued[idx] = true;
+    m_SlotPriority[idx] = priority;
+    m_QueueNext[idx] = M_NO_SLOT;
+    if (m_QueueCount[priority] == 0) {
+        m_QueuePrev[idx] = M_NO_SLOT;
+        m_QueueHead[priority] = (int16_t)idx;
+    } else {
+        m_QueuePrev[idx] = m_QueueTail[priority];
+        m_QueueNext[m_QueueTail[priority]] = (int16_t)idx;
+    }
+    m_QueueTail[priority] = (int16_t)idx;
+    m_QueueCount[priority]++;
+}
+
+static void M_Dequeue(const int32_t idx)
+{
+    if (!m_IsQueued[idx]) {
+        return;
+    }
+    m_IsQueued[idx] = false;
+
+    const M_PRIORITY priority = m_SlotPriority[idx];
+    const int16_t prev = m_QueuePrev[idx];
+    const int16_t next = m_QueueNext[idx];
+    if (prev == M_NO_SLOT) {
+        m_QueueHead[priority] = next;
+    } else {
+        m_QueueNext[prev] = next;
+    }
+    if (next == M_NO_SLOT) {
+        m_QueueTail[priority] = prev;
+    } else {
+        m_QueuePrev[next] = prev;
+    }
+    m_QueueCount[priority]--;
+}
+
+static void M_RebuildQueues(void)
+{
+    for (int32_t i = 0; i < M_PRIORITY_NORMAL; i++) {
+        m_QueueCount[i] = 0;
+    }
+    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
+        m_IsQueued[i] = false;
+        if (m_Sparks[i].on) {
+            M_Enqueue(i, M_GetPriority(m_Sparks[i].context));
+        }
+    }
+}
+
+// Returns the oldest queued spark of the given priority or lower, lowest
+// priority first, or nullptr where there is none.
+static SPARK *M_GetQueuedSpark(const M_PRIORITY max_priority)
+{
+    for (int32_t i = 0; i <= (int32_t)max_priority && i < M_PRIORITY_NORMAL;
+         i++) {
+        if (m_QueueCount[i] > 0) {
+            return &m_Sparks[m_QueueHead[i]];
+        }
+    }
+    return nullptr;
+}
+
 static SPARK *M_GetEvictedSpark(void)
 {
+    SPARK *const queued = M_GetQueuedSpark(M_PRIORITY_NORMAL);
+    if (queued != nullptr) {
+        return queued;
+    }
+
     int32_t free = 0;
     int32_t min_life = INT32_MAX;
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
@@ -371,9 +472,20 @@ SPARK *Sparks_FromHandle(const TRX_HANDLE handle)
 
 SPARK *Sparks_InitialiseSpark(const SPARK_CONTEXT context)
 {
+    const M_PRIORITY priority = M_GetPriority(context);
+    if (m_FreeCount == 0 && m_FreshSlot == M_MAX_SPARKS
+        && priority != M_PRIORITY_NORMAL) {
+        SPARK *const queued = M_GetQueuedSpark(priority);
+        if (queued == nullptr) {
+            return nullptr;
+        }
+        Sparks_Kill(queued);
+    }
+
     SPARK *const spark = M_GetFreeSpark();
     spark->on = true;
     spark->context = context;
+    M_Enqueue((int32_t)(spark - m_Sparks), priority);
     return spark;
 }
 
@@ -388,6 +500,7 @@ void Sparks_Kill(SPARK *const spark)
     }
     spark->on = false;
     spark->life = 0;
+    M_Dequeue((int32_t)(spark - m_Sparks));
     m_FreeSlots[m_FreeCount++] = (int16_t)(spark - m_Sparks);
 }
 
@@ -467,6 +580,7 @@ RESULT Sparks_Load(JSON_READ_IO *const io)
         Sparks_Sync(spark);
     }
     M_RebuildFreeSlots();
+    M_RebuildQueues();
 
     MUST(JSON_POP(io));
     return OK;
@@ -529,6 +643,7 @@ void Sparks_Reset(void)
     }
     Handle_RegistryBumpAll(&m_SparkHandles);
     M_RebuildFreeSlots();
+    M_RebuildQueues();
     m_SmokeWind = (XZ_32) {};
     m_HairWindZ = 0;
     Sparks_ResetWind();

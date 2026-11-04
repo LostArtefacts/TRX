@@ -73,4 +73,6 @@ typedef enum {
     SPARK_CONTEXT_SMOKE,
     SPARK_CONTEXT_SPLASH,
     SPARK_CONTEXT_WATER_MIST,
+    // Saves store the context as a number, so new contexts go last.
+    SPARK_CONTEXT_RAIN,
 } SPARK_CONTEXT;

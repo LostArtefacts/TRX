@@ -8,8 +8,10 @@
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
+- Fixed pickup aids not showing in heavy rain when rain splashes are enabled (TRX1962, regression from 1.12)
 
 **Lua**
+- Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
 - Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished
 
 ## [1.12](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...trx-1.12) - 2026-11-02

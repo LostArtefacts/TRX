@@ -206,7 +206,10 @@ void Sparks_TriggerSmallSplash(const XYZ_32 pos, const int32_t count)
 void Sparks_TriggerRainSplash(const XYZ_32 pos)
 {
     for (int32_t i = 0; i < 2; i++) {
-        SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_SPLASH);
+        SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_RAIN);
+        if (spark == nullptr) {
+            return;
+        }
         spark->src_color.r = 88;
         if (g_Config.visuals.enable_ps1_rain) {
             spark->src_color.g = (Random_GetDraw() & 0x1F) + 100;
