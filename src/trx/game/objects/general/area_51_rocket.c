@@ -72,13 +72,11 @@ static int32_t M_GetFloorY(const ITEM *const item)
 static void M_TriggerBlastFire(
     const XYZ_32 pos, const bool smoke, const int32_t end)
 {
-    SPARK *const spark = end < 0
-        ? Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_FIRE)
-        : Sparks_GetSpark(end);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_FIRE);
     if (spark == nullptr) {
         return;
     }
-    spark->on = true;
 
     if (smoke) {
         spark->src_color.r = 0;
