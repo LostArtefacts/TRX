@@ -503,6 +503,8 @@ local SparkContext = {
   PICKUP_AID = h.IntegerConstant,
   ---Spawned from enemies such as Sophia Lee.
   PLASMA = h.IntegerConstant,
+  ---Splashes where rain hits the ground or the water.
+  RAIN = h.IntegerConstant,
   ---Spawned when bullets hit walls.
   RICOCHET = h.IntegerConstant,
   ---Any type of smoke.

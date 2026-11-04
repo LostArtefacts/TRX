@@ -124,6 +124,8 @@ end
         The twinkle effect shown above pickup items.
     - `trx.fx.SparkContext.PLASMA`  
         Spawned from enemies such as Sophia Lee.
+    - `trx.fx.SparkContext.RAIN`  
+        Splashes where rain hits the ground or the water.
     - `trx.fx.SparkContext.RICOCHET`  
         Spawned when bullets hit walls.
     - `trx.fx.SparkContext.SMOKE`  

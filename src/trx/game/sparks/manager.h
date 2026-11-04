@@ -43,6 +43,10 @@ TRX_HANDLE Sparks_GetHandle(const SPARK *spark);
 // Resolves a handle to a live spark, or nullptr where the slot has been taken
 // for another spark, or holds one whose life has run out.
 SPARK *Sparks_FromHandle(TRX_HANDLE handle);
+// Takes a free slot for a new spark. When the pool is full, a rain spark
+// replaces the oldest rain spark, and any other spark replaces the oldest rain
+// spark first. Returns nullptr where a rain spark finds the pool full of other
+// sparks.
 SPARK *Sparks_InitialiseSpark(SPARK_CONTEXT context);
 SPARK *Sparks_InitialiseSpriteSpark(
     SPARK_SPRITE_TYPE type, SPARK_CONTEXT context);
