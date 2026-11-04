@@ -363,6 +363,16 @@ SPARK *Sparks_InitialiseSpark(const SPARK_CONTEXT context)
     return spark;
 }
 
+void Sparks_Kill(SPARK *const spark)
+{
+    if (spark->dynamic != -1) {
+        Sparks_FreeDynamic(spark->dynamic);
+        spark->dynamic = -1;
+    }
+    spark->on = false;
+    spark->life = 0;
+}
+
 SPARK *Sparks_InitialiseSpriteSpark(
     const SPARK_SPRITE_TYPE type, const SPARK_CONTEXT context)
 {
@@ -553,12 +563,7 @@ void Sparks_Control(void)
         }
 
         if (spark->life == 0) {
-            if (spark->dynamic != -1) {
-                m_Dynamics[(uint8_t)spark->dynamic].on = false;
-                spark->dynamic = -1;
-            }
-
-            spark->on = false;
+            Sparks_Kill(spark);
             continue;
         }
 
@@ -791,7 +796,7 @@ void Sparks_DetachEffect(const int16_t effect_num)
         if ((spark->flags & SPARK_F_FX) != 0U
             && spark->effect_num == effect_num) {
             if ((spark->flags & SPARK_F_ATTACHED_POS) != 0U) {
-                spark->on = false;
+                Sparks_Kill(spark);
                 continue;
             }
 
@@ -815,7 +820,7 @@ void Sparks_DetachItem(const int16_t item_num)
         if ((spark->flags & SPARK_F_ITEM) != 0U
             && spark->item_num == item_num) {
             if ((spark->flags & SPARK_F_ATTACHED_POS) != 0U) {
-                spark->on = false;
+                Sparks_Kill(spark);
                 continue;
             }
 

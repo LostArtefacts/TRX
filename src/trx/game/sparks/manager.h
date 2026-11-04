@@ -46,6 +46,8 @@ SPARK *Sparks_FromHandle(TRX_HANDLE handle);
 SPARK *Sparks_InitialiseSpark(SPARK_CONTEXT context);
 SPARK *Sparks_InitialiseSpriteSpark(
     SPARK_SPRITE_TYPE type, SPARK_CONTEXT context);
+// Frees the spark's slot and its dynamic light.
+void Sparks_Kill(SPARK *spark);
 int32_t Sparks_GetSpriteIndex(SPARK_SPRITE_TYPE offset);
 void Sparks_Sync(SPARK *spark);
 void Sparks_FinishSetup(SPARK *spark);

@@ -627,13 +627,7 @@ static int M_L_GetSparkItem(lua_State *const L)
 // spark:kill()
 static int M_L_SparkKill(lua_State *const L)
 {
-    SPARK *const spark = M_CheckSpark(L, 1);
-    if (spark->dynamic != -1) {
-        Sparks_FreeDynamic(spark->dynamic);
-        spark->dynamic = -1;
-    }
-    spark->on = false;
-    spark->life = 0;
+    Sparks_Kill(M_CheckSpark(L, 1));
     return 0;
 }
 
