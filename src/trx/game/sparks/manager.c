@@ -35,7 +35,11 @@ static HANDLE_REGISTRY m_SparkHandles = {
     .capacity = M_MAX_SPARKS,
 };
 static M_SPARK_DYNAMIC m_Dynamics[M_MAX_SPARK_DYNAMICS];
-static int32_t m_NextSpark = 0;
+// The slots from m_FreshSlot up have never held a spark, so the pool works
+// before its first reset.
+static int32_t m_FreshSlot = 0;
+static int16_t m_FreeSlots[M_MAX_SPARKS];
+static int32_t m_FreeCount = 0;
 static XZ_32 m_SmokeWind = {};
 static int32_t m_HairWindZ = 0;
 static int32_t m_TR3Wind = 0;
@@ -62,18 +66,20 @@ static const BITE m_NodeOffsets[16] = {
     { .pos = { 0, 0, 0 }, .mesh_num = 0 },
 };
 
-static int32_t M_GetFreeSparkIndex(void)
+// Stacks the free slots so that the lowest index comes off first.
+static void M_RebuildFreeSlots(void)
 {
-    int32_t idx = m_NextSpark;
-    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        if (!m_Sparks[idx].on) {
-            m_NextSpark = (idx + 1) & 0xBF;
-            Handle_RegistryBump(&m_SparkHandles, idx);
-            return idx;
+    m_FreshSlot = M_MAX_SPARKS;
+    m_FreeCount = 0;
+    for (int32_t i = M_MAX_SPARKS - 1; i >= 0; i--) {
+        if (!m_Sparks[i].on) {
+            m_FreeSlots[m_FreeCount++] = (int16_t)i;
         }
-        idx = idx == (M_MAX_SPARKS - 1) ? 0 : idx + 1;
     }
+}
 
+static SPARK *M_GetEvictedSpark(void)
+{
     int32_t free = 0;
     int32_t min_life = INT32_MAX;
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
@@ -84,10 +90,18 @@ static int32_t M_GetFreeSparkIndex(void)
             min_life = (int32_t)spark->life;
         }
     }
+    return &m_Sparks[free];
+}
 
-    m_NextSpark = (free + 1) & 0xBF;
-    Handle_RegistryBump(&m_SparkHandles, free);
-    return free;
+static int32_t M_GetFreeSparkIndex(void)
+{
+    if (m_FreeCount == 0 && m_FreshSlot == M_MAX_SPARKS) {
+        Sparks_Kill(M_GetEvictedSpark());
+    }
+    const int32_t idx =
+        m_FreeCount > 0 ? m_FreeSlots[--m_FreeCount] : m_FreshSlot++;
+    Handle_RegistryBump(&m_SparkHandles, idx);
+    return idx;
 }
 
 static SPARK *M_GetFreeSpark(void)
@@ -365,12 +379,16 @@ SPARK *Sparks_InitialiseSpark(const SPARK_CONTEXT context)
 
 void Sparks_Kill(SPARK *const spark)
 {
+    if (!spark->on) {
+        return;
+    }
     if (spark->dynamic != -1) {
         Sparks_FreeDynamic(spark->dynamic);
         spark->dynamic = -1;
     }
     spark->on = false;
     spark->life = 0;
+    m_FreeSlots[m_FreeCount++] = (int16_t)(spark - m_Sparks);
 }
 
 SPARK *Sparks_InitialiseSpriteSpark(
@@ -448,7 +466,7 @@ RESULT Sparks_Load(JSON_READ_IO *const io)
         spark->on = true;
         Sparks_Sync(spark);
     }
-    m_NextSpark = count < M_MAX_SPARKS ? count : 0;
+    M_RebuildFreeSlots();
 
     MUST(JSON_POP(io));
     return OK;
@@ -510,7 +528,7 @@ void Sparks_Reset(void)
         m_Dynamics[i] = (M_SPARK_DYNAMIC) {};
     }
     Handle_RegistryBumpAll(&m_SparkHandles);
-    m_NextSpark = 0;
+    M_RebuildFreeSlots();
     m_SmokeWind = (XZ_32) {};
     m_HairWindZ = 0;
     Sparks_ResetWind();
