@@ -45,7 +45,8 @@
 #define M_MAX_SPLASHES 1024
 #define M_BASE_SPLASHES 8
 #define M_SPLASH_SCALE 0.3f
-#define M_MAX_SPARK_SPLASHES 50
+#define M_MAX_SPARK_SPLASHES 12
+#define M_MAX_SPARK_SPLASH_SPOTS (M_MAX_SPARK_SPLASHES * 2)
 #define M_SPARK_SPLASH_REACH (8 * WALL_L)
 
 #define M_SNOW_SPAWN_DIST_MASK 0xFFF
@@ -69,6 +70,11 @@ typedef struct {
     int16_t frame_num;
     bool on;
 } M_SPLASH;
+
+typedef struct {
+    XYZ_32 pos;
+    float depth;
+} M_SPLASH_SPOT;
 
 typedef struct {
     XYZ_32 pos;
@@ -298,12 +304,46 @@ static void M_AddSplash(const XYZ_32 pos, const int16_t room_num)
     }
 }
 
+// Returns how far the spot lies ahead of the camera along the view direction
+// in the horizontal plane, or a negative value where the spot lies outside the
+// wedge in view.
+static float M_GetSplashDepth(
+    const XYZ_32 pos, const float dir_x, const float dir_z,
+    const float cos_wedge)
+{
+    const float dx = (float)(pos.x - g_Camera.pos.pos.x);
+    const float dz = (float)(pos.z - g_Camera.pos.pos.z);
+    const float depth = dx * dir_x + dz * dir_z;
+    if (depth <= 0.0f || depth < sqrtf(dx * dx + dz * dz) * cos_wedge) {
+        return -1.0f;
+    }
+    return depth;
+}
+
+// Keeps the nearest spots in the list, nearest first, and returns the new
+// length of the list.
+static int32_t M_AddSplashSpot(
+    M_SPLASH_SPOT *const spots, const int32_t num_spots, const XYZ_32 pos,
+    const float depth)
+{
+    int32_t i = MIN(num_spots, M_MAX_SPARK_SPLASH_SPOTS - 1);
+    if (num_spots == M_MAX_SPARK_SPLASH_SPOTS && depth >= spots[i].depth) {
+        return num_spots;
+    }
+    while (i > 0 && spots[i - 1].depth > depth) {
+        spots[i] = spots[i - 1];
+        i--;
+    }
+    spots[i] = (M_SPLASH_SPOT) { .pos = pos, .depth = depth };
+    return MIN(num_spots + 1, M_MAX_SPARK_SPLASH_SPOTS);
+}
+
 // Starts splashes at random spots on the floor that the rain reaches, spread
 // as the drops are. They are not made where the drops land, so that a drop
 // costs no floor test.
 // Where the game has no splash sprites, the splash is a few tiny sparks. They
 // share the pool with every other spark, so they come only near enough to be
-// seen, and only a few at a time.
+// seen, and only a few at a time, from the nearest spots in view.
 static void M_SpawnSplashes(int32_t reach, int32_t wedge)
 {
     if (!g_Config.visuals.enable_rain_splashes) {
@@ -321,21 +361,48 @@ static void M_SpawnSplashes(int32_t reach, int32_t wedge)
     }
     const int32_t count =
         (int32_t)(M_BASE_SPLASHES * m_Severity * M_GetRainSpread(reach, wedge));
-    int32_t num_sparks = 0;
+    if (has_sprites) {
+        for (int32_t i = 0; i < count; i++) {
+            const XYZ_32 pos = M_GetSpreadPos(base_pos, reach, wedge);
+            int32_t ceiling;
+            XYZ_32 landing;
+            int16_t room_num;
+            if (M_FindLanding(pos, &ceiling, &landing, &room_num)) {
+                M_AddSplash(landing, room_num);
+            }
+        }
+        return;
+    }
+
+    float dir_x = (float)(g_Camera.target.x - g_Camera.pos.x);
+    float dir_z = (float)(g_Camera.target.z - g_Camera.pos.z);
+    const float dir_len = sqrtf(dir_x * dir_x + dir_z * dir_z);
+    if (dir_len == 0.0f) {
+        return;
+    }
+    dir_x /= dir_len;
+    dir_z /= dir_len;
+    const float cos_wedge = Math_Cos(wedge) / (float)(1 << W2V_SHIFT);
+
+    M_SPLASH_SPOT spots[M_MAX_SPARK_SPLASH_SPOTS];
+    int32_t num_spots = 0;
     for (int32_t i = 0; i < count; i++) {
         const XYZ_32 pos = M_GetSpreadPos(base_pos, reach, wedge);
+        const float depth = M_GetSplashDepth(pos, dir_x, dir_z, cos_wedge);
+        if (depth >= 0.0f) {
+            num_spots = M_AddSplashSpot(spots, num_spots, pos, depth);
+        }
+    }
 
+    int32_t num_splashes = 0;
+    for (int32_t i = 0; i < num_spots && num_splashes < M_MAX_SPARK_SPLASHES;
+         i++) {
         int32_t ceiling;
         XYZ_32 landing;
         int16_t room_num;
-        if (!M_FindLanding(pos, &ceiling, &landing, &room_num)) {
-            continue;
-        }
-        if (has_sprites) {
-            M_AddSplash(landing, room_num);
-        } else if (num_sparks < M_MAX_SPARK_SPLASHES) {
+        if (M_FindLanding(spots[i].pos, &ceiling, &landing, &room_num)) {
             Sparks_TriggerRainSplash(landing);
-            num_sparks++;
+            num_splashes++;
         }
     }
 }
