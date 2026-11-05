@@ -127,6 +127,7 @@ typedef struct {
     SURFACE ceiling;
     uint8_t fx;
     bool stopper;
+    bool is_beetle_entry_point;
 } SECTOR;
 
 typedef struct {

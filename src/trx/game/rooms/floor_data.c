@@ -350,6 +350,29 @@ static bool M_TestSectorTrigger(
     return true;
 }
 
+static void M_ReinterpretTR4Sector(SECTOR *const sector)
+{
+    const MINE_CART_TYPE type = sector->mine_cart_type;
+    if (type == MINE_CART_NONE) {
+        return;
+    }
+
+    // Mine cart left became a field to store a trigger gate's logical value in
+    // TR4/5; a gate may not necessarily be present, but the trigger must always
+    // be disabled to begin with. Mine cart right became a flag for sectors
+    // where Lara can place a clockwork beetle.
+    if (type == MINE_CART_LEFT || type == MINE_CART_STOP) {
+        if (sector->trigger != nullptr) {
+            sector->trigger->enabled = false;
+        }
+    }
+    if (type == MINE_CART_RIGHT || type == MINE_CART_STOP) {
+        sector->is_beetle_entry_point = true;
+    }
+
+    sector->mine_cart_type = MINE_CART_NONE;
+}
+
 void Room_ParseFloorData(
     const int16_t *floor_data, const int32_t floor_data_size)
 {
@@ -359,6 +382,9 @@ void Room_ParseFloorData(
             SECTOR *const sector = &room->sectors[j];
             Room_PopulateSectorData(
                 sector, floor_data, floor_data_size, sector->idx, M_NULL_INDEX);
+            if (g_TRVersion >= 4) {
+                M_ReinterpretTR4Sector(sector);
+            }
         }
     }
 }
