@@ -9,6 +9,11 @@ local function start_lara_on_jeep()
   trx.waypoints.current = 1
 end
 
+local function test_jeep_room(room_num)
+  -- Prevent Lara's jeep closing gates 77 and 78 ahead of the other jeep.
+  trx.objects.jeep.properties.is_heavy = room_num ~= 52 and room_num ~= 68
+end
+
 trx.events.on_game_start(function(is_save)
   trx.items[6].properties.requires_heavy_trigger = true
   trx.items[8].properties.requires_heavy_trigger = true
@@ -25,13 +30,14 @@ trx.events.on_game_start(function(is_save)
 
   if not is_save then
     start_lara_on_jeep()
+  else
+    local jeep = trx.items[0]
+    test_jeep_room(jeep.room_num)
   end
 
   trx.events.on_room_change(function(item, old_room_num, new_room_num)
-    -- Prevent Lara's jeep closing gates 77 and 78 ahead of the other jeep.
     if item.object_id == trx.catalog.objects.jeep then
-      trx.objects.jeep.properties.is_heavy = new_room_num ~= 52
-        and new_room_num ~= 68
+      test_jeep_room(new_room_num)
     end
   end)
 end)
