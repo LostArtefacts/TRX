@@ -255,6 +255,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->interact_target.move_count = 0;
     lara_info->rope.index = NO_ROPE;
 
+    Item_ResetMeshBits(lara_item);
     Lara_Extinguish();
     M_ReinitialiseGunMeshes();
     Lara_Skin_ApplyOutfit();

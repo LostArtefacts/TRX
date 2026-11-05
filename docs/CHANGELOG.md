@@ -4,6 +4,7 @@
 
 **Rendering**
 - Fixed certain sparks, such as smoke and gas, not being drawn during fixed or cinematic camera sequences when Lara is far from the spawn position (OG bug) (TRX1966)
+- Fixed Lara's legs remaining invisible if the fly cheat is entered when she is in a kayak (#7085 / TRX1974)
 
 **Developer console**
 - Fixed `/play` showing the wrong level number on the stats screen, such as "1 of 18" in Venice (regression from 1.9)
