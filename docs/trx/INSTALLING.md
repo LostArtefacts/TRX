@@ -1433,6 +1433,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── inventory_models.bin
 │   │   │   ├── karnak_fd.bin
 │   │   │   ├── kv5_textures.bin
+│   │   │   ├── lake_fd.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── pickup_aid.bin
@@ -3087,6 +3088,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── inventory_models.bin
     │   │   │   │   ├── karnak_fd.bin
     │   │   │   │   ├── kv5_textures.bin
+    │   │   │   │   ├── lake_fd.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   ├── pickup_aid.bin

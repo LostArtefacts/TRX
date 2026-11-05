@@ -14,6 +14,9 @@
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
 - Fixed pickup aids not showing in heavy rain when rain splashes are enabled (TRX1962, regression from 1.12)
 
+**TR4**
+- Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
+
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
 - Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished

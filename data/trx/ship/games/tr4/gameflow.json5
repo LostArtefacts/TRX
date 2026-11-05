@@ -222,6 +222,9 @@
                 {"type": "play_fmv", "fmv_id": 9}, // NB: only if next_level == 10; hardcoded
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "lake_fd.bin",
+            ],
         },
 
         // Dummy - needed until triggers can be edited to point to the correct level and/or replace any hardcoded sequence checks
