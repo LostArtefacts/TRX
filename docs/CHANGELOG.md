@@ -1,4 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.12...develop) - ××××-××-××
+**UI**
+- Fixed a Lua error in the TR4 save and load lists (#7083 / TRX1973)
+
 **Rendering**
 - Fixed certain sparks, such as smoke and gas, not being drawn during fixed or cinematic camera sequences when Lara is far from the spawn position (OG bug) (TRX1966)
 

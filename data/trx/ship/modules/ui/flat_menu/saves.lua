@@ -192,6 +192,7 @@ local function open(ctx, kind, pick, on_done, stays)
     elseif state.selected > state.first + shown - 1 then
       state.first = state.selected - shown + 1
     end
+    state.first = math.max(1, math.min(state.first, count - shown + 1))
     state.rows = {}
     for i = 1, shown do
       local index = state.first + i - 1
