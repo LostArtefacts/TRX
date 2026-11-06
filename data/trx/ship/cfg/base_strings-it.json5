@@ -1672,8 +1672,8 @@
             "description": "Fonde la geometria distante con il colore della nebbia seguendo la stessa logica degli indici di profondità della versione PlayStation: basandosi sul reciproco della distanza (1/distanza) anziché sulla distanza stessa, con il calcolo eseguito per singolo vertice, il che genera bande di sfumatura sulle superfici estese.",
         },
         "rendering.enable_ps1_pixel_aspect": {
-            "title": "\\{review}Proporzioni dei pixel PlayStation",
-            "description": "\\{review}Mostra il mondo di gioco più stretto, come faceva la PlayStation su un televisore. L'immagine riempie comunque lo schermo. L'interfaccia non cambia.",
+            "title": "Proporzioni pixel PlayStation",
+            "description": "Mostra l'immagine del mondo di gioco orizzontalmente più stretta, come avveniva su PlayStation. L'immagine riempie comunque lo schermo. L'interfaccia utente non viene influenzata.",
         },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtro trapezoidale",
@@ -2075,8 +2075,8 @@
             "description": "Abilita il cielo nei livelli supportati.",
         },
         "visuals.enable_spherical_fog": {
-            "title": "\\{review}Nebbia sferica",
-            "description": "\\{review}Fa dipendere la nebbia dalla distanza dalla telecamera, così ruotare la telecamera non cambia quanto lontano si vede. Se disattivata, la nebbia dipende dalla profondità lungo la direzione di vista, come nei giochi originali, e i bordi dello schermo mostrano più lontano del centro.",
+            "title": "Nebbia sferica",
+            "description": "Fa sì che la nebbia dipenda dalla distanza dalla telecamera, in modo che ruotare la visuale non modifichi la distanza visibile. Se disabilitata, la nebbia dipende dalla direzione della visuale, come nei giochi originali; in tal caso, ai bordi dello schermo la visibilità risulterà maggiore rispetto al centro.",
         },
         "visuals.enable_static_lighting": {
             "title": "Illuminazione mesh statiche",
