@@ -2412,6 +2412,9 @@
         "blade": {
             "name": "Wall-mounted Blade",
         },
+        "blade_ring": {
+            "name": "Blade Ring",
+        },
         "blood": {
             "name": "Blood",
         },

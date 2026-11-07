@@ -2397,6 +2397,9 @@
         "blade": {
             "name": "\\{review}Клинок на стене",
         },
+        "blade_ring": {
+            "name": "\\{review}Кольцо клинков",
+        },
         "blood": {
             "name": "\\{review}Кровь",
         },
