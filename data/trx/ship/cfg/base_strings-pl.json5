@@ -2397,6 +2397,9 @@
         "blade": {
             "name": "Ostrze na ścianie",
         },
+        "blade_ring": {
+            "name": "\\{review}Pierścień ostrzy",
+        },
         "blood": {
             "name": "Krew",
         },

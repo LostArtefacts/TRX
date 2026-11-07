@@ -2409,6 +2409,9 @@
         "blade": {
             "name": "Cuchilla de pared",
         },
+        "blade_ring": {
+            "name": "\\{review}Anillo de Cuchillas",
+        },
         "blood": {
             "name": "Sangre",
         },

@@ -2397,6 +2397,9 @@
         "blade": {
             "name": "Wall-mounted Blade",
         },
+        "blade_ring": {
+            "name": "\\{review}Klingenring",
+        },
         "blood": {
             "name": "\\{review}Blut",
         },
