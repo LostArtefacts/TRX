@@ -3889,7 +3889,7 @@ This page lists documented moveable object properties.
 <tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
 <tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
 <tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
-<tr><td><code>battle_track_1</code></td><td align="center">-1 (MX_BATTLE_THEME)</td><td align="center">49 (MX_BATTLE_THEME)</td><td align="center">-1 (MX_BATTLE_THEME)</td><td>Random battle music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>battle_track_1</code></td><td align="center">-1 (MX_BATTLE_THEME)</td><td align="center">49 (MX_BATTLE_THEME)</td><td align="center">-1 (MX_BATTLE_THEME)</td><td>Random battle music track pool, slot 1. -1 = disabled. Value range: minimum -1.</td></tr>
 <tr><td><code>battle_track_2</code></td><td colspan="3" align="center">-1</td><td>Random battle music track pool, slot 2. -1 = disabled.</td></tr>
 <tr><td><code>battle_track_3</code></td><td colspan="3" align="center">-1</td><td>Random battle music track pool, slot 3. -1 = disabled.</td></tr>
 <tr><td><code>battle_track_4</code></td><td colspan="3" align="center">-1</td><td>Random battle music track pool, slot 4. -1 = disabled.</td></tr>

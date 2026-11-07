@@ -57,7 +57,8 @@ static void M_Setup(OBJECT *const obj)
             "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
         OBJECT_PROPERTY_STORED(
             "battle_track_1", Music_IDToSlot(MX_BATTLE_THEME),
-            "Random battle music track pool, slot 1. -1 = disabled."),
+            "Random battle music track pool, slot 1. -1 = disabled. Value "
+            "range: minimum -1."),
         OBJECT_PROPERTY_STORED(
             "battle_track_2", -1,
             "Random battle music track pool, slot 2. -1 = disabled."),
