@@ -2409,6 +2409,9 @@
         "blade": {
             "name": "Lama a Parete",
         },
+        "blade_ring": {
+            "name": "\\{review}Anello di Lame",
+        },
         "blood": {
             "name": "Sangue",
         },

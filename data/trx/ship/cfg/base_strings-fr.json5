@@ -2397,6 +2397,9 @@
         "blade": {
             "name": "\\{review}Lame Murale",
         },
+        "blade_ring": {
+            "name": "\\{review}Anneau de Lames",
+        },
         "blood": {
             "name": "\\{review}Sang",
         },

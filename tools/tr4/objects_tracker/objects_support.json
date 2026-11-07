@@ -29,7 +29,7 @@
   "big_beetle":               { "status": "not implemented",       "todo": "port from BIG_BEETLE"              },
   "big_scorpion":             { "status": "not implemented",       "todo": "port from SCORPION"                },
   "bird_blade":               { "status": "not implemented",       "todo": "port from BIRD_BLADE"              },
-  "blade_ring":               { "status": "not implemented",       "todo": "port from STARGATE"                },
+  "blade_ring":               { "status": "fully implemented" },
   "boar":                     { "status": "fully implemented" },
   "bouncing_boulder":         { "status": "fully implemented" },
   "bridge_flat":              { "status": "fully implemented" },

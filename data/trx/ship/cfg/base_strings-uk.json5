@@ -2409,6 +2409,9 @@
         "blade": {
             "name": "\\{review}Настінне лезо",
         },
+        "blade_ring": {
+            "name": "\\{review}Кільце лез",
+        },
         "blood": {
             "name": "\\{review}Кров",
         },
