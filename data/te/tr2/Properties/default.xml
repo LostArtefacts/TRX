@@ -8,7 +8,7 @@
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 2. -1 = disabled." displayName="Track 2" internalName="track_2" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 3. -1 = disabled." displayName="Track 3" internalName="track_3" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 4. -1 = disabled." displayName="Track 4" internalName="track_4" minValue="-1" type="Int" />
-        <property category="TRX" defaultValue="49" description="Random battle music track pool, slot 1. -1 = disabled." displayName="Battle Track 1" internalName="battle_track_1" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="49" description="Random battle music track pool, slot 1. -1 = disabled." displayName="Battle Track 1" internalName="battle_track_1" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random battle music track pool, slot 2. -1 = disabled." displayName="Battle Track 2" internalName="battle_track_2" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random battle music track pool, slot 3. -1 = disabled." displayName="Battle Track 3" internalName="battle_track_3" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random battle music track pool, slot 4. -1 = disabled." displayName="Battle Track 4" internalName="battle_track_4" minValue="-1" type="Int" />
