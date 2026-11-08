@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 862 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 863 names
 
     Every object TRX has a name for.
 
@@ -178,7 +178,7 @@ convert between the two.
     `LIGHTNING_EMITTER`, `LION`, `LIONESS`, `LIZARD`, `LOAD_OPTION`,
     `M16_AMMO_ITEM`, `M16_AMMO_OPTION`, `M16_FLASH`, `M16_ITEM`, `M16_OPTION`,
     `MAGNUMS_AMMO_ITEM`, `MAGNUMS_AMMO_OPTION`, `MAGNUMS_ITEM`,
-    `MAGNUMS_OPTION`, `MESH_SWAP_1`, `MESH_SWAP_2`, `MESH_SWAP_3`,
+    `MAGNUMS_OPTION`, `MAPPER`, `MESH_SWAP_1`, `MESH_SWAP_2`, `MESH_SWAP_3`,
     `MIDAS_TOUCH`, `MINE`, `MINE_CART`, `MINI_COPTER`, `MISSILE_ATLANTEAN_BOMB`,
     `MISSILE_ATLANTEAN_SHARD`, `MISSILE_FLAME`, `MISSILE_HARPOON`,
     `MISSILE_KNIFE`, `MISSILE_POISON`, `MONKEY`, `MONK_1`, `MONK_2`, `MONK_3`,
@@ -282,7 +282,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 223 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 224 names
 
     Every sound sample TRX has a name for.
 
@@ -321,7 +321,7 @@ convert between the two.
     `LARA_SHOTGUN`, `LARA_SHOTGUN_SHELL`, `LARA_SLIDING`, `LARA_SPLASH`,
     `LARA_THUD`, `LARA_UZI_FIRE`, `LARA_UZI_STOP`, `LARSON_SPEECH`,
     `LAVA_FOUNTAIN`, `LION_HURT`, `LONDON_SWAT_FIRE`, `LOOP_FOR_SMALL_FIRES`,
-    `LOWERING_BLOCK`, `M16_FIRE`, `M16_STOP`, `MACAQUE_ROLL`,
+    `LOWERING_BLOCK`, `M16_FIRE`, `M16_STOP`, `MACAQUE_ROLL`, `MAPPER_LASER`,
     `MARCO_BARTOLLI_TRANSFORM`, `MASSIVE_CRASH`, `MENU_CHOOSE`, `MENU_COMPASS`,
     `MENU_GAMEBOY`, `MENU_GUNS`, `MENU_LARA_HOME`, `MENU_MEDI`, `MENU_PASSPORT`,
     `MENU_ROTATE`, `MENU_SPININ`, `MENU_SPINOUT`, `MENU_STOPWATCH`,

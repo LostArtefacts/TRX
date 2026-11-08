@@ -3136,6 +3136,9 @@
         "magnums_item": {
             "name": "Магнумы",
         },
+        "mapper": {
+            "name": "\\{review}Указатель",
+        },
         "mesh_swap_1": {
             "name": "\\{review}Замена модели 1",
         },

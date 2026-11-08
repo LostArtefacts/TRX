@@ -3136,6 +3136,9 @@
         "magnums_item": {
             "name": "Magnumy",
         },
+        "mapper": {
+            "name": "\\{review}Wskaźnik",
+        },
         "mesh_swap_1": {
             "name": "Zamiana obiektu 1",
         },

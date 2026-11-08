@@ -3136,6 +3136,9 @@
         "magnums_item": {
             "name": "Magnums",
         },
+        "mapper": {
+            "name": "\\{review}Indicateur",
+        },
         "mesh_swap_1": {
             "name": "\\{review}Échange de Maille 1",
         },

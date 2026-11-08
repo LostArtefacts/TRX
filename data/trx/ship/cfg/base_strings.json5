@@ -3222,6 +3222,9 @@
             "name": "Magnums",
         },
         "magnums_option": "$objects/magnums_item",
+        "mapper": {
+            "name": "Mapper",
+        },
         "mesh_swap_1": {
             "name": "Mesh Swap 1",
         },
