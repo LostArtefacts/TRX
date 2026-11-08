@@ -3817,6 +3817,9 @@
         "spider": {
             "name": "\\{review}Павук",
         },
+        "spike_ball": {
+            "name": "\\{review}Куля з шипами",
+        },
         "spike_wall": {
             "name": "\\{review}Стіна з шипами",
         },

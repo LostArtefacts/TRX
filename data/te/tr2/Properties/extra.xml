@@ -463,6 +463,11 @@
         <property category="TRX" defaultValue="64" description="Maximum splash damage dealt by the big laser bolt." displayName="Big Laser Bolt Splash Damage" internalName="big_laser_bolt_splash_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="25" description="Damage dealt by plasma ball direct hits." displayName="Plasma Ball Damage" internalName="plasma_ball_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SPIKE_BALL-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="50" description="Damage dealt when Lara touches the ball." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="150" description="Damage dealt when the prongs hit Lara." displayName="Prong Damage" internalName="prong_damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_STHPAC_MERCENARY-->
     <moveable id="-1">
         <property category="TRX" defaultValue="30" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

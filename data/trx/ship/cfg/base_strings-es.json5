@@ -3739,6 +3739,9 @@
         "spider": {
             "name": "Araña",
         },
+        "spike_ball": {
+            "name": "\\{review}Bola de pinchos",
+        },
         "spike_wall": {
             "name": "Pared de pinchos",
         },

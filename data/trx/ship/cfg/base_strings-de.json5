@@ -3787,6 +3787,9 @@
         "spider": {
             "name": "Spinne",
         },
+        "spike_ball": {
+            "name": "\\{review}Stachelkugel",
+        },
         "spike_wall": {
             "name": "Stachel-Wand",
         },

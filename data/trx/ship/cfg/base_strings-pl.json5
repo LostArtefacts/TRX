@@ -3787,6 +3787,9 @@
         "spider": {
             "name": "Pająk",
         },
+        "spike_ball": {
+            "name": "\\{review}Kula z kolcami",
+        },
         "spike_wall": {
             "name": "Ściana z kolcami",
         },

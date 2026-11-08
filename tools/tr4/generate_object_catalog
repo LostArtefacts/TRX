@@ -371,6 +371,7 @@ ALIAS_MAP: dict[str, str] = {
     "STARGATE": "O_BLADE_RING",
     "FLOOR_4BLADE": "O_FLOOR_BLADE",
     "ROOF_4BLADE": "O_ROOF_BLADE",
+    "SPIKEBALL": "O_SPIKE_BALL",
 }
 
 KNOWN_UNUSED = {

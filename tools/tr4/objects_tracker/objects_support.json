@@ -217,7 +217,7 @@
   "smoke_emitter_black":      { "status": "partially implemented", "todo": "check 100% parity"                 },
   "soldier_1":                { "status": "not implemented",       "todo": "port from TROOPS"                  },
   "solider_2":                { "status": "not implemented",       "todo": "port from SAS"                     },
-  "spike_ball":               { "status": "not implemented",       "todo": "port from SPIKEBALL"               },
+  "spike_ball":               { "status": "fully implemented" },
   "sprinkler":                { "status": "not implemented",       "todo": "port from SPRINKLER"               },
   "steam_emitter":            { "status": "partially implemented", "todo": "check 100% parity"                 },
   "swinging_chain":           { "status": "not implemented",       "todo": "port from CHAIN"                   },
