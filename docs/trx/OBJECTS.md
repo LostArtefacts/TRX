@@ -1167,6 +1167,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### floor_blade
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt when Lara touches the blades.</td></tr>
+<tr><td><code>snap_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt when the blades snap shut on Lara.</td></tr>
+</tbody>
+</table>
+
 #### generic_trap_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
@@ -1418,6 +1427,15 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara is struck by the spikes.</td></tr>
+</tbody>
+</table>
+
+#### roof_blade
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt when Lara touches the blades.</td></tr>
+<tr><td><code>snap_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt when the blades snap shut on Lara.</td></tr>
 </tbody>
 </table>
 

@@ -2754,6 +2754,9 @@
         "flickering_light": {
             "name": "Luz parpadeante",
         },
+        "floor_blade": {
+            "name": "\\{review}Hoja de suelo",
+        },
         "floor_trapdoor_1": {
             "name": "Trampilla de suelo 1",
         },
@@ -3588,6 +3591,9 @@
         },
         "rolling_ball_4": {
             "name": "Roca redonda 4|Bola rodante 4",
+        },
+        "roof_blade": {
+            "name": "\\{review}Hoja del tejado",
         },
         "rope": {
             "name": "Cuerda",

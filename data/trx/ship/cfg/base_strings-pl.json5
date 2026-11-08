@@ -2754,6 +2754,9 @@
         "flickering_light": {
             "name": "Migoczące światło",
         },
+        "floor_blade": {
+            "name": "\\{review}Ostrze podłogowe",
+        },
         "floor_trapdoor_1": {
             "name": "\\{review}Klapa podłogowa 1",
         },
@@ -3630,6 +3633,9 @@
         },
         "rolling_spikes": {
             "name": "\\{review}Toczące się kolce",
+        },
+        "roof_blade": {
+            "name": "\\{review}Ostrze dachowe",
         },
         "rope": {
             "name": "\\{review}Lina",

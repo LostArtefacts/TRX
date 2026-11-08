@@ -165,6 +165,11 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="2" description="Interval between flame bursts, in seconds." displayName="Interval" internalName="interval" minValue="0" type="Float" />
     </moveable>
+    <!--placeholder for O_FLOOR_BLADE..O_ROOF_BLADE-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="20" description="Damage dealt when Lara touches the blades." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="200" description="Damage dealt when the blades snap shut on Lara." displayName="Snap Damage" internalName="snap_damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_GENERIC_TRAP_1..O_GENERIC_TRAP_10-->
     <moveable id="-1">
         <property category="TRX" defaultValue="-1" description="A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging." displayName="Touch Mask" internalName="touch_mask" minValue="-1" type="Int" />

@@ -2766,6 +2766,9 @@
         "flickering_light": {
             "name": "Luce Tremolante",
         },
+        "floor_blade": {
+            "name": "\\{review}Lama del pavimento",
+        },
         "floor_trapdoor_1": {
             "name": "Botola da Pavimento 1",
         },
@@ -3657,6 +3660,9 @@
         },
         "rolling_spikes": {
             "name": "Spuntoni Rotolanti",
+        },
+        "roof_blade": {
+            "name": "\\{review}Lama del tetto",
         },
         "rope": {
             "name": "Corda",
