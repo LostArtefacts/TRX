@@ -2451,6 +2451,9 @@
         "bubble_emitter": {
             "name": "Emisor de burbujas",
         },
+        "bull_guardian": {
+            "name": "\\{review}Guardián taurino",
+        },
         "camera_target": {
             "name": "Objetivo de la cámara",
         },

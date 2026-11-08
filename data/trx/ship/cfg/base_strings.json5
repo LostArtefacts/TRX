@@ -2457,6 +2457,9 @@
         "bubble_emitter": {
             "name": "Bubble Emitter",
         },
+        "bull_guardian": {
+            "name": "Bull Guardian",
+        },
         "camera_target": {
             "name": "Camera Target",
         },

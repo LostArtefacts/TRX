@@ -2454,6 +2454,9 @@
         "bubble_emitter": {
             "name": "\\{review}Джерело бульбашок",
         },
+        "bull_guardian": {
+            "name": "\\{review}Вартовий-бик",
+        },
         "camera_target": {
             "name": "\\{review}Ціль камери",
         },
