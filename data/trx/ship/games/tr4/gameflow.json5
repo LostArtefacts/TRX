@@ -267,6 +267,9 @@
                 {"type": "play_fmv", "fmv_id": 6},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "guardian_animating_bounds.bin",
+            ],
         },
 
         // 13. Desert Railroad
