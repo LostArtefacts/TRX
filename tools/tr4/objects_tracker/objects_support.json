@@ -129,7 +129,7 @@
   "pickup_item_1":            { "status": "partially implemented", "todo": "check 100% parity"                 },
   "pickup_item_2":            { "status": "partially implemented", "todo": "check 100% parity"                 },
   "planet_effect":            { "status": "not implemented",       "todo": "port from PLANET_EFFECT"           },
-  "plinth_blade":             { "status": "not implemented",       "todo": "port from PLINTH_BLADE"            },
+  "plinth_blade":             { "status": "fully implemented" },
   "plinth_receptacle":        { "status": "not implemented",       "todo": "port from STATUE_PLINTH"           },
   "plough":                   { "status": "fully implemented" },
   "poison_dart":              { "status": "fully implemented" },

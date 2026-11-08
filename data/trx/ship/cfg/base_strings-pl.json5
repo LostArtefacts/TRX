@@ -3331,6 +3331,9 @@
         "player_10": {
             "name": "Aktor 10",
         },
+        "plinth_blade": {
+            "name": "\\{review}Ostrze cokołu",
+        },
         "plough": {
             "name": "\\{review}Pług",
         },

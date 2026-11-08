@@ -3316,6 +3316,9 @@
         "player_10": {
             "name": "Actor de escena cinematográfica 10",
         },
+        "plinth_blade": {
+            "name": "\\{review}Hoja del pedestal",
+        },
         "pods": {
             "name": "Cápsula",
         },

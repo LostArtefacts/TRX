@@ -3358,6 +3358,9 @@
         "player_10": {
             "name": "Attore Intermezzo 10",
         },
+        "plinth_blade": {
+            "name": "\\{review}Lama del piedistallo",
+        },
         "plough": {
             "name": "Lame Rotanti",
         },

@@ -3331,6 +3331,9 @@
         "player_10": {
             "name": "\\{review}Acteur de cinématique 10",
         },
+        "plinth_blade": {
+            "name": "\\{review}Lame de socle",
+        },
         "plough": {
             "name": "\\{review}Charrue",
         },

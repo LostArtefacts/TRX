@@ -3331,6 +3331,9 @@
         "player_10": {
             "name": "Zwischensequenz-Schauspieler 10",
         },
+        "plinth_blade": {
+            "name": "\\{review}Sockelklinge",
+        },
         "plough": {
             "name": "\\{review}Pflug",
         },

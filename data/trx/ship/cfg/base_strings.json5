@@ -3434,6 +3434,9 @@
         "player_10": {
             "name": "Cutscene Actor 10",
         },
+        "plinth_blade": {
+            "name": "Plinth Blade",
+        },
         "plough": {
             "name": "Plough",
         },
