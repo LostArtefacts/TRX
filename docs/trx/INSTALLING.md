@@ -1428,6 +1428,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── burial_textures.bin
 │   │   │   ├── controls_models.bin
 │   │   │   ├── font.bin
+│   │   │   ├── guardian_animating_bounds.bin
 │   │   │   ├── guide_gun.bin
 │   │   │   ├── henchman_jeep.bin
 │   │   │   ├── inventory_models.bin
@@ -3083,6 +3084,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── burial_textures.bin
     │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── font.bin
+    │   │   │   │   ├── guardian_animating_bounds.bin
     │   │   │   │   ├── guide_gun.bin
     │   │   │   │   ├── henchman_jeep.bin
     │   │   │   │   ├── inventory_models.bin
