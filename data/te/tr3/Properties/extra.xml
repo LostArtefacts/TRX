@@ -293,6 +293,10 @@
         <property category="TRX" defaultValue="70" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_PLINTH_BLADE-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="200" description="Damage dealt when Lara touches the blades." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_PLOUGH-->
     <moveable id="-1">
         <property category="TRX" defaultValue="50" description="Damage dealt when Lara is struck by the blades." displayName="Damage" internalName="damage" minValue="0" type="Int" />

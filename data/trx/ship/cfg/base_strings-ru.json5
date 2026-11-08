@@ -3331,6 +3331,9 @@
         "player_10": {
             "name": "\\{review}Актер катсцены 10",
         },
+        "plinth_blade": {
+            "name": "\\{review}Клинок постамента",
+        },
         "plough": {
             "name": "\\{review}Плуг",
         },

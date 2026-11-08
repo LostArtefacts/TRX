@@ -3358,6 +3358,9 @@
         "player_10": {
             "name": "\\{review}Актор кат-сцени 10",
         },
+        "plinth_blade": {
+            "name": "\\{review}Лезо постаменту",
+        },
         "plough": {
             "name": "\\{review}Плуг",
         },
