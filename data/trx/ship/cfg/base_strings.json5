@@ -3940,6 +3940,9 @@
         "spider": {
             "name": "Spider",
         },
+        "spike_ball": {
+            "name": "Spike ball",
+        },
         "spike_wall": {
             "name": "Spike Wall",
         },

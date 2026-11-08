@@ -3817,6 +3817,9 @@
         "spider": {
             "name": "Ragno",
         },
+        "spike_ball": {
+            "name": "\\{review}Sfera chiodata",
+        },
         "spike_wall": {
             "name": "Parete con Spuntoni",
         },

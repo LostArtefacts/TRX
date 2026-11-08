@@ -3787,6 +3787,9 @@
         "spider": {
             "name": "\\{review}Araignée",
         },
+        "spike_ball": {
+            "name": "\\{review}Boule à pointes",
+        },
         "spike_wall": {
             "name": "\\{review}Mur de Pics",
         },

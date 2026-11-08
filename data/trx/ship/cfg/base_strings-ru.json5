@@ -3787,6 +3787,9 @@
         "spider": {
             "name": "\\{review}Паук",
         },
+        "spike_ball": {
+            "name": "\\{review}Шипованный шар",
+        },
         "spike_wall": {
             "name": "\\{review}Стена с шипами",
         },

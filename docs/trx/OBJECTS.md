@@ -1483,6 +1483,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### spike_ball
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the ball.</td></tr>
+<tr><td><code>prong_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt when the prongs hit Lara.</td></tr>
+</tbody>
+</table>
+
 #### spike_wall
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (85)</th><th align="center">TR3 (114)</th><th>Description</th></tr></thead>

@@ -390,6 +390,11 @@
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="25" description="Damage dealt by bite attacks." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SPIKE_BALL-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="50" description="Damage dealt when Lara touches the ball." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="150" description="Damage dealt when the prongs hit Lara." displayName="Prong Damage" internalName="prong_damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_SWINGING_AXE-->
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Damage dealt while Lara is touching the swinging axe." displayName="Damage" internalName="damage" minValue="0" type="Int" />
