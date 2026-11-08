@@ -2457,6 +2457,9 @@
         "carcass": {
             "name": "Cadáver",
         },
+        "catwalk_blade": {
+            "name": "\\{review}Hoja de la pasarela",
+        },
         "ceiling_spikes": {
             "name": "Techo con pinchos",
         },

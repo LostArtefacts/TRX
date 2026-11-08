@@ -2448,6 +2448,9 @@
         "carcass": {
             "name": "Padlina",
         },
+        "catwalk_blade": {
+            "name": "\\{review}Ostrze kładki",
+        },
         "ceiling_spikes": {
             "name": "Sufit z kolcami",
         },

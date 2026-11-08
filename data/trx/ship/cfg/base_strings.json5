@@ -2463,6 +2463,9 @@
         "carcass": {
             "name": "Carcass",
         },
+        "catwalk_blade": {
+            "name": "Catwalk Blade",
+        },
         "ceiling_spikes": {
             "name": "Spiky Ceiling",
         },

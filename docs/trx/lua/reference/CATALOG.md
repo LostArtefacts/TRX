@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 858 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 859 names
 
     Every object TRX has a name for.
 
@@ -81,11 +81,12 @@ convert between the two.
     `BLOOD_PINK`, `BLUE_LIGHT`, `BOAR`, `BOAT`, `BOAT_BITS`, `BODY_PART`,
     `BOUNCING_BOULDER`, `BRIDGE_FLAT`, `BRIDGE_TILT_1`, `BRIDGE_TILT_2`,
     `BUBBLE_1`, `BUBBLE_2`, `BUBBLE_EMITTER`, `CAMERA_TARGET`, `CARCASS`,
-    `CEILING_SPIKES`, `CEILING_TRAPDOOR_1`, `CEILING_TRAPDOOR_2`, `CENTAUR`,
-    `CENTAUR_STATUE`, `CIVILIAN`, `CLAW_MUTANT`, `CLAW_MUTANT_PLASMA_BALL`,
-    `CLIMBING_POLE`, `CLOCK_CHIMES`, `COBRA`, `COG_1`, `COG_2`, `COG_3`,
-    `COG_SWITCH`, `COMBAT_END`, `COMPASS_OPTION`, `COMPY`, `CONTROLS_OPTION`,
-    `COPTER`, `COWBOY`, `CRAWLER_MUTANT`, `CROCODILE`, `CROSSBOW_AMMO_1_ITEM`,
+    `CATWALK_BLADE`, `CEILING_SPIKES`, `CEILING_TRAPDOOR_1`,
+    `CEILING_TRAPDOOR_2`, `CENTAUR`, `CENTAUR_STATUE`, `CIVILIAN`,
+    `CLAW_MUTANT`, `CLAW_MUTANT_PLASMA_BALL`, `CLIMBING_POLE`, `CLOCK_CHIMES`,
+    `COBRA`, `COG_1`, `COG_2`, `COG_3`, `COG_SWITCH`, `COMBAT_END`,
+    `COMPASS_OPTION`, `COMPY`, `CONTROLS_OPTION`, `COPTER`, `COWBOY`,
+    `CRAWLER_MUTANT`, `CROCODILE`, `CROSSBOW_AMMO_1_ITEM`,
     `CROSSBOW_AMMO_2_ITEM`, `CROSSBOW_AMMO_2_OPTION`, `CROSSBOW_AMMO_3_ITEM`,
     `CROSSBOW_AMMO_3_OPTION`, `CROSSBOW_AMMO_OPTION`, `CROSSBOW_BOLT`,
     `CROSSBOW_ITEM`, `CROSSBOW_OPTION`, `CROW`, `CROWBAR_ANIM`, `CROWBAR_ITEM`,
