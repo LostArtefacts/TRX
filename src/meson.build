@@ -771,6 +771,7 @@ common_sources = [
   'trx/game/objects/general/lights/on_off_light.c',
   'trx/game/objects/general/lights/pulse_light.c',
   'trx/game/objects/general/lights/strobe_light.c',
+  'trx/game/objects/general/mapper.c',
   'trx/game/objects/general/mini_copter.c',
   'trx/game/objects/general/moored_boat.c',
   'trx/game/objects/general/moving_bar.c',

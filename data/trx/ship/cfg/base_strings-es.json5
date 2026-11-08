@@ -3124,6 +3124,9 @@
         "magnums_item": {
             "name": "Mágnums",
         },
+        "mapper": {
+            "name": "\\{review}Indicador",
+        },
         "mesh_swap_1": {
             "name": "Intercambio de malla 1",
         },

@@ -3163,6 +3163,9 @@
         "magnums_item": {
             "name": "Magnum",
         },
+        "mapper": {
+            "name": "\\{review}Indicatore",
+        },
         "mesh_swap_1": {
             "name": "Cambio Costume 1",
         },
