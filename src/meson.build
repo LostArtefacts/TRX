@@ -833,6 +833,7 @@ common_sources = [
   'trx/game/objects/traps/fire_head.c',
   'trx/game/objects/traps/flame_emitter.c',
   'trx/game/objects/traps/flame_emitter_tr4.c',
+  'trx/game/objects/traps/floor_roof_blade.c',
   'trx/game/objects/traps/generic_trap.c',
   'trx/game/objects/traps/gondola.c',
   'trx/game/objects/traps/hook.c',

@@ -2754,6 +2754,9 @@
         "flickering_light": {
             "name": "Solas Boillsgeach",
         },
+        "floor_blade": {
+            "name": "Iarann Làr",
+        },
         "floor_trapdoor_1": {
             "name": "Làr-lùbte 1",
         },
@@ -3630,6 +3633,9 @@
         },
         "rolling_spikes": {
             "name": "Spìcean-rollaidh",
+        },
+        "roof_blade": {
+            "name": "Iarann a' Mhullaich",
         },
         "rope": {
             "name": "Ròpa",

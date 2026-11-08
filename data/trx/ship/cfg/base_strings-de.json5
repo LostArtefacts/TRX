@@ -2754,6 +2754,9 @@
         "flickering_light": {
             "name": "\\{review}Flackerndes Licht",
         },
+        "floor_blade": {
+            "name": "\\{review}Boden-Klinge",
+        },
         "floor_trapdoor_1": {
             "name": "\\{review}Bodenfalltür 1",
         },
@@ -3630,6 +3633,9 @@
         },
         "rolling_spikes": {
             "name": "\\{review}Rollende Stacheln",
+        },
+        "roof_blade": {
+            "name": "\\{review}Dachklinge",
         },
         "rope": {
             "name": "\\{review}Seil",

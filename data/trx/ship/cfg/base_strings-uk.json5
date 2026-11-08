@@ -2766,6 +2766,9 @@
         "flickering_light": {
             "name": "\\{review}Мерехтливе світло",
         },
+        "floor_blade": {
+            "name": "\\{review}Підлогове лезо",
+        },
         "floor_trapdoor_1": {
             "name": "\\{review}Люк у підлозі 1",
         },
@@ -3657,6 +3660,9 @@
         },
         "rolling_spikes": {
             "name": "\\{review}Шипи, що котяться",
+        },
+        "roof_blade": {
+            "name": "\\{review}Покрівельне лезо",
         },
         "rope": {
             "name": "\\{review}Мотузка",

@@ -2782,6 +2782,9 @@
         "flickering_light": {
             "name": "Flickering Light",
         },
+        "floor_blade": {
+            "name": "Floor blade",
+        },
         "floor_trapdoor_1": {
             "name": "Floor Trapdoor 1",
         },
@@ -3771,6 +3774,9 @@
         },
         "rolling_spikes": {
             "name": "Rolling Spikes",
+        },
+        "roof_blade": {
+            "name": "Roof blade",
         },
         "rope": {
             "name": "Rope",

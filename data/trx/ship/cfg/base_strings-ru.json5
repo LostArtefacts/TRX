@@ -2754,6 +2754,9 @@
         "flickering_light": {
             "name": "\\{review}Мерцающий Свет",
         },
+        "floor_blade": {
+            "name": "\\{review}Напольный клинок",
+        },
         "floor_trapdoor_1": {
             "name": "\\{review}Напольный люк 1",
         },
@@ -3630,6 +3633,9 @@
         },
         "rolling_spikes": {
             "name": "\\{review}Катящиеся шипы",
+        },
+        "roof_blade": {
+            "name": "\\{review}Кровельный клинок",
         },
         "rope": {
             "name": "\\{review}Верёвка",

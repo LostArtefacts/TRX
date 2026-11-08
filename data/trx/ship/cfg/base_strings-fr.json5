@@ -2754,6 +2754,9 @@
         "flickering_light": {
             "name": "\\{review}Lumière Vacillante",
         },
+        "floor_blade": {
+            "name": "\\{review}Lame de sol",
+        },
         "floor_trapdoor_1": {
             "name": "\\{review}Trappe de sol 1",
         },
@@ -3630,6 +3633,9 @@
         },
         "rolling_spikes": {
             "name": "\\{review}Pointes roulantes",
+        },
+        "roof_blade": {
+            "name": "\\{review}Lame de toit",
         },
         "rope": {
             "name": "\\{review}Corde",
