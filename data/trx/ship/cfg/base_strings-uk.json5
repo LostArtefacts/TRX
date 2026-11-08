@@ -2460,6 +2460,9 @@
         "carcass": {
             "name": "\\{review}Туша",
         },
+        "catwalk_blade": {
+            "name": "\\{review}Лезо переходу",
+        },
         "ceiling_spikes": {
             "name": "\\{review}Стеля з шипами",
         },

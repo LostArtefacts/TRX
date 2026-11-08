@@ -58,7 +58,7 @@
         <property category="TRX" defaultValue="0" description="How much to rotate the item by each frame while it's active, in engine angle units." displayName="Rotation" internalName="rotation" maxValue="16384" minValue="-16384" type="Int" />
         <property category="TRX" defaultValue="TEN.Color(0, 0, 0)" description="The color of the item's glow while it's active. Black infers no glow." displayName="Glow Color" internalName="glow_color" type="Color" />
     </moveable>
-    <!--placeholder for O_BLADE_RING-->
+    <!--placeholder for O_BLADE_RING..O_CATWALK_BLADE-->
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Damage dealt when Lara touches the blades." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>

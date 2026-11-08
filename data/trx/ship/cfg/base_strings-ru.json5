@@ -2448,6 +2448,9 @@
         "carcass": {
             "name": "\\{review}Туша",
         },
+        "catwalk_blade": {
+            "name": "\\{review}Клинок перехода",
+        },
         "ceiling_spikes": {
             "name": "\\{review}Острый потолок",
         },

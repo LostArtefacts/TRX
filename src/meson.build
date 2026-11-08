@@ -819,6 +819,7 @@ common_sources = [
   'trx/game/objects/traps/blade_ring.c',
   'trx/game/objects/traps/bouncing_boulder.c',
   'trx/game/objects/traps/bubble_emitter.c',
+  'trx/game/objects/traps/catwalk_blade.c',
   'trx/game/objects/traps/cleaner.c',
   'trx/game/objects/traps/common.c',
   'trx/game/objects/traps/damocles_sword.c',

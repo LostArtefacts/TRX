@@ -17,6 +17,7 @@
 **TR4**
 - Added Blade Ring control (TRX1993)
 - Added Plinth Blade control (TRX1996)
+- Added Catwalk Blade control (TRX1997)
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 

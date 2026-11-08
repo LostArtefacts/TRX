@@ -2448,6 +2448,9 @@
         "carcass": {
             "name": "\\{review}Kadaver",
         },
+        "catwalk_blade": {
+            "name": "\\{review}Laufstegklinge",
+        },
         "ceiling_spikes": {
             "name": "Stachel bewährte Decke",
         },

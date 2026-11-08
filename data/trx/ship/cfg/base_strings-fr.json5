@@ -2448,6 +2448,9 @@
         "carcass": {
             "name": "\\{review}Carcasse",
         },
+        "catwalk_blade": {
+            "name": "\\{review}Lame de passerelle",
+        },
         "ceiling_spikes": {
             "name": "\\{review}Plafond Épineux",
         },
