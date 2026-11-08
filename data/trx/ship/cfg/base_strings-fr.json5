@@ -2442,6 +2442,9 @@
         "bubble_emitter": {
             "name": "\\{review}Émetteur de bulles",
         },
+        "bull_guardian": {
+            "name": "\\{review}Gardien taurin",
+        },
         "camera_target": {
             "name": "\\{review}Cible de caméra",
         },

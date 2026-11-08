@@ -631,6 +631,7 @@ common_sources = [
   'trx/game/objects/creatures/bird.c',
   'trx/game/objects/creatures/bird_guardian.c',
   'trx/game/objects/creatures/boar.c',
+  'trx/game/objects/creatures/bull_guardian.c',
   'trx/game/objects/creatures/centaur.c',
   'trx/game/objects/creatures/centaur_statue.c',
   'trx/game/objects/creatures/civilian.c',

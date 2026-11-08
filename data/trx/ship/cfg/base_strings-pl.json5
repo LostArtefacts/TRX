@@ -2442,6 +2442,9 @@
         "bubble_emitter": {
             "name": "Emiter baniek",
         },
+        "bull_guardian": {
+            "name": "\\{review}Byczy strażnik",
+        },
         "camera_target": {
             "name": "Obiekt kamery",
         },

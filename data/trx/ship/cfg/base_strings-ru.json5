@@ -2442,6 +2442,9 @@
         "bubble_emitter": {
             "name": "Источник пузырей",
         },
+        "bull_guardian": {
+            "name": "\\{review}Страж-бык",
+        },
         "camera_target": {
             "name": "Цель камеры",
         },

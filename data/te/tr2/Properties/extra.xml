@@ -67,6 +67,12 @@
         <property category="TRX" defaultValue="40" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="30" description="Damage dealt by the boar's attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_BULL_GUARDIAN-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="1000" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="true" description="Whether or not the guardian always targets Lara; if disabled, it must first be shot." displayName="Always Aggressive" internalName="always_aggressive" type="Bool" />
+        <property category="TRX" defaultValue="200" description="Damage dealt by the run attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_CEILING_TRAPDOOR_1..O_FLOOR_TRAPDOOR_2-->
     <moveable id="-1">
         <property category="TRX" defaultValue="true" description="Whether the trapdoor opens automatically when triggered." displayName="Auto Open" internalName="auto_open" type="Bool" />

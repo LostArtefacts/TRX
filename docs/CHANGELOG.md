@@ -21,6 +21,7 @@
 - Added Floor Blade and Roof Blade control (TRX1998)
 - Added Spike Ball control (TRX2008)
 - Added Mapper control (TRX2004)
+- Added Bull Guardian control (TRX2006)
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)

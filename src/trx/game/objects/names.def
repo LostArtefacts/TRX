@@ -257,6 +257,7 @@ X_OBJ_NAME_DEFINE(O_HENCHMAN_1,           "Henchman 1")
 X_OBJ_NAME_DEFINE(O_HENCHMAN_2,           "Henchman 2")
 X_OBJ_NAME_DEFINE(O_ENEMY_JEEP,           "Enemy Jeep")
 X_OBJ_NAME_DEFINE(O_HENCHMAN_JEEP,        "Henchman Jeep")
+X_OBJ_NAME_DEFINE(O_BULL_GUARDIAN,        "Bull Guardian")
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "Wall-mounted Blade")
