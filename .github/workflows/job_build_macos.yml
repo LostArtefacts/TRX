@@ -26,7 +26,7 @@ env:
 jobs:
   build:
     name: Build release assets
-    runs-on: macos-14
+    runs-on: macos-15
     continue-on-error: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     steps:
       - name: Set up signing certificate
