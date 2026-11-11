@@ -206,6 +206,7 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "unobtainable_kills": 1,
         },
 
         // 9. Sacred Lake
