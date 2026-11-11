@@ -89,8 +89,12 @@ local function facing_turn(item)
 end
 
 -- Which quarter turns off the item's own rotation Lara may be met from: the one
--- front face, or every side.
+-- front face, or every side. The jeep is driven from its left side, so Lara is
+-- put there, facing it.
 local function approach_quarters(item)
+  if item.object_id == trx.catalog.objects.jeep then
+    return { 1 }
+  end
   local turn = facing_turn(item)
   if turn == FACE_ANY_SIDE then
     return { 0, 1, 2, 3 }
