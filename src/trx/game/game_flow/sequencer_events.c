@@ -49,6 +49,7 @@
     X(GFS_ADD_SECRET_REWARD, M_HandleInventoryModifier)                        \
     X(GFS_REMOVE_FLARES,     M_HandleInventoryModifier)                        \
     X(GFS_REMOVE_BINOCULARS, M_HandleInventoryModifier)                        \
+    X(GFS_REMOVE_ITEM,       M_HandleInventoryModifier)                        \
     X(GFS_RESET_HUB,         M_HandleInventoryModifier)                        \
     X(GFS_LOADING_SCREEN,    M_HandlePicture)                                  \
     X(GFS_LOADING_CAMERA,    M_HandleLoadingCamera)                            \

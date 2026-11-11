@@ -485,6 +485,9 @@
           "$ref": "#/definitions/seq_remove_binoculars"
         },
         {
+          "$ref": "#/definitions/seq_remove_item"
+        },
+        {
           "$ref": "#/definitions/seq_reset_hub"
         },
         {
@@ -889,6 +892,26 @@
       },
       "required": [
         "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_remove_item": {
+      "type": "object",
+      "description": "Removes the specified item from Lara's inventory at the start of a level.",
+      "properties": {
+        "type": {
+          "const": "remove_item"
+        },
+        "object_id": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "object_id"
       ],
       "additionalProperties": false
     },

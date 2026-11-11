@@ -231,7 +231,7 @@ default game flow for examples.
   <tr valign="top">
     <td><code>remove_ammo</code></td>
     <td colspan="2" align="center">N/A</td>
-    <td rowspan="6">
+    <td rowspan="7">
       Any combination of these sequences can be used to modify Lara's
       inventory at the start of a level. There are a few simple points to note:
       <ul>
@@ -267,6 +267,11 @@ default game flow for examples.
   <tr valign="top">
     <td><code>remove_binoculars</code></td>
     <td colspan="2" align="center">N/A</td>
+  </tr>
+  <tr valign="top">
+    <td><code>remove_item</code></td>
+    <td><code>object_id</code></td>
+    <td>Integer / String</td>
   </tr>
   <tr valign="top">
     <td><code>reset_hub</code></td>

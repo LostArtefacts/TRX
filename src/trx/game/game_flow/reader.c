@@ -65,6 +65,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleRemoveItemEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent);
@@ -102,6 +103,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_TOTAL_STATS,       M_HandleTotalStatsEvent, nullptr },
     { GFS_ADD_ITEM,          M_HandleAddItemEvent, nullptr },
     { GFS_ADD_SECRET_REWARD, M_HandleAddItemEvent, nullptr },
+    { GFS_REMOVE_ITEM,       M_HandleRemoveItemEvent, nullptr },
     { GFS_SETUP_HORIZON,     M_HandleSetupHorizonEvent, nullptr },
     { GFS_SETUP_LENS_FLARE,  M_HandleSetupLensFlareEvent, nullptr },
     { GFS_LOADING_CAMERA,    M_HandleLoadingCameraEvent, nullptr },
@@ -548,6 +550,27 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
     return sizeof(GF_ADD_ITEM_DATA);
 fail:
     return -1;
+}
+
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleRemoveItemEvent)
+{
+    JSON_READ_IO *const io = ctx->io;
+    OBJECT_ID obj_id = NO_OBJECT;
+    if (!SHOULD(JSON_PUSH(io, "object_id"))) {
+        return -1;
+    }
+    if (!Result_Absorb(M_ReadObjectID(ctx, &obj_id))) {
+        return -1;
+    }
+    if (!Result_Absorb(JSON_POP(io))) {
+        return -1;
+    }
+    if (event != nullptr) {
+        GF_REMOVE_ITEM_DATA *const event_data = extra_data;
+        event_data->object_id = obj_id;
+        event->data = event_data;
+    }
+    return sizeof(GF_REMOVE_ITEM_DATA);
 }
 
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent)
