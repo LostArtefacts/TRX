@@ -26,7 +26,7 @@ runs:
       if: steps.restore-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        wget -O ${{ github.workspace }}/macports.pkg https://github.com/macports/macports-base/releases/download/v2.9.2/MacPorts-2.9.2-14-Sonoma.pkg
+        wget -O ${{ github.workspace }}/macports.pkg https://github.com/macports/macports-base/releases/download/v2.12.7/MacPorts-2.12.7-15-Sequoia.pkg
         sudo installer -pkg ${{ github.workspace }}/macports.pkg -target /
 
     - name: Install build and deployment tools
@@ -103,6 +103,7 @@ runs:
         FFMPEG_CONFIG_OPTIONS=" \
           --enable-shared \
           --disable-static \
+          --disable-metal \
           $(cat $GITHUB_WORKSPACE/tools/ffmpeg_flags.txt)"
 
         # Configure for arm64.
