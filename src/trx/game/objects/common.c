@@ -59,13 +59,14 @@ static int16_t M_FindReceptacle(
     // Iterate through all matching receptacles
     const int32_t count = ObjectLink_GetCount(object_id, link);
     for (int32_t i = 0; i < count; i++) {
-        // Iterate through all level items that match this receptacle
+        // Iterate through all items that match this receptacle, including
+        // the ones spawned after the level loaded.
         const OBJECT_ID receptacle_to_check =
             ObjectLink_GetAt(object_id, link, i);
-        for (int16_t item_num = 0; item_num < Item_GetLevelCount();
+        for (int16_t item_num = 0; item_num < Item_GetTotalCount();
              item_num++) {
             const ITEM *const item = Item_Get(item_num);
-            if (item->object_id != receptacle_to_check) {
+            if (item->is_destroyed || item->object_id != receptacle_to_check) {
                 continue;
             }
 

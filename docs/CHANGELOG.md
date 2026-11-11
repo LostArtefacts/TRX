@@ -9,6 +9,7 @@
 **Developer console**
 - Fixed `/play` showing the wrong level number on the stats screen, such as "1 of 18" in Venice (regression from 1.9)
 - Fixed `/play` making the TR3 globe offer the areas before the played level again
+- Fixed Lara refusing to get into a jeep spawned with `/spawn`, even when she carries the ignition key (TRX2005, regression from 1.12)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
