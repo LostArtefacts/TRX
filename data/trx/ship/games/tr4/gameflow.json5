@@ -298,6 +298,7 @@
             "injections": [
                 "henchman_jeep.bin",
             ],
+            "unobtainable_kills": 4,
         },
 
         // 14. Alexandria
