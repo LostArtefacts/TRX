@@ -2,6 +2,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/console/common.h>
 #include <trx/game/cutseq.h>
+#include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/backends/base.h>
 #include <trx/game/input/backends/controller.h>
@@ -50,11 +51,13 @@ static void M_UpdateFromBackend(
 
 // TR4 changes target off the look input rather than one of its own. With
 // weapons ready it withholds look for the first few frames; letting go before
-// they are up counts as a tap, and changes target instead.
+// they are up counts as a tap, and changes target instead. This applies only
+// while the game is playing, so photo mode and the menus see look at once.
 static void M_UpdateTargetChange(void)
 {
     const TARGET_CHANGE_MODE mode = g_Config.gameplay.target_change_mode;
-    const bool is_ready = Lara_GetLaraInfo()->gun_status == LGS_READY;
+    const bool is_ready =
+        Game_IsPlaying() && Lara_GetLaraInfo()->gun_status == LGS_READY;
 
     // The laser sight view holds no target, so look closes it at once. The
     // press that closes it counts as held, so that letting go of it does not
