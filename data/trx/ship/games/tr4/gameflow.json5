@@ -253,6 +253,8 @@
             "injections": [
                 "semerkhet_bolt.bin",
             ],
+            "unobtainable_kills": 8,
+            "unobtainable_pickups": 5,
         },
 
         // 12. Guardian of Semerkhet
@@ -270,6 +272,7 @@
             "injections": [
                 "guardian_animating_bounds.bin",
             ],
+            "unobtainable_pickups": 2,
         },
 
         // 13. Desert Railroad
