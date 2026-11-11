@@ -18,6 +18,7 @@
 
 CATALOG_TABLE_DEFINE(m_SecretInvItems, CATALOG_OBJECTS, int8_t);
 CATALOG_TABLE_DEFINE(m_Add2InvItems, CATALOG_OBJECTS, int8_t);
+CATALOG_TABLE_DEFINE(m_RemoveInvItems, CATALOG_OBJECTS, bool);
 static bool m_RemoveWeapons = false;
 static bool m_RemoveAmmo = false;
 static bool m_RemoveFlares = false;
@@ -49,6 +50,11 @@ static int8_t *M_SecretInvItem(const OBJECT_ID object_id)
 static int8_t *M_Add2InvItem(const OBJECT_ID object_id)
 {
     return CatalogTable_Get(&m_Add2InvItems, object_id);
+}
+
+static bool *M_RemoveInvItem(const OBJECT_ID object_id)
+{
+    return CatalogTable_Get(&m_RemoveInvItems, object_id);
 }
 
 static bool M_CanHaveItem(const OBJECT_ID object_id)
@@ -205,6 +211,7 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
     {
         *M_SecretInvItem(i) = 0;
         *M_Add2InvItem(i) = 0;
+        *M_RemoveInvItem(i) = false;
     }
     m_RemoveWeapons = false;
     m_RemoveAmmo = false;
@@ -241,6 +248,11 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
             m_RemoveScions = true;
         } else if (event->type == GFS_REMOVE_BINOCULARS) {
             m_RemoveBinoculars = true;
+        } else if (event->type == GFS_REMOVE_ITEM) {
+            const GF_REMOVE_ITEM_DATA *const data = event->data;
+            if (Catalog_IsValidID(CATALOG_OBJECTS, data->object_id)) {
+                *M_RemoveInvItem(data->object_id) = true;
+            }
         }
     }
 }
@@ -345,6 +357,13 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
             Inv_State_SetCount(&resume->inv, m_ScionObjects[i], 0);
         }
         m_RemoveScions = false;
+    }
+
+    CATALOG_FOR_EACH(CATALOG_OBJECTS, object_id)
+    {
+        if (*M_RemoveInvItem(object_id)) {
+            Inv_State_SetCount(&resume->inv, object_id, 0);
+        }
     }
 
     if (m_RemoveFlares) {

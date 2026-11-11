@@ -87,6 +87,14 @@ static GF_LEVEL m_NextLevel = {
     .type = GFL_NORMAL,
 };
 
+static GF_REMOVE_ITEM_DATA m_QuestItemRemoval = {
+    .object_id = O_QUEST_ITEM_1,
+};
+
+static GF_SEQUENCE_EVENT m_RemoveEvents[] = {
+    { .type = GFS_REMOVE_ITEM, .data = &m_QuestItemRemoval },
+};
+
 static void M_SetUp(void)
 {
     g_ConfigStorage = (CONFIG) {};
@@ -395,6 +403,24 @@ TEST(a_level_without_a_hub_reset_takes_nothing_away)
     GF_InventoryModifier_ApplyHubReset(&m_Level, &m_NextLevel);
 
     CHECK(Inv_State_Has(&m_Resume.inv, O_KEY_ITEM_1));
+}
+
+// An item removal takes the named item away as the level starts, and leaves
+// the rest of the inventory alone.
+TEST(item_removal_takes_only_the_named_item)
+{
+    M_SetUp();
+    m_DefaultGun = LGT_UNARMED;
+    m_Level.sequence.length = 1;
+    m_Level.sequence.events = m_RemoveEvents;
+    Inv_State_SetCount(&m_Resume.inv, O_QUEST_ITEM_1, 1);
+    Inv_State_SetCount(&m_Resume.inv, O_QUEST_ITEM_2, 1);
+
+    GF_InventoryModifier_Scan(&m_Level);
+    GF_InventoryModifier_ApplyToResumeInfo(&m_Level);
+
+    CHECK(!Inv_State_Has(&m_Resume.inv, O_QUEST_ITEM_1));
+    CHECK(Inv_State_Has(&m_Resume.inv, O_QUEST_ITEM_2));
 }
 
 // A game can name no weapon as the default. Starting the next level then gives

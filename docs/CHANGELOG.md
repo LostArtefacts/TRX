@@ -15,6 +15,9 @@
 - Fixed Lara refusing to get into a jeep spawned with `/spawn`, even when she carries the ignition key (TRX2005, regression from 1.12)
 - Fixed `/tp jeep` putting Lara on the passenger side of the jeep (TRX2005, regression from 1.12)
 
+**Level and game data**
+- Added a `remove_item` game flow sequence event, which takes a given item from Lara's inventory as a level starts (TRX2010)
+
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
 - Fixed pickup aids not showing in heavy rain when rain splashes are enabled (TRX1962, regression from 1.12)

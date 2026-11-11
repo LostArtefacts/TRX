@@ -54,6 +54,10 @@ typedef struct {
 } GF_ADD_ITEM_DATA;
 
 typedef struct {
+    OBJECT_ID object_id;
+} GF_REMOVE_ITEM_DATA;
+
+typedef struct {
     int32_t layer;
     RGB_888 color;
     int32_t speed;
