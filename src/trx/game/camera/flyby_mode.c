@@ -1,6 +1,7 @@
 #include <trx/game/camera/flyby_mode.h>
 
 #include <trx/game/camera.h>
+#include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua/events.h>
@@ -483,7 +484,14 @@ void Camera_FlybyMode_Update(void)
                 || m_State.flags.spline_to_game) {
                 M_TestTriggers();
                 const int32_t finished = m_CurrentSequence;
-                Camera_FlybyMode_Deactivate();
+                // A sequence that ends the level keeps its last view, so the
+                // frame drawn before the level ends does not show Lara.
+                if (Game_IsLevelComplete()) {
+                    Camera_FlybyMode_Reset();
+                    Lara_SetControllable(true);
+                } else {
+                    Camera_FlybyMode_Deactivate();
+                }
                 LUA_FireEventInt32(LUA_EVENT_FLYBY_END, finished);
             } else {
                 M_PrepareSplineToGame();
