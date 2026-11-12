@@ -4,6 +4,7 @@
 
 **Camera**
 - Fixed Lara's position not resetting in photo mode if her weapons are drawn (TRX2000, regression from 1.11)
+- Fixed the camera briefly showing Lara when a flyby sequence ends the level (TRX1975)
 
 **Rendering**
 - Fixed certain sparks, such as smoke and gas, not being drawn during fixed or cinematic camera sequences when Lara is far from the spawn position (OG bug) (TRX1966)
