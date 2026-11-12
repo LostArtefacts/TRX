@@ -539,7 +539,7 @@ static void M_Animate(
                 if (p->gear == 1) {
                     lara_item->goal_anim_state = M_STATE_REVERSE_START;
                 }
-            } else if (g_Input.action && g_Input.jump) {
+            } else if (g_Input.action && !g_Input.jump) {
                 lara_item->goal_anim_state = M_STATE_DRIVE;
             } else if (g_Input.step_left || g_Input.left) {
                 lara_item->goal_anim_state = M_STATE_TURN_LEFT;

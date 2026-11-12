@@ -25,6 +25,7 @@
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)
+- Fixed Lara snapping into a turn when steering as the jeep starts moving (TRX2017, regression from 1.12)
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
