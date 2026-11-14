@@ -25,10 +25,10 @@
 // How many runs of draws a batch holds. The opaque pass draws the faces that
 // need no alpha test as run 0 and the others as run 1.
 #define M_RUN_COUNT 2
-// The vertex that the startup check draws, and the base vertex it draws it
-// with.
+// The vertex that the startup check draws, and the slot of the first of its
+// two draws; the second draw uses the slot after it.
 #define M_VERTEX_ID_TEST_INDEX 5
-#define M_VERTEX_ID_TEST_BASE (3 << M_BATCH_VERTEX_BITS)
+#define M_VERTEX_ID_TEST_SLOT 3
 
 typedef float M_MESH_SHADE;
 
@@ -1384,10 +1384,12 @@ static void M_SetupVertexArray(
         OUTPUT_MESH_ATTR_SHADE, 1, GL_FLOAT, GL_FALSE, sizeof(M_MESH_SHADE), 0);
 }
 
-// Reports whether gl_VertexID includes the base vertex of an indexed draw, as
-// the batches need. The specification says that it does, but some drivers
-// have left it out. The check draws one point into a framebuffer of one
-// pixel and reads back whether the vertex shader saw the expected value.
+// Reports whether gl_VertexID includes the base vertex of each draw of an
+// indexed multi-draw, as the batches need. The specification says that it
+// does, but some drivers leave it out, or apply the first draw's base vertex
+// to every draw. The check makes the same call as the batches, with two draws
+// of one point each into a framebuffer of two pixels, and reads back whether
+// the vertex shader saw the expected value in both.
 static bool M_IsBaseVertexInVertexID(void)
 {
     OUTPUT_SHADER *shader = nullptr;
@@ -1416,14 +1418,14 @@ static bool M_IsBaseVertexInVertexID(void)
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+        GL_TEXTURE_2D, 0, GL_RGBA8, 2, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE,
         nullptr);
     GLuint fbo = 0;
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glFramebufferTexture2D(
         GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(0, 0, 1, 1);
+    glViewport(0, 0, 2, 1);
     const GLfloat clear[4] = {};
     glClearBufferfv(GL_COLOR, 0, clear);
 
@@ -1440,11 +1442,20 @@ static bool M_IsBaseVertexInVertexID(void)
     Output_Shader_Bind(shader);
     glUniform1i(
         Output_Shader_LookupUniform(shader, "uExpected"),
-        M_VERTEX_ID_TEST_INDEX + M_VERTEX_ID_TEST_BASE);
-    glDrawElementsBaseVertex(
-        GL_POINTS, 1, GL_UNSIGNED_INT, nullptr, M_VERTEX_ID_TEST_BASE);
-    uint8_t pixel[4] = {};
-    glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+        M_VERTEX_ID_TEST_INDEX);
+    glUniform1i(
+        Output_Shader_LookupUniform(shader, "uFirstSlot"),
+        M_VERTEX_ID_TEST_SLOT);
+    const GLsizei counts[2] = { 1, 1 };
+    const void *const offsets[2] = { nullptr, nullptr };
+    const GLint bases[2] = {
+        M_VERTEX_ID_TEST_SLOT << M_BATCH_VERTEX_BITS,
+        (M_VERTEX_ID_TEST_SLOT + 1) << M_BATCH_VERTEX_BITS,
+    };
+    glMultiDrawElementsBaseVertex(
+        GL_POINTS, counts, GL_UNSIGNED_INT, offsets, 2, bases);
+    uint8_t pixels[2][4] = {};
+    glReadPixels(0, 0, 2, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     TRX_GL_CheckError();
 
     glBindVertexArray(prev_vao);
@@ -1464,7 +1475,7 @@ static bool M_IsBaseVertexInVertexID(void)
     glUseProgram(prev_program);
     Output_Shader_Free(shader);
 
-    const bool result = pixel[0] == 255;
+    const bool result = pixels[0][0] == 255 && pixels[1][0] == 255;
     if (!result) {
         LOG_WARNING(
             "gl_VertexID leaves out the base vertex; meshes draw unbatched");
