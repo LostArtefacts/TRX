@@ -7,6 +7,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/pathing.h>
 #include <trx/game/pathing/lot.h>
 #include <trx/game/rooms.h>
@@ -421,7 +422,7 @@ int16_t Door_FindNearbyCrowbarDoor(void)
 {
     for (int16_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
-        if (item->object_id < O_DOOR_1 || item->object_id > O_DOOR_8
+        if (!ObjectFamily_Has(item->object_id, OBJ_FAMILY_DOOR)
             || Item_IsInPlay(item)) {
             continue;
         }
@@ -464,3 +465,7 @@ REGISTER_OBJECT(O_DOOR_5, M_Setup)
 REGISTER_OBJECT(O_DOOR_6, M_Setup)
 REGISTER_OBJECT(O_DOOR_7, M_Setup)
 REGISTER_OBJECT(O_DOOR_8, M_Setup)
+REGISTER_OBJECT(O_DOOR_9, M_Setup)
+REGISTER_OBJECT(O_DOOR_10, M_Setup)
+REGISTER_OBJECT(O_DOOR_11, M_Setup)
+REGISTER_OBJECT(O_DOOR_12, M_Setup)

@@ -19,6 +19,7 @@
 
 **Level and game data**
 - Added a `remove_item` game flow sequence event, which takes a given item from Lara's inventory as a level starts (TRX2010)
+- Added `door_9` - `door_12` and `trapdoor_4` - `trapdoor_12` for custom levels (TRX2026)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)

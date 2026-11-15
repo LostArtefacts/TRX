@@ -2080,6 +2080,42 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### door_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### door_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### door_11
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### door_12
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
 #### earthquake
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (183)</th><th align="center">TR2 (264)</th><th align="center">TR3 (365)</th><th>Description</th></tr></thead>
@@ -4058,6 +4094,87 @@ This page lists documented moveable object properties.
 #### trapdoor_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (67)</th><th align="center">TR2 (116)</th><th align="center">TR3 (141)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_11
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
+</tbody>
+</table>
+
+#### trapdoor_12
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
 <tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>

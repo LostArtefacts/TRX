@@ -2622,6 +2622,18 @@
         "door_8": {
             "name": "Tür 8",
         },
+        "door_9": {
+            "name": "\\{review}Tür 9",
+        },
+        "door_10": {
+            "name": "\\{review}Tür 10",
+        },
+        "door_11": {
+            "name": "\\{review}Tür 11",
+        },
+        "door_12": {
+            "name": "\\{review}Tür 12",
+        },
         "double_doors": {
             "name": "\\{review}Doppeltür",
         },
@@ -3924,6 +3936,33 @@
         },
         "trapdoor_3": {
             "name": "Falltür 3",
+        },
+        "trapdoor_4": {
+            "name": "\\{review}Falltür 4",
+        },
+        "trapdoor_5": {
+            "name": "\\{review}Falltür 5",
+        },
+        "trapdoor_6": {
+            "name": "\\{review}Falltür 6",
+        },
+        "trapdoor_7": {
+            "name": "\\{review}Falltür 7",
+        },
+        "trapdoor_8": {
+            "name": "\\{review}Falltür 8",
+        },
+        "trapdoor_9": {
+            "name": "\\{review}Falltür 9",
+        },
+        "trapdoor_10": {
+            "name": "\\{review}Falltür 10",
+        },
+        "trapdoor_11": {
+            "name": "\\{review}Falltür 11",
+        },
+        "trapdoor_12": {
+            "name": "\\{review}Falltür 12",
         },
         "trex": {
             "name": "T-Rex",
