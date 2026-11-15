@@ -2,6 +2,7 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/general/door.h>
 #include <trx/game/rooms.h>
 
@@ -47,8 +48,7 @@ static int16_t M_FindLinkedDoor(const ITEM *const item)
 
         const int16_t door_item_num = (int16_t)(intptr_t)cmd->parameter;
         const ITEM *const door_item = Item_Get(door_item_num);
-        if (door_item->object_id >= O_DOOR_1
-            && door_item->object_id <= O_DOOR_8) {
+        if (ObjectFamily_Has(door_item->object_id, OBJ_FAMILY_DOOR)) {
             return door_item_num;
         }
     }

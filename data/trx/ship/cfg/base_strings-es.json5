@@ -2631,6 +2631,18 @@
         "door_8": {
             "name": "Puerta 8",
         },
+        "door_9": {
+            "name": "\\{review}Puerta 9",
+        },
+        "door_10": {
+            "name": "\\{review}Puerta 10",
+        },
+        "door_11": {
+            "name": "\\{review}Puerta 11",
+        },
+        "door_12": {
+            "name": "\\{review}Puerta 12",
+        },
         "double_doors": {
             "name": "Puertas dobles",
         },
@@ -3876,6 +3888,33 @@
         },
         "trapdoor_3": {
             "name": "Trampilla 3",
+        },
+        "trapdoor_4": {
+            "name": "\\{review}Trampilla 4",
+        },
+        "trapdoor_5": {
+            "name": "\\{review}Trampilla 5",
+        },
+        "trapdoor_6": {
+            "name": "\\{review}Trampilla 6",
+        },
+        "trapdoor_7": {
+            "name": "\\{review}Trampilla 7",
+        },
+        "trapdoor_8": {
+            "name": "\\{review}Trampilla 8",
+        },
+        "trapdoor_9": {
+            "name": "\\{review}Trampilla 9",
+        },
+        "trapdoor_10": {
+            "name": "\\{review}Trampilla 10",
+        },
+        "trapdoor_11": {
+            "name": "\\{review}Trampilla 11",
+        },
+        "trapdoor_12": {
+            "name": "\\{review}Trampilla 12",
         },
         "trex": {
             "name": "T-Rex",

@@ -2622,6 +2622,18 @@
         "door_8": {
             "name": "Дверь 8",
         },
+        "door_9": {
+            "name": "\\{review}Дверь 9",
+        },
+        "door_10": {
+            "name": "\\{review}Дверь 10",
+        },
+        "door_11": {
+            "name": "\\{review}Дверь 11",
+        },
+        "door_12": {
+            "name": "\\{review}Дверь 12",
+        },
         "double_doors": {
             "name": "\\{review}Двойные двери",
         },
@@ -3924,6 +3936,33 @@
         },
         "trapdoor_3": {
             "name": "Люк 3",
+        },
+        "trapdoor_4": {
+            "name": "\\{review}Люк 4",
+        },
+        "trapdoor_5": {
+            "name": "\\{review}Люк 5",
+        },
+        "trapdoor_6": {
+            "name": "\\{review}Люк 6",
+        },
+        "trapdoor_7": {
+            "name": "\\{review}Люк 7",
+        },
+        "trapdoor_8": {
+            "name": "\\{review}Люк 8",
+        },
+        "trapdoor_9": {
+            "name": "\\{review}Люк 9",
+        },
+        "trapdoor_10": {
+            "name": "\\{review}Люк 10",
+        },
+        "trapdoor_11": {
+            "name": "\\{review}Люк 11",
+        },
+        "trapdoor_12": {
+            "name": "\\{review}Люк 12",
         },
         "trex": {
             "name": "Тираннозавр",

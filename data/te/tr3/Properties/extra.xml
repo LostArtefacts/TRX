@@ -107,7 +107,7 @@
         <property category="TRX" defaultValue="true" description="Whether or not the guardian always targets Lara; if disabled, it must first be shot." displayName="Always Aggressive" internalName="always_aggressive" type="Bool" />
         <property category="TRX" defaultValue="200" description="Damage dealt by the run attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
-    <!--placeholder for O_CEILING_TRAPDOOR_1..O_FLOOR_TRAPDOOR_2-->
+    <!--placeholder for O_CEILING_TRAPDOOR_1..O_TRAPDOOR_12-->
     <moveable id="-1">
         <property category="TRX" defaultValue="true" description="Whether the trapdoor opens automatically when triggered." displayName="Auto Open" internalName="auto_open" type="Bool" />
         <property category="TRX" defaultValue="false" description="Whether the trapdoor blocks any portals it sits on." displayName="Blocks Portal" internalName="blocks_portal" type="Bool" />
@@ -163,6 +163,11 @@
         <property category="TRX" defaultValue="10" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="100" description="Damage dealt by the dog bite." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="100" description="Damage dealt by the dog's lunge attack." displayName="Lunge Damage" internalName="lunge_damage" minValue="0" type="Int" />
+    </moveable>
+    <!--placeholder for O_DOOR_9..O_DOOR_12-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="false" description="Whether the door must be pried open with the crowbar." displayName="Crowbar" internalName="crowbar" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether the door rises vertically while activated instead of playing its open animation." displayName="Lift" internalName="lift" type="Bool" />
     </moveable>
     <!--placeholder for O_DRAGON_FRONT-->
     <moveable id="-1">

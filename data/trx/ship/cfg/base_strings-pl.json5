@@ -2622,6 +2622,18 @@
         "door_8": {
             "name": "Drzwi 8",
         },
+        "door_9": {
+            "name": "\\{review}Drzwi 9",
+        },
+        "door_10": {
+            "name": "\\{review}Drzwi 10",
+        },
+        "door_11": {
+            "name": "\\{review}Drzwi 11",
+        },
+        "door_12": {
+            "name": "\\{review}Drzwi 12",
+        },
         "double_doors": {
             "name": "\\{review}Podwójne drzwi",
         },
@@ -3924,6 +3936,33 @@
         },
         "trapdoor_3": {
             "name": "Zapadnia 3",
+        },
+        "trapdoor_4": {
+            "name": "\\{review}Zapadnia 4",
+        },
+        "trapdoor_5": {
+            "name": "\\{review}Zapadnia 5",
+        },
+        "trapdoor_6": {
+            "name": "\\{review}Zapadnia 6",
+        },
+        "trapdoor_7": {
+            "name": "\\{review}Zapadnia 7",
+        },
+        "trapdoor_8": {
+            "name": "\\{review}Zapadnia 8",
+        },
+        "trapdoor_9": {
+            "name": "\\{review}Zapadnia 9",
+        },
+        "trapdoor_10": {
+            "name": "\\{review}Zapadnia 10",
+        },
+        "trapdoor_11": {
+            "name": "\\{review}Zapadnia 11",
+        },
+        "trapdoor_12": {
+            "name": "\\{review}Zapadnia 12",
         },
         "trex": {
             "name": "T-Rex|Tyranozaur",

@@ -2622,6 +2622,18 @@
         "door_8": {
             "name": "Doras 8",
         },
+        "door_9": {
+            "name": "Doras 9",
+        },
+        "door_10": {
+            "name": "Doras 10",
+        },
+        "door_11": {
+            "name": "Doras 11",
+        },
+        "door_12": {
+            "name": "Doras 12",
+        },
         "double_doors": {
             "name": "Doras dùbailte",
         },
@@ -3924,6 +3936,33 @@
         },
         "trapdoor_3": {
             "name": "Làr-lùbte 3",
+        },
+        "trapdoor_4": {
+            "name": "Làr-lùbte 4",
+        },
+        "trapdoor_5": {
+            "name": "Làr-lùbte 5",
+        },
+        "trapdoor_6": {
+            "name": "Làr-lùbte 6",
+        },
+        "trapdoor_7": {
+            "name": "Làr-lùbte 7",
+        },
+        "trapdoor_8": {
+            "name": "Làr-lùbte 8",
+        },
+        "trapdoor_9": {
+            "name": "Làr-lùbte 9",
+        },
+        "trapdoor_10": {
+            "name": "Làr-lùbte 10",
+        },
+        "trapdoor_11": {
+            "name": "Làr-lùbte 11",
+        },
+        "trapdoor_12": {
+            "name": "Làr-lùbte 12",
         },
         "trex": {
             "name": "T-Rex|Dìneasair-mòr",
