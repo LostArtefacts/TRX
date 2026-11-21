@@ -1,6 +1,7 @@
 #include <trx/game/output/sources/poly_fx.h>
 
 #include <trx/config.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -829,6 +830,15 @@ void OutputSource_PolyFX_StageLineSegment(
     const XYZ_32 from, const RGBA_8888 from_color, const XYZ_32 to,
     const RGBA_8888 to_color, const float half_width, const DRAW_TYPE draw_type)
 {
+    OutputSource_PolyFX_StageSpriteLineSegment(
+        -1, from, from_color, to, to_color, half_width, draw_type);
+}
+
+void OutputSource_PolyFX_StageSpriteLineSegment(
+    const int32_t sprite_idx, const XYZ_32 from, const RGBA_8888 from_color,
+    const XYZ_32 to, const RGBA_8888 to_color, const float half_width,
+    const DRAW_TYPE draw_type)
+{
     const int64_t zv_mid = (M_GetViewDepth(from) + M_GetViewDepth(to)) / 2;
     const int64_t near_z = Output_GetNearZ();
     const int64_t far_z = Output_GetFarZ();
@@ -885,34 +895,26 @@ void OutputSource_PolyFX_StageLineSegment(
     side_y *= side_len;
     side_z *= side_len;
 
-    const XYZ_32 world_pos[4] = {
-        {
-            from.x - (int32_t)lrintf(side_x * half_width),
-            from.y - (int32_t)lrintf(side_y * half_width),
-            from.z - (int32_t)lrintf(side_z * half_width),
-        },
-        {
-            from.x + (int32_t)lrintf(side_x * half_width),
-            from.y + (int32_t)lrintf(side_y * half_width),
-            from.z + (int32_t)lrintf(side_z * half_width),
-        },
-        {
-            to.x + (int32_t)lrintf(side_x * half_width),
-            to.y + (int32_t)lrintf(side_y * half_width),
-            to.z + (int32_t)lrintf(side_z * half_width),
-        },
-        {
-            to.x - (int32_t)lrintf(side_x * half_width),
-            to.y - (int32_t)lrintf(side_y * half_width),
-            to.z - (int32_t)lrintf(side_z * half_width),
-        },
+    const XYZ_32 offset = {
+        (int32_t)lrintf(side_x * half_width),
+        (int32_t)lrintf(side_y * half_width),
+        (int32_t)lrintf(side_z * half_width),
     };
-    const RGBA_8888 color[4] = { from_color, from_color, to_color, to_color };
+    const XYZ_32 world_pos[4] = {
+        XYZ_32_Add(from, offset),
+        XYZ_32_Add(to, offset),
+        XYZ_32_Subtract(to, offset),
+        XYZ_32_Subtract(from, offset),
+    };
+    const RGBA_8888 color[4] = { from_color, to_color, to_color, from_color };
     const float disp[4][2] = {};
+    uint16_t flags = VERT_NO_LIGHTING | VERT_NO_WIBBLE;
+    if (sprite_idx < 0) {
+        flags |= VERT_FLAT_SHADED;
+    }
 
     OutputSource_PolyFX_StageQuadExt(
-        -1, world_pos, disp, color,
-        VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, draw_type);
+        sprite_idx, world_pos, disp, color, flags, draw_type);
 }
 
 void OutputSource_PolyFX_StageSpark(const SPARK *const spark)

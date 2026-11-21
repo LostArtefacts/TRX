@@ -62,4 +62,10 @@ void OutputSource_PolyFX_StageLineSegment(
     XYZ_32 from, RGBA_8888 from_color, XYZ_32 to, RGBA_8888 to_color,
     float half_width, DRAW_TYPE draw_type);
 
+// Stages a line segment that carries a sprite, with u running from the first
+// point to the second.
+void OutputSource_PolyFX_StageSpriteLineSegment(
+    int32_t sprite_idx, XYZ_32 from, RGBA_8888 from_color, XYZ_32 to,
+    RGBA_8888 to_color, float half_width, DRAW_TYPE draw_type);
+
 void OutputSource_PolyFX_StageSpark(const SPARK *spark);
