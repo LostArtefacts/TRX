@@ -408,6 +408,22 @@ void Output_AddDynamicLightRGB(
     M_CommitLight(pos);
 }
 
+bool Output_HasBeamLights(void)
+{
+    return Output_Lights_GetModel()->add_beam_light != nullptr;
+}
+
+void Output_AddBeamLight(
+    const XYZ_32 start, const XYZ_32 end, const int32_t intensity)
+{
+    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
+    if (model->add_beam_light == nullptr || XYZ_32_AreEquivalent(start, end)) {
+        return;
+    }
+    model->add_beam_light(start, end, intensity);
+    M_CommitLight(start);
+}
+
 void Output_AddFogBulb(
     const XYZ_32 pos, const int32_t radius, const int32_t density,
     const RGB_888 color)
