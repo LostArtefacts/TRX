@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "Neach-dìon Tarbh",
         },
+        "burning_torch_item": {
+            "name": "\\{review}Leus a' losgadh",
+        },
         "camera_target": {
             "name": "Targaid Camara",
         },
@@ -3925,6 +3928,9 @@
         },
         "tony": {
             "name": "Tònaidh",
+        },
+        "torch_anim": {
+            "name": "\\{review}Beothachadh Leus",
         },
         "torso": {
             "name": "Torsachan|Adhamh|Mùthaidh Mòr",
