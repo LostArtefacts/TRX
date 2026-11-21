@@ -7,6 +7,7 @@
 #include <trx/game/const.h>
 #include <trx/game/game/state.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/matrix.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/lights.h>
@@ -45,6 +46,8 @@ static float m_DepthUnits = 0.0f;
 static const ROOM *m_CurrentRoom = nullptr;
 static VIEWPORT_RECT m_ObjectScissor = {};
 static bool m_ObjectScissorEnabled = false;
+static bool m_IsMirrored = false;
+static int32_t m_MirrorPlane = 0;
 static int32_t m_LsAdder = 0;
 static int32_t m_LsDivider = 0;
 static XYZ_32 m_LsVectorView = {};
@@ -353,6 +356,31 @@ void Output_SetCurrentRoom(const ROOM *const room)
 const ROOM *Output_GetCurrentRoom(void)
 {
     return m_CurrentRoom;
+}
+
+void Output_BeginMirror(const int32_t z_plane)
+{
+    ASSERT(!m_IsMirrored);
+    m_IsMirrored = true;
+    m_MirrorPlane = z_plane;
+}
+
+void Output_EndMirror(void)
+{
+    ASSERT(m_IsMirrored);
+    m_IsMirrored = false;
+}
+
+bool Output_IsMirrored(void)
+{
+    return m_IsMirrored;
+}
+
+void Output_ApplyMirror(MATRIX *const cwmatrix, MATRIX *const wmatrix)
+{
+    if (m_IsMirrored) {
+        Matrix_ReflectZ_M(cwmatrix, wmatrix, m_MirrorPlane);
+    }
 }
 
 void Output_SetObjectScissor(const VIEWPORT_RECT *const rect)

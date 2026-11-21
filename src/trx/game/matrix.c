@@ -569,6 +569,36 @@ void Matrix_SquashW2V(void)
     m_MatrixStack[0] = g_ViewMatrix;
 }
 
+void Matrix_ReflectZ_M(
+    MATRIX *const cwmatrix, MATRIX *const wmatrix, const int32_t z_plane)
+{
+    // The reflection changes the z row of the world matrix alone. The camera
+    // matrix is the view times the world matrix, so it changes by the view
+    // times the change in that row.
+    const int64_t d0 = -2 * wmatrix->_20;
+    const int64_t d1 = -2 * wmatrix->_21;
+    const int64_t d2 = -2 * wmatrix->_22;
+    const int64_t d3 = ((int64_t)z_plane * 2 << W2V_SHIFT) - 2 * wmatrix->_23;
+    wmatrix->_20 += d0;
+    wmatrix->_21 += d1;
+    wmatrix->_22 += d2;
+    wmatrix->_23 += d3;
+
+    const MATRIX *const v = &g_ViewMatrix;
+    cwmatrix->_00 += (v->_02 * d0) >> W2V_SHIFT;
+    cwmatrix->_01 += (v->_02 * d1) >> W2V_SHIFT;
+    cwmatrix->_02 += (v->_02 * d2) >> W2V_SHIFT;
+    cwmatrix->_03 += (v->_02 * d3) >> W2V_SHIFT;
+    cwmatrix->_10 += (v->_12 * d0) >> W2V_SHIFT;
+    cwmatrix->_11 += (v->_12 * d1) >> W2V_SHIFT;
+    cwmatrix->_12 += (v->_12 * d2) >> W2V_SHIFT;
+    cwmatrix->_13 += (v->_12 * d3) >> W2V_SHIFT;
+    cwmatrix->_20 += (v->_22 * d0) >> W2V_SHIFT;
+    cwmatrix->_21 += (v->_22 * d1) >> W2V_SHIFT;
+    cwmatrix->_22 += (v->_22 * d2) >> W2V_SHIFT;
+    cwmatrix->_23 += (v->_22 * d3) >> W2V_SHIFT;
+}
+
 bool Matrix_Push(void)
 {
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {

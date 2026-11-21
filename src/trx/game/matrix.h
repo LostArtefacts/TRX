@@ -55,6 +55,10 @@ void Matrix_ShearW2V(float kx, float ky);
 // fit its screen.
 void Matrix_SquashW2V(void);
 
+// Reflects a mesh placement across the plane at the given world z position.
+// The camera matrix takes the same reflection through the view.
+void Matrix_ReflectZ_M(MATRIX *cwmatrix, MATRIX *wmatrix, int32_t z_plane);
+
 bool Matrix_Push(void);
 bool Matrix_PushUnit(void);
 void Matrix_Pop(void);

@@ -467,10 +467,13 @@ static void M_Stage(
         span_from.g / 255.0f,
         span_from.b / 255.0f,
     };
+    MATRIX cwmatrix = *g_MatrixPtr;
+    MATRIX wmatrix = *g_WMatrixPtr;
+    Output_ApplyMirror(&cwmatrix, &wmatrix);
     const MESH_INSTANCE inst = {
         .mesh = batch->mesh_batch,
-        .cwmatrix = *g_MatrixPtr,
-        .wmatrix = *g_WMatrixPtr,
+        .cwmatrix = cwmatrix,
+        .wmatrix = wmatrix,
         .tint = Output_GetTint(),
         .has_water_line = has_water_line,
         .water_line = water_line.world_y,

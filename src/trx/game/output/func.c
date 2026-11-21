@@ -16,7 +16,15 @@
 
 CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
 {
-    if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
+    const MATRIX *m = g_MatrixPtr;
+    MATRIX mirrored;
+    if (Output_IsMirrored()) {
+        mirrored = *g_MatrixPtr;
+        MATRIX wmatrix = *g_WMatrixPtr;
+        Output_ApplyMirror(&mirrored, &wmatrix);
+        m = &mirrored;
+    }
+    if (m->_23 >= Output_GetFarZ()) {
         return CLIP_NOT_VISIBLE;
     }
 
@@ -40,10 +48,10 @@ CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
     for (int32_t i = 0; i < 8; i++) {
         // clang-format off
         const int32_t zv = (
-            g_MatrixPtr->_20 * vtx[i].x +
-            g_MatrixPtr->_21 * vtx[i].y +
-            g_MatrixPtr->_22 * vtx[i].z +
-            g_MatrixPtr->_23);
+            m->_20 * vtx[i].x +
+            m->_21 * vtx[i].y +
+            m->_22 * vtx[i].z +
+            m->_23);
         // clang-format on
 
         if (zv <= Output_GetNearZ() || zv >= Output_GetFarZ()) {
@@ -54,15 +62,15 @@ CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
         const int32_t zp = zv / g_PhdPersp;
         // clang-format off
         const int32_t xv = (
-            g_MatrixPtr->_00 * vtx[i].x +
-            g_MatrixPtr->_01 * vtx[i].y +
-            g_MatrixPtr->_02 * vtx[i].z +
-            g_MatrixPtr->_03) / zp;
+            m->_00 * vtx[i].x +
+            m->_01 * vtx[i].y +
+            m->_02 * vtx[i].z +
+            m->_03) / zp;
         const int32_t yv = (
-            g_MatrixPtr->_10 * vtx[i].x +
-            g_MatrixPtr->_11 * vtx[i].y +
-            g_MatrixPtr->_12 * vtx[i].z +
-            g_MatrixPtr->_13) / zp;
+            m->_10 * vtx[i].x +
+            m->_11 * vtx[i].y +
+            m->_12 * vtx[i].z +
+            m->_13) / zp;
         // clang-format on
 
         CLAMPG(x_min, xv);
