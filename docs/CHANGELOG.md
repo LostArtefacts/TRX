@@ -64,6 +64,7 @@
 - Fixed the canopic jars facing away and the Fire Circle Scroll and Scrap of Paper showing upside down in the inventory (OG bug) (TRX1602)
 - Fixed the helicopter in Desert Railroad making no sound
 - Fixed the jeep appearing to bleed when it drives through a boulder in Valley of the Kings (OG bug) (TRX2003)
+- Fixed enemies walking past some places on their route and stopping short of others (TRX1999)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
