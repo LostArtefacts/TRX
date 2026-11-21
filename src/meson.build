@@ -383,6 +383,7 @@ common_sources = [
   'trx/game/fx/gun_flash.c',
   'trx/game/fx/laser.c',
   'trx/game/fx/laser_sight.c',
+  'trx/game/fx/lightning.c',
   'trx/game/fx/ring.c',
   'trx/game/fx/shockwave.c',
   'trx/game/fx/upv_wake.c',
