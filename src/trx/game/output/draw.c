@@ -95,6 +95,24 @@ void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const CLIP clip)
     Matrix_Pop();
 }
 
+void Output_DrawJointMesh(
+    const OBJECT_MESH *const mesh, const CLIP clip, const XYZ_F light_shift)
+{
+    OutputSource_Objects_StageJointMesh(mesh, light_shift);
+    if (g_Config.debug.enable_debug_spheres) {
+        Output_DrawSphere(XYZ_32_From16(mesh->center), mesh->radius);
+    }
+}
+
+void Output_DrawJointMesh_I(
+    const OBJECT_MESH *const mesh, const CLIP clip, const XYZ_F light_shift)
+{
+    Matrix_Push();
+    Matrix_Interpolate();
+    Output_DrawJointMesh(mesh, clip, light_shift);
+    Matrix_Pop();
+}
+
 void Output_DrawLightningSegment(const LIGHTNING_SEGMENT segment)
 {
     OutputSource_Lightnings_StageSegment(&segment);

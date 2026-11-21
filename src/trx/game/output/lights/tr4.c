@@ -791,8 +791,9 @@ static int32_t M_PlaceInstanceLights(
 }
 
 // Fills the slot with the light of the instance. Row 0 holds the ambient,
-// row 1 the item position, and row 2 where the lights start in the draw's
-// list and how many there are.
+// row 1 the item position, row 2 where the lights start in the draw's list
+// and how many there are, and row 3 the item position for the parent-side
+// ring of a joint.
 static void M_FillSlotLight(
     const OUTPUT_LIGHT_INFO *const info, const bool own, float out[7][4],
     OUTPUT_MESH_LIGHT_LIST *const lights)
@@ -821,6 +822,12 @@ static void M_FillSlotLight(
     out[1][0] = (float)list->item_pos.x;
     out[1][1] = (float)list->item_pos.y;
     out[1][2] = (float)list->item_pos.z;
+    if (info->tr4.has_joint_shift) {
+        out[3][0] = list->item_pos.x + info->tr4.joint_shift.x;
+        out[3][1] = list->item_pos.y + info->tr4.joint_shift.y;
+        out[3][2] = list->item_pos.z + info->tr4.joint_shift.z;
+        out[3][3] = 1.0f;
+    }
     if (list->count == 0) {
         return;
     }

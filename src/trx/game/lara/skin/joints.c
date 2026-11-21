@@ -372,10 +372,18 @@ void Lara_Joints_Draw(
     };
     Output_Water_PushLaraJoint(
         joint->parent_mesh, joint->child_mesh, pos, mesh->radius);
+    // TR4 lights each mesh as if its origin stood at the item position, and
+    // a joint copies the lit color of the limb at each end. The shift lights
+    // the parent-side ring as the parent mesh is lit.
+    const XYZ_F light_shift = {
+        (child->_03 - parent->_03) / (float)(1 << W2V_SHIFT),
+        (child->_13 - parent->_13) / (float)(1 << W2V_SHIFT),
+        (child->_23 - parent->_23) / (float)(1 << W2V_SHIFT),
+    };
     if (interpolated) {
-        Output_DrawObjectMesh_I(mesh, clip);
+        Output_DrawJointMesh_I(mesh, clip, light_shift);
     } else {
-        Output_DrawObjectMesh(mesh, clip);
+        Output_DrawJointMesh(mesh, clip, light_shift);
     }
     Output_Water_PopLaraMesh();
 }
