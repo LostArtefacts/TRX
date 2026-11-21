@@ -56,6 +56,7 @@
 - Fixed enemies sometimes heading to the wrong place when they patrol, ambush or follow a set route
 - Fixed an enemy in Desert Railroad falling under the train when it is activated (OG bug) (TRX1979)
 - Fixed the canopic jars facing away and the Fire Circle Scroll and Scrap of Paper showing upside down in the inventory (OG bug) (TRX1602)
+- Fixed the helicopter in Desert Railroad making no sound
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
