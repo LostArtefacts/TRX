@@ -21,9 +21,9 @@ static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return &m_MidasTouch_Bounds;
+    return m_MidasTouch_Bounds;
 }
 
 static void M_KillLara(const ITEM *const item)
@@ -95,7 +95,8 @@ static void M_Collision(
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 

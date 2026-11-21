@@ -528,9 +528,9 @@ static bool M_IsAgainstCeiling(const ITEM *const item)
         && sky_sector->ceiling.height == item->pos.y - WALL_L;
 }
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return &m_MovableBlock_Bounds;
+    return m_MovableBlock_Bounds;
 }
 
 static bool M_Draw(const ITEM *const item)
@@ -647,7 +647,8 @@ static void M_Collision(
             break;
         }
 
-        if (!Lara_TestPosition(item, obj->bounds_func())) {
+        const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+        if (!Lara_TestPosition(item, &bounds)) {
             return;
         }
 
@@ -695,7 +696,8 @@ static void M_Collision(
             return;
         }
 
-        if (!Lara_TestPosition(item, obj->bounds_func())) {
+        const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+        if (!Lara_TestPosition(item, &bounds)) {
             return;
         }
 

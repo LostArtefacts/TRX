@@ -646,7 +646,7 @@ static const BOUNDS_16 *M_FindPlinthBounds(const ITEM *const item)
 
 static bool M_TestLaraPosition(const ITEM *const item, const bool controlled)
 {
-    OBJECT_BOUNDS test_bounds = *Object_Get(item->object_id)->bounds_func();
+    OBJECT_BOUNDS test_bounds = Object_Get(item->object_id)->bounds_func(item);
     if (item->object_id == O_FLARE_ITEM) {
         goto finish;
     }
@@ -927,7 +927,8 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         goto cleanup;
     }
 
@@ -1035,16 +1036,16 @@ void Pickup_Setup(OBJECT *const obj)
             "glow."));
 }
 
-const OBJECT_BOUNDS *Pickup_Bounds(void)
+OBJECT_BOUNDS Pickup_Bounds(const ITEM *const item)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->water_status == LWS_UNDERWATER
         || lara->water_status == LWS_CHEAT) {
-        return &m_PickUpBoundsUW;
+        return m_PickUpBoundsUW;
     } else if (g_Config.gameplay.enable_walk_to_items) {
-        return &m_PickUpBoundsControlled;
+        return m_PickUpBoundsControlled;
     } else {
-        return &m_PickUpBounds;
+        return m_PickUpBounds;
     }
 }
 

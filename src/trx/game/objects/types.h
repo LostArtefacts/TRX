@@ -124,7 +124,7 @@ typedef struct OBJECT {
     void (*priv_save_func)(const ITEM *item, JSON_WRITE_IO *io);
     RESULT (*effect_priv_load_func)(EFFECT *effect, JSON_READ_IO *io);
     void (*effect_priv_save_func)(const EFFECT *effect, JSON_WRITE_IO *io);
-    const OBJECT_BOUNDS *(*bounds_func)(void);
+    OBJECT_BOUNDS (*bounds_func)(const ITEM *item);
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);
     int16_t (*carrier_item_num_func)(const ITEM *item);

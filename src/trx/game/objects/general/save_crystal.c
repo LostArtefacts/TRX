@@ -98,13 +98,13 @@ static void M_CountCrystal(M_PRIV *const p)
     Stats_AddCrystal();
 }
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     return lara->water_status == LWS_ABOVE_WATER
             || lara->water_status == LWS_WADE
-        ? &m_SaveCrystal_Bounds
-        : &m_UW_Bounds;
+        ? m_SaveCrystal_Bounds
+        : m_UW_Bounds;
 }
 
 // Every crystal needs this from the start: a crystal that is never simulated
@@ -302,7 +302,8 @@ static void M_Collision(
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
     item->rot.x = 0;
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 
