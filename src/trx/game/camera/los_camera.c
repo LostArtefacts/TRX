@@ -617,7 +617,12 @@ static XYZ_32 M_GetHeadPos(const int32_t x, const int32_t y, const int32_t z)
         .y = y,
         .z = z,
     };
-    if (!Lara_GetMeshPos(LM_HEAD, &pos)) {
+    // TR3 poses the head from the rotations that M_Look sets, so the look
+    // reaches the same angle in every state. TR4 uses the head as it was last
+    // drawn.
+    if (g_Config.visuals.camera_mode == CAMERA_MODE_TR3) {
+        Lara_GetJointAbsPosition(&pos, LM_HEAD);
+    } else if (!Lara_GetMeshPos(LM_HEAD, &pos)) {
         // If look is held while loading a level, Lara won't have been drawn yet
         // so ensure a valid fallback position is used.
         Collide_GetJointAbsPosition(Lara_GetItem(), &pos, LM_HEAD);

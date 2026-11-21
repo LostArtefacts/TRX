@@ -136,7 +136,7 @@ static bool M_PS1_GetTorso(
 }
 
 static void M_GetJointAbsPosition_I(
-    XYZ_32 *const vec, const ANIM_FRAME *const frame1,
+    XYZ_32 *const vec, const LARA_MESH joint, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -166,7 +166,12 @@ static void M_GetJointAbsPosition_I(
         gun_type = lara_info->gun_type;
     }
 
-    if (Gun_IsFlareType(lara_info->gun_type)) {
+    if (joint == LM_HEAD) {
+        Matrix_TranslateRel32_I(bone[LM_HEAD - 1].pos);
+        Matrix_Rot16_ID(mesh_rots_1[LM_HEAD], mesh_rots_2[LM_HEAD]);
+        Matrix_Rot16_I(lara_info->head_rot);
+        Matrix_Interpolate();
+    } else if (Gun_IsFlareType(lara_info->gun_type)) {
         Matrix_Interpolate();
         Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
         if (lara_info->flare.control) {
@@ -205,7 +210,8 @@ static void M_GetJointAbsPosition_I(
     Matrix_Pop();
 }
 
-// TODO: joint is ignored - this only works for hands.
+// TODO: joints other than the head are ignored - this only works for the head
+// and the hands.
 void Lara_GetJointAbsPosition(XYZ_32 *const vec, const LARA_MESH joint)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -215,7 +221,8 @@ void Lara_GetJointAbsPosition(XYZ_32 *const vec, const LARA_MESH joint)
         int32_t rate;
         const int32_t frac = Item_GetFrames(lara_item, frmptr, &rate);
         if (frac != 0) {
-            M_GetJointAbsPosition_I(vec, frmptr[0], frmptr[1], frac, rate);
+            M_GetJointAbsPosition_I(
+                vec, joint, frmptr[0], frmptr[1], frac, rate);
             return;
         }
     }
@@ -246,7 +253,11 @@ void Lara_GetJointAbsPosition(XYZ_32 *const vec, const LARA_MESH joint)
         gun_type = lara_info->gun_type;
     }
 
-    if (Gun_IsFlareType(lara_info->gun_type)) {
+    if (joint == LM_HEAD) {
+        Matrix_TranslateRel32(bone[LM_HEAD - 1].pos);
+        Matrix_Rot16(mesh_rots[LM_HEAD]);
+        Matrix_Rot16(lara_info->head_rot);
+    } else if (Gun_IsFlareType(lara_info->gun_type)) {
         Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
         if (lara_info->flare.control) {
             const LARA_ARM *const arm = &lara_info->left_arm;

@@ -7,6 +7,7 @@
 - Fixed the camera briefly showing Lara when a flyby sequence ends the level (TRX1975)
 - Fixed the camera sometimes getting stuck when a flyby sequence returns to Lara (TRX1684)
 - Fixed the look camera clipping into the ceiling or out of the level in the TR3 and TR4 camera modes (TRX2019, regression from 1.2)
+- Fixed Lara not being able to look as far to the left and right while hanging from monkey bars in the TR3 camera mode (TRX41)
 
 **Rendering**
 - Fixed Lara, statics and inventory models not being drawn on some AMD graphics drivers (TRX2024, regression from 1.12)
