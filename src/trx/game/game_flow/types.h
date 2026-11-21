@@ -154,6 +154,7 @@ typedef struct {
     WEATHER_TYPE weather_type;
     bool water_particles;
     int32_t train_ground;
+    int32_t pulse_flip_group;
 
     struct {
         uint32_t pickups;

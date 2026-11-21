@@ -160,6 +160,15 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>pulse_flip_group</code></td>
+    <td>Integer</td>
+    <td colspan="2">
+      Keeps the TR4 amber lights dark until the given flip group (0 to 9) is
+      flipped, as in Inside the Great Pyramid. Omit for amber lights that
+      pulse as soon as they are triggered.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>death_tile</code></td>
     <td>String</td>
     <td colspan="2">

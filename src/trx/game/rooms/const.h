@@ -4,6 +4,7 @@
 #define MAX_FLIP_MAPS 10
 
 #define NO_ROOM (-1)
+#define NO_FLIP_GROUP (-1)
 
 #define MAX_SLOPE 2
 #define NO_HEIGHT (-3251200)
