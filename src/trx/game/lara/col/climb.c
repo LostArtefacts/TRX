@@ -855,6 +855,12 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    if (g_TRVersion >= 4
+        && (!Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
+            || !Item_TestFrameEqual(item, M_LF_HANG))) {
+        return;
+    }
+
     if (g_Input.forward) {
         if (coll->side_front.floor > -850 && coll->side_front.floor < -650
             && M_GetDestinationClearance(item) > LARA_HEIGHT
