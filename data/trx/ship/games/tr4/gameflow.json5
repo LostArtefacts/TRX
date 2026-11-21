@@ -216,7 +216,7 @@
             "lara_outfit": "tr4_classic",
             "sequence":[
                 {"type": "setup_horizon", "layer": 0, "color": "#806040", "speed": 7},
-                // {"type": "setup_mirror", "z_plane": 28672, "room": 11},
+                {"type": "setup_mirror", "z_plane": 28672, "room": 11},
                 {"type": "loading_camera", "source_x": 60489, "source_y": -1166, "source_z": 49442, "target_x": 59885, "target_y": -1038, "target_z": 48261, "room": 156},
                 {"type": "reset_hub", "level_idx": 11},
                 {"type": "loop_game"},
@@ -330,7 +330,7 @@
             "sequence":[
                 {"type": "setup_horizon", "layer": 0, "color": "#808080", "speed": -8, "color_add": true},
                 {"type": "setup_lens_flare", "x": 976, "y":-125, "z": 429, "color": "#806000"},
-                // {"type": "setup_mirror", "z_plane": 29696, "room": 69},
+                {"type": "setup_mirror", "z_plane": 29696, "room": 69},
                 {"type": "loading_camera", "source_x": 69395, "source_y": -4283, "source_z": 29278, "target_x": 72285, "target_y": -4304, "target_z": 29773, "room": 2},
                 {"type": "loop_game"},
                 {"type": "level_complete"},
