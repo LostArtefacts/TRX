@@ -490,6 +490,8 @@ void Camera_FlybyMode_Update(void)
                     Camera_FlybyMode_Reset();
                     Lara_SetControllable(true);
                 } else {
+                    g_Camera.speed = 1;
+                    Camera_Invalidate();
                     Camera_FlybyMode_Deactivate();
                 }
                 LUA_FireEventInt32(LUA_EVENT_FLYBY_END, finished);
