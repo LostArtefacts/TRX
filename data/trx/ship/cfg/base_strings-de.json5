@@ -2520,6 +2520,9 @@
         "crocodile": {
             "name": "Krokodil",
         },
+        "crocodile_tr4": {
+            "name": "\\{review}Krokodil (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "\\{review}Armbrustbolzen",
         },

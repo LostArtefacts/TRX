@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 877 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 878 names
 
     Every object TRX has a name for.
 
@@ -86,7 +86,7 @@ convert between the two.
     `CLAW_MUTANT`, `CLAW_MUTANT_PLASMA_BALL`, `CLIMBING_POLE`, `CLOCK_CHIMES`,
     `COBRA`, `COG_1`, `COG_2`, `COG_3`, `COG_SWITCH`, `COMBAT_END`,
     `COMPASS_OPTION`, `COMPY`, `CONTROLS_OPTION`, `COPTER`, `COWBOY`,
-    `CRAWLER_MUTANT`, `CROCODILE`, `CROSSBOW_AMMO_1_ITEM`,
+    `CRAWLER_MUTANT`, `CROCODILE`, `CROCODILE_TR4`, `CROSSBOW_AMMO_1_ITEM`,
     `CROSSBOW_AMMO_2_ITEM`, `CROSSBOW_AMMO_2_OPTION`, `CROSSBOW_AMMO_3_ITEM`,
     `CROSSBOW_AMMO_3_OPTION`, `CROSSBOW_AMMO_OPTION`, `CROSSBOW_BOLT`,
     `CROSSBOW_ITEM`, `CROSSBOW_OPTION`, `CROW`, `CROWBAR_ANIM`, `CROWBAR_ITEM`,
