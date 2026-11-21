@@ -51,6 +51,7 @@
 - Fixed the camera moving to an odd position when Lara climbs through the trapdoor in Menkaure's Pyramid (TRX1685)
 - Fixed several differences from the original game in how Lara is lit, such as steps in the light at her joints and sudden changes during animations (TRX1961)
 - Fixed henchmen falling off the train in Desert Railroad (TRX2025)
+- Fixed enemies sometimes heading to the wrong place when they patrol, ambush or follow a set route
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
