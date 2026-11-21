@@ -794,6 +794,12 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "death_count", resume->stats.death_count);
     JSONW_WRITE(io, "are_monks_angry", Creature_AreAlliesHostile());
     JSONW_WRITE(io, "sunset_timer", Output_GetTimeInGame());
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < OUTPUT_SKY_LAYER_COUNT; i++) {
+        JSONW_PUSH_VALUE(io, Output_Sky_GetLayerPos(i));
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "sky_layer_pos");
     JSONW_WRITE(io, "rng_control_seed", Random_GetControlSeed());
     JSONW_WRITE(io, "rng_draw_seed", Random_GetDrawSeed());
     JSONW_WRITE(io, "weather_type", FX_Weather_GetWeather());

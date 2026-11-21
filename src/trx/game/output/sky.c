@@ -262,6 +262,13 @@ int32_t Output_Sky_GetLayerPos(const int32_t layer_idx)
     return m_LayerPos[layer_idx];
 }
 
+void Output_Sky_SetLayerPos(const int32_t layer_idx, const int32_t pos)
+{
+    ASSERT(layer_idx >= 0 && layer_idx < OUTPUT_SKY_LAYER_COUNT);
+    m_LayerPos[layer_idx] = pos;
+    m_LayerPosPrev[layer_idx] = pos;
+}
+
 // Returns the layer color (with any lightning flash applied) in the OG
 // 128-neutral scale; the shader's VERT_OVERBRIGHT path doubles it and turns
 // the excess into an additive overbright term (OG's CalcColorSplit).
