@@ -18,12 +18,13 @@
 //                 ported).
 //   OCB <  0    : a flip-map trigger, not a flame at all (not ported).
 //
-// Both objects are also torch-lighting targets in the original (FireCollision);
-// the torch is not ported.
+// Both objects are also torch-lighting targets: Lara lights her torch from a
+// burning one, and lights an unlit one with her burning torch.
 
 #include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/game/fx/fire.h>
+#include <trx/game/gun.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -149,6 +150,7 @@ static void M_ControlWall(const int16_t item_num)
 static void M_SetupGround(OBJECT *const obj)
 {
     obj->control_func = M_ControlGround;
+    obj->collision_func = Gun_Torch_FireCollision;
     obj->draw_func = nullptr;
     obj->save_flags = true;
 }
@@ -157,6 +159,7 @@ static void M_SetupWall(OBJECT *const obj)
 {
     obj->initialise_func = M_InitialiseWall;
     obj->control_func = M_ControlWall;
+    obj->collision_func = Gun_Torch_FireCollision;
     obj->draw_func = nullptr;
     obj->save_flags = true;
 }

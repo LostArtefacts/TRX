@@ -23,12 +23,14 @@
 #define M_THROW_RELEASE     36
 #define M_THROW_END         41
 #define M_ITEM_HAND_OFFSET  80
+#define M_LIGHT_FRAME       40
 // clang-format on
 
 typedef enum {
     M_ARM_HOLD = 0,
     M_ARM_DROP = 1,
     M_ARM_THROW = 2,
+    M_ARM_LIGHT = 3,
 } M_ARM_STATE;
 
 typedef enum {
@@ -47,6 +49,28 @@ static const LARA_STATE_ID m_JumpStates[] = {
     LS_JUMP_LEFT,
     NO_CATALOG_ID,
     // clang-format on
+};
+
+static const LARA_ANIMATION_ID m_LightAnims[] = {
+    // clang-format off
+    LA_TORCH_LIGHT_1,
+    LA_TORCH_LIGHT_2,
+    LA_TORCH_LIGHT_3,
+    LA_TORCH_LIGHT_4,
+    LA_TORCH_LIGHT_5,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
+static const OBJECT_BOUNDS m_FireBounds = {
+    .shift = {
+        .min = { .x = -256, .y = 0, .z = -800, },
+        .max = { .x = +256, .y = WALL_L, .z = +800, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
+    },
 };
 
 static int32_t m_FlameCount = 0;
@@ -188,6 +212,15 @@ static void M_ControlArm(void)
         }
         break;
 
+    case M_ARM_LIGHT:
+        if (lara_item->current_anim_state != LS(LS_CONTROLLED)) {
+            lara->lit_torch = true;
+            lara->flare.control = true;
+            lara->left_arm.lock = M_ARM_HOLD;
+            M_SetArm(M_ANIM_HOLD, 0);
+        }
+        break;
+
     default:
         break;
     }
@@ -234,6 +267,76 @@ static void M_Control(
 static void M_DrawMeshes(const LARA_GUN_TYPE gun_type)
 {
     Lara_Skin_SetExtraEquipment(LM_HAND_L, EXTRA_MESH_WOODEN_TORCH);
+}
+
+// Whether the fire burns, which the torch either takes its flame from or
+// gives its flame to.
+static bool M_IsFireLit(const ITEM *const item)
+{
+    return item->is_simulated && Item_IsTriggerActiveRO(item);
+}
+
+static bool M_CanStartLighting(const ITEM *const fire_item)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    return lara->gun_type == LGT_TORCH && lara->gun_status == LGS_READY
+        && lara->left_arm.lock == M_ARM_HOLD
+        && M_IsFireLit(fire_item) != lara->lit_torch && g_Input.action
+        && lara_item->current_anim_state == LS(LS_STOP)
+        && Item_TestAnimEqual(lara_item, LA(LA_STAND_IDLE))
+        && !lara_item->gravity;
+}
+
+static void M_StartLighting(const int16_t item_num, ITEM *const lara_item)
+{
+    ITEM *const item = Item_Get(item_num);
+    const XYZ_16 old_rot = item->rot;
+    item->rot.y = lara_item->rot.y;
+    OBJECT_BOUNDS bounds = m_FireBounds;
+    if (item->object_id == O_FLAME_EMITTER_TR4_WALL) {
+        bounds.shift.min.z = -600;
+        bounds.shift.max.z = +600;
+    }
+    if (Lara_TestPosition(item, &bounds)) {
+        const int32_t height = ABS(lara_item->pos.y - item->pos.y) >> 8;
+        Item_SwitchToAnim(lara_item, LA(m_LightAnims[MIN(height, 4)]), 0);
+        lara_item->current_anim_state = LS(LS_CONTROLLED);
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->flare.control = false;
+        lara->left_arm.lock = M_ARM_LIGHT;
+        lara->interact_target.item_num = item_num;
+    }
+    item->rot = old_rot;
+}
+
+// Lights the fire from the torch at the moment Lara's animation holds the
+// torch into it, and sets off the triggers beneath the fire.
+static void M_LightFire(const int16_t item_num, const ITEM *const lara_item)
+{
+    ITEM *const item = Item_Get(item_num);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->interact_target.item_num != item_num || M_IsFireLit(item)
+        || lara_item->current_anim_state != LS(LS_CONTROLLED)
+        || !Lara_HasAnimation(m_LightAnims)
+        || Item_GetRelativeFrame(lara_item) != M_LIGHT_FRAME) {
+        return;
+    }
+
+    Room_TestTriggersEx(item, true);
+    item->trigger.mask = TRIGGER_MASK_ALL;
+    item->trigger.reversed = false;
+    item->timer = 0;
+    Item_AddSimulated(item_num);
+}
+
+void Gun_Torch_FireCollision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    if (M_CanStartLighting(Item_Get(item_num))) {
+        M_StartLighting(item_num, lara_item);
+    }
+    M_LightFire(item_num, lara_item);
 }
 
 void Gun_Torch_Take(const bool is_lit)
