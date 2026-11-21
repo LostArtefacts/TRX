@@ -1078,10 +1078,6 @@ static void M_CheckObjectCollision(ITEM *const item, ITEM *const jeep)
 
     if (item->object_id == O_BOUNCING_BOULDER
         && Lara_TestBoundsCollide(item, M_RADIUS)) {
-        Spawn_BloodBath(
-            lara_item->pos.x, lara_item->pos.y - STEP_L * 2, lara_item->pos.z,
-            (Random_GetControl() & 3) + 8, lara_item->rot.y,
-            lara_item->room_num, 5);
         Lara_TakeDamage(8, true);
         return;
     }
