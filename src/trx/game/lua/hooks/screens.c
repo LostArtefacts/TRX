@@ -74,6 +74,7 @@ static void M_PushArgs(lua_State *const L, const LUA_HOOK_ARG *const arg)
         M_SetBackground(L, args);
         M_SetTiming(L, args);
         M_SetBool(L, "is_loading", args->is_loading);
+        M_SetBool(L, "is_legal", args->is_legal);
         M_SetBool(L, "can_cross_fade_in", args->can_cross_fade_in);
         break;
     case UI_TAKEOVER_MENU:

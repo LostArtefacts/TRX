@@ -57,9 +57,11 @@ typedef struct {
     int32_t display_ticks;
     int32_t fade_in_ticks;
     int32_t fade_out_ticks;
-    // Whether the picture shows while a level loads, and whether it may fade
-    // in from the frame shown before it, for UI_TAKEOVER_PICTURE.
+    // Whether the picture shows while a level loads, whether it is a legal
+    // notice, and whether it may fade in from the frame shown before it, for
+    // UI_TAKEOVER_PICTURE.
     bool is_loading;
+    bool is_legal;
     bool can_cross_fade_in;
     // Whether the screen may leave for the title screen, for
     // UI_TAKEOVER_PAUSE.

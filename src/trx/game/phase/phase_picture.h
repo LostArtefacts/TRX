@@ -8,6 +8,7 @@ typedef struct {
     double fade_in_time;
     double fade_out_time;
     bool loading_pic;
+    bool is_legal;
     bool block_cross_fade_in;
 } PHASE_PICTURE_ARGS;
 

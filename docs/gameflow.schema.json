@@ -619,8 +619,7 @@
         }
       },
       "required": [
-        "type",
-        "path"
+        "type"
       ],
       "additionalProperties": false
     },

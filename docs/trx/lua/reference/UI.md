@@ -472,6 +472,7 @@ lights its font.
     Properties:
     - <a id="ui.PictureContext.background" name="ui.PictureContext.background"></a>**`background`**: string. The picture, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
     - <a id="ui.PictureContext.can_cross_fade_in" name="ui.PictureContext.can_cross_fade_in"></a>**`can_cross_fade_in`**: boolean. Whether the picture may fade in from the frame shown before it, rather than from black. *(read-only)*
+    - <a id="ui.PictureContext.is_legal" name="ui.PictureContext.is_legal"></a>**`is_legal`**: boolean. Whether the picture is a legal notice, which the Legal screens setting hides. *(read-only)*
     - <a id="ui.PictureContext.is_loading" name="ui.PictureContext.is_loading"></a>**`is_loading`**: boolean. Whether the picture shows while a level loads. *(read-only)*
 
 - <a id="ui.MenuContext" name="ui.MenuContext"></a>[lua]`trx.ui.MenuContext`

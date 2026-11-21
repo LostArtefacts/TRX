@@ -29,7 +29,8 @@ static bool M_UsesCrossFadeIn(const PHASE *const phase)
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    if (!Output_Overlay_LoadImage(p->args.file_name)) {
+    if (p->args.file_name != nullptr
+        && !Output_Overlay_LoadImage(p->args.file_name)) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
             .gf_cmd = { .action = GF_NOOP },
@@ -44,10 +45,13 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             .fade_in_ticks = M_ToTicks(p->args.fade_in_time),
             .fade_out_ticks = M_ToTicks(p->args.fade_out_time),
             .is_loading = p->args.loading_pic,
+            .is_legal = p->args.is_legal,
             .can_cross_fade_in = M_UsesCrossFadeIn(phase),
         });
     if (!p->is_held) {
-        LOG_WARNING("no script draws pictures, skipping %s", p->args.file_name);
+        LOG_WARNING(
+            "no script draws pictures, skipping %s",
+            p->args.file_name != nullptr ? p->args.file_name : "a blank one");
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
             .gf_cmd = { .action = GF_NOOP },

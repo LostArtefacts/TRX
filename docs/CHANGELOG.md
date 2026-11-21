@@ -27,6 +27,7 @@
 - Added a `remove_item` game flow sequence event, which takes a given item from Lara's inventory as a level starts (TRX2010)
 - Added `door_9` - `door_12` and `trapdoor_4` - `trapdoor_12` for custom levels (TRX2026)
 - Added a `train_ground` game flow level property, which sets the height of the ground beside a moving train. Enemies stay off this ground (TRX2025)
+- Added support for `display_picture` sequence events without a picture, which show a black screen for a script to draw on (#6929 / TRX1810)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
@@ -64,6 +65,7 @@
 - Fixed the jeep appearing to bleed when it drives through a boulder in Valley of the Kings (OG bug) (TRX2003)
 
 **Lua**
+- Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
 - Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished
 

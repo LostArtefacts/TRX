@@ -331,7 +331,7 @@ M_GF_HANDLER(M_HandlePicture)
     }
 
     GF_DISPLAY_PICTURE_DATA *data = event->data;
-    if (data->path == nullptr) {
+    if (data->path == nullptr && event->type == GFS_LOADING_SCREEN) {
         *out_cmd = gf_cmd;
         return OK;
     }
@@ -350,6 +350,7 @@ M_GF_HANDLER(M_HandlePicture)
         .fade_in_time = data->fade_in_time,
         .fade_out_time = data->fade_out_time,
         .loading_pic = event->type == GFS_LOADING_SCREEN,
+        .is_legal = data->is_legal,
         .block_cross_fade_in = is_after_fmv,
     });
     gf_cmd = PhaseExecutor_Run(phase);
