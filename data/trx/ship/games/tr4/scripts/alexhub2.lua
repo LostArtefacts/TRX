@@ -1,3 +1,7 @@
+local cutscenes = require("tr4.cutscenes")
+
+local KEY_CUTSCENE = 21
+
 trx.events.on_game_start(function()
   trx.objects.animating_14.properties.collidable = false
   trx.objects.animating_15.properties.collidable = false
@@ -51,4 +55,18 @@ require("tr4.inv_setup").apply({
     draws_at_pivot = true,
   },
   pickup_item_2 = { scale = 336, offset_y = 8 },
+})
+
+cutscenes.register(KEY_CUTSCENE, {
+  on_start = function()
+    cutscenes.hide_items(trx.catalog.objects.animating_10)
+    trx.lara.set_extra_equipment(
+      trx.lara.Mesh.HAND_R,
+      trx.lara.ExtraMesh.HOOK_AND_POLE
+    )
+    trx.cutscenes.set_lara_return({ x = 33279, y = -4352, z = 40697 }, 21847)
+  end,
+  on_end = function()
+    trx.lara.clear_equipment(trx.lara.Mesh.HAND_R)
+  end,
 })
