@@ -118,7 +118,7 @@ static LARA_GUN_TYPE M_NeedToQuickDraw(void)
         const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
         const LARA_GUN_TYPE gun_type = weapon->gun_type;
         const INPUT_ROLE role = weapon->equip_input_role;
-        if ((int32_t)role < 0) {
+        if ((int32_t)role < 0 || weapon->is_held_item) {
             continue;
         }
         if (Input_IsPressed(role) && Inv_HasItem(Gun_GetGunObject(gun_type))) {
@@ -238,8 +238,9 @@ static void M_DecideRequestedWeapon(void)
             && M_IsOnlyUnderwaterUsable()
             && !M_IsUsableUnderwater(requested_gun)) {
             for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
-                const LARA_GUN_TYPE gun = Gun_Registry_GetByIndex(i)->gun_type;
-                if (M_IsUsableUnderwater(gun)
+                const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+                const LARA_GUN_TYPE gun = weapon->gun_type;
+                if (!weapon->is_held_item && M_IsUsableUnderwater(gun)
                     && Inv_HasItem(Gun_GetGunObject(gun))) {
                     requested_gun = gun;
                     break;
@@ -248,8 +249,10 @@ static void M_DecideRequestedWeapon(void)
         }
         if (!Inv_HasItem(Gun_GetGunObject(requested_gun))) {
             for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
-                const LARA_GUN_TYPE gun = Gun_Registry_GetByIndex(i)->gun_type;
-                if (Inv_HasItem(Gun_GetGunObject(gun))) {
+                const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+                const LARA_GUN_TYPE gun = weapon->gun_type;
+                if (!weapon->is_held_item
+                    && Inv_HasItem(Gun_GetGunObject(gun))) {
                     requested_gun = gun;
                     break;
                 }
@@ -370,6 +373,12 @@ void Gun_Control(void)
     }
 
     Gun_Smoke_Control();
+
+    const WEAPON_INFO *const held = Gun_Registry_Get(lara->gun_type);
+    if (held->owns_frame) {
+        held->control_func(lara->gun_type, lara->gun_status);
+        return;
+    }
 
     // Crawling holds the hands busy, so the refusal has to be answered here
     // rather than in M_DecideRequestedWeapon, which armless Lara alone reaches.

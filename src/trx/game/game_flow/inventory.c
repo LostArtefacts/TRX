@@ -384,9 +384,10 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     }
 
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
-        const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
-        if (Gun_GetGunObject(gun_type) != NO_OBJECT) {
-            M_ModifyResumeInfo_GunOrAmmo(resume, gun_type);
+        const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+        if (!weapon->is_held_item
+            && Gun_GetGunObject(weapon->gun_type) != NO_OBJECT) {
+            M_ModifyResumeInfo_GunOrAmmo(resume, weapon->gun_type);
         }
     }
 
@@ -417,8 +418,9 @@ void GF_InventoryModifier_Apply(
 
         // The default weapon arrives without ammunition.
         for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
-            const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
-            if (gun_type != default_gun
+            const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+            const LARA_GUN_TYPE gun_type = weapon->gun_type;
+            if (gun_type != default_gun && !weapon->is_held_item
                 && Gun_GetGunObject(gun_type) != NO_OBJECT) {
                 M_ModifyInventory_GunOrAmmo(type, gun_type);
             }

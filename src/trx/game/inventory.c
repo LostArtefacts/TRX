@@ -672,8 +672,10 @@ int32_t Inv_State_GetDrawnEntries(
     // A box of each kind of ammunition is drawn for rounds she has no gun to
     // spend, and stops being drawn the moment she finds one.
     for (int32_t i = 0; i < Gun_Registry_GetCount() && count < max_count; i++) {
-        const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
-        if (Inv_State_Has(state, Gun_GetGunObject(gun_type))) {
+        const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+        const LARA_GUN_TYPE gun_type = weapon->gun_type;
+        if (weapon->is_held_item
+            || Inv_State_Has(state, Gun_GetGunObject(gun_type))) {
             continue;
         }
         OBJECT_ID kinds[MAX_AMMO_KINDS];

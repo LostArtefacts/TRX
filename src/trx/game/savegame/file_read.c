@@ -361,6 +361,8 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
     MUST(JSON_READ(io, "flare_age", &lara->flare.age));
     MUST(JSON_READ(io, "flare_frame", &lara->flare.frame_num));
     MUST(JSON_READ(io, "flare_control_left", &lara->flare.control));
+    lara->lit_torch = false;
+    SHOULD(JSON_READ_OPT(io, "lit_torch", &lara->lit_torch));
 
     // Read before the equipment, which draws the weapon in Lara's hand by
     // whether it carries its attachment.

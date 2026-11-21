@@ -634,7 +634,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.weapons" name="catalog.weapons"></a>[lua]`trx.catalog.weapons` - 16 names
+- <a id="catalog.weapons" name="catalog.weapons"></a>[lua]`trx.catalog.weapons` - 17 names
 
     Every weapon Lara can hold.
 
@@ -648,7 +648,7 @@ convert between the two.
 
     `AUTOS`, `CROSSBOW`, `DESERT_EAGLE`, `FLARE`, `GRENADE`, `HARPOON`, `M16`,
     `MAGNUMS`, `MP5`, `PISTOLS`, `REVOLVER`, `ROCKET`, `SHOTGUN`, `SKIDOO`,
-    `UNARMED`, `UZIS`
+    `TORCH`, `UNARMED`, `UZIS`
 
     </details>
 

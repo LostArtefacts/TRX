@@ -657,6 +657,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "flare_age", lara->flare.age);
     JSONW_WRITE(io, "flare_frame", lara->flare.frame_num);
     JSONW_WRITE(io, "flare_control_left", lara->flare.control);
+    JSONW_WRITE(io, "lit_torch", lara->lit_torch);
     JSONW_WRITE(io, "extra_anim", lara->extra_anim);
     // Introduced in TRX 1.2
     JSONW_WRITE(io, "vehicle_item_num", Lara_Vehicle_GetIndex());
