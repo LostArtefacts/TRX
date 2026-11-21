@@ -62,9 +62,6 @@ XYZ_32 XYZ_32_OffsetYaw(XYZ_32 src, int16_t yaw, int32_t distance);
 XYZ_32 XYZ_32_OffsetLocalYaw(XYZ_32 src, XYZ_32 offset, int16_t yaw);
 XYZ_32 XYZ_32_OffsetLocal(XYZ_32 src, XYZ_32 offset, XYZ_16 rot);
 
-bool XYZ_32_ProjectPointOntoAxis(
-    XYZ_32 origin, XYZ_32 axis, int64_t axis_len2, XYZ_32 *pos);
-
 bool XYZ_16_AreEquivalent(XYZ_16 rot1, XYZ_16 rot2);
 
 BOUNDS_32 BOUNDS_32_From16(const BOUNDS_16 *src);

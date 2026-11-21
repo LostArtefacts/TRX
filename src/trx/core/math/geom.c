@@ -244,41 +244,6 @@ int64_t XYZ_32_DotProduct_64(const XYZ_32 a, const XYZ_32 b)
     return (int64_t)a.x * b.x + (int64_t)a.y * b.y + (int64_t)a.z * b.z;
 }
 
-bool XYZ_32_ProjectPointOntoAxis(
-    const XYZ_32 origin, const XYZ_32 axis, const int64_t axis_len2,
-    XYZ_32 *const pos)
-{
-    // Finds the value `t` such that the point
-    //   origin + t * axis
-    // is the closest point on the line to the original *pos, and then writes
-    // that point back into *pos.
-    //
-    // Example:
-    // - origin = (0, 0, 0)
-    // - axis   = (1, 0, 0)  // line is the X axis
-    // - *pos   = (5, 2, -3)
-    // The closest point on the X axis is (5, 0, 0), so after the call:
-    // - *pos = (5, 0, 0)
-
-    if (axis_len2 == 0) {
-        return false;
-    }
-
-    const XYZ_32 offset = {
-        .x = pos->x - origin.x,
-        .y = pos->y - origin.y,
-        .z = pos->z - origin.z,
-    };
-
-    const int64_t t_num = XYZ_32_DotProduct_64(offset, axis);
-    *pos = (XYZ_32) {
-        .x = origin.x + (int32_t)((t_num * axis.x) / axis_len2),
-        .y = origin.y + (int32_t)((t_num * axis.y) / axis_len2),
-        .z = origin.z + (int32_t)((t_num * axis.z) / axis_len2),
-    };
-    return true;
-}
-
 float XYZ_F_DotProduct(const XYZ_F a, const XYZ_F b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
