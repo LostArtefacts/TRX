@@ -245,7 +245,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
         Lara_InitialiseInventory(level);
     }
 
-    Hub_InitialiseLaraStart();
+    Hub_InitialiseLaraStart(level);
     Lara_Control_Initialise(level->type, m_StartAnimState);
 }
 

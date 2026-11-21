@@ -3,6 +3,7 @@
 #include <trx/game/anims.h>
 #include <trx/game/creature/common.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/hub.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
 #include <trx/game/items/walkable.h>
@@ -97,6 +98,69 @@ static void M_MaterialiseTR4AIObjects(LEVEL_CONTEXT *const ctx)
                 .as_int = ai_item->ocb,
             });
     }
+}
+
+// TR1-3 have no list of AI objects, so a finish trigger counts only Lara's
+// start positions, in the order that the level file lists them.
+static void M_RecordLaraStartPositions(void)
+{
+    int32_t count = 0;
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        if (Item_Get(i)->object_id == O_LARA_START_POS) {
+            count++;
+        }
+    }
+    if (count == 0) {
+        Hub_SetStartPoints(nullptr, 0);
+        return;
+    }
+
+    HUB_START_POINT *const points =
+        GameBuf_Alloc(sizeof(HUB_START_POINT) * count, GBUF_ITEMS);
+    int32_t point_idx = 0;
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const item = Item_Get(i);
+        if (item->object_id != O_LARA_START_POS) {
+            continue;
+        }
+        points[point_idx++] = (HUB_START_POINT) {
+            .pos = item->pos,
+            .rot_y = item->rot.y,
+            .room_num = item->room_num,
+        };
+    }
+    Hub_SetStartPoints(points, count);
+}
+
+// In TR4, a finish trigger names the point Lara starts the next level at by its
+// place in the level's list of AI objects of any kind, as the original does. A
+// removed object is kept in the list so that the places hold.
+static void M_RecordHubStartPoints(const LEVEL_CONTEXT *const ctx)
+{
+    if (ctx->loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
+        M_RecordLaraStartPositions();
+        return;
+    }
+
+    const LEVEL_CONTEXT_INFO *const info = &ctx->info;
+    if (info->tr4.ai_item_count <= 0) {
+        Hub_SetStartPoints(nullptr, 0);
+        return;
+    }
+
+    HUB_START_POINT *const points = GameBuf_Alloc(
+        sizeof(HUB_START_POINT) * info->tr4.ai_item_count, GBUF_ITEMS);
+    for (int32_t i = 0; i < info->tr4.ai_item_count; i++) {
+        const LEVEL_TR4_AI_ITEM_INFO *const ai_item = &info->tr4.ai_items[i];
+        points[i] = (HUB_START_POINT) {
+            .pos = ai_item->pos,
+            .rot_y = ai_item->y_rot,
+            .room_num = ai_item->room_num == M_AI_OBJECT_NO_ROOM
+                ? NO_ROOM
+                : ai_item->room_num,
+        };
+    }
+    Hub_SetStartPoints(points, info->tr4.ai_item_count);
 }
 
 static void M_NudgeTR4AIObjects(const LEVEL_CONTEXT *const ctx)
@@ -261,6 +325,7 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
 
     Inject_ApplyProperties();
 
+    M_RecordHubStartPoints(ctx);
     M_MaterialiseTR4AIObjects(ctx);
 
     const int32_t item_count = Item_GetLevelCount();

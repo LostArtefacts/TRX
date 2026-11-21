@@ -5,34 +5,20 @@
 
 static int32_t m_NextLevel = 0;
 static int32_t m_LaraStartPos = 0;
+static const HUB_START_POINT *m_StartPoints = nullptr;
+static int32_t m_StartPointCount = 0;
 
 static void M_Shutdown(void)
 {
     m_NextLevel = 0;
     m_LaraStartPos = 0;
+    m_StartPoints = nullptr;
+    m_StartPointCount = 0;
 }
 
 static const GF_LEVEL *M_GetNextLevel(const int32_t level_idx)
 {
     return GF_GetLevel(GFLT_MAIN, level_idx - 1);
-}
-
-static const ITEM *M_FindLaraStartItem(void)
-{
-    int32_t ai_index = 0;
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        const ITEM *const item = Item_Get(i);
-        if (item->object_id != O_LARA_START_POS) {
-            continue;
-        }
-
-        ai_index++;
-        if (ai_index == m_LaraStartPos) {
-            return item;
-        }
-    }
-
-    return nullptr;
 }
 
 void Hub_SetNextLevelIndex(const int32_t level_idx)
@@ -73,23 +59,25 @@ int32_t Hub_GetLaraStartIndex(void)
     return m_LaraStartPos;
 }
 
-void Hub_InitialiseLaraStart(void)
+void Hub_SetStartPoints(
+    const HUB_START_POINT *const points, const int32_t count)
 {
-    if (m_LaraStartPos <= 0) {
-        goto finish;
-    }
+    m_StartPoints = points;
+    m_StartPointCount = count;
+}
 
-    const ITEM *const start_item = M_FindLaraStartItem();
-    if (start_item == nullptr) {
-        goto finish;
-    }
-
+void Hub_InitialiseLaraStart(const GF_LEVEL *const level)
+{
     ITEM *const lara_item = Lara_GetItem();
-    lara_item->pos = start_item->pos;
-    lara_item->rot = start_item->rot;
-    Item_UpdateRoom(Item_GetIndex(lara_item), start_item->room_num);
+    if (m_LaraStartPos > 0 && m_LaraStartPos <= m_StartPointCount) {
+        const HUB_START_POINT *const point = &m_StartPoints[m_LaraStartPos - 1];
+        if (point->room_num != NO_ROOM) {
+            lara_item->pos = point->pos;
+            lara_item->rot.y = point->rot_y;
+            Item_UpdateRoom(Item_GetIndex(lara_item), point->room_num);
+        }
+    }
 
-finish:
     m_LaraStartPos = 0;
 }
 
