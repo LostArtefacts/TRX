@@ -37,7 +37,10 @@ static bool m_CacheMatrices = false;
 static bool m_IsLara = true;
 // Lara's opacity, out of 255. TR4 makes her translucent while the look key is
 // held, by how close the camera is to her head, and fades her back in after.
+// Her reflection in a mirror measures the distance to its own reflected head,
+// so it stays almost opaque.
 static int32_t m_LookAlpha = 255;
+static int32_t m_MirrorLookAlpha = 255;
 
 static M_ARMS M_GetArms(const LARA_GUN_TYPE gun_type)
 {
@@ -160,32 +163,42 @@ static void M_CalculateLight(
     }
 }
 
+static int32_t *M_GetLookAlpha(void)
+{
+    return Output_IsMirrored() ? &m_MirrorLookAlpha : &m_LookAlpha;
+}
+
 static void M_UpdateLookAlpha(const ITEM *const item)
 {
     if (g_TRVersion != 4) {
         return;
     }
 
+    int32_t *const alpha = M_GetLookAlpha();
     if (g_Input.look) {
-        const XYZ_32 head = {
+        XYZ_32 head = {
             .x = item->pos.x,
             .y = item->pos.y - M_LOOK_HEAD_HEIGHT,
             .z = item->pos.z,
         };
-        m_LookAlpha = XYZ_32_GetDistance(head, g_Camera.pos.pos) >> 2;
-        CLAMP(m_LookAlpha, 0, 255);
-    } else if (Output_IsControlFrame() && m_LookAlpha < 255) {
-        m_LookAlpha = MIN(m_LookAlpha + M_LOOK_FADE_IN_STEP, 255);
+        if (Output_IsMirrored()) {
+            head = Room_ReflectInMirror(head);
+        }
+        *alpha = XYZ_32_GetDistance(head, g_Camera.pos.pos) >> 2;
+        CLAMP(*alpha, 0, 255);
+    } else if (Output_IsControlFrame() && *alpha < 255) {
+        *alpha = MIN(*alpha + M_LOOK_FADE_IN_STEP, 255);
     }
 }
 
 static bool M_PushLookAlpha(void)
 {
-    if (!m_IsLara || m_LookAlpha >= 255) {
+    const int32_t alpha = *M_GetLookAlpha();
+    if (!m_IsLara || alpha >= 255) {
         return false;
     }
     RGBA_F tint = Output_GetTint();
-    tint.a *= m_LookAlpha / 255.0f;
+    tint.a *= alpha / 255.0f;
     Output_PushTintOverride(tint);
     return true;
 }

@@ -222,6 +222,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
     obj->save_position = true;
+    obj->shows_in_mirror = true;
 }
 
 int16_t CrossbowBolt_Fire(

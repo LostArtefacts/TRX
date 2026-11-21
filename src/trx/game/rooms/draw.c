@@ -388,6 +388,11 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
         Output_PushTintOverride(tint);
     }
     bind->drawn |= obj->draw_func(item);
+    if (obj->shows_in_mirror && Room_IsMirror(item->room_num)) {
+        Output_BeginMirror(Room_GetMirrorPlane());
+        obj->draw_func(item);
+        Output_EndMirror();
+    }
     if (is_fading) {
         Output_PopTintOverride();
     }
@@ -409,6 +414,36 @@ static void M_DrawEffect(const EFFECT *const effect)
     if (obj->loaded && obj->effect_draw_func != nullptr) {
         obj->effect_draw_func(effect);
     }
+}
+
+static bool M_IsGunShell(const EFFECT *const effect)
+{
+    return effect->object_id == O_GUN_SHELL
+        || effect->object_id == O_SHOTGUN_SHELL;
+}
+
+// Draws Lara a second time, reflected in the mirror, together with the gun
+// shells she ejected. The reflection casts a shadow of its own.
+static void M_DrawMirroredLara(const ITEM *const lara_item)
+{
+    Output_BeginMirror(Room_GetMirrorPlane());
+
+    OUTPUT_ITEM_BIND *const bind = Output_Bind_GetItem(lara_item);
+    const bool shadow_drawn = bind->shadow_drawn;
+    bind->shadow_drawn = false;
+    Lara_Draw(lara_item);
+    bind->shadow_drawn = shadow_drawn;
+
+    int16_t effect_num = Effect_GetActiveNum();
+    while (effect_num != NO_EFFECT) {
+        const EFFECT *const effect = Effect_Get(effect_num);
+        if (M_IsGunShell(effect)) {
+            M_DrawEffect(effect);
+        }
+        effect_num = effect->next_active;
+    }
+
+    Output_EndMirror();
 }
 
 static void M_DrawSingleRoom(const ROOM *const room)
@@ -594,6 +629,9 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         Output_Water_SetupFromRoom(lara_room);
         Output_SetCurrentRoom(lara_room);
         Lara_Draw(lara_item);
+        if (Room_IsMirror(lara_item->room_num)) {
+            M_DrawMirroredLara(lara_item);
+        }
     }
 
     CutSeq_DrawActors();
