@@ -734,6 +734,7 @@ common_sources = [
   'trx/game/objects/general/big_bowl.c',
   'trx/game/objects/general/bird_tweeter.c',
   'trx/game/objects/general/bridge.c',
+  'trx/game/objects/general/burning_torch.c',
   'trx/game/objects/general/cabin.c',
   'trx/game/objects/general/camera_target.c',
   'trx/game/objects/general/carcass.c',

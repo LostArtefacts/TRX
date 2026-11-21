@@ -113,6 +113,17 @@ static XYZ_32 M_GetSparkRenderPos(const SPARK *const spark, const float ratio)
         return Sparks_GetWorldPos(spark);
     }
 
+    const XYZ_32 local_pos = {
+        .x = (int32_t)LERP(spark->prev_pos.x, spark->pos.x, ratio),
+        .y = (int32_t)LERP(spark->prev_pos.y, spark->pos.y, ratio),
+        .z = (int32_t)LERP(spark->prev_pos.z, spark->pos.z, ratio),
+    };
+
+    XYZ_32 node_pos;
+    if (Sparks_GetDrawnNodePos(spark, &node_pos)) {
+        return XYZ_32_Add(node_pos, local_pos);
+    }
+
     if ((spark->flags & SPARK_F_ATTACHED_NODE) != 0U) {
         const XYZ_32 current_pos = Sparks_GetWorldPos(spark);
         return (XYZ_32) {
@@ -121,12 +132,6 @@ static XYZ_32 M_GetSparkRenderPos(const SPARK *const spark, const float ratio)
             .z = (int32_t)LERP(spark->prev_world_pos.z, current_pos.z, ratio),
         };
     }
-
-    const XYZ_32 local_pos = {
-        .x = (int32_t)LERP(spark->prev_pos.x, spark->pos.x, ratio),
-        .y = (int32_t)LERP(spark->prev_pos.y, spark->pos.y, ratio),
-        .z = (int32_t)LERP(spark->prev_pos.z, spark->pos.z, ratio),
-    };
 
     if ((spark->flags & SPARK_F_FX) != 0U) {
         const EFFECT *const effect = Effect_Get(spark->effect_num);

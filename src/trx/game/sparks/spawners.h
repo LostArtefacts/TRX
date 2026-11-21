@@ -38,6 +38,8 @@ void Sparks_TriggerDartSmoke(XYZ_32 pos, XZ_32 vel, bool hit);
 void Sparks_TriggerPickupAid(XYZ_32 pos, XZ_32 vel);
 
 void Sparks_TriggerFlareSparks(XYZ_32 pos, XYZ_32 vel, bool smoke);
+// Lets off a flame from a burning TR4 torch that follows the node of the item.
+void Sparks_TriggerTorchFlame(int16_t item_num, int32_t node);
 
 void Sparks_TriggerRicochetTR3(GAME_VECTOR pos, int32_t angle, int32_t size);
 void Sparks_TriggerRicochetTR4(

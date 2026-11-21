@@ -32,6 +32,11 @@ RESULT Sparks_Load(JSON_READ_IO *io);
 void Sparks_DetachEffect(int16_t effect_num);
 void Sparks_DetachItem(int16_t item_num);
 
+// Returns the position of the node that an attached spark follows, where that
+// node moves with Lara's drawn meshes. Such a position follows her arm's own
+// animation and is interpolated for the frame last drawn. Returns false for
+// any other spark, or while Lara has no drawn meshes.
+bool Sparks_GetDrawnNodePos(const SPARK *spark, XYZ_32 *out_pos);
 XYZ_32 Sparks_GetWorldPos(const SPARK *spark);
 
 SPARK *Sparks_GetSpark(int32_t idx);

@@ -18,6 +18,13 @@ enum {
     // clang-format on
 };
 
+// The places on an item that a spark can follow, which name an offset in one
+// of its meshes.
+enum {
+    SPARK_NODE_LARA_TORCH = 12,
+    SPARK_NODE_TORCH_ITEM = 13,
+};
+
 typedef enum {
     // clang-format off
     SPARK_TYPE_EXPLOSION    = 0,

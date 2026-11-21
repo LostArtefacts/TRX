@@ -21,5 +21,8 @@ bool Pickup_Trigger(int16_t item_num);
 OBJECT_BOUNDS Pickup_Bounds(const ITEM *item);
 void Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 uint32_t Pickup_GetSecretMask(const ITEM *item);
+// Lets off the twinkle of a pickup aid over the item at random intervals,
+// while Lara is in range. The timer holds the frames left until the next one.
+void Pickup_ControlAids(const ITEM *item, int32_t *timer);
 int16_t Pickup_FindNearbyCrowbarPryPickup(void);
 void Pickup_Collect(GAME_VECTOR pos, PICKUP_MODE mode);

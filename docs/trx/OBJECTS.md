@@ -1881,6 +1881,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### burning_torch_item
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+</tbody>
+</table>
+
 #### ceiling_trapdoor_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>

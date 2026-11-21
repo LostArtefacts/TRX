@@ -75,8 +75,8 @@ static const BITE m_NodeOffsets[16] = {
     { .pos = { -160, -8, 16 }, .mesh_num = 5 },
     { .pos = { -160, -8, 16 }, .mesh_num = 9 },
     { .pos = { -160, -8, 16 }, .mesh_num = 13 },
-    { .pos = { 0, 0, 0 }, .mesh_num = 0 },
-    { .pos = { 0, 0, 0 }, .mesh_num = 0 },
+    [SPARK_NODE_LARA_TORCH] = { .pos = { -16, 40, 160 }, .mesh_num = 13 },
+    [SPARK_NODE_TORCH_ITEM] = { .pos = { -16, -8, 160 }, .mesh_num = 0 },
     { .pos = { 0, 0, 0 }, .mesh_num = 0 },
     { .pos = { 0, 0, 0 }, .mesh_num = 0 },
 };
@@ -396,6 +396,19 @@ RESULT Sparks_LoadSpark(JSON_READ_IO *const io, SPARK *const spark)
     return OK;
 }
 
+bool Sparks_GetDrawnNodePos(const SPARK *const spark, XYZ_32 *const out_pos)
+{
+    if ((spark->flags & (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE))
+            != (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE)
+        || spark->node_num != SPARK_NODE_LARA_TORCH) {
+        return false;
+    }
+
+    const BITE *const node = &m_NodeOffsets[spark->node_num];
+    *out_pos = node->pos;
+    return Lara_GetMeshPos(node->mesh_num, out_pos);
+}
+
 XYZ_32 Sparks_GetWorldPos(const SPARK *const spark)
 {
     if (spark == nullptr) {
@@ -421,15 +434,13 @@ XYZ_32 Sparks_GetWorldPos(const SPARK *const spark)
         }
 
         if ((spark->flags & SPARK_F_ATTACHED_NODE) != 0U) {
-            XYZ_32 joint_pos = m_NodeOffsets[spark->node_num & 0xF].pos;
-            Collide_GetJointAbsPosition(
-                item, &joint_pos,
-                m_NodeOffsets[spark->node_num & 0xF].mesh_num);
-            return (XYZ_32) {
-                .x = joint_pos.x + spark->pos.x,
-                .y = joint_pos.y + spark->pos.y,
-                .z = joint_pos.z + spark->pos.z,
-            };
+            XYZ_32 node_pos;
+            if (!Sparks_GetDrawnNodePos(spark, &node_pos)) {
+                const BITE *const node = &m_NodeOffsets[spark->node_num & 0xF];
+                node_pos = node->pos;
+                Collide_GetJointAbsPosition(item, &node_pos, node->mesh_num);
+            }
+            return XYZ_32_Add(node_pos, spark->pos);
         }
 
         return (XYZ_32) {
