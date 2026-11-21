@@ -44,6 +44,7 @@
 - Fixed some enemies trying to reach Lara across gaps they cannot cross
 - Fixed flying and swimming enemies failing to follow Lara into some areas
 - Fixed the binocular light barely lighting enemies and other objects (#7089 / TRX1980)
+- Fixed Lara being blocked by an invisible wall in The Sphinx Complex (TRX1594)
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
