@@ -77,6 +77,23 @@ static XYZ_32 M_GetPosedTorsoPos(
     return pos;
 }
 
+// Returns how far above her position TR4 takes Lara's light while she stands,
+// crouches or crawls still, or 0 where it takes the light at her torso.
+static int32_t M_GetIdleLightHeight(const ITEM *const item)
+{
+    if (g_TRVersion != 4) {
+        return 0;
+    }
+    if (Item_TestAnimEqual(item, LA(LA_STAND_IDLE))) {
+        return 512;
+    }
+    if (Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))
+        || Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))) {
+        return 192;
+    }
+    return 0;
+}
+
 static void M_CalculateLight(
     const ITEM *const item, const ANIM_FRAME *const frame)
 {
@@ -106,6 +123,11 @@ static void M_CalculateLight(
             return;
         }
 
+        const int32_t idle_height = M_GetIdleLightHeight(item);
+        if (idle_height != 0) {
+            sample_pos.pos = item->interp.result.pos;
+            sample_pos.pos.y -= idle_height;
+        }
         Room_GetSector(sample_pos.pos, &sample_pos.room_num);
         Output_CalculateObjectLightingAt(item, sample_pos);
     } else {
