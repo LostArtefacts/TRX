@@ -2863,6 +2863,9 @@
         "gun_shell": {
             "name": "Bossolo di Proiettile",
         },
+        "hammer": {
+            "name": "\\{review}Martello",
+        },
         "harpoon_bolt": {
             "name": "Dardo Arpione",
         },

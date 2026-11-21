@@ -2851,6 +2851,9 @@
         "gun_shell": {
             "name": "\\{review}Cartouche de pistolet",
         },
+        "hammer": {
+            "name": "\\{review}Marteau",
+        },
         "harpoon_bolt": {
             "name": "\\{review}Bolt de harpon",
         },

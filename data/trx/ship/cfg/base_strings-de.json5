@@ -2851,6 +2851,9 @@
         "gun_shell": {
             "name": "\\{review}Gewehrpatrone",
         },
+        "hammer": {
+            "name": "\\{review}Hammer",
+        },
         "harpoon_bolt": {
             "name": "Harpunen Pfeil",
         },
