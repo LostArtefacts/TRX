@@ -793,6 +793,7 @@ common_sources = [
   'trx/game/objects/general/scion3.c',
   'trx/game/objects/general/scion4.c',
   'trx/game/objects/general/scion_holder.c',
+  'trx/game/objects/general/senet.c',
   'trx/game/objects/general/sequence_door.c',
   'trx/game/objects/general/sequence_switch.c',
   'trx/game/objects/general/shoal.c',

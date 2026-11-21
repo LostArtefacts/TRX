@@ -3879,6 +3879,21 @@
         "security_laser_killer": {
             "name": "Security Laser (Killer)",
         },
+        "senet_enemy_piece": {
+            "name": "Senet Enemy Piece",
+        },
+        "senet_piece_1": {
+            "name": "Senet Piece 1",
+        },
+        "senet_piece_2": {
+            "name": "Senet Piece 2",
+        },
+        "senet_piece_3": {
+            "name": "Senet Piece 3",
+        },
+        "senet_spinner": {
+            "name": "Senet Spinner",
+        },
         "sentry_gun": {
             "name": "Sentry Gun",
         },

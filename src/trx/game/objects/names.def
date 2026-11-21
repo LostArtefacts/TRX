@@ -470,6 +470,11 @@ X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_5,      "Pushable Object 5")
 X_OBJ_NAME_DEFINE(O_SMASHABLE_VEHICLE_WALL, "Smashable Vehicle Wall")
 X_OBJ_NAME_DEFINE(O_MAPPER,                 "Mapper")
 X_OBJ_NAME_DEFINE(O_GOD_HEAD,               "God Head")
+X_OBJ_NAME_DEFINE(O_SENET_PIECE_1,          "Senet Piece 1")
+X_OBJ_NAME_DEFINE(O_SENET_PIECE_2,          "Senet Piece 2")
+X_OBJ_NAME_DEFINE(O_SENET_PIECE_3,          "Senet Piece 3")
+X_OBJ_NAME_DEFINE(O_SENET_ENEMY_PIECE,      "Senet Enemy Piece")
+X_OBJ_NAME_DEFINE(O_SENET_SPINNER,          "Senet Spinner")
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "Alarm")

@@ -79,6 +79,10 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
     case O_SKIDOO_FAST:
     case O_SKIDOO_DRIVER:
     case O_GRENADE:
+    case O_SENET_PIECE_1:
+    case O_SENET_PIECE_2:
+    case O_SENET_PIECE_3:
+    case O_SENET_ENEMY_PIECE:
         max_xz = 200;
         break;
 

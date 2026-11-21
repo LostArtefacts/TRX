@@ -57,6 +57,7 @@
 - Added Hammer control (TRX1986)
 - Added Obelisk control (TRX1987)
 - Added Sequence Switch and Sequence Door control (TRX819)
+- Added the game of senet in Tomb of Semerkhet (TRX1990, TRX1991, TRX1992)
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)
