@@ -2815,6 +2815,9 @@
         "glow_reserved": {
             "name": "\\{review}Сияние карты",
         },
+        "god_head": {
+            "name": "\\{review}Голова бога",
+        },
         "gondola": {
             "name": "\\{review}Гондола",
         },

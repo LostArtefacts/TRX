@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 883 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 884 names
 
     Every object TRX has a name for.
 
@@ -114,8 +114,8 @@ convert between the two.
     `GENERIC_TRAP_1`, `GENERIC_TRAP_10`, `GENERIC_TRAP_2`, `GENERIC_TRAP_3`,
     `GENERIC_TRAP_4`, `GENERIC_TRAP_5`, `GENERIC_TRAP_6`, `GENERIC_TRAP_7`,
     `GENERIC_TRAP_8`, `GENERIC_TRAP_9`, `GLOBE_OPTION`, `GLOW`, `GLOW_RESERVED`,
-    `GONDOLA`, `GONG`, `GONG_BONGER`, `GRAPHICS_OPTION`, `GREEN_LIGHT`,
-    `GRENADE`, `GRENADE_AMMO_2_ITEM`, `GRENADE_AMMO_2_OPTION`,
+    `GOD_HEAD`, `GONDOLA`, `GONG`, `GONG_BONGER`, `GRAPHICS_OPTION`,
+    `GREEN_LIGHT`, `GRENADE`, `GRENADE_AMMO_2_ITEM`, `GRENADE_AMMO_2_OPTION`,
     `GRENADE_AMMO_3_ITEM`, `GRENADE_AMMO_3_OPTION`, `GRENADE_AMMO_ITEM`,
     `GRENADE_AMMO_OPTION`, `GRENADE_GUN_ITEM`, `GRENADE_GUN_OPTION`, `GUIDE`,
     `GUN_FLASH`, `GUN_SHELL`, `HARPOON_BOLT`, `HARPOON_GUN_AMMO_ITEM`,

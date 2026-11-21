@@ -2815,6 +2815,9 @@
         "glow_reserved": {
             "name": "Karten-Glühen",
         },
+        "god_head": {
+            "name": "\\{review}Götterkopf",
+        },
         "gondola": {
             "name": "Gondel",
         },
