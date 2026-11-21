@@ -330,6 +330,7 @@ X_OBJ_NAME_DEFINE(O_CATWALK_BLADE,            "Catwalk Blade")
 X_OBJ_NAME_DEFINE(O_FLOOR_BLADE,              "Floor blade")
 X_OBJ_NAME_DEFINE(O_ROOF_BLADE,               "Roof blade")
 X_OBJ_NAME_DEFINE(O_SPIKE_BALL,               "Spike ball")
+X_OBJ_NAME_DEFINE(O_HAMMER,                   "Hammer")
 
 // General objects
 X_OBJ_NAME_DEFINE(O_BAT_EMITTER,            "Bat Emitter")

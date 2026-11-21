@@ -2835,6 +2835,9 @@
         "gun_shell": {
             "name": "Łuska do pistoletu",
         },
+        "hammer": {
+            "name": "\\{review}Młot",
+        },
         "harpoon_bolt": {
             "name": "Harpun",
         },

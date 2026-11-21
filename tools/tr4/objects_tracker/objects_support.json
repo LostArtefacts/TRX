@@ -90,7 +90,7 @@
   "grenade_ammo_item":        { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },
   "grenade_gun_item":         { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },
   "guide":                    { "status": "fully implemented" },
-  "hammer":                   { "status": "not implemented",       "todo": "port from HAMMER"                  },
+  "hammer":                   { "status": "partially implemented", "todo": "start the obelisks (OCB 2)"        },
   "harpy":                    { "status": "not implemented",       "todo": "port from HARPY"                   },
   "henchman_1":               { "status": "fully implemented" },
   "henchman_2":               { "status": "fully implemented" },

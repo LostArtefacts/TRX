@@ -2869,6 +2869,9 @@
         "gun_shell": {
             "name": "Gun Shell",
         },
+        "hammer": {
+            "name": "Hammer",
+        },
         "harpoon_bolt": {
             "name": "Harpoon Bolt",
         },
