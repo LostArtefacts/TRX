@@ -136,6 +136,9 @@ typedef struct {
     int32_t light_offset;
     int32_t light_count;
     float depth_adjust;
+    // Whether the instances of the batch are reflected, which reverses the
+    // winding of their faces.
+    bool reflected;
     // The faded group whose solid faces the batch draws, or -1.
     int32_t faded_group;
 } M_BATCH_STEP;
@@ -220,6 +223,8 @@ typedef struct MESH_BATCHER {
     OUTPUT_MESH_LIGHT *single_lights;
 } MESH_BATCHER;
 
+static bool m_IsWindingReversed = false;
+
 static M_MESH_BUF_BINDING *M_GetBinding(
     const MESH_BATCHER *const batcher, const OUTPUT_MESH *const mesh)
 {
@@ -303,6 +308,27 @@ static void M_FillSlot(
     }
 }
 
+// Returns whether the instance is drawn reflected, as a mirror shows it.
+static bool M_IsReflected(const MESH_INSTANCE *const inst)
+{
+    const MATRIX *const m = &inst->wmatrix;
+    const int64_t det = m->_00 * (m->_11 * m->_22 - m->_12 * m->_21)
+        - m->_01 * (m->_10 * m->_22 - m->_12 * m->_20)
+        + m->_02 * (m->_10 * m->_21 - m->_11 * m->_20);
+    return det < 0;
+}
+
+// Sets which winding faces the camera. A reflection reverses the winding of
+// every face it draws, so its faces would otherwise be culled.
+static void M_SetWindingReversed(const bool reversed)
+{
+    if (reversed == m_IsWindingReversed) {
+        return;
+    }
+    glFrontFace(reversed ? GL_CW : GL_CCW);
+    m_IsWindingReversed = reversed;
+}
+
 // Puts the instance up in slot 0 for the draws that follow, placed by the
 // matrix given.
 static void M_UploadInstance(
@@ -320,6 +346,7 @@ static void M_UploadInstance(
     slot.water[3] = wibble ? 1.0f : 0.0f;
     Output_MeshShader_UploadSlot(
         batcher->shader, &slot, lights.data, lights.count);
+    M_SetWindingReversed(M_IsReflected(inst));
 }
 
 static void M_AnimateBinding(
@@ -621,7 +648,7 @@ static size_t M_ReserveBlock(
 // start.
 static void M_OpenBatch(
     MESH_BATCHER *const batcher, M_BATCH_STEP *const open,
-    const float depth_adjust, const int32_t vertex_base)
+    const float depth_adjust, const bool reflected, const int32_t vertex_base)
 {
     const size_t align = (size_t)batcher->batch.slot_align;
     const size_t slot_offset = M_ReserveBlock(
@@ -641,6 +668,7 @@ static void M_OpenBatch(
         .slot_offset = (int32_t)slot_offset,
         .light_offset = (int32_t)light_offset,
         .depth_adjust = depth_adjust,
+        .reflected = reflected,
         .faded_group = -1,
     };
     for (int32_t run = 0; run < M_RUN_COUNT; run++) {
@@ -741,18 +769,20 @@ static int32_t M_PlaceInBatch(
     ASSERT(
         bind->vertex_start - vertex_base + bind->vertex_count
         <= (int32_t)M_BATCH_VERTEX_MASK + 1);
+    const bool reflected = M_IsReflected(inst);
     if (open->slot_count > 0
         && (open->depth_adjust != inst->depth_adjust
+            || open->reflected != reflected
             || open->vertex_base != vertex_base)) {
         M_CloseBatch(batcher, open);
     }
     if (open->slot_count == 0) {
-        M_OpenBatch(batcher, open, inst->depth_adjust, vertex_base);
+        M_OpenBatch(batcher, open, inst->depth_adjust, reflected, vertex_base);
     }
     int32_t slot_idx = M_GetBatchSlot(batcher, open, inst, bind);
     if (slot_idx < 0) {
         M_CloseBatch(batcher, open);
-        M_OpenBatch(batcher, open, inst->depth_adjust, vertex_base);
+        M_OpenBatch(batcher, open, inst->depth_adjust, reflected, vertex_base);
         slot_idx = M_GetBatchSlot(batcher, open, inst, bind);
     }
     return slot_idx;
@@ -942,6 +972,7 @@ static void M_DrawBatch(
         });
     glBindVertexArray(batcher->batch.vao);
     Output_AdjustDepth(0.0f, step->depth_adjust * 2.0f / 0.005f);
+    M_SetWindingReversed(step->reflected);
     const M_DRAW_LIST *const list = &batcher->batch_draws[run];
     glMultiDrawElementsBaseVertex(
         GL_TRIANGLES, Vector_Get(list->counts, batch_run->first_draw),
@@ -1278,6 +1309,7 @@ static void M_RenderPass(
     } else if (pass == SCENE_PASS_BLEND_ADD) {
         M_BlendPass(batcher, pass);
     }
+    M_SetWindingReversed(false);
 }
 
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)

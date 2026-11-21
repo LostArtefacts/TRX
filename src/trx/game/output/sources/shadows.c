@@ -448,16 +448,27 @@ static void M_StageFacet(
         };
     }
 
+    const bool is_mirrored = Output_IsMirrored();
+    if (is_mirrored) {
+        for (int32_t i = 0; i < poly->count; i++) {
+            facet_pos[i] = Room_ReflectInMirror(facet_pos[i]);
+        }
+    }
+
     for (int32_t i = 1; i < poly->count - 1; i++) {
+        // A reflection reverses the winding, so the second and third
+        // corners swap to keep the triangle facing the camera.
+        const int32_t b = is_mirrored ? i + 1 : i;
+        const int32_t c = is_mirrored ? i : i + 1;
         const XYZ_32 tri_pos[3] = {
             facet_pos[0],
-            facet_pos[i],
-            facet_pos[i + 1],
+            facet_pos[b],
+            facet_pos[c],
         };
         const OUTPUT_UVW tri_uvw[3] = {
             facet_uvw[0],
-            facet_uvw[i],
-            facet_uvw[i + 1],
+            facet_uvw[b],
+            facet_uvw[c],
         };
         OutputSource_PolyFX_StageTriExtUVDepth(
             tri_pos, tri_uvw, atlas_size, nullptr, color,
@@ -1136,10 +1147,13 @@ static void M_StageShadow(void)
     OUTPUT_MESH *const mesh = g_Config.visuals.shadow_type == SHADOW_TYPE_CIRCLE
         ? p->mesh_high
         : p->mesh_low;
+    MATRIX cwmatrix = *g_MatrixPtr;
+    MATRIX wmatrix = *g_WMatrixPtr;
+    Output_ApplyMirror(&cwmatrix, &wmatrix);
     const MESH_INSTANCE inst = {
         .mesh = mesh,
-        .cwmatrix = *g_MatrixPtr,
-        .wmatrix = *g_WMatrixPtr,
+        .cwmatrix = cwmatrix,
+        .wmatrix = wmatrix,
         // Keep the black shadow synced with item alpha.
         .tint = Output_GetTint(),
         .sort_layer = -1,

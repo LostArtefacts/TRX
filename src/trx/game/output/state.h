@@ -76,6 +76,14 @@ int32_t Output_GetFarZ(void);
 void Output_SetCurrentRoom(const ROOM *room_num);
 const ROOM *Output_GetCurrentRoom(void);
 
+// Reflects the meshes staged until Output_EndMirror across the plane at the
+// given world z position, as a mirror shows them.
+void Output_BeginMirror(int32_t z_plane);
+void Output_EndMirror(void);
+bool Output_IsMirrored(void);
+// Applies the reflection in force, if any, to the matrices of a mesh.
+void Output_ApplyMirror(MATRIX *cwmatrix, MATRIX *wmatrix);
+
 // Clips object meshes staged after this call to the given game viewport
 // rectangle. Passing nullptr disables the object clip.
 void Output_SetObjectScissor(const VIEWPORT_RECT *rect);

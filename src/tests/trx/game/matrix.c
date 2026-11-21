@@ -160,3 +160,42 @@ TEST(interpolating_keeps_the_scale_of_a_matrix)
         (double)far.x * far.x + (double)far.y * far.y + (double)far.z * far.z);
     CHECK(reach > 4096 * 4 / 3 - 8 && reach < 4096 * 4 / 3 + 8);
 }
+
+TEST(reflecting_a_mesh_mirrors_it_across_the_plane)
+{
+    // A point of a reflected mesh has to land where the mirror shows the
+    // point of the real one, both in the world and as the camera sees it.
+    const XYZ_16 view_rot = { .x = DEG_1 * 20, .y = -9000, .z = 0 };
+    const XYZ_32 eye = { .x = 43000, .y = -3500, .z = 32000 };
+    Matrix_GenerateW2V(&eye, &view_rot);
+
+    const int32_t z_plane = 29696;
+    const XYZ_32 pos = { .x = 43520, .y = -2816, .z = 30700 };
+    Matrix_ResetStack();
+    *g_MatrixPtr = g_ViewMatrix;
+    *g_WMatrixPtr = g_IDMatrix;
+    Matrix_TranslateAbs32(pos);
+    Matrix_RotY(DEG_45);
+    Matrix_RotX(DEG_1 * 30);
+
+    const XYZ_32 local = { .x = 100, .y = -700, .z = 250 };
+    const XYZ_32 real = Matrix_MulVec32_M(g_WMatrixPtr, local);
+    const XYZ_32 mirrored = { .x = real.x,
+                              .y = real.y,
+                              .z = 2 * z_plane - real.z };
+
+    MATRIX cwmatrix = *g_MatrixPtr;
+    MATRIX wmatrix = *g_WMatrixPtr;
+    Matrix_ReflectZ_M(&cwmatrix, &wmatrix, z_plane);
+
+    const XYZ_32 world = Matrix_MulVec32_M(&wmatrix, local);
+    CHECK(ABS(world.x - mirrored.x) <= 1);
+    CHECK(ABS(world.y - mirrored.y) <= 1);
+    CHECK(ABS(world.z - mirrored.z) <= 1);
+
+    const XYZ_32 seen = Matrix_MulVec32_M(&cwmatrix, local);
+    const XYZ_32 expected = Matrix_MulVec32_M(&g_ViewMatrix, mirrored);
+    CHECK(ABS(seen.x - expected.x) <= 2);
+    CHECK(ABS(seen.y - expected.y) <= 2);
+    CHECK(ABS(seen.z - expected.z) <= 2);
+}
