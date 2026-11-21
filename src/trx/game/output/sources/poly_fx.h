@@ -10,6 +10,21 @@
 
 #include <stdint.h>
 
+// A segment drawn as a strip that faces the camera and keeps a fixed width on
+// screen, however far away it is.
+typedef struct {
+    XYZ_32 pos[2];
+    RGBA_8888 color[2];
+    // The width in pixels of the original's reference viewport (REF_PERSP),
+    // so that the strip covers the same share of the screen at every
+    // resolution.
+    float width;
+    // The sprite mapped onto the strip, with u running from the first point
+    // to the second, or -1 for a flat color.
+    int32_t sprite_idx;
+    DRAW_TYPE draw_type;
+} OUTPUT_LINE;
+
 void OutputSource_PolyFX_Init(void);
 void OutputSource_PolyFX_Shutdown(void);
 
@@ -61,5 +76,10 @@ void OutputSource_PolyFX_StageTriExtUVDepth(
 void OutputSource_PolyFX_StageLineSegment(
     XYZ_32 from, RGBA_8888 from_color, XYZ_32 to, RGBA_8888 to_color,
     float half_width, DRAW_TYPE draw_type);
+
+// Stages a line that fades into the distance fog as the scene does: an
+// additive line fades out, and any other line takes the fog color. The line
+// is clipped at the near plane.
+void OutputSource_PolyFX_StageLine(const OUTPUT_LINE *line);
 
 void OutputSource_PolyFX_StageSpark(const SPARK *spark);

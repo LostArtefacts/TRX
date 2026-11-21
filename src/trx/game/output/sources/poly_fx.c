@@ -557,6 +557,68 @@ static VECTOR *M_GetScheduledVectorForDrawType(
     return p->scheduled_transparent;
 }
 
+static XYZ_F M_GetViewPos(const XYZ_32 pos)
+{
+    const MATRIX *const m = &g_ViewMatrix;
+    const float scale = 1.0f / (float)(1 << W2V_SHIFT);
+    // clang-format off
+    return (XYZ_F) {
+        .x = (m->_00 * pos.x + m->_01 * pos.y + m->_02 * pos.z + m->_03) * scale,
+        .y = (m->_10 * pos.x + m->_11 * pos.y + m->_12 * pos.z + m->_13) * scale,
+        .z = (m->_20 * pos.x + m->_21 * pos.y + m->_22 * pos.z + m->_23) * scale,
+    };
+    // clang-format on
+}
+
+// Returns the fog factor of a point in view space, from 0 for no fog to 1 for
+// full fog. It matches the factor that meshes.glsl computes.
+static float M_GetFogFactor(const XYZ_F view_pos)
+{
+    const float dist = g_Config.visuals.enable_spherical_fog
+        ? sqrtf(
+              view_pos.x * view_pos.x + view_pos.y * view_pos.y
+              + view_pos.z * view_pos.z)
+        : view_pos.z;
+    const float start = (float)Output_GetFogStart();
+    const float end = (float)Output_GetFogEnd();
+
+    float factor;
+    if (g_Config.rendering.enable_ps1_fog) {
+        const float near_dist = MAX(start, 1.0f);
+        const float far_dist = MAX(end, near_dist + 1.0f);
+        const float dqa = 1.0f / far_dist - 1.0f / near_dist;
+        factor = (1.0f / MAX(dist, 1.0f) - 1.0f / near_dist) / dqa;
+    } else if (end > start) {
+        factor = (dist - start) / (end - start);
+    } else {
+        factor = dist >= end ? 1.0f : 0.0f;
+    }
+    CLAMP(factor, 0.0f, 1.0f);
+    return factor;
+}
+
+static RGBA_8888 M_ApplyFog(
+    const RGBA_8888 color, const float factor, const DRAW_TYPE draw_type)
+{
+    if (draw_type == DRAW_BLEND_ADD || draw_type == DRAW_REFLECTIVE_BLEND_ADD) {
+        const float keep = 1.0f - factor;
+        return (RGBA_8888) {
+            .r = (uint8_t)lrintf(color.r * keep),
+            .g = (uint8_t)lrintf(color.g * keep),
+            .b = (uint8_t)lrintf(color.b * keep),
+            .a = color.a,
+        };
+    }
+
+    const RGBA_F fog = Output_GetFogColor();
+    return (RGBA_8888) {
+        .r = (uint8_t)lrintf(LERP((float)color.r, fog.r * 255.0f, factor)),
+        .g = (uint8_t)lrintf(LERP((float)color.g, fog.g * 255.0f, factor)),
+        .b = (uint8_t)lrintf(LERP((float)color.b, fog.b * 255.0f, factor)),
+        .a = color.a,
+    };
+}
+
 void OutputSource_PolyFX_Init(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -908,6 +970,78 @@ void OutputSource_PolyFX_StageLineSegment(
     OutputSource_PolyFX_StageQuadExt(
         -1, world_pos, disp, color,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, draw_type);
+}
+
+void OutputSource_PolyFX_StageLine(const OUTPUT_LINE *const line)
+{
+    XYZ_32 pos[2] = { line->pos[0], line->pos[1] };
+    RGBA_8888 color[2] = { line->color[0], line->color[1] };
+    XYZ_F view[2] = { M_GetViewPos(pos[0]), M_GetViewPos(pos[1]) };
+
+    const float near_z = (float)(Output_GetNearZ() >> W2V_SHIFT);
+    const float far_z = (float)(Output_GetFarZ() >> W2V_SHIFT);
+    if ((view[0].z <= near_z && view[1].z <= near_z)
+        || (view[0].z >= far_z && view[1].z >= far_z)) {
+        return;
+    }
+
+    for (int32_t i = 0; i < 2; i++) {
+        if (view[i].z > near_z) {
+            continue;
+        }
+        const int32_t j = 1 - i;
+        const float t = (near_z - view[j].z) / (view[i].z - view[j].z);
+        pos[i] = (XYZ_32) {
+            .x = (int32_t)lrintf(LERP((float)pos[j].x, (float)pos[i].x, t)),
+            .y = (int32_t)lrintf(LERP((float)pos[j].y, (float)pos[i].y, t)),
+            .z = (int32_t)lrintf(LERP((float)pos[j].z, (float)pos[i].z, t)),
+        };
+        color[i] = (RGBA_8888) {
+            .r = (uint8_t)lrintf(LERP((float)color[j].r, color[i].r, t)),
+            .g = (uint8_t)lrintf(LERP((float)color[j].g, color[i].g, t)),
+            .b = (uint8_t)lrintf(LERP((float)color[j].b, color[i].b, t)),
+            .a = (uint8_t)lrintf(LERP((float)color[j].a, color[i].a, t)),
+        };
+        view[i] = M_GetViewPos(pos[i]);
+        view[i].z = MAX(view[i].z, near_z);
+    }
+
+    const float dx = view[1].x / view[1].z - view[0].x / view[0].z;
+    const float dy = view[1].y / view[1].z - view[0].y / view[0].z;
+    const float len = sqrtf(dx * dx + dy * dy);
+    if (len <= 0.00001f) {
+        return;
+    }
+
+    // Moving a point across the view by z / REF_PERSP moves it on screen by
+    // one pixel of the reference viewport.
+    const float side_x = -dy / len * line->width / 2.0f / (float)REF_PERSP;
+    const float side_y = dx / len * line->width / 2.0f / (float)REF_PERSP;
+    const float disp[4][2] = {
+        { -side_x * view[0].z, -side_y * view[0].z },
+        { -side_x * view[1].z, -side_y * view[1].z },
+        { side_x * view[1].z, side_y * view[1].z },
+        { side_x * view[0].z, side_y * view[0].z },
+    };
+
+    for (int32_t i = 0; i < 2; i++) {
+        color[i] =
+            M_ApplyFog(color[i], M_GetFogFactor(view[i]), line->draw_type);
+    }
+
+    const XYZ_32 world_pos[4] = { pos[0], pos[1], pos[1], pos[0] };
+    const RGBA_8888 world_color[4] = { color[0], color[1], color[1], color[0] };
+    uint16_t flags =
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_BILLBOARD | VERT_ABS_SPRITE;
+    if (line->sprite_idx < 0) {
+        flags |= VERT_FLAT_SHADED;
+    }
+
+    M_PRIV *const p = &m_Priv;
+    VECTOR *const target = M_GetScheduledVectorForDrawType(p, line->draw_type);
+    M_StagePrim(
+        line->sprite_idx, 4, &world_pos[0], disp, &world_color[0], flags, 0.0f,
+        (float)SHADE_NEUTRAL, nullptr, target);
 }
 
 void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
