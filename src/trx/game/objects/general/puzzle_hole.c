@@ -6,9 +6,13 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/links.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/sound.h>
 
 #define M_LF_USE_PUZZLE 80
+// Marks a TR4 slot with an OCB above this value as one that Lara can walk
+// through.
+#define M_CUTSCENE_OCB 1024
 
 typedef struct {
     bool collidable_when_done;
@@ -52,6 +56,13 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
                                                   : &m_DefaultBounds;
+}
+
+static bool M_IsSolid(const ITEM *const item)
+{
+    TRX_VALUE ocb = {};
+    return !ObjectProperty_GetItemValue(item, "ocb", &ocb)
+        || ocb.type != TVT_S32 || ocb.as_int <= M_CUTSCENE_OCB;
 }
 
 static bool M_IsUsable(const int16_t item_num)
@@ -157,7 +168,7 @@ static void M_CollisionControlled(
         && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
         M_ConsumeKeyItem(item);
         M_MarkDone(item);
-    } else {
+    } else if (M_IsSolid(item)) {
         Object_Collision(item_num, lara_item, coll);
     }
 }
