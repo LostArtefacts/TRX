@@ -48,6 +48,7 @@
 - Added the torch, which Lara can pick up, carry, drop and throw (TRX475)
 - Added lighting the torch from fires and lighting unlit fires with it (TRX475)
 - Added Lara crouching while she holds the torch, which the original game does not allow (TRX2067)
+- Added Turn Switch control (TRX798)
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)
