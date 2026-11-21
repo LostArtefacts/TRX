@@ -3739,6 +3739,21 @@
         "security_laser_killer": {
             "name": "\\{review}Охоронний лазер (вбивчий)",
         },
+        "senet_enemy_piece": {
+            "name": "\\{review}Фішка суперника в сенет",
+        },
+        "senet_piece_1": {
+            "name": "\\{review}Фішка сенет 1",
+        },
+        "senet_piece_2": {
+            "name": "\\{review}Фішка сенет 2",
+        },
+        "senet_piece_3": {
+            "name": "\\{review}Фішка сенет 3",
+        },
+        "senet_spinner": {
+            "name": "\\{review}Вертушка сенет",
+        },
         "sentry_gun": {
             "name": "\\{review}Автоматична турель",
         },

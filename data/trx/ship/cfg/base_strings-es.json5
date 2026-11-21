@@ -3670,6 +3670,21 @@
         "security_laser_killer": {
             "name": "Láser de seguridad (Asesino)",
         },
+        "senet_enemy_piece": {
+            "name": "\\{review}Ficha rival del senet",
+        },
+        "senet_piece_1": {
+            "name": "\\{review}Ficha del senet 1",
+        },
+        "senet_piece_2": {
+            "name": "\\{review}Ficha del senet 2",
+        },
+        "senet_piece_3": {
+            "name": "\\{review}Ficha del senet 3",
+        },
+        "senet_spinner": {
+            "name": "\\{review}Rueda del senet",
+        },
         "sentry_gun": {
             "name": "Torreta automática",
         },
