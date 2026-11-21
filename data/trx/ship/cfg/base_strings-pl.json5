@@ -68,6 +68,10 @@
             "heading_items": "PRZEDMIOTY",
             "heading_option": "OPCJE",
         },
+        "legal": {
+            "tr4_core": "\\{review}(C) & TM Core Design Limited 1999.",
+            "tr4_eidos": "\\{review}(C) & wydane przez Eidos Interactive Limited 1999. Wszelkie prawa zastrzeżone.",
+        },
         "misc": {
             "demo_mode": "Tryb demo",
             "empty_slot_fmt": "- PUSTY SLOT -",

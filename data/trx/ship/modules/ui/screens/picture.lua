@@ -20,8 +20,10 @@ local BAR = {
 -- How long the screen stays black after the picture has faded out.
 local HOLD_TICKS = 3
 
+-- Draws the picture and returns its main layer. A game script that adds to a
+-- picture calls this from a definition of its own.
 ---@param ctx trx.ui.PictureContext
-local function open(ctx)
+function M.open(ctx)
   local drawn = false
   local waiting = false
   ---@type common.timer.Timer?
@@ -88,7 +90,7 @@ local function open(ctx)
 end
 
 function M.setup()
-  trx.ui.screens.define(trx.ui.Screen.PICTURE, open)
+  trx.ui.screens.define(trx.ui.Screen.PICTURE, M.open)
 end
 
 return M

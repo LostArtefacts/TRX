@@ -1455,7 +1455,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── fog.lua
 │   │   │   ├── inv_setup.lua
 │   │   │   ├── logo.lua
-│   │   │   └── race_timer.lua
+│   │   │   ├── race_timer.lua
+│   │   │   └── start_screen.lua
 │   │   ├── scripts
 │   │   │   ├── _game.lua
 │   │   │   ├── alexhub2.lua
@@ -3111,7 +3112,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── fog.lua
     │   │   │   │   ├── inv_setup.lua
     │   │   │   │   ├── logo.lua
-    │   │   │   │   └── race_timer.lua
+    │   │   │   │   ├── race_timer.lua
+    │   │   │   │   └── start_screen.lua
     │   │   │   ├── scripts
     │   │   │   │   ├── _game.lua
     │   │   │   │   ├── alexhub2.lua

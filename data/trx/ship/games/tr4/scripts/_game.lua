@@ -1,6 +1,7 @@
 require("common.ui.hud.overlay").setup()
 require("tr4.fog")
 require("tr4.logo")
+require("tr4.start_screen")
 require("common.ngplus").initialise()
 
 -- How far along a level Lara has got, which its guides follow. TR4 marks the
