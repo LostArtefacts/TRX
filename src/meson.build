@@ -704,6 +704,7 @@ common_sources = [
   'trx/game/objects/creatures/worker_1.c',
   'trx/game/objects/creatures/worker_2.c',
   'trx/game/objects/creatures/worker_3.c',
+  'trx/game/objects/creatures/wraith.c',
   'trx/game/objects/creatures/xian_common.c',
   'trx/game/objects/creatures/xian_knight.c',
   'trx/game/objects/creatures/xian_spearman.c',

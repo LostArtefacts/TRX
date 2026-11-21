@@ -4130,6 +4130,18 @@
         "worker_5": {
             "name": "Oprych z miotaczem ognia",
         },
+        "wraith_1": {
+            "name": "\\{review}Upiór 1",
+        },
+        "wraith_2": {
+            "name": "\\{review}Upiór 2",
+        },
+        "wraith_3": {
+            "name": "\\{review}Upiór 3",
+        },
+        "wraith_4": {
+            "name": "\\{review}Upiór 4",
+        },
         "xian_knight": {
             "name": "Rycerz Xian",
         },

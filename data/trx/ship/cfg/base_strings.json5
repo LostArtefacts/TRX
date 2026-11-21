@@ -4298,6 +4298,18 @@
         "worker_5": {
             "name": "Flamethrower Goon",
         },
+        "wraith_1": {
+            "name": "Wraith 1",
+        },
+        "wraith_2": {
+            "name": "Wraith 2",
+        },
+        "wraith_3": {
+            "name": "Wraith 3",
+        },
+        "wraith_4": {
+            "name": "Wraith 4",
+        },
         "xian_knight": {
             "name": "Xian Knight",
         },

@@ -4130,6 +4130,18 @@
         "worker_5": {
             "name": "\\{review}Goon lance-flammes",
         },
+        "wraith_1": {
+            "name": "\\{review}Spectre 1",
+        },
+        "wraith_2": {
+            "name": "\\{review}Spectre 2",
+        },
+        "wraith_3": {
+            "name": "\\{review}Spectre 3",
+        },
+        "wraith_4": {
+            "name": "\\{review}Spectre 4",
+        },
         "xian_knight": {
             "name": "\\{review}Chevalier Xian",
         },

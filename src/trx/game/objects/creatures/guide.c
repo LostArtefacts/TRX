@@ -112,7 +112,7 @@ static void M_Initialise(const int16_t item_num)
 
     M_PRIV *const p = item->priv;
     p->waypoint = M_WAYPOINT_UNSET;
-    p->wraith_aware = false; // TODO: use Object_Get(O_WRAITH_1)->loaded
+    p->wraith_aware = Object_Get(O_WRAITH_1)->loaded;
     if (p->wraith_aware) {
         p->torch_status = M_TORCH_LIT;
     } else {

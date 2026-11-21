@@ -4067,6 +4067,18 @@
         "worker_5": {
             "name": "Matón con lanzallamas",
         },
+        "wraith_1": {
+            "name": "\\{review}Espectro 1",
+        },
+        "wraith_2": {
+            "name": "\\{review}Espectro 2",
+        },
+        "wraith_3": {
+            "name": "\\{review}Espectro 3",
+        },
+        "wraith_4": {
+            "name": "\\{review}Espectro 4",
+        },
         "xian_knight": {
             "name": "Caballero de Xian",
         },

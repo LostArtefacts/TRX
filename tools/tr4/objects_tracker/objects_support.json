@@ -247,8 +247,8 @@
   "waterfall_mist":           { "status": "fully implemented" },
   "waterskin_1_empty":        { "status": "partially implemented", "todo": "check 100% parity"                 },
   "waterskin_2_empty":        { "status": "partially implemented", "todo": "check 100% parity"                 },
-  "wraith_1":                 { "status": "not implemented",       "todo": "port from WRAITH1"                 },
-  "wraith_2":                 { "status": "not implemented",       "todo": "port from WRAITH2"                 },
-  "wraith_3":                 { "status": "not implemented",       "todo": "port from WRAITH3"                 },
-  "wraith_4":                 { "status": "not implemented",       "todo": "port from WRAITH4"                 }
+  "wraith_1":                 { "status": "fully implemented" },
+  "wraith_2":                 { "status": "fully implemented" },
+  "wraith_3":                 { "status": "fully implemented" },
+  "wraith_4":                 { "status": "fully implemented" }
 }
