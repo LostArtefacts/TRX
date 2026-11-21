@@ -77,6 +77,29 @@ static XYZ_32 M_GetPosedTorsoPos(
     return pos;
 }
 
+// Returns the position of Lara's torso in the blend of two animation frames,
+// as the meshes are drawn.
+static XYZ_32 M_GetTorsoPos(
+    const ITEM *const item, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
+{
+    const ANIM_BONE *const bone = Lara_Skin_GetBoneBase();
+    Matrix_PushUnit();
+    Matrix_Rot16(item->interp.result.rot);
+    Matrix_InitInterpolate(frac, rate);
+    Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
+    Matrix_Rot16_ID(frame1->mesh_rots[LM_HIPS], frame2->mesh_rots[LM_HIPS]);
+    Matrix_TranslateRel32_I(bone[LM_TORSO - 1].pos);
+    Matrix_Interpolate();
+    const XYZ_32 pos = {
+        .x = item->interp.result.pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
+        .y = item->interp.result.pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
+        .z = item->interp.result.pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+    };
+    Matrix_Pop();
+    return pos;
+}
+
 // Returns how far above her position TR4 takes Lara's light while she stands,
 // crouches or crawls still, or 0 where it takes the light at her torso.
 static int32_t M_GetIdleLightHeight(const ITEM *const item)
@@ -95,7 +118,8 @@ static int32_t M_GetIdleLightHeight(const ITEM *const item)
 }
 
 static void M_CalculateLight(
-    const ITEM *const item, const ANIM_FRAME *const frame)
+    const ITEM *const item, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
     if (g_TRVersion >= 3) {
         GAME_VECTOR sample_pos = {
@@ -108,8 +132,8 @@ static void M_CalculateLight(
         const LARA_POSE *const pose = Lara_Pose_Get();
         if (pose != nullptr) {
             sample_pos.pos = M_GetPosedTorsoPos(item, pose);
-        } else if (!Lara_GetMeshPos(LM_TORSO, &sample_pos.pos)) {
-            Lara_GetJointAbsPosition(&sample_pos.pos, LM_TORSO);
+        } else {
+            sample_pos.pos = M_GetTorsoPos(item, frame1, frame2, frac, rate);
         }
 
         // Lights Lara in a cutscene from the room her torso is in. Her item
@@ -131,7 +155,7 @@ static void M_CalculateLight(
         Room_GetSector(sample_pos.pos, &sample_pos.room_num);
         Output_CalculateObjectLightingAt(item, sample_pos);
     } else {
-        Output_CalculateObjectLighting(item, &frame->bounds);
+        Output_CalculateObjectLighting(item, &frame1->bounds);
     }
 }
 
@@ -339,7 +363,7 @@ static bool M_Draw_I(
 
     m_CacheMatrices = m_IsLara;
     Matrix_Push();
-    M_CalculateLight(item, frame1);
+    M_CalculateLight(item, frame1, frame2, frac, rate);
     if (m_CacheMatrices) {
         lara->mesh_pos_matrices_valid = false;
     }
@@ -634,7 +658,7 @@ bool Lara_Draw(const ITEM *const item)
 
     m_CacheMatrices = m_IsLara;
     Matrix_Push();
-    M_CalculateLight(item, frame);
+    M_CalculateLight(item, frame, frame, 0, 1);
     if (m_CacheMatrices) {
         lara->mesh_pos_matrices_valid = false;
     }
