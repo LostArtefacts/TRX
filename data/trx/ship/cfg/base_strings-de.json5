@@ -3760,6 +3760,9 @@
         "sliding_pillar": {
             "name": "Sliding Pillar",
         },
+        "small_beetle": {
+            "name": "\\{review}Kleiner Käfer|Skarabäus",
+        },
         "small_scorpion": {
             "name": "\\{review}Kleiner Skorpion",
         },
