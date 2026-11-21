@@ -21,6 +21,16 @@ order: 3
    she stood when the scene started. A script that needs her somewhere else
    must name the place with `trx.cutscenes.set_lara_return`.
 
+3. **End-level triggers count every AI object in TR4**
+   The timer of an end-level trigger names the point where Lara starts the
+   next level. In TR4, it now counts all of that level's AI objects, in the
+   order the level file lists them, as the original game does. Before this,
+   it counted only Lara's start positions. A TR4 level that lists other AI
+   objects before its start positions needs its timers checked. TR1, TR2 and
+   TR3 levels have no AI object list, so their timers still count only the
+   `lara_start_pos` items. These games have no slot for `lara_start_pos`, so
+   a level must add one to its `cfg/catalog_objects.csv`.
+
 ### Version 1.11 to 1.12
 
 1. **`display_time` no longer counts the fades**
