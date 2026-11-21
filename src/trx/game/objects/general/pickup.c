@@ -240,10 +240,9 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 
 static void M_SpawnPickupAid(const ITEM *const item)
 {
-    const OBJECT_ID obj_id =
-        ObjectLink_Get(item->object_id, OBJ_LINK_ITEM_TO_OPTION);
+    OBJECT_ID obj_id = ObjectLink_Get(item->object_id, OBJ_LINK_ITEM_TO_OPTION);
     if (obj_id == NO_OBJECT) {
-        return;
+        obj_id = item->object_id;
     }
 
     const OBJECT *const obj = Object_Get(obj_id);
@@ -284,33 +283,6 @@ static void M_SpawnPickupAid(const ITEM *const item)
             effect->frame_num = 0;
         }
     }
-}
-
-static void M_ControlPickupAids(ITEM *const item)
-{
-    const ITEM *const lara = Lara_GetItem();
-    if (item->fall_speed != 0 || lara == nullptr
-        || !Object_Get(O_PICKUP_AID)->loaded) {
-        return;
-    }
-
-    const int32_t distance = Item_GetDistance(lara, item->pos);
-    if (distance < M_AID_DIST_MIN || distance > M_AID_DIST_MAX) {
-        return;
-    }
-
-    M_PRIV *const p = item->priv;
-    int32_t timer = p->aid_timer;
-    if (timer <= 0
-        || (timer < M_AID_WAIT_MIN
-            && Random_GetDraw() < M_AID_WAIT_BREAK_CHANCE)) {
-        M_SpawnPickupAid(item);
-        timer = M_AID_WAIT_MAX;
-    } else {
-        timer--;
-    }
-
-    p->aid_timer = timer;
 }
 
 static void M_ControlPickupLights(ITEM *const item)
@@ -378,8 +350,8 @@ static void M_Control(const int16_t item_num)
         M_ControlPickupLights(item);
     }
 
-    if (g_Config.gameplay.enable_pickup_aids && M_CanShowPickupAid(p)) {
-        M_ControlPickupAids(item);
+    if (M_CanShowPickupAid(p)) {
+        Pickup_ControlAids(item, &p->aid_timer);
     }
 }
 
@@ -1083,6 +1055,30 @@ void Pickup_Collision(
         lara->water_status == LWS_UNDERWATER
         || lara->water_status == LWS_CHEAT) {
         M_DoUnderwater(item_num, lara_item);
+    }
+}
+
+void Pickup_ControlAids(const ITEM *const item, int32_t *const timer)
+{
+    const ITEM *const lara = Lara_GetItem();
+    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
+        || item->speed != 0 || lara == nullptr
+        || !Object_Get(O_PICKUP_AID)->loaded) {
+        return;
+    }
+
+    const int32_t distance = Item_GetDistance(lara, item->pos);
+    if (distance < M_AID_DIST_MIN || distance > M_AID_DIST_MAX) {
+        return;
+    }
+
+    if (*timer <= 0
+        || (*timer < M_AID_WAIT_MIN
+            && Random_GetDraw() < M_AID_WAIT_BREAK_CHANCE)) {
+        M_SpawnPickupAid(item);
+        *timer = M_AID_WAIT_MAX;
+    } else {
+        (*timer)--;
     }
 }
 

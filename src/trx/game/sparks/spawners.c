@@ -8,6 +8,7 @@
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
@@ -2118,4 +2119,55 @@ void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
     spark->size.height = spark->dst_size.height >> 3;
     spark->src_size.height = spark->size.height;
     Sparks_FinishSetup(spark);
+}
+
+void Sparks_TriggerTorchFlame(const int16_t item_num, const int32_t node)
+{
+    const ITEM *const item = Item_Get(item_num);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_FIRE);
+    if (spark != nullptr) {
+        spark->src_color.r = 255;
+        spark->src_color.g = (Random_GetControl() & 0x1F) + 48;
+        spark->src_color.b = 48;
+        spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
+        spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
+        spark->dst_color.b = 32;
+        spark->col_fade_speed = (Random_GetControl() & 3) + 12;
+        spark->fade_to_black = 8;
+        spark->life = (Random_GetControl() & 7) + 24;
+        spark->s_life = spark->life;
+        spark->draw_type = DRAW_BLEND_ADD;
+        spark->extras = 0;
+        spark->dynamic = -1;
+        spark->pos.x = (Random_GetControl() & 0xF) - 8;
+        spark->pos.y = 0;
+        spark->pos.z = (Random_GetControl() & 0xF) - 8;
+        spark->vel.x = (Random_GetControl() & 0xFF) - 128;
+        spark->vel.y = -16 - (Random_GetControl() & 0xF);
+        spark->vel.z = (Random_GetControl() & 0xFF) - 128;
+        spark->friction = 5;
+        spark->flags = SPARK_F_ATTACHED_NODE | SPARK_F_ALT_SPRITE | SPARK_F_ITEM
+            | SPARK_F_ROTATE | SPARK_F_SPRITE | SPARK_F_SCALE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+        if (Random_GetControl() & 1) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+        spark->gravity = -16 - (Random_GetControl() & 0x1F);
+        spark->max_y_vel = -16 - (Random_GetControl() & 7);
+        spark->item_num = item_num;
+        spark->node_num = node;
+        spark->scalar = 1;
+        const uint8_t size = (Random_GetControl() & 0x1F) + 80;
+        spark->src_size.width = size;
+        spark->size.width = size;
+        spark->src_size.height = size;
+        spark->size.height = size;
+        spark->dst_size.width = size >> 3;
+        spark->dst_size.height = size >> 3;
+        Sparks_FinishSetup(spark);
+    }
+    Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &item->pos, SPM_NORMAL);
 }
