@@ -28,11 +28,22 @@ typedef enum {
     LOT_SETUP_FLYER,
 } LOT_SETUP_TYPE;
 
+typedef enum {
+    LOT_ZONE_SKELETON,
+    LOT_ZONE_BASIC,
+    LOT_ZONE_CROCODILE,
+    LOT_ZONE_HUMAN,
+    LOT_ZONE_FLYER,
+} LOT_ZONE;
+
 typedef struct {
     int16_t step;
     int16_t drop;
     int16_t fly;
     uint32_t block_mask;
+    // Selects the zone in TR4, which stores the zones by creature kind.
+    // TR1-3 store them by step height and select the zone from the step.
+    LOT_ZONE zone;
     // TR4 marks the overlaps that take a jump or the monkey bars to cross,
     // and only a creature that can do either is pathed over them.
     bool can_jump;

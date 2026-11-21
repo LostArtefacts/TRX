@@ -20,6 +20,7 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .drop = g_TRVersion == 1 ? -STEP_L : -STEP_L * 2,
             .fly = 0,
             .block_mask = BOX_BLOCKED,
+            .zone = LOT_ZONE_BASIC,
         };
 
     case LOT_SETUP_BEAST:
@@ -28,6 +29,7 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .drop = g_TRVersion == 1 ? -STEP_L : -STEP_L * 2,
             .fly = 0,
             .block_mask = BOX_BLOCKABLE,
+            .zone = LOT_ZONE_BASIC,
         };
 
     case LOT_SETUP_QUADRUPED:
@@ -36,6 +38,7 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .drop = -WALL_L,
             .fly = 0,
             .block_mask = BOX_BLOCKED,
+            .zone = LOT_ZONE_BASIC,
         };
 
     case LOT_SETUP_JUMPER:
@@ -44,6 +47,7 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .drop = -WALL_L,
             .fly = 0,
             .block_mask = BOX_BLOCKED,
+            .zone = LOT_ZONE_BASIC,
         };
 
     case LOT_SETUP_CLIMBER:
@@ -52,6 +56,7 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .drop = -WALL_L,
             .fly = 0,
             .block_mask = BOX_BLOCKED,
+            .zone = LOT_ZONE_HUMAN,
         };
 
     case LOT_SETUP_ACROBAT:
@@ -60,6 +65,7 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .drop = -WALL_L,
             .fly = 0,
             .block_mask = BOX_BLOCKED,
+            .zone = LOT_ZONE_HUMAN,
             .can_jump = true,
             .can_monkey = true,
         };
@@ -70,6 +76,7 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .drop = -WALL_L * 20,
             .fly = STEP_L / 16,
             .block_mask = BOX_BLOCKED,
+            .zone = LOT_ZONE_FLYER,
         };
     }
 
@@ -197,15 +204,8 @@ void LOT_CreateZone(ITEM *const item)
 {
     CREATURE *const creature = item->creature_data;
 
-    const int16_t *zone;
-    const int16_t *flip;
-    if (creature->lot.setup.fly) {
-        zone = Box_GetFlyZone(false);
-        flip = Box_GetFlyZone(true);
-    } else {
-        zone = Box_GetGroundZone(false, BOX_ZONE(creature->lot.setup.step));
-        flip = Box_GetGroundZone(true, BOX_ZONE(creature->lot.setup.step));
-    }
+    const int16_t *const zone = Box_GetSetupZone(&creature->lot.setup, false);
+    const int16_t *const flip = Box_GetSetupZone(&creature->lot.setup, true);
 
     const ROOM *const room = Room_Get(item->room_num);
     item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
@@ -214,7 +214,7 @@ void LOT_CreateZone(ITEM *const item)
     int16_t flip_num = flip[item->box_num];
 
     const bool use_fixed_fly_zone =
-        g_TRVersion == 3 && creature->lot.setup.fly != 0;
+        g_TRVersion >= 3 && creature->lot.setup.fly != 0;
 
     creature->lot.zone_count = 0;
     BOX_NODE *node = creature->lot.node;

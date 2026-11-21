@@ -10,6 +10,7 @@ int32_t Box_GetCount(void);
 BOX_INFO *Box_GetBox(int32_t box_idx);
 int16_t *Box_GetFlyZone(bool flip_status);
 int16_t *Box_GetGroundZone(bool flip_status, int32_t zone_idx);
+int16_t *Box_GetSetupZone(const LOT_SETUP *setup, bool flip_status);
 int16_t *Box_GetLotZone(const LOT_INFO *lot);
 bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion);
 void Box_TargetBox(LOT_INFO *lot, int16_t box_num);
