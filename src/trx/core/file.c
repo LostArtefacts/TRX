@@ -83,10 +83,6 @@ static bool M_DiskWrite(
     void *state, size_t offset, const void *src, size_t size);
 static bool M_DiskSetSize(void *state, size_t size);
 static void M_DiskClose(void *state);
-static void M_Fail(TRX_FILE *file, const char *message);
-static void M_FailPastEnd(TRX_FILE *file, const char *what);
-static bool M_EnsureWindow(TRX_FILE *file);
-static int32_t M_CheckCount(TRX_FILE *file, int32_t count);
 
 static const M_STRATEGY m_BufferStrategy = {
     .fill = M_BufferFill,
