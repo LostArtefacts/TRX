@@ -59,7 +59,7 @@ end
 ---written, which is what a script correcting or seeding them wants.
 ---@class (exact) trx.stats.Stats
 ---@field timer trx.game.Frames How long the level has been played.
----@field deaths integer How many times Lara has died. Unlike the rest, this is not cleared when the level is entered again: a death stays with the level it happened on.
+---@field deaths integer How many times Lara has died. Unlike the rest, this is not cleared when the level is started again: a death stays with the level it happened on. A level that Lara comes back to keeps all of its counts, as `trx.game.Level.is_remembered` says.
 ---@field ammo_used integer How many rounds Lara has fired.
 ---@field ammo_hits integer How many of them hit something.
 ---@field distance_travelled trx.math.Distance How far Lara has travelled.

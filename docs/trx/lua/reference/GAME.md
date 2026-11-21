@@ -137,6 +137,11 @@ played.
 
     Properties:
     - <a id="game.Level.is_completed" name="game.Level.is_completed"></a>**`is_completed`**: boolean. Whether the player has finished the level in the game being played. The statistics screen counts these to say how far into the game a level is. *(read-only)*
+    - <a id="game.Level.is_remembered" name="game.Level.is_remembered"></a>**`is_remembered`**: boolean. Whether the game remembers the state Lara left the level in, which it puts back when she comes back to it, as TR4 does in its hubs. A level counts once she finishes it, and stops counting when the game flow resets the hub or a new game starts.
+      On the level being played, this tells a return from a first visit. A
+      script that sets up the level's starting state from
+      [`trx.events.on_game_start`](EVENTS.md#events.on_game_start) skips that on a return, because the items, the
+      rooms and [`trx.store.level`](STORE.md#store.level) are already as Lara left them. *(read-only)*
     - <a id="game.Level.key" name="game.Level.key"></a>**`key`**: string. What the level is called, taken from the name of the file it loads: `wall.tr2` reads back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file of its own.
       This is the name to write into a table of per-level data.
       [`num`](#game.Level.num) is a position and moves as soon as a game flow gains
@@ -209,7 +214,7 @@ played.
   - <a id="game.play_level.opts" name="game.play_level.opts"></a>**`opts`** (table, optional). How to start it.
 
     Keys:
-    - <a id="game.play_level.opts.select" name="game.play_level.opts.select"></a>**`select`** (boolean, optional). Start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
+    - <a id="game.play_level.opts.select" name="game.play_level.opts.select"></a>**`select`** (boolean, optional). Start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it, and with every level fresh. Without it the level continues from the one in progress: the level she leaves is remembered as if she had finished it, and a remembered level she goes to is as she left it.
     - <a id="game.play_level.opts.ng_plus" name="game.play_level.opts.ng_plus"></a>**`ng_plus`** (boolean, optional). Whether to start the bonus game mode.
     - <a id="game.play_level.opts.from_save" name="game.play_level.opts.from_save"></a>**`from_save`** (table, optional). The save to take Lara's progress from, as `{ slot_num = 1, pool = trx.savegame.Pool.NORMAL }`. Raises without `select`. The death counter and the restart file then use this save. Without it, `select` builds Lara's inventory as if the game had been played from the first level.
 

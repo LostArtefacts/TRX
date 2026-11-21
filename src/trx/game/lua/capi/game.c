@@ -52,6 +52,12 @@ static bool M_GetIsCompleted(const void *const self, TRX_VALUE *const out)
     return true;
 }
 
+static bool M_GetIsRemembered(const void *const self, TRX_VALUE *const out)
+{
+    *out = Value_Make_TVT_BOOL(Hub_HasLevel(self));
+    return true;
+}
+
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
     FIELD_FN("num", TVT_S32, M_GetOrdinal, nullptr),
@@ -64,6 +70,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(GF_LEVEL, music_track),
     FIELD_RO(GF_LEVEL, water_particles),
     FIELD_FN("is_completed", TVT_BOOL, M_GetIsCompleted, nullptr),
+    FIELD_FN("is_remembered", TVT_BOOL, M_GetIsRemembered, nullptr),
 
     // what the stats screen must not count against the player
     FIELD_RO(GF_LEVEL, unobtainable.pickups),

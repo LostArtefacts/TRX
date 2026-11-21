@@ -31,6 +31,14 @@ order: 3
    `lara_start_pos` items. These games have no slot for `lara_start_pos`, so
    a level must add one to its `cfg/catalog_objects.csv`.
 
+4. **A level keeps its state for Lara's return**
+   A level that Lara leaves keeps its items, rooms and `trx.store.level` until
+   a `reset_hub` event or a new game. When she comes back, the level is as she
+   left it. A script that sets up a starting state in
+   `trx.events.on_game_start` should check
+   `trx.game.current_level.is_remembered` first, so it does not overwrite the
+   kept state.
+
 ### Version 1.11 to 1.12
 
 1. **`display_time` no longer counts the fades**
