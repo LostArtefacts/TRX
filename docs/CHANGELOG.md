@@ -42,6 +42,7 @@
 - Fixed the moving sky layer jumping back to its start when a save is loaded (TRX2018)
 - Fixed Lara standing too far back when using certain keyholes and puzzle slots (TRX1959)
 - Fixed some enemies trying to reach Lara across gaps they cannot cross
+- Fixed flying and swimming enemies failing to follow Lara into some areas
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)

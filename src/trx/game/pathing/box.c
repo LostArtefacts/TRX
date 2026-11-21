@@ -191,7 +191,7 @@ int16_t *Box_GetLotZone(const LOT_INFO *const lot)
 bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 {
     const int16_t *const zone = Box_GetLotZone(lot);
-    const bool use_fixed_fly_zone = g_TRVersion == 3 && lot->setup.fly != 0;
+    const bool use_fixed_fly_zone = g_TRVersion >= 3 && lot->setup.fly != 0;
     const int16_t search_zone =
         use_fixed_fly_zone ? BOX_FIXED_FLY_ZONE : zone[lot->head];
 
@@ -400,7 +400,7 @@ bool Box_ValidBox(
     const CREATURE *const creature = item->creature_data;
     const int16_t *const zone = Box_GetLotZone(&creature->lot);
     const bool use_fixed_fly_zone =
-        g_TRVersion == 3 && creature->lot.setup.fly != 0;
+        g_TRVersion >= 3 && creature->lot.setup.fly != 0;
     if (!use_fixed_fly_zone && zone[box_num] != zone_num) {
         return false;
     }
