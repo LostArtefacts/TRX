@@ -956,7 +956,7 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
             if (ABS(ledge_l - ledge_r) > 120) {
                 return;
             }
-            if (result_r == CLIMB_RESULT_NEG && result_l == CLIMB_RESULT_NEG) {
+            if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG) {
                 item->goal_anim_state = LS(LS_PULL_UP);
                 item->pos.y += (ledge_l + ledge_r) / 2 - STEP_L;
             } else {
