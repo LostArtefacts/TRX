@@ -1,3 +1,5 @@
+#include <trx/game/objects/general/pulley_switch.h>
+
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/input.h>
@@ -71,9 +73,8 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
 
-    // The visibility initialisation flag is temporarily used to indicate that
-    // the pulley cannot be operated until later events take place.
-    // TODO: implement as an event during O_OBELISK implementation.
+    // An invisible pulley starts locked, as in OG. The obelisk unlocks the
+    // pulley in The Great Hypostyle Hall.
     p->is_locked = !item->is_visible;
     if (p->is_locked) {
         Item_SetVisible(item, true);
@@ -204,6 +205,12 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY(
             M_PRIV, is_single_use, false,
             "Whether or not the pulley can only be used once."));
+}
+
+void PulleySwitch_SetLocked(ITEM *const item, const bool is_locked)
+{
+    M_PRIV *const p = item->priv;
+    p->is_locked = is_locked;
 }
 
 REGISTER_OBJECT(O_SWITCH_TYPE_PULLEY, M_Setup)

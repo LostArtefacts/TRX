@@ -3296,6 +3296,9 @@
         "natla_gun": {
             "name": "\\{review}Зброя Натли",
         },
+        "obelisk": {
+            "name": "\\{review}Обеліск",
+        },
         "on_off_light": {
             "name": "\\{review}Світло з вимикачем",
         },

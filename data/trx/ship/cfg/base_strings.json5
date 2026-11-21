@@ -3357,6 +3357,9 @@
         "natla_gun": {
             "name": "Natla's Gun",
         },
+        "obelisk": {
+            "name": "Obelisk",
+        },
         "on_off_light": {
             "name": "On/Off Light",
         },

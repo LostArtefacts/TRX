@@ -3254,6 +3254,9 @@
         "natla_gun": {
             "name": "Arma de Natla",
         },
+        "obelisk": {
+            "name": "\\{review}Obelisco",
+        },
         "on_off_light": {
             "name": "Luz de encendido/apagado",
         },
