@@ -1437,6 +1437,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lake_fd.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
+│   │   │   ├── mastabas_torch.bin
 │   │   │   ├── pickup_aid.bin
 │   │   │   ├── race_fd.bin
 │   │   │   ├── race_textures.bin
@@ -3094,6 +3095,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lake_fd.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin
+    │   │   │   │   ├── mastabas_torch.bin
     │   │   │   │   ├── pickup_aid.bin
     │   │   │   │   ├── race_fd.bin
     │   │   │   │   ├── race_textures.bin
