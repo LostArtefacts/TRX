@@ -981,10 +981,8 @@ void Sparks_DetachItem(const int16_t item_num)
                 continue;
             }
 
-            const ITEM *const item = Item_Get(item_num);
-            spark->pos.x += item->pos.x;
-            spark->pos.y += item->pos.y;
-            spark->pos.z += item->pos.z;
+            spark->pos = Sparks_GetWorldPos(spark);
+            spark->prev_pos = spark->prev_world_pos;
             spark->flags &= ~SPARK_F_ITEM;
             spark->flags &= ~SPARK_F_ATTACHED_NODE;
         }
