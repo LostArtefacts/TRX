@@ -5,6 +5,7 @@
 **Camera**
 - Fixed Lara's position not resetting in photo mode if her weapons are drawn (TRX2000, regression from 1.11)
 - Fixed the camera briefly showing Lara when a flyby sequence ends the level (TRX1975)
+- Fixed the look camera clipping into the ceiling or out of the level in the TR3 and TR4 camera modes (TRX2019, regression from 1.2)
 
 **Rendering**
 - Fixed Lara, statics and inventory models not being drawn on some AMD graphics drivers (TRX2024, regression from 1.12)
