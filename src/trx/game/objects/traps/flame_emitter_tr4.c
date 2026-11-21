@@ -34,9 +34,6 @@
 #define M_IGNITE_DISTANCE 600
 #define M_IGNITE_DISTANCE_SQR 0x40000
 
-static int32_t M_GetOCB(const ITEM *item);
-static void M_BurnLaraIfNear(const ITEM *item);
-
 static int32_t M_GetOCB(const ITEM *const item)
 {
     TRX_VALUE value = {};

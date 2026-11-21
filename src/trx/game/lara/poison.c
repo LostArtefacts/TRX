@@ -21,10 +21,6 @@ static XYZ_16 m_PhaseA = {};
 static XYZ_16 m_PhaseB = {};
 
 static int32_t M_AxisScale(
-    int32_t value, int16_t phase_a, int16_t phase_step_a, int16_t phase_b,
-    int16_t phase_step_b, double lerp);
-
-static int32_t M_AxisScale(
     const int32_t value, const int16_t phase_a, const int16_t phase_step_a,
     const int16_t phase_b, const int16_t phase_step_b, const double lerp)
 {
