@@ -7,6 +7,14 @@ order: 3
 
 ## TRX
 
+### Version 1.12 to 1.13
+
+1. **`trx.weapons.all` lists the TR4 torch**
+   The torch Lara carries in TR4 is a weapon of the kind
+   `trx.weapons.Kind.TORCH`. It has no pickup object, no ammunition and no
+   draw key, and it never enters the inventory. A script that goes through
+   `trx.weapons.all` to hand out or show weapons should leave it out.
+
 ### Version 1.11 to 1.12
 
 1. **`display_time` no longer counts the fades**

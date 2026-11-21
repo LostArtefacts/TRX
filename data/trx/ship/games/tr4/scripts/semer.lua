@@ -19,8 +19,7 @@ trx.events.on_game_start(function(is_save)
   trx.items[211].properties.switch_mode = trx.items.SwitchMode.HIDDEN_PICKUP
   trx.items[213].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
   trx.items[53].properties.pickup_mode = trx.items.PickupMode.HIDDEN
-  -- TODO: the burning torch has no TRX object yet
-  -- trx.items[160].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+  trx.items[160].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[188].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[192].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[212].properties.pickup_mode = trx.items.PickupMode.HIDDEN

@@ -28,6 +28,13 @@
         },
     },
 
+    "torch": {
+        "kind": "torch",
+        "objects": {
+            "anim": "torch_anim",
+        },
+    },
+
     "pistols": {
         "kind": "dual_pistols",
         "damage": 1,

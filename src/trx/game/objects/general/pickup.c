@@ -12,6 +12,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/objects/general/burning_torch.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/output.h>
@@ -389,10 +390,44 @@ static bool M_IsPickupEraseFrame(const ITEM *const lara_item)
     }
 }
 
+// Whether the item is one that Lara takes into her hand, which keeps a state
+// of its own in place of the pickup's.
+static bool M_IsHeldItem(const ITEM *const item)
+{
+    return item->object_id == O_FLARE_ITEM
+        || item->object_id == O_BURNING_TORCH_ITEM;
+}
+
+static PICKUP_MODE M_GetPickupMode(const ITEM *const item)
+{
+    if (item->object_id == O_FLARE_ITEM) {
+        return PICKUP_MODE_NORMAL;
+    }
+    if (item->object_id == O_BURNING_TORCH_ITEM) {
+        return BurningTorch_GetPickupMode(item);
+    }
+    const M_PRIV *const p = item->priv;
+    return p->pickup_mode;
+}
+
+static void M_DoTorchPickup(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    UI_ShowPickup(item->object_id);
+    Gun_Torch_Take(BurningTorch_IsLit(item));
+    Item_SetVisible(item, false);
+    Item_Destroy(item_num);
+    Lara_GetLaraInfo()->interact_target.is_moving = false;
+}
+
 static void M_DoPickup(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->object_id == O_FLARE_ITEM) {
+        return;
+    }
+    if (item->object_id == O_BURNING_TORCH_ITEM) {
+        M_DoTorchPickup(item_num);
         return;
     }
 
@@ -438,8 +473,8 @@ static void M_CollectAllAtPos(
         const int16_t next_item_num = check_item->next_item;
         if (Object_Get(check_item->object_id)->collision_func
                 != Pickup_Collision
-            || check_item->object_id == O_FLARE_ITEM
-            || check_item->pos.x != pos.x || check_item->pos.z != pos.z) {
+            || M_IsHeldItem(check_item) || check_item->pos.x != pos.x
+            || check_item->pos.z != pos.z) {
             goto loop_end;
         }
 
@@ -465,6 +500,8 @@ static void M_Collect(const ITEM *const item, const bool controlled)
     const int16_t item_num = Item_GetIndex(item);
     if (item->object_id == O_FLARE_ITEM) {
         M_DoFlarePickup(item_num);
+    } else if (item->object_id == O_BURNING_TORCH_ITEM) {
+        M_DoTorchPickup(item_num);
     } else if (M_UseMultiplePickups(item) && controlled) {
         const M_PRIV *const p = item->priv;
         M_CollectAllAtPos(item->pos, item->room_num, p->pickup_mode);
@@ -496,8 +533,8 @@ static bool M_CanCollect(
         return false;
     }
 
-    if (item->object_id == O_FLARE_ITEM) {
-        return lara->interact_target.item_num == NO_ITEM;
+    if (M_IsHeldItem(item)) {
+        return false;
     }
 
     if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
@@ -509,6 +546,9 @@ static bool M_CanCollect(
     }
 
     const ITEM *const current_item = Item_Get(lara->interact_target.item_num);
+    if (M_IsHeldItem(current_item)) {
+        return false;
+    }
     const M_PRIV *const p1 = current_item->priv;
     const M_PRIV *const p2 = item->priv;
     return p1->pickup_mode == p2->pickup_mode;
@@ -538,8 +578,7 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
     } else if (is_ducked) {
         goal_state = LS_PICKUP;
     } else {
-        M_PRIV *const p = item->priv;
-        switch (p->pickup_mode) {
+        switch (M_GetPickupMode(item)) {
         case PICKUP_MODE_PLINTH_LOW:
             goal_state = LS_PLINTH_LOW_PICKUP;
             break;
@@ -550,10 +589,12 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
             goal_state = LS_HIDDEN_PICKUP;
             required_state = LS_HIDDEN_PICKUP;
             break;
-        case PICKUP_MODE_CROWBAR:
+        case PICKUP_MODE_CROWBAR: {
             goal_state = LS_CROWBAR_PICKUP;
+            M_PRIV *const p = item->priv;
             p->animate = true;
             break;
+        }
         case PICKUP_MODE_PLINTH_SCION:
             M_BeginScionAnimation(item, lara_item);
             return;
@@ -619,12 +660,8 @@ static const BOUNDS_16 *M_FindPlinthBounds(const ITEM *const item)
 static bool M_TestLaraPosition(const ITEM *const item, const bool controlled)
 {
     OBJECT_BOUNDS test_bounds = Object_Get(item->object_id)->bounds_func(item);
-    if (item->object_id == O_FLARE_ITEM) {
-        goto finish;
-    }
-
-    const M_PRIV *const p = item->priv;
-    switch (p->pickup_mode) {
+    const PICKUP_MODE mode = M_GetPickupMode(item);
+    switch (mode) {
     case PICKUP_MODE_HIDDEN:
         test_bounds = m_HiddenPickupBounds;
         break;
@@ -634,7 +671,7 @@ static bool M_TestLaraPosition(const ITEM *const item, const bool controlled)
     case PICKUP_MODE_PLINTH_LOW:
     case PICKUP_MODE_PLINTH_HIGH:
     case PICKUP_MODE_PLINTH_SCION: {
-        if (p->pickup_mode == PICKUP_MODE_PLINTH_SCION && !controlled) {
+        if (mode == PICKUP_MODE_PLINTH_SCION && !controlled) {
             test_bounds = m_ScionBounds;
             break;
         }
@@ -642,7 +679,7 @@ static bool M_TestLaraPosition(const ITEM *const item, const bool controlled)
         const ITEM *const lara_item = Lara_GetItem();
         const int32_t delta = lara_item->pos.y - item->pos.y;
         const int32_t offset =
-            STEP_L * (p->pickup_mode == PICKUP_MODE_PLINTH_LOW ? 2 : 3);
+            STEP_L * (mode == PICKUP_MODE_PLINTH_LOW ? 2 : 3);
         if (ABS(ABS(delta) - offset) > STEP_L / 2) {
             return false;
         }
@@ -661,7 +698,6 @@ static bool M_TestLaraPosition(const ITEM *const item, const bool controlled)
         break;
     }
 
-finish:
     return Lara_TestPosition(item, &test_bounds);
 }
 
@@ -669,17 +705,12 @@ static XYZ_32 M_GetAlignmentPosition(
     const ITEM *const item, const bool controlled)
 {
     XYZ_32 pos;
-    if (item->object_id == O_FLARE_ITEM) {
-        pos = m_PickupPosition;
-        goto finish;
-    }
-
-    const M_PRIV *const p = item->priv;
-    switch (p->pickup_mode) {
+    const PICKUP_MODE mode = M_GetPickupMode(item);
+    switch (mode) {
     case PICKUP_MODE_PLINTH_LOW:
     case PICKUP_MODE_PLINTH_HIGH:
     case PICKUP_MODE_PLINTH_SCION:
-        if (p->pickup_mode == PICKUP_MODE_PLINTH_SCION && !controlled) {
+        if (mode == PICKUP_MODE_PLINTH_SCION && !controlled) {
             pos = m_PickupPositionScion;
             break;
         }
@@ -701,7 +732,6 @@ static XYZ_32 M_GetAlignmentPosition(
         break;
     }
 
-finish:
     pos.y = Lara_GetItem()->pos.y - item->pos.y;
     return pos;
 }
@@ -729,14 +759,9 @@ static XYZ_16 M_PrepareAndCacheRot(
         item->rot.z = lara_item->rot.z;
     }
 
-    if (item->object_id == O_FLARE_ITEM) {
+    const PICKUP_MODE mode = M_GetPickupMode(item);
+    if (mode != PICKUP_MODE_HIDDEN && mode != PICKUP_MODE_CROWBAR) {
         item->rot.y = lara_item->rot.y;
-    } else {
-        const M_PRIV *const p = item->priv;
-        if (p->pickup_mode != PICKUP_MODE_HIDDEN
-            && p->pickup_mode != PICKUP_MODE_CROWBAR) {
-            item->rot.y = lara_item->rot.y;
-        }
     }
 
     return old_rot;
@@ -758,7 +783,7 @@ static bool M_ShowCrowbarInventory(void)
 
 static bool M_CanBeginPickup(const ITEM *const item)
 {
-    if (item->object_id == O_FLARE_ITEM) {
+    if (M_IsHeldItem(item)) {
         return true;
     }
     const M_PRIV *const p = item->priv;
@@ -829,11 +854,8 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         return;
     }
 
-    if (item->object_id != O_FLARE_ITEM) {
-        const M_PRIV *const p = item->priv;
-        if (is_ducked && p->pickup_mode != PICKUP_MODE_NORMAL) {
-            return;
-        }
+    if (is_ducked && M_GetPickupMode(item) != PICKUP_MODE_NORMAL) {
+        return;
     }
 
     const XYZ_16 old_rot = M_PrepareAndCacheRot(item, lara_item, false);
@@ -851,7 +873,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 
     const bool is_flare_item = item->object_id == O_FLARE_ITEM;
     if (g_Input.action && lara_item->current_anim_state == LS(LS_CRAWL_IDLE)
-        && (is_flare_item || !g_Config.gameplay.enable_responsive_crawl)) {
+        && (M_IsHeldItem(item) || !g_Config.gameplay.enable_responsive_crawl)) {
         lara_item->goal_anim_state = LS(LS_CROUCH_IDLE);
         goto cleanup;
     }
@@ -946,6 +968,9 @@ static bool M_CanCollide(const int16_t item_num)
 
     if (item->object_id == O_FLARE_ITEM) {
         return !Gun_IsFlareType(Lara_GetLaraInfo()->gun_type);
+    }
+    if (item->object_id == O_BURNING_TORCH_ITEM) {
+        return true;
     }
 
     const M_PRIV *const p = item->priv;
@@ -1052,8 +1077,9 @@ void Pickup_Collision(
         || lara->water_status == LWS_WADE) {
         M_DoAboveWater(item_num, lara_item);
     } else if (
-        lara->water_status == LWS_UNDERWATER
-        || lara->water_status == LWS_CHEAT) {
+        (lara->water_status == LWS_UNDERWATER
+         || lara->water_status == LWS_CHEAT)
+        && Item_Get(item_num)->object_id != O_BURNING_TORCH_ITEM) {
         M_DoUnderwater(item_num, lara_item);
     }
 }
@@ -1087,8 +1113,8 @@ int16_t Pickup_FindNearbyCrowbarPryPickup(void)
     for (int16_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
         if (Object_Get(item->object_id)->collision_func != Pickup_Collision
-            || item->object_id == O_FLARE_ITEM
-            || !Lara_IsNearItem(&item->pos, WALL_L) || !Item_IsInPlay(item)) {
+            || M_IsHeldItem(item) || !Lara_IsNearItem(&item->pos, WALL_L)
+            || !Item_IsInPlay(item)) {
             continue;
         }
 

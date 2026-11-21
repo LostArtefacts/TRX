@@ -284,12 +284,13 @@ bool Lara_Cheat_ExitFlyMode(void)
     }
 
     // A flare being put away keeps going, so that it finishes leaving her
-    // hand rather than leaving her holding nothing in its place.
+    // hand rather than leaving her holding nothing in its place. A held item,
+    // such as the torch, stays in her hand.
     const bool is_flare_undrawing = lara_info->gun_status == LGS_UNDRAW
         && lara_info->gun_type == Gun_GetFlareType();
     if (lara_info->gun_item_num != NO_ITEM || is_flare_undrawing) {
         lara_info->gun_status = LGS_UNDRAW;
-    } else {
+    } else if (!Gun_Registry_Get(lara_info->gun_type)->is_held_item) {
         lara_info->gun_status = LGS_ARMLESS;
         M_ClearHandWeaponMeshes();
         M_ReinitialiseGunMeshes();
