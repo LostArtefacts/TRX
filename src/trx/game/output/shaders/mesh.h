@@ -61,7 +61,7 @@ typedef struct {
     float pos[4]; // w = type
     float color[4]; // w = range
     float dir[4]; // w = att1
-    float cone[4]; // x = cosine of a spot's cone edge
+    float cone[4]; // x, y = cosines of a spot's cone edge and fully lit cone
 } OUTPUT_MESH_LIGHT;
 
 typedef struct {

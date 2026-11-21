@@ -58,10 +58,11 @@ typedef struct {
 typedef struct {
     float pos[4];
     float color[4];
+    float dir[4]; // where a spot points; w = cosine of the cone edge
     float shade;
     float falloff;
     float kind;
-    float _pad;
+    float cone_inner; // cosine of the fully lit cone of a spot
 } M_UNIFORM_LIGHT;
 
 typedef struct {
@@ -88,7 +89,16 @@ static void M_FillLight(
     dst_light->color[1] = src_light->color.g / 255.0f;
     dst_light->color[2] = src_light->color.b / 255.0f;
     dst_light->color[3] = 0.0f;
-    if (src_light->layout == LIGHT_LAYOUT_TR4) {
+    if (entry->kind == OUTPUT_DYNAMIC_LIGHT_SPOT) {
+        const LIGHT_TR4_DATA *const spot = &src_light->u.tr4;
+        dst_light->dir[0] = spot->dir.x;
+        dst_light->dir[1] = spot->dir.y;
+        dst_light->dir[2] = spot->dir.z;
+        dst_light->dir[3] = spot->outer_radius;
+        dst_light->cone_inner = spot->inner_radius;
+        dst_light->shade = spot->intensity;
+        dst_light->falloff = spot->cutoff;
+    } else if (src_light->layout == LIGHT_LAYOUT_TR4) {
         dst_light->shade = src_light->u.tr4.intensity;
         dst_light->falloff = src_light->u.tr4.outer_radius;
     } else {

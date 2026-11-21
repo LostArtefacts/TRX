@@ -9,10 +9,11 @@
 struct Light {
     vec4 pos;
     vec4 color;
+    vec4 dir; // where a spot points; w = cosine of the cone edge
     float shade;
     float falloff;
     float kind;
-    float _pad0;
+    float coneInner; // cosine of the fully lit cone of a spot
 };
 
 layout(std140) uniform Lights {
