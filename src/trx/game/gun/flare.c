@@ -192,6 +192,9 @@ static void M_ControlInHand(void)
     }
 
     lara_info->left_arm.flash_gun = Flare_GenerateLight(vec, flare_age);
+    if (Room_IsMirror(lara_item->room_num)) {
+        Flare_GenerateLight(Room_ReflectInMirror(vec), flare_age);
+    }
 
     if (flare_age >= Flare_GetMaxAge()) {
         if (M_CanThrowFlare()) {

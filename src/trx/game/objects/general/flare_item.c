@@ -10,6 +10,7 @@
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
@@ -115,6 +116,9 @@ static void M_Control(const int16_t item_num)
     }
 
     if (Flare_GenerateLight(item->pos, flare_age)) {
+        if (Room_IsMirror(item->room_num)) {
+            Flare_GenerateLight(Room_ReflectInMirror(item->pos), flare_age);
+        }
         is_active = true;
         Flare_GenerateEffects(&item->pos, item->pos, item->room_num);
     }

@@ -13,6 +13,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/output.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
@@ -58,6 +59,15 @@ static int32_t M_GetRounds(const LARA_GUN_TYPE gun_type, const int32_t box_qty)
     return MAX(1, box_qty) * Gun_GetRoundsPerShot(gun_type);
 }
 
+static void M_AddFlashLight(const XYZ_32 pos)
+{
+    if (g_TRVersion >= 3) {
+        Output_AddDynamicLightRGB(pos, 12, (RGB_888) { 192, 144, 0 });
+    } else {
+        Output_AddDynamicLight(pos, 12, 11);
+    }
+}
+
 void Gun_AddDynamicLight(void)
 {
     if (!g_Config.visuals.enable_gun_lighting) {
@@ -67,10 +77,9 @@ void Gun_AddDynamicLight(void)
     const ITEM *const lara_item = Lara_GetItem();
     XYZ_32 pos = XYZ_32_OffsetYaw(lara_item->pos, lara_item->rot.y, 1024);
     pos.y -= WALL_L / 2;
-    if (g_TRVersion >= 3) {
-        Output_AddDynamicLightRGB(pos, 12, (RGB_888) { 192, 144, 0 });
-    } else {
-        Output_AddDynamicLight(pos, 12, 11);
+    M_AddFlashLight(pos);
+    if (Room_IsMirror(lara_item->room_num)) {
+        M_AddFlashLight(Room_ReflectInMirror(pos));
     }
 }
 
