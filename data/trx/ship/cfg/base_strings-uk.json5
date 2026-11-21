@@ -2766,6 +2766,9 @@
         "flame_emitter_tr4_ground": {
             "name": "\\{review}Джерело полум'я (TR4, на підлозі)",
         },
+        "flame_emitter_tr4_spread": {
+            "name": "\\{review}Джерело полум'я (TR4, розсіяне)",
+        },
         "flame_emitter_tr4_wall": {
             "name": "\\{review}Джерело полум'я (TR4, на стіні)",
         },

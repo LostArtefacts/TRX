@@ -2754,6 +2754,9 @@
         "flame_emitter_tr4_ground": {
             "name": "Emisor de llamas (TR4 suelo)",
         },
+        "flame_emitter_tr4_spread": {
+            "name": "\\{review}Emisor de llamas (TR4 disperso)",
+        },
         "flame_emitter_tr4_wall": {
             "name": "Emisor de llamas (TR4 pared)",
         },

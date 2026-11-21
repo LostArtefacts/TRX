@@ -2754,6 +2754,9 @@
         "flame_emitter_tr4_ground": {
             "name": "Sgaoiladair Teine (TR4, làr)",
         },
+        "flame_emitter_tr4_spread": {
+            "name": "\\{review}Sgaoiladair Teine (TR4, sgaoilte)",
+        },
         "flame_emitter_tr4_wall": {
             "name": "Sgaoiladair Teine (TR4, balla)",
         },
