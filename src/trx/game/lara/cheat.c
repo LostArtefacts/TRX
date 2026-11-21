@@ -30,7 +30,7 @@ static void M_GiveAllGunsImpl(const bool ignore_exclusions)
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
         const LARA_GUN_TYPE gun_type = info->gun_type;
-        if (info->cheat_ammo == 0) {
+        if (info->cheat_ammo == 0 || info->is_held_item) {
             continue;
         }
         if (Lara_Cheat_GiveGun(gun_type, ignore_exclusions)) {

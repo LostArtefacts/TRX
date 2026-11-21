@@ -35,6 +35,8 @@ local Kind = {
   MOUNTED = h.IntegerConstant,
   ---Held in one hand and burning, rather than fired.
   FLARE = h.IntegerConstant,
+  ---Held in the left hand, lit or not, and never stored in the inventory.
+  TORCH = h.IntegerConstant,
 }
 M.Kind = h.enum("weapons.Kind", "WEAPON_TYPE", Kind)
 

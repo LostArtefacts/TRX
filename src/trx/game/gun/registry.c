@@ -105,6 +105,8 @@ RESULT Gun_Registry_SetKind(const WEAPON_TYPE type, WEAPON_INFO *const target)
     target->undraw_func = routines->undraw_func;
     target->draw_meshes_func = routines->draw_meshes_func;
     target->control_func = routines->control_func;
+    target->owns_frame = routines->owns_frame;
+    target->is_held_item = routines->is_held_item;
     return OK;
 }
 
@@ -120,6 +122,10 @@ RESULT Gun_Registry_Declare(
         Catalog_IDToKey(CATALOG_WEAPONS, gun_type));
 
     MUST(Gun_Registry_SetKind(type, target));
+    target->is_declared = true;
+    if (target->is_held_item) {
+        return OK;
+    }
     const char *const key = Catalog_IDToKey(CATALOG_WEAPONS, gun_type);
     target->save_ammo_key = M_MakeSaveKey("%s", key);
     target->save_resume_ammo_key = M_MakeSaveKey("%s_ammo", key);

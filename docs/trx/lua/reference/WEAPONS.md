@@ -56,6 +56,8 @@ trx.weapons.flare.glow.color = "33e5ff"
         Fixed to a vehicle rather than held.
     - `trx.weapons.Kind.FLARE`  
         Held in one hand and burning, rather than fired.
+    - `trx.weapons.Kind.TORCH`  
+        Held in the left hand, lit or not, and never stored in the inventory.
 
 ### Structures
 

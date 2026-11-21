@@ -119,6 +119,8 @@ typedef struct {
         int16_t age;
         int16_t frame_num;
     } flare;
+    // TR4: whether the torch Lara holds is burning.
+    bool lit_torch;
 
     MATRIX mesh_pos_matrices[LM_NUMBER_OF];
     bool mesh_pos_matrices_valid;

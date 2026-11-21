@@ -14,6 +14,7 @@ typedef enum {
     WEAPON_TYPE_RIFLE,
     WEAPON_TYPE_MOUNTED,
     WEAPON_TYPE_FLARE,
+    WEAPON_TYPE_TORCH,
     NUM_WEAPON_TYPES,
 } WEAPON_TYPE;
 
@@ -237,6 +238,14 @@ typedef struct {
     // every one: a gun acts once it is ready, while a flare acts while Lara
     // is otherwise unarmed. The phase says which one runs.
     void (*control_func)(LARA_GUN_TYPE gun_type, LARA_GUN_STATE gun_status);
+    // Whether the control routine runs the whole frame of Lara's hands in
+    // place of the drawing, aiming and firing that other weapons share.
+    bool owns_frame;
+    // Whether it is something Lara holds rather than carries, such as the
+    // TR4 torch: it never enters the inventory, takes no ammunition, has no
+    // key that draws it, is not in a savegame's weapon list and is not handed
+    // out by cheats or a bonus game.
+    bool is_held_item;
     // Whether it sounds every shot as it fires, alternating between its
     // sample and the one beside it, as a weapon that empties fast does.
     bool has_alternating_fire_sound;

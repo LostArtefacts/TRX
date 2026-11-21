@@ -10,6 +10,8 @@ typedef struct {
     void (*undraw_func)(LARA_GUN_TYPE gun_type);
     void (*draw_meshes_func)(LARA_GUN_TYPE gun_type);
     void (*control_func)(LARA_GUN_TYPE gun_type, LARA_GUN_STATE gun_status);
+    bool owns_frame;
+    bool is_held_item;
 } GUN_KIND_ROUTINES;
 
 // Register the shared routines for an implemented weapon kind.
