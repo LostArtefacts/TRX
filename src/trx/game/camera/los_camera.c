@@ -633,12 +633,18 @@ static XYZ_32 M_GetHeadPos(const int32_t x, const int32_t y, const int32_t z)
 // Returns the head point at the given offset, moved onto the line through
 // the head along the look direction. The line ignores the tilt that idle
 // breathing gives the head, so the look camera stays steady.
+// On monkey bars, returns the head point unchanged, because the line also
+// removes the curve that the hanging pose gives to the look camera path.
 static XYZ_32 M_GetSteadyHeadPos(
     const int32_t x, const int32_t y, const int32_t z)
 {
     const XYZ_32 pos = M_GetHeadPos(x, y, z);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item->current_anim_state == LS(LS_MONKEY_IDLE)) {
+        return pos;
+    }
+
     const XYZ_32 axis = XYZ_32_FromYawPitch(
         lara_item->rot.y + lara->head_rot.y,
         lara_item->rot.x + lara->head_rot.x, 1 << W2V_SHIFT);
