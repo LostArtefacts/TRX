@@ -16,6 +16,7 @@
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/level/settings.h>
+#include <trx/game/lua/store.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/switch_sequence.h>
@@ -346,6 +347,20 @@ static void M_WriteLOT(JSON_WRITE_IO *const io, const LOT_INFO *const lot)
     JSONW_WRITE(io, "z", lot->target.z);
 }
 
+static void M_WriteLevelStats(
+    JSON_WRITE_IO *const io, const LEVEL_STATS *const stats)
+{
+    JSONW_WRITE(io, "timer", stats->timer);
+    JSONW_WRITE(io, "kills", stats->counts[STATS_CAT_KILLS]);
+    JSONW_WRITE(io, "secrets", stats->secret_flags);
+    JSONW_WRITE(io, "crystals", stats->counts[STATS_CAT_CRYSTALS]);
+    JSONW_WRITE(io, "pickups", stats->counts[STATS_CAT_PICKUPS]);
+    JSONW_WRITE(io, "ammo_hits", stats->ammo_hits);
+    JSONW_WRITE(io, "ammo_used", stats->ammo_used);
+    JSONW_WRITE(io, "distance_travelled", stats->distance_travelled);
+    JSONW_WRITE(io, "medipacks_used", stats->medipacks_used);
+}
+
 static void M_WriteResumeInfo(
     JSON_WRITE_IO *const io, const RESUME_INFO *const resume)
 {
@@ -397,15 +412,7 @@ static void M_WriteResumeInfo(
     }
 
     JSONW_WRITE(io, "costume", resume->flags.costume);
-    JSONW_WRITE(io, "timer", resume->stats.timer);
-    JSONW_WRITE(io, "kills", resume->stats.counts[STATS_CAT_KILLS]);
-    JSONW_WRITE(io, "secrets", resume->stats.secret_flags);
-    JSONW_WRITE(io, "crystals", resume->stats.counts[STATS_CAT_CRYSTALS]);
-    JSONW_WRITE(io, "pickups", resume->stats.counts[STATS_CAT_PICKUPS]);
-    JSONW_WRITE(io, "ammo_hits", resume->stats.ammo_hits);
-    JSONW_WRITE(io, "ammo_used", resume->stats.ammo_used);
-    JSONW_WRITE(io, "distance_travelled", resume->stats.distance_travelled);
-    JSONW_WRITE(io, "medipacks_used", resume->stats.medipacks_used);
+    M_WriteLevelStats(io, &resume->stats);
     JSONW_WRITE(io, "death_count", resume->stats.death_count);
 }
 
@@ -445,6 +452,65 @@ static int32_t M_GetMusicTrackFlagsCount(void)
         }
     }
     return last_index + 1;
+}
+
+static void M_WriteMusicTrackFlags(JSON_WRITE_IO *const io)
+{
+    const int32_t track_flag_count = M_GetMusicTrackFlagsCount();
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < track_flag_count; i++) {
+        JSONW_PUSH_VALUE(io, M_PackMusicTrackFlags(i));
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "flags");
+
+    // Write both music flag layouts. Positional flags keep older readers
+    // working; named flags keep the data tied to catalog identities.
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < track_flag_count; i++) {
+        const uint16_t flags = M_PackMusicTrackFlags(i);
+        if (flags == 0) {
+            continue;
+        }
+        const CATALOG_ID id = Music_SlotToID(i);
+        JSONW_PUSH_OBJECT(io);
+        SaveGame_WriteIdentity(io, "slot", "key", CATALOG_MUSIC, id);
+        JSONW_WRITE(io, "flags", flags);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "track_flags");
+}
+
+// Writes the level's own items only. Lara arrives with her own state, and an
+// item spawned during play is not kept, as in the original game.
+static void M_WriteLevelItems(JSON_WRITE_IO *const io)
+{
+    Savegame_ProcessItemsBeforeSave();
+
+    const int16_t lara_item_num = Lara_GetLaraInfo()->item_num;
+    JSONW_WRITE(io, "level_item_count", Item_GetLevelCount());
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        if (i == lara_item_num || !Savegame_IsSavedItem(i)) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        M_WriteItem(io, Item_Get(i));
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "items");
+}
+
+static void M_WriteSpentAIMarkers(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        if (Creature_IsAIObjectSpent(Item_Get(i))) {
+            JSONW_PUSH_VALUE(io, i);
+            JSONW_POP_AND_APPEND(io);
+        }
+    }
+    JSONW_POP_AND_SET_NZ(io, "spent_ai_markers");
 }
 
 void SG_File_DumpEffects(JSON_WRITE_IO *const io)
@@ -561,30 +627,8 @@ void SG_File_DumpCameras(JSON_WRITE_IO *const io)
 
 void SG_File_DumpMusic(JSON_WRITE_IO *const io)
 {
-    const int32_t track_flag_count = M_GetMusicTrackFlagsCount();
     JSONW_PUSH_OBJECT(io);
-    JSONW_PUSH_ARRAY(io);
-    for (int32_t i = 0; i < track_flag_count; i++) {
-        JSONW_PUSH_VALUE(io, M_PackMusicTrackFlags(i));
-        JSONW_POP_AND_APPEND(io);
-    }
-    JSONW_POP_AND_SET(io, "flags");
-
-    // Write both music flag layouts. Positional flags keep older readers
-    // working; named flags keep the data tied to catalog identities.
-    JSONW_PUSH_ARRAY(io);
-    for (int32_t i = 0; i < track_flag_count; i++) {
-        const uint16_t flags = M_PackMusicTrackFlags(i);
-        if (flags == 0) {
-            continue;
-        }
-        const CATALOG_ID id = Music_SlotToID(i);
-        JSONW_PUSH_OBJECT(io);
-        SaveGame_WriteIdentity(io, "slot", "key", CATALOG_MUSIC, id);
-        JSONW_WRITE(io, "flags", flags);
-        JSONW_POP_AND_APPEND(io);
-    }
-    JSONW_POP_AND_SET(io, "track_flags");
+    M_WriteMusicTrackFlags(io);
 
     const MUSIC_SLOT current_ambient = Music_GetCurrentLoopedTrack();
     JSONW_PUSH_OBJECT(io);
@@ -836,15 +880,7 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
     JSONW_WRITE(io, "waypoint", Waypoint_Get());
     JSONW_WRITE(io, "waypoint_highest", Waypoint_GetHighest());
-
-    JSONW_PUSH_ARRAY(io);
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        if (Creature_IsAIObjectSpent(Item_Get(i))) {
-            JSONW_PUSH_VALUE(io, i);
-            JSONW_POP_AND_APPEND(io);
-        }
-    }
-    JSONW_POP_AND_SET_NZ(io, "spent_ai_markers");
+    M_WriteSpentAIMarkers(io);
     M_WriteSwitchSequence(io);
     JSONW_POP_AND_SET(io, "misc");
 
@@ -872,4 +908,29 @@ void SG_File_DumpLevelEndMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");
     JSONW_WRITE(io, "save_counter", SG_Manager_GetCounter());
     JSONW_WRITE(io, "level_num", level->num);
+}
+
+void SG_File_DumpLevelState(
+    JSON_WRITE_IO *const io, const GF_LEVEL *const level)
+{
+    M_WriteLevelItems(io);
+    SG_File_DumpFlipmaps(io);
+    Room_SaveShatteredStatics(io);
+    SG_File_DumpCameras(io);
+
+    JSONW_PUSH_OBJECT(io);
+    M_WriteMusicTrackFlags(io);
+    JSONW_WRITE(io, "ambient", Music_GetCurrentLoopedTrack());
+    JSONW_POP_AND_SET(io, "music");
+
+    M_WriteSpentAIMarkers(io);
+
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
+    if (resume != nullptr) {
+        JSONW_PUSH_OBJECT(io);
+        M_WriteLevelStats(io, &resume->stats);
+        JSONW_POP_AND_SET(io, "stats");
+    }
+
+    LUA_Store_DumpLevel(io);
 }

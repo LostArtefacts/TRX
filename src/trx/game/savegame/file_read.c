@@ -18,6 +18,7 @@
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/level/settings.h>
+#include <trx/game/lua/store.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
@@ -1301,6 +1302,22 @@ static RESULT M_ReadMusicTrackFlags(JSON_READ_IO *const io)
     return OK;
 }
 
+static RESULT M_ReadLevelStats(JSON_READ_IO *const io, LEVEL_STATS *const stats)
+{
+    MUST(JSON_READ(io, "timer", &stats->timer));
+    MUST(JSON_READ(io, "ammo_hits", &stats->ammo_hits));
+    MUST(JSON_READ(io, "ammo_used", &stats->ammo_used));
+    MUST(JSON_READ(io, "medipacks_used", &stats->medipacks_used));
+    int32_t distance;
+    MUST(JSON_READ(io, "distance_travelled", &distance));
+    stats->distance_travelled = (uint32_t)distance;
+    MUST(JSON_READ(io, "kills", &stats->counts[STATS_CAT_KILLS]));
+    SHOULD(JSON_READ(io, "crystals", &stats->counts[STATS_CAT_CRYSTALS]));
+    MUST(JSON_READ(io, "pickups", &stats->counts[STATS_CAT_PICKUPS]));
+    MUST(JSON_READ(io, "secrets", &stats->secret_flags));
+    return OK;
+}
+
 static RESULT M_ReadResumeInfo(
     JSON_READ_IO *const io, RESUME_INFO *const resume)
 {
@@ -1377,18 +1394,7 @@ static RESULT M_ReadResumeInfo(
     resume->flare_age = 0;
     SHOULD(JSON_READ_OPT(io, "flare_age", &resume->flare_age));
 
-    MUST(JSON_READ(io, "timer", &resume->stats.timer));
-    MUST(JSON_READ(io, "ammo_hits", &resume->stats.ammo_hits));
-    MUST(JSON_READ(io, "ammo_used", &resume->stats.ammo_used));
-    MUST(JSON_READ(io, "medipacks_used", &resume->stats.medipacks_used));
-    int32_t distance;
-    MUST(JSON_READ(io, "distance_travelled", &distance));
-    resume->stats.distance_travelled = (uint32_t)distance;
-    MUST(JSON_READ(io, "kills", &resume->stats.counts[STATS_CAT_KILLS]));
-    SHOULD(
-        JSON_READ(io, "crystals", &resume->stats.counts[STATS_CAT_CRYSTALS]));
-    MUST(JSON_READ(io, "pickups", &resume->stats.counts[STATS_CAT_PICKUPS]));
-    MUST(JSON_READ(io, "secrets", &resume->stats.secret_flags));
+    MUST(M_ReadLevelStats(io, &resume->stats));
     SHOULD(JSON_READ_OPT(io, "death_count", &resume->stats.death_count));
     Stats_UpdateSecrets(&resume->stats);
     return OK;
@@ -1459,6 +1465,39 @@ static RESULT M_LoadSwitchSequence(JSON_READ_IO *const io)
     MUST(JSON_POP(io));
 
     SwitchSequence_SetState(&state);
+    return OK;
+}
+
+static RESULT M_ReadMusicFlags(JSON_READ_IO *const io)
+{
+    // Prefer named music flags when present. Positional flags remain for saves
+    // that do not carry names.
+    if (JSON_ReadIO_HasKey(io, "track_flags")) {
+        MUST(JSON_PUSH(io, "track_flags"));
+        MUST(M_ReadMusicTrackFlagsByTrack(io));
+        MUST(JSON_POP(io));
+    } else {
+        MUST(JSON_PUSH(io, "flags"));
+        MUST(M_ReadMusicTrackFlags(io));
+        MUST(JSON_POP(io));
+    }
+    return OK;
+}
+
+static RESULT M_ReadSpentAIMarkers(JSON_READ_IO *const io)
+{
+    // Introduced in TRX 1.11
+    if (!JSON_ReadIO_HasKey(io, "spent_ai_markers")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "spent_ai_markers"));
+    const size_t count = JSON_ARRAY_LEN(io);
+    for (size_t i = 0; i < count; i++) {
+        int32_t item_num = NO_ITEM;
+        MUST(JSON_READ_A(io, i, &item_num));
+        Creature_SetAIObjectSpent(Item_Get(item_num));
+    }
+    MUST(JSON_POP(io));
     return OK;
 }
 
@@ -1675,17 +1714,7 @@ RESULT SG_File_LoadMusic(JSON_READ_IO *const io)
     MUST(JSON_PUSH(io, "current"));
     MUST(M_ReadMusicTracks(io));
     MUST(JSON_POP(io));
-    // Prefer named music flags when present. Positional flags remain for saves
-    // that do not carry names.
-    if (JSON_ReadIO_HasKey(io, "track_flags")) {
-        MUST(JSON_PUSH(io, "track_flags"));
-        MUST(M_ReadMusicTrackFlagsByTrack(io));
-        MUST(JSON_POP(io));
-    } else {
-        MUST(JSON_PUSH(io, "flags"));
-        MUST(M_ReadMusicTrackFlags(io));
-        MUST(JSON_POP(io));
-    }
+    MUST(M_ReadMusicFlags(io));
     MUST(JSON_POP(io));
     return OK;
 }
@@ -1809,20 +1838,7 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
     MUST(M_LoadWaypoints(io));
 
     MUST(M_LoadSwitchSequence(io));
-
-    {
-        // Introduced in TRX 1.11
-        if (JSON_ReadIO_HasKey(io, "spent_ai_markers")) {
-            MUST(JSON_PUSH(io, "spent_ai_markers"));
-            const size_t count = JSON_ARRAY_LEN(io);
-            for (size_t i = 0; i < count; i++) {
-                int32_t item_num = NO_ITEM;
-                MUST(JSON_READ_A(io, i, &item_num));
-                Creature_SetAIObjectSpent(Item_Get(item_num));
-            }
-            MUST(JSON_POP(io));
-        }
-    }
+    MUST(M_ReadSpentAIMarkers(io));
 
     {
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
@@ -1875,5 +1891,40 @@ RESULT SG_File_LoadLevelEndMisc(JSON_READ_IO *const io)
     Hub_SetLaraStartIndex(hub_lara_start);
 
     MUST(JSON_POP(io));
+    return OK;
+}
+
+RESULT SG_File_LoadLevelState(
+    JSON_READ_IO *const io, const GF_LEVEL *const level)
+{
+    MUST(SG_File_LoadFlipmaps(io));
+    MUST(Room_LoadShatteredStatics(io));
+    MUST(SG_File_LoadCameras(io));
+    MUST(SG_File_LoadItems(io));
+
+    MUST(JSON_PUSH(io, "music"));
+    MUST(M_ReadMusicFlags(io));
+    MUSIC_SLOT ambient_track = MX_INACTIVE;
+    MUST(JSON_READ_OPT(io, "ambient", &ambient_track));
+    if (ambient_track != MX_INACTIVE) {
+        Music_PlayBySlot(ambient_track, MPM_LOOP);
+    }
+    MUST(JSON_POP(io));
+
+    MUST(M_ReadSpentAIMarkers(io));
+
+    // The level's statistics are those Lara left it with. A death since then
+    // still counts.
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
+    if (resume != nullptr && JSON_ReadIO_HasKey(io, "stats")) {
+        const int32_t death_count = resume->stats.death_count;
+        MUST(JSON_PUSH(io, "stats"));
+        MUST(M_ReadLevelStats(io, &resume->stats));
+        MUST(JSON_POP(io));
+        resume->stats.death_count = death_count;
+        Stats_UpdateSecrets(&resume->stats);
+    }
+
+    MUST(LUA_Store_LoadLevel(io));
     return OK;
 }
