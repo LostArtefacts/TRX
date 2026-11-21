@@ -4130,6 +4130,18 @@
         "worker_5": {
             "name": "\\{review}Бандит с огнемётом",
         },
+        "wraith_1": {
+            "name": "\\{review}Призрак 1",
+        },
+        "wraith_2": {
+            "name": "\\{review}Призрак 2",
+        },
+        "wraith_3": {
+            "name": "\\{review}Призрак 3",
+        },
+        "wraith_4": {
+            "name": "\\{review}Призрак 4",
+        },
         "xian_knight": {
             "name": "\\{review}Ксианский рыцарь",
         },

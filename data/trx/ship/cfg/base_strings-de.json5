@@ -4130,6 +4130,18 @@
         "worker_5": {
             "name": "Typ mit Flammenwerfer",
         },
+        "wraith_1": {
+            "name": "\\{review}Geist 1",
+        },
+        "wraith_2": {
+            "name": "\\{review}Geist 2",
+        },
+        "wraith_3": {
+            "name": "\\{review}Geist 3",
+        },
+        "wraith_4": {
+            "name": "\\{review}Geist 4",
+        },
         "xian_knight": {
             "name": "Xian Ritter",
         },

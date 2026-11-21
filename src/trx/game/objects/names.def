@@ -261,6 +261,10 @@ X_OBJ_NAME_DEFINE(O_ENEMY_JEEP,           "Enemy Jeep")
 X_OBJ_NAME_DEFINE(O_HENCHMAN_JEEP,        "Henchman Jeep")
 X_OBJ_NAME_DEFINE(O_BULL_GUARDIAN,        "Bull Guardian")
 X_OBJ_NAME_DEFINE(O_CROCODILE_TR4,        "Crocodile (TR4)")
+X_OBJ_NAME_DEFINE(O_WRAITH_1,             "Wraith 1")
+X_OBJ_NAME_DEFINE(O_WRAITH_2,             "Wraith 2")
+X_OBJ_NAME_DEFINE(O_WRAITH_3,             "Wraith 3")
+X_OBJ_NAME_DEFINE(O_WRAITH_4,             "Wraith 4")
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "Wall-mounted Blade")

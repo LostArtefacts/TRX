@@ -4163,6 +4163,18 @@
         "worker_5": {
             "name": "Scagnozzo con Lanciafiamme",
         },
+        "wraith_1": {
+            "name": "\\{review}Spettro 1",
+        },
+        "wraith_2": {
+            "name": "\\{review}Spettro 2",
+        },
+        "wraith_3": {
+            "name": "\\{review}Spettro 3",
+        },
+        "wraith_4": {
+            "name": "\\{review}Spettro 4",
+        },
         "xian_knight": {
             "name": "Cavaliere di Xian",
         },

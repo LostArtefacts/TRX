@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 897 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 901 names
 
     Every object TRX has a name for.
 
@@ -283,12 +283,13 @@ convert between the two.
     `WATERSKIN_2_5`, `WATERSKIN_2_EMPTY`, `WATERSKIN_2_OPTION`, `WATER_SPRITE`,
     `WHITE_LIGHT`, `WILLARD`, `WILLARD_PLASMA_BALL`, `WINSTON`, `WINSTON_ARMY`,
     `WOLF`, `WORKER_1`, `WORKER_2`, `WORKER_3`, `WORKER_4`, `WORKER_5`,
-    `XIAN_KNIGHT`, `XIAN_KNIGHT_STATUE`, `XIAN_SPEARMAN`,
-    `XIAN_SPEARMAN_STATUE`, `YETI`, `ZIPLINE_HANDLE`
+    `WRAITH_1`, `WRAITH_2`, `WRAITH_3`, `WRAITH_4`, `XIAN_KNIGHT`,
+    `XIAN_KNIGHT_STATUE`, `XIAN_SPEARMAN`, `XIAN_SPEARMAN_STATUE`, `YETI`,
+    `ZIPLINE_HANDLE`
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 232 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 233 names
 
     Every sound sample TRX has a name for.
 
@@ -356,7 +357,7 @@ convert between the two.
     `UPV_START`, `UPV_STOP`, `VEHICLE_HIT_OBJECT`, `WARRIOR_HOVER`,
     `WATERFALL_2`, `WATERFALL_BIG`, `WATERFALL_LOOP`, `WINSTON_CUPS`,
     `WINSTON_GRUNT_1`, `WINSTON_GRUNT_2`, `WINSTON_GRUNT_3`, `WOLF_HURT`,
-    `ZIPLINE_GO`, `ZIPLINE_STOP`
+    `WRAITH_WHISPERS`, `ZIPLINE_GO`, `ZIPLINE_STOP`
 
     </details>
 
