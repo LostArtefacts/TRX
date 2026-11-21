@@ -376,6 +376,7 @@ void Gun_Control(void)
 
     const WEAPON_INFO *const held = Gun_Registry_Get(lara->gun_type);
     if (held->owns_frame) {
+        M_QuickDrawWeapon();
         held->control_func(lara->gun_type, lara->gun_status);
         return;
     }
