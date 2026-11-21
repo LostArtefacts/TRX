@@ -3787,6 +3787,9 @@
         "sliding_pillar": {
             "name": "Pilastro Scorrevole",
         },
+        "small_beetle": {
+            "name": "\\{review}Piccolo coleottero|Scarabeo",
+        },
         "small_medipack_item": {
             "name": "Kit Medico Piccolo",
         },

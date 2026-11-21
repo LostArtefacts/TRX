@@ -3760,6 +3760,9 @@
         "sliding_pillar": {
             "name": "Pilier coulissant",
         },
+        "small_beetle": {
+            "name": "\\{review}Petit coléoptère|Scarabée",
+        },
         "small_scorpion": {
             "name": "\\{review}Petit scorpion",
         },

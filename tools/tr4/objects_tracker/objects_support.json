@@ -207,7 +207,7 @@
   "shotgun_item":             { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },
   "skeleton":                 { "status": "not implemented",       "todo": "port from SKELETON"                },
   "sliding_block":            { "status": "not implemented",       "todo": "port from SQUISHY_BLOCK1"          },
-  "small_beetle":             { "status": "not implemented",       "todo": "port from LITTLE_BEETLE"           },
+  "small_beetle":             { "status": "partially implemented", "todo": "flee a lit torch (no torch yet)"   },
   "small_medipack_item":      { "status": "fully implemented" },
   "small_scorpion":           { "status": "fully implemented" },
   "smashable_bike_floor":     { "status": "not implemented",       "todo": "port from SMASHABLE_BIKE_FLOOR"    },

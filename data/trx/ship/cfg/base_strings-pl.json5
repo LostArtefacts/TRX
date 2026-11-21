@@ -3760,6 +3760,9 @@
         "sliding_pillar": {
             "name": "Przesuwalny filar",
         },
+        "small_beetle": {
+            "name": "\\{review}Mały chrząszcz|Skarabeusz",
+        },
         "small_scorpion": {
             "name": "\\{review}Mały skorpion",
         },

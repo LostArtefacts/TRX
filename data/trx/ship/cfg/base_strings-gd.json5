@@ -3760,6 +3760,9 @@
         "sliding_pillar": {
             "name": "Colbh Sleamhnachaidh",
         },
+        "small_beetle": {
+            "name": "\\{review}Daol Bheag|Sgàrab",
+        },
         "small_scorpion": {
             "name": "Sgairp Bheag",
         },

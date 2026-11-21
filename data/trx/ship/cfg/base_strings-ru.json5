@@ -3760,6 +3760,9 @@
         "sliding_pillar": {
             "name": "Скользящая колонна",
         },
+        "small_beetle": {
+            "name": "\\{review}Маленький жук|Скарабей",
+        },
         "small_scorpion": {
             "name": "\\{review}Маленький скорпион",
         },
