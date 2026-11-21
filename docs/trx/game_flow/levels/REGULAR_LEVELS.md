@@ -155,8 +155,8 @@ Following are each of the properties available within a level.
     <td colspan="2">
       Marks the level as set on a moving train, like Desert Railroad, and
       gives the height of the ground beside the train in world units (256 is
-      one click). Enemies do not walk onto the ground, and henchmen that fall
-      onto it die. Omit for a level without a train.
+      one click). Enemies do not walk onto the ground, and Lara and henchmen
+      that fall onto it die. Omit for a level without a train.
     </td>
   </tr>
   <tr valign="top">
