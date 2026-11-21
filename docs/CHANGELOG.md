@@ -44,6 +44,7 @@
 - Added Bull Guardian control (TRX2006)
 - Added Lara turning translucent while the look key is held, as in the original game (TRX836)
 - Added the game's logo and copyright notice to the screen shown as the game starts (#6929 / TRX1810)
+- Added the torch, which Lara can pick up, carry, drop and throw (TRX475)
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)

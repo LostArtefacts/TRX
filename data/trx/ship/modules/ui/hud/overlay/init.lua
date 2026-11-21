@@ -39,6 +39,16 @@ function M.setup()
   photo_mode.setup()
   pickups.setup()
 
+  -- Reports whether Lara has a weapon ready. The torch takes the ready state
+  -- too, but the original game does not count it as a weapon.
+  local function is_armed(gun_status, gun)
+    if gun_status ~= trx.lara.GunState.READY then
+      return false
+    end
+    local weapon = trx.weapons[gun]
+    return weapon == nil or weapon.kind ~= trx.weapons.Kind.TORCH
+  end
+
   -- What more than one part reads. Everything here is a signal; a widget is
   -- given one rather than a value, so a frame in which none of them moved
   -- costs nothing.
@@ -46,7 +56,11 @@ function M.setup()
   local state = {
     ui_enabled = trx.signal.config("ui.enable_game_ui"),
     playing = trx.game.signals.is_playing,
-    armed = trx.lara.signals.gun_status:eq(trx.lara.GunState.READY),
+    armed = trx.signal.combine(
+      trx.lara.signals.gun_status,
+      trx.lara.signals.equipped_gun,
+      is_armed
+    ),
   }
 
   bars.setup(state)

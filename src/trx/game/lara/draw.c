@@ -51,6 +51,7 @@ static M_ARMS M_GetArms(const LARA_GUN_TYPE gun_type)
     case WEAPON_TYPE_RIFLE:
         return M_ARMS_RIFLE;
     case WEAPON_TYPE_FLARE:
+    case WEAPON_TYPE_TORCH:
         return M_ARMS_EMPTY;
     default:
         return M_ARMS_OTHER;
