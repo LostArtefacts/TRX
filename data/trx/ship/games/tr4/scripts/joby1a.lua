@@ -1,3 +1,13 @@
+local cutscenes = require("tr4.cutscenes")
+
+local DIG_CUTSCENE = 1
+local DIG_END_CUTSCENE = 2
+local DIG_FLIP_GROUP = 0
+
+local function hold_shovel()
+  trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_L, trx.lara.ExtraMesh.SHOVEL)
+end
+
 trx.events.on_game_start(function()
   trx.objects.switch_type_generic_1.properties.switch_mode =
     trx.items.SwitchMode.SHOVE
@@ -30,4 +40,23 @@ require("tr4.inv_setup").apply({
     rot_y = 90,
     rot_z = 90,
   },
+})
+
+cutscenes.register(DIG_CUTSCENE, {
+  on_start = hold_shovel,
+  on_end = function()
+    trx.rooms.flip(DIG_FLIP_GROUP)
+    trx.inventory.set_count(trx.catalog.objects.puzzle_item_1, 0)
+  end,
+  chain = DIG_END_CUTSCENE,
+})
+
+cutscenes.register(DIG_END_CUTSCENE, {
+  on_start = function()
+    hold_shovel()
+    trx.cutscenes.set_lara_return({ x = 51109, y = 256, z = 50995 }, 0)
+  end,
+  on_end = function()
+    trx.lara.clear_equipment(trx.lara.Mesh.HAND_L)
+  end,
 })
