@@ -413,8 +413,7 @@ bool Creature_SameZone(const CREATURE *const creature, ITEM *const target_item)
         return true;
     }
 
-    int16_t *const zone = Box_GetGroundZone(
-        Room_GetFlipStatus(), (creature->lot.setup.step >> 8) - 1);
+    const int16_t *const zone = Box_GetLotZone(&creature->lot);
     ITEM *const item = Item_Get(creature->item_num);
 
     const ROOM *room = Room_Get(item->room_num);
