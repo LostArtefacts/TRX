@@ -103,10 +103,11 @@ function M.setup()
     return primitive.sprite_count(object) > 0
   end
 
-  -- Returns the model the ring uses, or nil when the object has none.
+  -- Returns the model the ring uses, or the object's own model when it has no
+  -- inventory icon, or nil when there is no model to draw.
   local function model_of(object)
-    local icon = trx.inventory.icon_of(object)
-    if icon == nil or not trx.objects.get(icon).loaded then
+    local icon = trx.inventory.icon_of(object) or object
+    if not trx.objects.get(icon).loaded then
       return nil
     end
     if primitive.mesh_bounds(icon) == nil then
