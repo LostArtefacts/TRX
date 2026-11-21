@@ -1297,6 +1297,18 @@
     },
 
     {
+        "object_id": "burning_torch_item",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 300,
+        "base_rot_x": 16384,
+        "base_rot_y": -32768,
+    },
+
+    {
         "object_id": "puzzle_option_1_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
