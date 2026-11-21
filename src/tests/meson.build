@@ -12,7 +12,8 @@
 # Each test is one `unit_tests +=` stanza at the bottom of this file, naming the
 # engine sources it needs and nothing more. A link error is the signal that a
 # leaf module stopped being one, so the closures are listed by hand rather than
-# taken from a library of everything.
+# taken from a library of everything. Each source still compiles only once, and
+# each test links only the objects its list names.
 
 project(
   'TRX unit tests',
@@ -56,7 +57,7 @@ c_compiler.check_header('uthash.h', required: true)
 # in the mirror below - and the mirror holds test sources only, no headers.
 src_inc = include_directories('..')
 test_inc = include_directories('.')
-test_stubs = files('harness/stubs.c')
+test_stubs = 'harness/stubs.c'
 
 # The tests that read from the tree - the Lua declarations, the shipped config -
 # are two levels up from this project.
@@ -2876,6 +2877,17 @@ unit_tests += {
   ],
 }
 
+# Compiles each source once for all the tests that list it. Tests that build
+# with the same arguments and dependencies form a group, and each group
+# compiles the union of their sources into one library. A test links the
+# objects of its own list only, never the whole library, so a source missing
+# from the list is still a link error. The objects link in the order of the
+# list, and that order decides which of two weak definitions of a symbol wins.
+resolved = []
+group_keys = []
+group_sources = {}
+group_args = {}
+group_deps = {}
 foreach spec : unit_tests
   name = spec['name']
   test_src = spec.get('src', [])
@@ -2891,40 +2903,88 @@ foreach spec : unit_tests
   endforeach
   test_engine += spec.get('engine', [])
 
-  sources = files(name + '.c')
+  paths = [name + '.c']
   if spec.get('stubs', true)
-    sources += test_stubs
+    paths += test_stubs
   endif
 # Bundles are listed side by side rather than nested, so two of them may name
 # the same source. Take it once: a target that lists one bundle too many
 # should be no harder to fix than deleting the bundle again.
-  seen = []
   foreach source : test_src
-    if source not in seen
-      seen += source
-      sources += files(source)
+    if source not in paths
+      paths += source
     endif
   endforeach
-  seen = []
   foreach source : test_engine
-    if source not in seen
-      seen += source
-      sources += files('..' / 'trx' / source)
+    path = '..' / 'trx' / source
+    if path not in paths
+      paths += path
     endif
   endforeach
 
+  # Groups by the dependencies that change how a source compiles. A library
+  # found by name, such as libm, adds only link arguments, so it does not
+  # count, and a dependency listed twice counts once.
+  compile_deps = []
+  dep_names = []
+  foreach dep : test_deps
+    if dep.type_name() != 'library' and dep.name() not in dep_names
+      compile_deps += dep.partial_dependency(compile_args: true, includes: true)
+      dep_names += dep.name()
+    endif
+  endforeach
+  group = ' '.join(test_args) + ' | ' + ' '.join(dep_names)
+  if group not in group_keys
+    group_keys += group
+    group_sources += {group: []}
+    group_args += {group: test_args}
+    group_deps += {group: compile_deps}
+  endif
+  group_paths = group_sources[group]
+  foreach path : paths
+    if path not in group_paths
+      group_paths += path
+    endif
+  endforeach
+  group_sources += {group: group_paths}
+
+  resolved += {
+    'name': name,
+    'group': group,
+    'paths': paths,
+    'deps': test_deps,
+    'runs': spec.get('runs', [{'suffix': '', 'env': []}]),
+  }
+endforeach
+
+group_libs = {}
+foreach group : group_keys
+  group_libs += {
+    group: static_library(
+      'unit_group_@0@'.format(group_libs.keys().length()),
+      group_sources[group],
+      include_directories: [src_inc, test_inc],
+      dependencies: group_deps[group],
+      c_args: group_args[group],
+      pic: false,
+      build_by_default: false,
+    ),
+  }
+endforeach
+
+foreach spec : resolved
+  name = spec['name']
+  group = spec['group']
   test_id = '.'.join(name.split('/'))
   exe = executable(
     test_id,
-    sources,
-    include_directories: [src_inc, test_inc],
-    dependencies: test_deps,
-    c_args: test_args,
+    objects: group_libs[group].extract_objects(spec['paths']),
+    dependencies: spec['deps'],
     build_by_default: false,
   )
   # Runs a test once for each entry in `runs`. A module reads the game
   # version once per process, so each game needs a run of its own.
-  foreach run : spec.get('runs', [{'suffix': '', 'env': []}])
+  foreach run : spec['runs']
     test(
       test_id + run['suffix'],
       exe,
