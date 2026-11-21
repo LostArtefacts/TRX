@@ -4031,6 +4031,9 @@
         "springboard": {
             "name": "Springboard",
         },
+        "sprinkler": {
+            "name": "Sprinkler",
+        },
         "steam_emitter": {
             "name": "Steam Emitter",
         },

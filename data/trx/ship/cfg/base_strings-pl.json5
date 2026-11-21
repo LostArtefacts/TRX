@@ -3878,6 +3878,9 @@
         "springboard": {
             "name": "Trampolina",
         },
+        "sprinkler": {
+            "name": "\\{review}Zraszacz",
+        },
         "steam_emitter": {
             "name": "Emiter pary",
         },

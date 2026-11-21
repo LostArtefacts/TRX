@@ -3908,6 +3908,9 @@
         "springboard": {
             "name": "\\{review}Трамплін",
         },
+        "sprinkler": {
+            "name": "\\{review}Розбризкувач",
+        },
         "steam_emitter": {
             "name": "\\{review}Джерело пари",
         },

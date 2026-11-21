@@ -3878,6 +3878,9 @@
         "springboard": {
             "name": "\\{review}Прыжковая доска",
         },
+        "sprinkler": {
+            "name": "\\{review}Разбрызгиватель",
+        },
         "steam_emitter": {
             "name": "\\{review}Паровой излучатель",
         },

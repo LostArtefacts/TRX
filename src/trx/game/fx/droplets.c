@@ -4,6 +4,8 @@
 // underwater and drained here as droplets spawn. Not to be confused with
 // fx/water_particles.c, which is the TR3 residue drifting around Lara
 // while she is submerged.
+#include <trx/game/fx/droplets.h>
+
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
@@ -68,6 +70,21 @@ static M_DROPLET *M_GetFree(void)
     return best;
 }
 
+static void M_Add(
+    const XYZ_32 pos, const int16_t room_num, const RGB_888 color,
+    const int16_t y_vel, const uint8_t gravity, const uint8_t life)
+{
+    M_DROPLET *const droplet = M_GetFree();
+    droplet->on = true;
+    droplet->pos = pos;
+    droplet->prev_pos = pos;
+    droplet->color = color;
+    droplet->y_vel = y_vel;
+    droplet->gravity = gravity;
+    droplet->life = life;
+    droplet->room_num = room_num;
+}
+
 static void M_UpdateWetness(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -120,19 +137,15 @@ static void M_TriggerLaraDrips(void)
             return;
         }
 
-        M_DROPLET *const droplet = M_GetFree();
-        droplet->on = true;
-        droplet->pos = pos;
-        droplet->prev_pos = pos;
-        droplet->color = (RGB_888) {
+        const RGB_888 color = {
             .r = (Random_GetDraw() & 7) + 16,
             .g = (Random_GetDraw() & 7) + 24,
             .b = (Random_GetDraw() & 7) + 32,
         };
-        droplet->y_vel = (Random_GetDraw() & 0x1F) + 32;
-        droplet->gravity = (Random_GetDraw() & 0x1F) + 32;
-        droplet->life = (Random_GetDraw() & 0x1F) + 16;
-        droplet->room_num = lara_item->room_num;
+        const int16_t y_vel = (Random_GetDraw() & 0x1F) + 32;
+        const uint8_t gravity = (Random_GetDraw() & 0x1F) + 32;
+        const uint8_t life = (Random_GetDraw() & 0x1F) + 16;
+        M_Add(pos, lara_item->room_num, color, y_vel, gravity, life);
         lara->wet[mesh] -= M_WET_DECAY;
     }
 }
@@ -198,6 +211,23 @@ static void M_Control(void)
     }
 }
 
+// Returns the colour four times as bright as the stored one, halved shift
+// times. Channels that pass 255 carry their high bits into the next channel,
+// as in TR4, which turns the bright drops of a sprinkler red.
+static RGBA_8888 M_GetDrawColor(const RGB_888 color, const int32_t shift)
+{
+    const uint32_t r = ((uint32_t)color.r << 2) >> shift;
+    const uint32_t g = ((uint32_t)color.g << 2) >> shift;
+    const uint32_t b = ((uint32_t)color.b << 2) >> shift;
+    const uint32_t packed = b | (g << 8) | (r << 16);
+    return (RGBA_8888) {
+        .r = (packed >> 16) & 0xFF,
+        .g = (packed >> 8) & 0xFF,
+        .b = packed & 0xFF,
+        .a = 255,
+    };
+}
+
 static void M_Draw(void)
 {
     if (!M_IsEnabled()) {
@@ -231,11 +261,8 @@ static void M_Draw(void)
             tail.z -= wind.z >> 1;
         }
 
-        const uint8_t r = droplet->color.r << 2;
-        const uint8_t g = droplet->color.g << 2;
-        const uint8_t b = droplet->color.b << 2;
-        const RGBA_8888 head_color = { r, g, b, 255 };
-        const RGBA_8888 tail_color = { r >> 1, g >> 1, b >> 1, 255 };
+        const RGBA_8888 head_color = M_GetDrawColor(droplet->color, 0);
+        const RGBA_8888 tail_color = M_GetDrawColor(droplet->color, 1);
         OutputSource_PolyFX_StageLineSegment(
             tail, tail_color, head, head_color, 1.0f, DRAW_BLEND_ADD);
     }
@@ -293,6 +320,15 @@ static RESULT M_Load(JSON_READ_IO *const io)
 
     MUST(JSON_POP(io));
     return OK;
+}
+
+void FX_Droplet_Create(
+    const XYZ_32 pos, const int16_t room_num, const RGB_888 color,
+    const int16_t y_vel, const uint8_t gravity, const uint8_t life)
+{
+    if (M_IsEnabled()) {
+        M_Add(pos, room_num, color, y_vel, gravity, life);
+    }
 }
 
 static const FX_MODULE m_Module = {

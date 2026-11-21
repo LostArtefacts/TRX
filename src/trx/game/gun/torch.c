@@ -75,6 +75,11 @@ static const OBJECT_BOUNDS m_FireBounds = {
 
 static int32_t m_FlameCount = 0;
 
+static bool M_IsSprinkler(const int32_t item_num)
+{
+    return item_num != NO_ITEM && Item_Get(item_num)->object_id == O_SPRINKLER;
+}
+
 static void M_SetArm(const M_ANIM anim_idx, const int16_t frame_num)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -214,7 +219,7 @@ static void M_ControlArm(void)
 
     case M_ARM_LIGHT:
         if (lara_item->current_anim_state != LS(LS_CONTROLLED)) {
-            lara->lit_torch = true;
+            lara->lit_torch = !M_IsSprinkler(lara->interact_target.item_num);
             lara->flare.control = true;
             lara->left_arm.lock = M_ARM_HOLD;
             M_SetArm(M_ANIM_HOLD, 0);
@@ -270,7 +275,7 @@ static void M_DrawMeshes(const LARA_GUN_TYPE gun_type)
 }
 
 // Whether the fire burns, which the torch either takes its flame from or
-// gives its flame to.
+// gives its flame to, or whether the sprinkler runs.
 static bool M_IsFireLit(const ITEM *const item)
 {
     return item->is_simulated && Item_IsTriggerActiveRO(item);
@@ -297,10 +302,17 @@ static void M_StartLighting(const int16_t item_num, ITEM *const lara_item)
     if (item->object_id == O_FLAME_EMITTER_TR4_WALL) {
         bounds.shift.min.z = -600;
         bounds.shift.max.z = +600;
+    } else if (item->object_id == O_SPRINKLER) {
+        bounds.shift.min.z = -384;
+        bounds.shift.max.z = 0;
     }
     if (Lara_TestPosition(item, &bounds)) {
-        const int32_t height = ABS(lara_item->pos.y - item->pos.y) >> 8;
-        Item_SwitchToAnim(lara_item, LA(m_LightAnims[MIN(height, 4)]), 0);
+        if (item->object_id == O_SPRINKLER) {
+            Item_SwitchToAnim(lara_item, LA(LA_TORCH_LIGHT_4), 0);
+        } else {
+            const int32_t height = ABS(lara_item->pos.y - item->pos.y) >> 8;
+            Item_SwitchToAnim(lara_item, LA(m_LightAnims[MIN(height, 4)]), 0);
+        }
         lara_item->current_anim_state = LS(LS_CONTROLLED);
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->flare.control = false;
@@ -311,16 +323,21 @@ static void M_StartLighting(const int16_t item_num, ITEM *const lara_item)
 }
 
 // Lights the fire from the torch at the moment Lara's animation holds the
-// torch into it, and sets off the triggers beneath the fire.
+// torch into it, and sets off the triggers beneath the fire. A sprinkler
+// starts instead and puts the torch out.
 static void M_LightFire(const int16_t item_num, const ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->interact_target.item_num != item_num || M_IsFireLit(item)
         || lara_item->current_anim_state != LS(LS_CONTROLLED)
         || !Lara_HasAnimation(m_LightAnims)
         || Item_GetRelativeFrame(lara_item) != M_LIGHT_FRAME) {
         return;
+    }
+
+    if (item->object_id == O_SPRINKLER) {
+        lara->lit_torch = false;
     }
 
     Room_TestTriggersEx(item, true);
