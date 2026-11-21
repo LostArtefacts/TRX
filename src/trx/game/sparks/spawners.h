@@ -21,6 +21,11 @@ void Sparks_TriggerUnderwaterExplosionAt(XYZ_32 pos, int16_t room_num);
 void Sparks_TriggerExplosionBubble(XYZ_32 pos, int16_t room_num);
 void Sparks_TriggerExplosionSparks(
     XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num);
+// Starts one of the smaller explosions that an explosion spark releases as it
+// burns. Unlike Sparks_TriggerExplosionSparks, it is never reflected in a
+// mirror, because the reflected spark releases its own.
+void Sparks_TriggerChildExplosion(
+    XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num);
 void Sparks_TriggerExplosionSmoke(XYZ_32 pos, bool uw, int16_t room_num);
 // Releases a puff of the bright smoke that a TR4 flash grenade gives off, or
 // a burst of bubbles under water.
