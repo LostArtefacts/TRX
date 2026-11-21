@@ -3764,6 +3764,18 @@
         "sentry_gun": {
             "name": "\\{review}Автоматична турель",
         },
+        "sequence_door": {
+            "name": "\\{review}Двері послідовності",
+        },
+        "sequence_switch_1": {
+            "name": "\\{review}Перемикач послідовності 1",
+        },
+        "sequence_switch_2": {
+            "name": "\\{review}Перемикач послідовності 2",
+        },
+        "sequence_switch_3": {
+            "name": "\\{review}Перемикач послідовності 3",
+        },
         "seth_sarcophagus": {
             "name": "\\{review}Саркофаг Сета",
         },

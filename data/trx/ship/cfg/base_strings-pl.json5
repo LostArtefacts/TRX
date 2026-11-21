@@ -3737,6 +3737,18 @@
         "sentry_gun": {
             "name": "Działko automatyczne",
         },
+        "sequence_door": {
+            "name": "\\{review}Drzwi sekwencyjne",
+        },
+        "sequence_switch_1": {
+            "name": "\\{review}Przełącznik sekwencyjny 1",
+        },
+        "sequence_switch_2": {
+            "name": "\\{review}Przełącznik sekwencyjny 2",
+        },
+        "sequence_switch_3": {
+            "name": "\\{review}Przełącznik sekwencyjny 3",
+        },
         "seth_sarcophagus": {
             "name": "\\{review}Sarkofag Setha",
         },

@@ -3882,6 +3882,18 @@
         "sentry_gun": {
             "name": "Sentry Gun",
         },
+        "sequence_door": {
+            "name": "Sequence Door",
+        },
+        "sequence_switch_1": {
+            "name": "Sequence Switch 1",
+        },
+        "sequence_switch_2": {
+            "name": "Sequence Switch 2",
+        },
+        "sequence_switch_3": {
+            "name": "Sequence Switch 3",
+        },
         "seth_sarcophagus": {
             "name": "Seth Sarcophagus",
         },
