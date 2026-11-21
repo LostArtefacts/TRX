@@ -4015,6 +4015,9 @@
         "tropical_fish": {
             "name": "\\{review}Тропічна риба",
         },
+        "turn_switch": {
+            "name": "\\{review}Поворотний перемикач",
+        },
         "twinkle": {
             "name": "\\{review}Іскри",
         },

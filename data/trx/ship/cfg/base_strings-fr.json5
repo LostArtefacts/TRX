@@ -3985,6 +3985,9 @@
         "tropical_fish": {
             "name": "\\{review}Poisson tropical",
         },
+        "turn_switch": {
+            "name": "\\{review}Interrupteur rotatif",
+        },
         "twinkle": {
             "name": "\\{review}Paillettes",
         },

@@ -3985,6 +3985,9 @@
         "tropical_fish": {
             "name": "\\{review}Tropischer Fisch",
         },
+        "turn_switch": {
+            "name": "\\{review}Drehschalter",
+        },
         "twinkle": {
             "name": "Funken",
         },

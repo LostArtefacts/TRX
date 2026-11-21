@@ -234,7 +234,7 @@
   "trapdoor_2":               { "status": "fully implemented" },
   "trapdoor_3":               { "status": "fully implemented" },
   "trigger_gate":             { "status": "fully implemented" },
-  "turn_switch":              { "status": "not implemented",       "todo": "port from TURN_SWITCH"             },
+  "turn_switch":              { "status": "fully implemented" },
   "undead_mummy":             { "status": "fully implemented" },
   "underwater_door":          { "status": "fully implemented" },
   "uzis_ammo_item":           { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },
