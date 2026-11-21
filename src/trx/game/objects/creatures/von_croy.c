@@ -620,11 +620,6 @@ static void M_RaceControl(const int16_t item_num)
     Creature_ProbeAhead(item, M_STEP_AHEAD, &probe);
 
     Creature_GetAITarget(creature);
-    // TR4's guides pick their marker by the OCB rather than by the tag the
-    // generic search matches on, so the pick is made again here.
-    if ((item->ai_bits & AI_FOLLOW) != 0) {
-        Creature_FindAITargetObject(creature, O_AI_FOLLOW, p->waypoint);
-    }
 
     ITEM *const enemy = creature->enemy;
 
@@ -1160,11 +1155,6 @@ static void M_GuideControl(const int16_t item_num)
 
     item->ai_bits = AI_FOLLOW;
     Creature_GetAITarget(creature);
-    // TR4's guides pick their marker by the OCB rather than by the tag the
-    // generic search matches on, so the pick is made again here.
-    if ((item->ai_bits & AI_FOLLOW) != 0) {
-        Creature_FindAITargetObject(creature, O_AI_FOLLOW, p->waypoint);
-    }
     ITEM *target = nullptr;
 
     if (Waypoint_Get() <= p->waypoint) {
@@ -1891,6 +1881,7 @@ static void M_Control(const int16_t item_num)
     if (p->waypoint == M_WAYPOINT_UNSET) {
         p->waypoint = item->ai_ocb;
     }
+    item->ai_ocb = p->waypoint;
 
     if (p->guides_lara) {
         M_GuideControl(item_num);
