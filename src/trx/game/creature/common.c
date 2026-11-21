@@ -1828,6 +1828,11 @@ void Creature_GetAITarget(CREATURE *const creature)
                 item->ai_bits |= AI_MODIFY;
             }
         } else if (!creature->patrol_2 && enemy_object_id != O_AI_PATROL_1) {
+            if (g_TRVersion >= 4) {
+                Creature_FindAITargetObject(
+                    creature, O_AI_PATROL_1, item->ai_ocb);
+                return;
+            }
             for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
                 ITEM *const target = Item_Get(i);
 
@@ -1840,6 +1845,11 @@ void Creature_GetAITarget(CREATURE *const creature)
                 }
             }
         } else if (creature->patrol_2 && enemy_object_id != O_AI_PATROL_2) {
+            if (g_TRVersion >= 4) {
+                Creature_FindAITargetObject(
+                    creature, O_AI_PATROL_2, item->ai_ocb);
+                return;
+            }
             for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
                 ITEM *const target = Item_Get(i);
 
@@ -1862,13 +1872,18 @@ void Creature_GetAITarget(CREATURE *const creature)
         if (g_TRVersion >= 4 || (ai_bits & AI_MODIFY) != 0
             || creature->hurt_by_lara) {
             if (enemy_object_id != O_AI_AMBUSH) {
+                if (g_TRVersion >= 4) {
+                    Creature_FindAITargetObject(
+                        creature, O_AI_AMBUSH, item->ai_ocb);
+                    return;
+                }
                 for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
                     ITEM *const target = Item_Get(i);
 
                     if (target->object_id == O_AI_AMBUSH
                         && target->room_num != NO_ROOM
                         && Creature_SameZone(creature, target)
-                        && (g_TRVersion >= 4 || target->rot.y == item->ai_tag
+                        && (target->rot.y == item->ai_tag
                             || item->object_id == O_MONKEY)) {
                         creature->enemy = target;
                         return;
@@ -1905,6 +1920,11 @@ void Creature_GetAITarget(CREATURE *const creature)
         } else if (item->hit_status) {
             item->ai_bits &= ~AI_FOLLOW;
         } else if (enemy_object_id != O_AI_FOLLOW) {
+            if (g_TRVersion >= 4) {
+                Creature_FindAITargetObject(
+                    creature, O_AI_FOLLOW, item->ai_ocb);
+                return;
+            }
             for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
                 ITEM *const target = Item_Get(i);
 
