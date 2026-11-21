@@ -5,6 +5,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_LF_USE_KEYHOLE 104
 
@@ -18,6 +19,12 @@ static XYZ_32 m_ControlledPosition = {
     .x = 0,
     .y = 0,
     .z = WALL_L / 2 - LARA_RADIUS * 2,
+};
+
+static XYZ_32 m_ControlledPositionTR4 = {
+    .x = 0,
+    .y = 0,
+    .z = WALL_L / 2 - LARA_RADIUS - 50,
 };
 
 static const OBJECT_BOUNDS m_DefaultBounds = {
@@ -106,7 +113,10 @@ static void M_CollisionControlled(
                 return;
             }
 
-            if (Lara_MovePosition(item, &m_ControlledPosition)) {
+            const XYZ_32 *const position = g_TRVersion == 4
+                ? &m_ControlledPositionTR4
+                : &m_ControlledPosition;
+            if (Lara_MovePosition(item, position)) {
                 Item_SwitchToAnim(lara_item, LA(LA_USE_KEY), 0);
                 lara_item->current_anim_state = LS(LS_USE_KEY);
                 Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
