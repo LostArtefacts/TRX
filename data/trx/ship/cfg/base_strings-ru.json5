@@ -3985,6 +3985,9 @@
         "tropical_fish": {
             "name": "\\{review}Тропическая рыба",
         },
+        "turn_switch": {
+            "name": "\\{review}Поворотный рычаг",
+        },
         "twinkle": {
             "name": "Искры",
         },

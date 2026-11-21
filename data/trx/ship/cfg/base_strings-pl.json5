@@ -3985,6 +3985,9 @@
         "tropical_fish": {
             "name": "Rybki",
         },
+        "turn_switch": {
+            "name": "\\{review}Przełącznik obrotowy",
+        },
         "twinkle": {
             "name": "Iskierki",
         },
