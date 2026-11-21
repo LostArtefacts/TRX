@@ -18,6 +18,7 @@
 #include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/switch_sequence.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -28,6 +29,8 @@
 #include <trx/game/savegame/identity.h>
 #include <trx/game/waypoint.h>
 #include <trx/version.h>
+
+#include <string.h>
 
 static void M_WriteXYZ32(
     JSON_WRITE_IO *const io, const char *const key, const XYZ_32 source)
@@ -404,6 +407,26 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "distance_travelled", resume->stats.distance_travelled);
     JSONW_WRITE(io, "medipacks_used", resume->stats.medipacks_used);
     JSONW_WRITE(io, "death_count", resume->stats.death_count);
+}
+
+static void M_WriteSwitchSequence(JSON_WRITE_IO *const io)
+{
+    const SWITCH_SEQUENCE_STATE *const state = SwitchSequence_GetState();
+    const SWITCH_SEQUENCE_STATE initial = {};
+    if (memcmp(state, &initial, sizeof(initial)) == 0) {
+        return;
+    }
+
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE(io, "step", state->step);
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < SWITCH_SEQUENCE_LENGTH; i++) {
+        JSONW_PUSH_VALUE(io, state->entries[i]);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "entries");
+    JSONW_WRITE(io, "used_mask", state->used_mask);
+    JSONW_POP_AND_SET(io, "switch_sequence");
 }
 
 static uint16_t M_PackMusicTrackFlags(const MUSIC_SLOT track_id)
@@ -814,6 +837,7 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
         }
     }
     JSONW_POP_AND_SET_NZ(io, "spent_ai_markers");
+    M_WriteSwitchSequence(io);
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");

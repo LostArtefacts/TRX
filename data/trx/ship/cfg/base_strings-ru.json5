@@ -3715,6 +3715,18 @@
         "sentry_gun": {
             "name": "\\{review}Робот-страж",
         },
+        "sequence_door": {
+            "name": "\\{review}Дверь последовательности",
+        },
+        "sequence_switch_1": {
+            "name": "\\{review}Переключатель последовательности 1",
+        },
+        "sequence_switch_2": {
+            "name": "\\{review}Переключатель последовательности 2",
+        },
+        "sequence_switch_3": {
+            "name": "\\{review}Переключатель последовательности 3",
+        },
         "seth_sarcophagus": {
             "name": "\\{review}Саркофаг Сета",
         },

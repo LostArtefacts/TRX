@@ -22,6 +22,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/general/flare_item.h>
+#include <trx/game/objects/general/switch_sequence.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
@@ -1433,6 +1434,32 @@ static RESULT M_LoadWaypoints(JSON_READ_IO *const io)
     return OK;
 }
 
+static RESULT M_LoadSwitchSequence(JSON_READ_IO *const io)
+{
+    // Introduced in TRX 1.13
+    SwitchSequence_Reset();
+    if (!JSON_ReadIO_HasKey(io, "switch_sequence")) {
+        return OK;
+    }
+
+    SWITCH_SEQUENCE_STATE state = {};
+    MUST(JSON_PUSH(io, "switch_sequence"));
+    MUST(JSON_READ_OPT(io, "step", &state.step));
+    MUST(JSON_READ_OPT(io, "used_mask", &state.used_mask));
+    if (JSON_ReadIO_HasKey(io, "entries")) {
+        MUST(JSON_PUSH(io, "entries"));
+        const int32_t count = MIN(JSON_ARRAY_LEN(io), SWITCH_SEQUENCE_LENGTH);
+        for (int32_t i = 0; i < count; i++) {
+            MUST(JSON_READ_A(io, i, &state.entries[i]));
+        }
+        MUST(JSON_POP(io));
+    }
+    MUST(JSON_POP(io));
+
+    SwitchSequence_SetState(&state);
+    return OK;
+}
+
 RESULT SG_File_LoadInventory(JSON_READ_IO *const io)
 {
     MUST(JSON_PUSH(io, "inventory"));
@@ -1761,6 +1788,8 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
     MUST(M_LoadCutscenesPlayed(io));
 
     MUST(M_LoadWaypoints(io));
+
+    MUST(M_LoadSwitchSequence(io));
 
     {
         // Introduced in TRX 1.11

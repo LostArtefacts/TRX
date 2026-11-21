@@ -3715,6 +3715,18 @@
         "sentry_gun": {
             "name": "Gun Sentry Robot",
         },
+        "sequence_door": {
+            "name": "\\{review}Doras sreatha",
+        },
+        "sequence_switch_1": {
+            "name": "\\{review}Suids sreatha 1",
+        },
+        "sequence_switch_2": {
+            "name": "\\{review}Suids sreatha 2",
+        },
+        "sequence_switch_3": {
+            "name": "\\{review}Suids sreatha 3",
+        },
         "seth_sarcophagus": {
             "name": "Sarcophagus Seth",
         },
