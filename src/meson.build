@@ -792,6 +792,7 @@ common_sources = [
   'trx/game/objects/general/scion4.c',
   'trx/game/objects/general/scion_holder.c',
   'trx/game/objects/general/shoal.c',
+  'trx/game/objects/general/small_beetle.c',
   'trx/game/objects/general/smashable.c',
   'trx/game/objects/general/smoke_emitter.c',
   'trx/game/objects/general/sphere_of_doom.c',

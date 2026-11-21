@@ -3922,6 +3922,9 @@
         "sliding_pillar": {
             "name": "Sliding Pillar",
         },
+        "small_beetle": {
+            "name": "Small Beetle|Scarab",
+        },
         "small_medipack_item": {
             "name": "Small Medipack",
         },

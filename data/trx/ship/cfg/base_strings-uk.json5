@@ -3800,6 +3800,9 @@
         "sliding_pillar": {
             "name": "\\{review}Ковзна колона",
         },
+        "small_beetle": {
+            "name": "\\{review}Маленький жук|Скарабей",
+        },
         "small_medipack_item": {
             "name": "\\{review}Мала аптечка",
         },
