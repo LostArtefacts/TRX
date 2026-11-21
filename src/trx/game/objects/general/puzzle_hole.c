@@ -53,12 +53,6 @@ static const OBJECT_BOUNDS m_ControlledBounds = {
     },
 };
 
-static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
-{
-    return g_Config.gameplay.enable_walk_to_items ? m_ControlledBounds
-                                                  : m_DefaultBounds;
-}
-
 static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
 {
     OBJECT_BOUNDS bounds = m_ControlledBounds;
@@ -70,6 +64,12 @@ static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
         bounds.shift.max.z = frame->max.z + STEP_L;
     }
     return bounds;
+}
+
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
+{
+    return g_Config.gameplay.enable_walk_to_items ? M_GetControlledBounds(item)
+                                                  : m_DefaultBounds;
 }
 
 static XYZ_32 M_GetControlledPosition(const ITEM *const item)
