@@ -117,6 +117,10 @@ static void M_Bubbles(ITEM *const item)
 
     for (int32_t i = 0; i < count; i++) {
         Spawn_Bubble(&offset, lara_item->room_num);
+        if (Room_IsMirror(lara_item->room_num)) {
+            const XYZ_32 reflection = Room_ReflectInMirror(offset);
+            Spawn_Bubble(&reflection, lara_item->room_num);
+        }
     }
 }
 
