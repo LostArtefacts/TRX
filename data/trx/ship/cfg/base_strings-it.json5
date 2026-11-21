@@ -4025,6 +4025,9 @@
         "tropical_fish": {
             "name": "Pesci Tropicali",
         },
+        "turn_switch": {
+            "name": "\\{review}Interruttore girevole",
+        },
         "twinkle": {
             "name": "Scintille",
         },

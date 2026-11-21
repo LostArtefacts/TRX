@@ -224,6 +224,22 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     Lara_Col_GetInfo(item, coll);
 }
 
+static void M_TurnSwitch(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->pos.x == coll->old_pos.x && item->pos.z == coll->old_pos.z) {
+        return;
+    }
+
+    if (Item_TestAnimEqual(item, LA(LA_TURNSWITCH_PUSH_LEFT_CONTINUE))) {
+        item->rot.y -= DEG_90;
+        Item_SwitchToAnim(item, LA(LA_TURNSWITCH_PUSH_LEFT_END), 0);
+    }
+    if (Item_TestAnimEqual(item, LA(LA_TURNSWITCH_PUSH_RIGHT_CONTINUE))) {
+        item->rot.y += DEG_90;
+        Item_SwitchToAnim(item, LA(LA_TURNSWITCH_PUSH_RIGHT_END), 0);
+    }
+}
+
 static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
@@ -1029,6 +1045,7 @@ REGISTER_LARA_COL(LS_WATER_OUT,     M_Default)
 REGISTER_LARA_COL(LS_PULL_UP,       M_PullUp)
 REGISTER_LARA_COL(LS_CONTROLLED,    M_Default)
 REGISTER_LARA_COL(LS_COG_SWITCH,    M_Default)
+REGISTER_LARA_COL(LS_TURN_SWITCH,   M_TurnSwitch)
 REGISTER_LARA_COL(LS_PUSH_DOORS,    M_Default)
 REGISTER_LARA_COL(LS_LIFT_TRAPDOOR, M_Default)
 REGISTER_LARA_COL(LS_PULL_TRAPDOOR, M_Default)

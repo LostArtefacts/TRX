@@ -3944,6 +3944,9 @@
         "tropical_fish": {
             "name": "Pez tropical",
         },
+        "turn_switch": {
+            "name": "\\{review}Interruptor giratorio",
+        },
         "twinkle": {
             "name": "Destellos",
         },
