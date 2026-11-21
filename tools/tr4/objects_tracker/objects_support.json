@@ -219,7 +219,7 @@
   "soldier_1":                { "status": "not implemented",       "todo": "port from TROOPS"                  },
   "solider_2":                { "status": "not implemented",       "todo": "port from SAS"                     },
   "spike_ball":               { "status": "fully implemented" },
-  "sprinkler":                { "status": "not implemented",       "todo": "port from SPRINKLER"               },
+  "sprinkler":                { "status": "fully implemented" },
   "steam_emitter":            { "status": "partially implemented", "todo": "check 100% parity"                 },
   "swinging_chain":           { "status": "not implemented",       "todo": "port from CHAIN"                   },
   "switch_type_crowbar":      { "status": "fully implemented" },

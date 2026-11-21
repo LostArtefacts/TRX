@@ -3878,6 +3878,9 @@
         "springboard": {
             "name": "Springboard",
         },
+        "sprinkler": {
+            "name": "\\{review}Sprinkler",
+        },
         "steam_emitter": {
             "name": "\\{review}Dampfgenerator",
         },

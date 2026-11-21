@@ -3878,6 +3878,9 @@
         "springboard": {
             "name": "Bòrd-flosgaidh",
         },
+        "sprinkler": {
+            "name": "\\{review}Spùtadair",
+        },
         "steam_emitter": {
             "name": "Sgaoileadair Steimhe",
         },

@@ -3878,6 +3878,9 @@
         "springboard": {
             "name": "\\{review}Tremplin",
         },
+        "sprinkler": {
+            "name": "\\{review}Arroseur",
+        },
         "steam_emitter": {
             "name": "\\{review}Émetteur de vapeur",
         },

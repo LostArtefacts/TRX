@@ -801,6 +801,7 @@ common_sources = [
   'trx/game/objects/general/smashable.c',
   'trx/game/objects/general/smoke_emitter.c',
   'trx/game/objects/general/sphere_of_doom.c',
+  'trx/game/objects/general/sprinkler.c',
   'trx/game/objects/general/switch.c',
   'trx/game/objects/general/switch_sequence.c',
   'trx/game/objects/general/teleporter.c',
