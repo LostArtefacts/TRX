@@ -171,12 +171,21 @@ int16_t *Box_GetGroundZone(const bool flip_status, const int32_t zone_idx)
     return m_GroundZone[zone_idx][flip_status];
 }
 
+int16_t *Box_GetSetupZone(const LOT_SETUP *const setup, const bool flip_status)
+{
+    if (g_TRVersion >= 4) {
+        return setup->zone == LOT_ZONE_FLYER
+            ? Box_GetFlyZone(flip_status)
+            : Box_GetGroundZone(flip_status, setup->zone);
+    }
+    return setup->fly != 0
+        ? Box_GetFlyZone(flip_status)
+        : Box_GetGroundZone(flip_status, BOX_ZONE(setup->step));
+}
+
 int16_t *Box_GetLotZone(const LOT_INFO *const lot)
 {
-    const bool flip_status = Room_GetFlipStatus();
-    return lot->setup.fly != 0
-        ? Box_GetFlyZone(flip_status)
-        : Box_GetGroundZone(flip_status, BOX_ZONE(lot->setup.step));
+    return Box_GetSetupZone(&lot->setup, Room_GetFlipStatus());
 }
 
 bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
