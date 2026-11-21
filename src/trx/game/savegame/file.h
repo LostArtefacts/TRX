@@ -6,6 +6,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/result.h>
+#include <trx/game/game_flow/types.h>
 #include <trx/game/savegame/types.h>
 
 #include <stdint.h>
@@ -34,6 +35,8 @@ RESULT SG_File_LoadResumeInfoList(JSON_READ_IO *io);
 RESULT SG_File_LoadRules(JSON_READ_IO *io);
 RESULT SG_File_LoadMisc(JSON_READ_IO *io);
 RESULT SG_File_LoadLevelEndMisc(JSON_READ_IO *io);
+// Puts the current level back in a state SG_File_DumpLevelState wrote.
+RESULT SG_File_LoadLevelState(JSON_READ_IO *io, const GF_LEVEL *level);
 // End of reader functions =====================================================
 
 // Start of writer functions ===================================================
@@ -49,6 +52,11 @@ void SG_File_DumpResumeInfoList(JSON_WRITE_IO *io);
 void SG_File_DumpRules(JSON_WRITE_IO *io);
 void SG_File_DumpMisc(JSON_WRITE_IO *io);
 void SG_File_DumpLevelEndMisc(JSON_WRITE_IO *io);
+// Writes what the current level keeps for Lara's return: its own items, the
+// state of its rooms, cameras and music triggers, its ambient track, its
+// statistics and its level store. Lara and the items spawned during play are
+// left out.
+void SG_File_DumpLevelState(JSON_WRITE_IO *io, const GF_LEVEL *level);
 // End of writer functions =====================================================
 
 #pragma pack(push, 1)

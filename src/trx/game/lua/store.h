@@ -20,6 +20,11 @@ void LUA_Store_ClearGame(void);
 void LUA_Store_Dump(JSON_WRITE_IO *io);
 RESULT LUA_Store_Load(JSON_READ_IO *io);
 
+// Writes and reads the level store alone, as part of the state a level keeps
+// for Lara's return. A read with no store empties the level store.
+void LUA_Store_DumpLevel(JSON_WRITE_IO *io);
+RESULT LUA_Store_LoadLevel(JSON_READ_IO *io);
+
 // Spelled out rather than taken from lua.h, which the save code does not build
 // against.
 typedef struct lua_State lua_State;

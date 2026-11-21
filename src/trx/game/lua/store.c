@@ -302,6 +302,28 @@ void LUA_Store_Dump(JSON_WRITE_IO *const io)
     JSONW_POP_AND_SET(io, "store");
 }
 
+void LUA_Store_DumpLevel(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_OBJECT(io);
+    JSON_OBJECT *const obj = JSON_WriteIO_GetCurrentObject(io);
+    JSON_ObjectAppend(obj, "level", M_DumpStore(m_LevelRef, "level"));
+    JSONW_POP_AND_SET(io, "store");
+}
+
+RESULT LUA_Store_LoadLevel(JSON_READ_IO *const io)
+{
+    if (!JSON_ReadIO_HasKey(io, "store")) {
+        LUA_Store_ClearLevel();
+        return OK;
+    }
+
+    MUST(JSON_PUSH(io, "store"));
+    const JSON_OBJECT *const obj = JSON_ReadIO_GetCurrentObject(io);
+    M_LoadStore(m_LevelRef, JSON_ObjectGetObject(obj, "level"));
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 RESULT LUA_Store_Load(JSON_READ_IO *const io)
 {
     // A save without a store section leaves both stores empty.
