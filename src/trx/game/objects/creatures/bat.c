@@ -1,10 +1,12 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/creatures/bat_tr4.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
+#include <trx/version.h>
 
 // clang-format off
 #define M_HIT_POINTS 1
@@ -132,6 +134,11 @@ static void M_Initialise(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
+        return;
+    }
+
+    if (g_TRVersion == 4) {
+        Bat_TR4_Setup(obj);
         return;
     }
 
