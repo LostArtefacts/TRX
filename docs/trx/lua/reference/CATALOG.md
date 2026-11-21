@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 890 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 895 names
 
     Every object TRX has a name for.
 
@@ -245,8 +245,9 @@ convert between the two.
     `SCION_ITEM_3`, `SCION_ITEM_4`, `SCION_OPTION`, `SECRET_1`,
     `SECRET_1_OPTION`, `SECRET_2`, `SECRET_2_OPTION`, `SECRET_3`,
     `SECRET_3_OPTION`, `SECURITY_GUARD`, `SECURITY_LASER_ALARM`,
-    `SECURITY_LASER_DEADLY`, `SECURITY_LASER_KILLER`, `SENTRY_GUN`,
-    `SEQUENCE_DOOR`, `SEQUENCE_SWITCH_1`, `SEQUENCE_SWITCH_2`,
+    `SECURITY_LASER_DEADLY`, `SECURITY_LASER_KILLER`, `SENET_ENEMY_PIECE`,
+    `SENET_PIECE_1`, `SENET_PIECE_2`, `SENET_PIECE_3`, `SENET_SPINNER`,
+    `SENTRY_GUN`, `SEQUENCE_DOOR`, `SEQUENCE_SWITCH_1`, `SEQUENCE_SWITCH_2`,
     `SEQUENCE_SWITCH_3`, `SETH_SARCOPHAGUS`, `SHADOW`, `SHARK`, `SHIVA`,
     `SHOTGUN_AMMO_2_ITEM`, `SHOTGUN_AMMO_2_OPTION`, `SHOTGUN_AMMO_ITEM`,
     `SHOTGUN_AMMO_OPTION`, `SHOTGUN_ITEM`, `SHOTGUN_OPTION`, `SHOTGUN_SHELL`,
@@ -287,7 +288,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 227 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 228 names
 
     Every sound sample TRX has a name for.
 
@@ -346,10 +347,10 @@ convert between the two.
     `SHIVA_SWORD_2`, `SHOCKWAVE`, `SHUTTERS_BREAK`, `SKATEBOARD_HIT`,
     `SKATEKID_SPEECH`, `SKIDOO_IDLE`, `SKIDOO_MOVING`, `SMALL_FAN_ON`,
     `SOPHIA_SUMMON`, `SOPHIA_SUMMON_NOT`, `SOPHIA_TAKE_HIT`, `SPANNER_CLUNK`,
-    `SPIDER_EXPLODE`, `SPIKES`, `SPIKE_WALL`, `STAGE_BACKDROP`,
-    `STAIRS_2_SLOPE_FX`, `STONE_DOOR_SLIDE`, `SWORD_RICOCHET`, `TARGET_HITS`,
-    `TARGET_SMASH`, `THUNDER`, `TORSO_HIT`, `TRAIN_LOOP`, `TRAPDOOR_OPEN`,
-    `TRIBOSS_TAKE_HIT`, `TRIBOSS_TURN_CHAIR`, `UNDERWATER`,
+    `SPIDER_EXPLODE`, `SPIKES`, `SPIKE_WALL`, `SPINNING_PUZZLE`,
+    `STAGE_BACKDROP`, `STAIRS_2_SLOPE_FX`, `STONE_DOOR_SLIDE`, `SWORD_RICOCHET`,
+    `TARGET_HITS`, `TARGET_SMASH`, `THUNDER`, `TORSO_HIT`, `TRAIN_LOOP`,
+    `TRAPDOOR_OPEN`, `TRIBOSS_TAKE_HIT`, `TRIBOSS_TURN_CHAIR`, `UNDERWATER`,
     `UNDERWATER_FAN_OFF`, `UNDERWATER_FAN_ON`, `UPV_HARPOON`, `UPV_LOOP`,
     `UPV_START`, `UPV_STOP`, `VEHICLE_HIT_OBJECT`, `WARRIOR_HOVER`,
     `WATERFALL_2`, `WATERFALL_BIG`, `WATERFALL_LOOP`, `WINSTON_CUPS`,

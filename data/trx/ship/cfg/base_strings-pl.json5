@@ -3734,6 +3734,21 @@
         "security_laser_killer": {
             "name": "Laser zabezpieczający (zabójczy)",
         },
+        "senet_enemy_piece": {
+            "name": "\\{review}Pionek przeciwnika w senet",
+        },
+        "senet_piece_1": {
+            "name": "\\{review}Pionek senet 1",
+        },
+        "senet_piece_2": {
+            "name": "\\{review}Pionek senet 2",
+        },
+        "senet_piece_3": {
+            "name": "\\{review}Pionek senet 3",
+        },
+        "senet_spinner": {
+            "name": "\\{review}Koło senet",
+        },
         "sentry_gun": {
             "name": "Działko automatyczne",
         },
