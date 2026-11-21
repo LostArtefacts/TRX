@@ -2527,6 +2527,9 @@
         "crocodile": {
             "name": "Krokodyl",
         },
+        "crocodile_tr4": {
+            "name": "\\{review}Krokodyl (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "\\{review}Bełty do kuszy",
         },

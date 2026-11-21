@@ -2527,6 +2527,9 @@
         "crocodile": {
             "name": "Crocadal|Crogall",
         },
+        "crocodile_tr4": {
+            "name": "\\{review}Crocadal (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "Boltaichean Cros-bhogha",
         },

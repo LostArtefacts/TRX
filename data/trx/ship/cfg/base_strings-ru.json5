@@ -2527,6 +2527,9 @@
         "crocodile": {
             "name": "Крокодил",
         },
+        "crocodile_tr4": {
+            "name": "\\{review}Крокодил (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "\\{review}Стрелы для арбалета",
         },

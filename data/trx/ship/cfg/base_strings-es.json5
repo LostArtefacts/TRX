@@ -2536,6 +2536,9 @@
         "crocodile": {
             "name": "Cocodrilo",
         },
+        "crocodile_tr4": {
+            "name": "\\{review}Cocodrilo (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "Pernos de ballesta",
         },
