@@ -281,7 +281,7 @@
             "path": "train.tr4",
             "music_track": 106,
             "lara_outfit": "tr4_classic",
-            // "train": true,
+            "train": true,
             "fog_start": 12.0,
             "fog_end": 24.0,
             "fog_color": "#D2B063",

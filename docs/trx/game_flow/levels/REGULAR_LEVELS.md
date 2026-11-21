@@ -150,6 +150,15 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>train</code></td>
+    <td>Boolean</td>
+    <td colspan="2">
+      Marks the level as set on a moving train, like Desert Railroad. Enemies
+      stay on the train and do not walk onto the ground beside it, and henchmen
+      that fall onto the ground die.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>death_tile</code></td>
     <td>String</td>
     <td colspan="2">

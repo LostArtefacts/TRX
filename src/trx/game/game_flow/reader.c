@@ -980,6 +980,7 @@ static RESULT M_LoadLevel(
         }
     }
     MUST(JSON_READ_D(io, "water_particles", &level->water_particles, false));
+    MUST(JSON_READ_D(io, "train", &level->is_train, false));
 
     MUST(JSON_READ_D(
         io, "unobtainable_pickups", &level->unobtainable.pickups, 0));
