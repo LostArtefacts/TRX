@@ -249,6 +249,12 @@
           "type": "integer",
           "description": "Marks the level as set on a moving train and gives the height of the ground beside it, with 256 representing 1 click and 1024 representing 1 sector. Enemies do not walk onto the ground, and Lara and henchmen that fall onto it die. Omit for a level without a train."
         },
+        "pulse_flip_group": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9,
+          "description": "Keeps the TR4 amber lights dark until the given flip group is flipped. Omit for amber lights that pulse as soon as they are triggered."
+        },
         "death_tile": {
           "type": "string",
           "description": "Defines death-tile behavior.",

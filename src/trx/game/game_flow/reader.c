@@ -1006,6 +1006,14 @@ static RESULT M_LoadLevel(
     }
     MUST(JSON_READ_D(io, "water_particles", &level->water_particles, false));
     MUST(JSON_READ_D(io, "train_ground", &level->train_ground, NO_HEIGHT));
+    MUST(JSON_READ_D(
+        io, "pulse_flip_group", &level->pulse_flip_group, NO_FLIP_GROUP));
+    if (level->pulse_flip_group != NO_FLIP_GROUP
+        && (level->pulse_flip_group < 0
+            || level->pulse_flip_group >= MAX_FLIP_MAPS)) {
+        return JSON_ReadIO_Fail(
+            io, "'pulse_flip_group' must be in range 0..%d", MAX_FLIP_MAPS - 1);
+    }
 
     MUST(JSON_READ_D(
         io, "unobtainable_pickups", &level->unobtainable.pickups, 0));
