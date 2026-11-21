@@ -247,7 +247,7 @@
         },
         "train_ground": {
           "type": "integer",
-          "description": "Marks the level as set on a moving train and gives the height of the ground beside it, with 256 representing 1 click and 1024 representing 1 sector. Enemies do not walk onto the ground, and henchmen that fall onto it die. Omit for a level without a train."
+          "description": "Marks the level as set on a moving train and gives the height of the ground beside it, with 256 representing 1 click and 1024 representing 1 sector. Enemies do not walk onto the ground, and Lara and henchmen that fall onto it die. Omit for a level without a train."
         },
         "death_tile": {
           "type": "string",

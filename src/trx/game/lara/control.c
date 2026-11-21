@@ -5,6 +5,7 @@
 #include <trx/game/console.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/game.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
@@ -40,6 +41,15 @@
 #define M_LEAN_UNDO_SURF    (LARA_LEAN_UNDO * 2) // = 364
 #define M_LEAN_UNDO_UW      M_LEAN_UNDO_SURF     // = 364
 #define M_LEAN_MAX_UW       (LARA_LEAN_MAX * 2)  // = 4004
+// Place the camera that watches Lara die beside the train, as in OG. The Z
+// values match the track in Desert Railroad.
+#define M_TRAIN_SIDE_Z_MIN  51900
+#define M_TRAIN_SIDE_Z_MAX  53554
+#define M_TRAIN_CAM_Z_MID   52736
+#define M_TRAIN_CAM_Z_NEAR  50176
+#define M_TRAIN_CAM_Z_FAR   55296
+#define M_TRAIN_CAM_Y_MID   (-384)
+#define M_TRAIN_CAM_Y_SIDE  (-WALL_L)
 // clang-format on
 
 static const LARA_STATE_ID m_StartSwimStates[] = {
@@ -632,6 +642,45 @@ static void M_UndoRot(int16_t *const rot, const int16_t rate)
     }
 }
 
+static void M_HandleTrainDeath(ITEM *const item)
+{
+    const int32_t ground = GF_GetCurrentLevel()->train_ground;
+    if (ground == NO_HEIGHT || item->pos.y < ground
+        || Lara_GetLaraInfo()->water_status == LWS_CHEAT
+        || g_Config.debug.enable_invulnerability) {
+        return;
+    }
+
+    if (item->current_anim_state != LS(LS_DEATH)) {
+        XYZ_32 cam_pos = { .x = item->pos.x };
+        if (item->pos.z > M_TRAIN_SIDE_Z_MIN
+            && item->pos.z < M_TRAIN_SIDE_Z_MAX) {
+            cam_pos.y = ground + M_TRAIN_CAM_Y_MID;
+            cam_pos.z = M_TRAIN_CAM_Z_MID;
+        } else {
+            cam_pos.y = ground + M_TRAIN_CAM_Y_SIDE;
+            cam_pos.z = item->pos.z <= M_TRAIN_SIDE_Z_MIN ? M_TRAIN_CAM_Z_NEAR
+                                                          : M_TRAIN_CAM_Z_FAR;
+        }
+        Camera_UpdateDynamicFixedObject(cam_pos, item->room_num);
+        g_Camera.speed = 1;
+
+        Item_SwitchToAnim(item, LA(LA_TRAIN_DEATH), 0);
+        item->current_anim_state = LS(LS_DEATH);
+        item->goal_anim_state = LS(LS_DEATH);
+        item->rot.y = -DEG_90;
+        item->gravity = false;
+        item->fall_speed = 0;
+        item->speed = 0;
+    }
+
+    if (Item_TestAnimEqual(item, LA(LA_TRAIN_DEATH))) {
+        g_Camera.num = Camera_GetDynamicFixedObjectIdx();
+        g_Camera.type = CAM_FIXED;
+        g_Camera.flags = CF_FOLLOW_CENTRE;
+    }
+}
+
 static void M_HandleAboveWater(COLL_INFO *const coll)
 {
     ITEM *const item = Lara_GetItem();
@@ -728,6 +777,8 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
             return;
         }
     }
+
+    M_HandleTrainDeath(item);
 
     lara_info->is_crouched = false;
     Lara_State_Update(item, coll);
