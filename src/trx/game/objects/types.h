@@ -170,6 +170,9 @@ typedef struct OBJECT {
     bool save_anim;
     bool load_floor;
     bool semi_transparent;
+    // Whether the object is drawn a second time, reflected, while it is in
+    // the mirror room.
+    bool shows_in_mirror;
 } OBJECT;
 
 typedef struct {

@@ -414,6 +414,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_save_func = M_SavePriv;
     obj->save_position = true;
     obj->save_flags = true;
+    obj->shows_in_mirror = true;
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_STORED(
