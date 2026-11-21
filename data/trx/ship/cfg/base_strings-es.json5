@@ -2848,6 +2848,9 @@
         "gun_shell": {
             "name": "Casquillo de arma",
         },
+        "hammer": {
+            "name": "\\{review}Martillo",
+        },
         "harpoon_bolt": {
             "name": "Arpón (proyectil)",
         },

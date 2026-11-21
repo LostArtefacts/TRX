@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 884 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 885 names
 
     Every object TRX has a name for.
 
@@ -118,7 +118,7 @@ convert between the two.
     `GREEN_LIGHT`, `GRENADE`, `GRENADE_AMMO_2_ITEM`, `GRENADE_AMMO_2_OPTION`,
     `GRENADE_AMMO_3_ITEM`, `GRENADE_AMMO_3_OPTION`, `GRENADE_AMMO_ITEM`,
     `GRENADE_AMMO_OPTION`, `GRENADE_GUN_ITEM`, `GRENADE_GUN_OPTION`, `GUIDE`,
-    `GUN_FLASH`, `GUN_SHELL`, `HARPOON_BOLT`, `HARPOON_GUN_AMMO_ITEM`,
+    `GUN_FLASH`, `GUN_SHELL`, `HAMMER`, `HARPOON_BOLT`, `HARPOON_GUN_AMMO_ITEM`,
     `HARPOON_GUN_AMMO_OPTION`, `HARPOON_GUN_ITEM`, `HARPOON_GUN_OPTION`,
     `HEAVY_ROCKET`, `HENCHMAN_1`, `HENCHMAN_2`, `HENCHMAN_JEEP`, `HOOK`,
     `HOT_LIQUID`, `HUSKIE`, `HYBRID_MUTANT`, `ICICLE`, `INV_BACKGROUND`,
@@ -286,7 +286,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 224 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 225 names
 
     Every sound sample TRX has a name for.
 
@@ -306,10 +306,10 @@ convert between the two.
     `BRITTLE_GROUND_BREAK`, `BURGLAR_ALARM`, `CHAINBLOCK_FX`, `CHAIN_PULLEY`,
     `CLATTER_1`, `CLATTER_2`, `CLATTER_3`, `CLEANER_FUSEBOX`, `CLEANER_LOOP`,
     `CLICK`, `COWBOY_SPEECH`, `CRUNCH_1`, `CRUNCH_2`, `CURTAIN`,
-    `DAMOCLES_SWORD`, `DART`, `DISC`, `DOORBELL`, `DOOR_CHIME`, `DRAGON_FEET`,
-    `DRAGON_FIRE`, `DRIPS_REVERB`, `EARTHQUAKE_1`, `EARTHQUAKE_2`,
-    `EARTHQUAKE_LOOP`, `ENEMY_HIT_1`, `ENEMY_HIT_2`, `ENGLISH_HOY`,
-    `EXPLOSION_1`, `EXPLOSION_2`, `EXPLOSION_3`, `EXPLOSION_FX`,
+    `DAMOCLES_SWORD`, `DART`, `DISC`, `DOORBELL`, `DOOR_CHIME`, `DOOR_THUD`,
+    `DRAGON_FEET`, `DRAGON_FIRE`, `DRIPS_REVERB`, `EARTHQUAKE_1`,
+    `EARTHQUAKE_2`, `EARTHQUAKE_LOOP`, `ENEMY_HIT_1`, `ENEMY_HIT_2`,
+    `ENGLISH_HOY`, `EXPLOSION_1`, `EXPLOSION_2`, `EXPLOSION_3`, `EXPLOSION_FX`,
     `FLAME_THROWER_LOOP`, `FLOOD`, `FOOTSTEPS_GRAVEL`, `FOOTSTEPS_ICE`,
     `FOOTSTEPS_METAL`, `FOOTSTEPS_MUD`, `FOOTSTEPS_SAND_OR_GRASS`,
     `FOOTSTEPS_SNOW`, `FOOTSTEPS_WOOD`, `GLASS_BREAK`, `GUIDE_SCARE`,

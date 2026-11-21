@@ -508,6 +508,12 @@
         "crossbow_item",
         "revolver_item",
     ],
+    "hammer_smashable": [
+        "pushable_object_1",
+        "pushable_object_2",
+        "pushable_object_3",
+        "pushable_object_4",
+    ],
     "heavy_missile": [
         "heavy_rocket",
     ],

@@ -2863,6 +2863,9 @@
         "gun_shell": {
             "name": "\\{review}Гільза",
         },
+        "hammer": {
+            "name": "\\{review}Молот",
+        },
         "harpoon_bolt": {
             "name": "Гарпунний болт",
         },
