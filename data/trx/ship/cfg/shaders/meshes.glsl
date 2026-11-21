@@ -399,7 +399,8 @@ void main(void) {
                 I_AMBIENT_SPAN_ENABLED
                     ? mix(I_AMBIENT_SPAN_FROM.rgb, I_TR4_AMBIENT.rgb,
                           clamp(inTintFactor, 0.0, 1.0))
-                    : I_TR4_AMBIENT.rgb);
+                    : I_TR4_AMBIENT.rgb,
+                clamp(inTintFactor, 0.0, 1.0));
             // White for regular meshes; mesh policies may recolor vertices
             // (e.g. the skybox fog gradient faces are painted black).
             modulate = inColor.rgb;
@@ -427,7 +428,8 @@ void main(void) {
         gOut.colorSub = shadeTR4(
             lightObjectsTR4(
                 inNormal.xyz, inPosition.xyz,
-                I_TR4_AMBIENT.rgb + I_SUBMERGED_AMBIENT_DELTA.rgb), modulate,
+                I_TR4_AMBIENT.rgb + I_SUBMERGED_AMBIENT_DELTA.rgb,
+                clamp(inTintFactor, 0.0, 1.0)), modulate,
             lr.add, tintReg, gamma_exp, gOut.flags, add);
         gOut.addSub = add;
     }

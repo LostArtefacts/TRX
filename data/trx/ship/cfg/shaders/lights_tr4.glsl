@@ -28,16 +28,20 @@ layout(std140) uniform InstanceLights {
 #define I_TR4_ITEM_POS I_LIGHT(1).xyz
 #define I_TR4_FIRST_LIGHT int(I_LIGHT(2).x)
 #define I_TR4_NUM_LIGHTS int(I_LIGHT(2).y)
+#define I_TR4_JOINT_ENABLED (I_LIGHT(3).w != 0.0)
+#define I_TR4_JOINT_ITEM_POS I_LIGHT(3).xyz
 
 // Returns a light of the instance in its object space. The lights are kept
 // in world space and carried over by the transpose of the model matrix, as
-// the retail game did on the CPU.
-TR4Light getLightTR4(int i)
+// the retail game did on the CPU. The retail game took the lights relative
+// to the item position rather than to the mesh, so each mesh is lit as if
+// its origin stood at the item position.
+TR4Light getLightTR4(int i, vec3 itemPos)
 {
     TR4Light light = uInstanceLights[I_TR4_FIRST_LIGHT + i];
     mat3 toObject = transpose(mat3(I_MAT_MODEL));
     if (int(light.pos.w) != TR4_LIGHT_SUN) {
-        light.pos.xyz = toObject * (light.pos.xyz - I_TR4_ITEM_POS);
+        light.pos.xyz = toObject * (light.pos.xyz - itemPos);
     }
     light.dir.xyz = toObject * light.dir.xyz;
     return light;
@@ -60,14 +64,19 @@ float spotFactorTR4(vec3 toVertex, vec3 dir, float edge, float inner)
 
 // Lights a vertex as the retail game's Direct3D lights did: in object space,
 // from the vertex itself, with the legacy attenuation att1 * (1 - d / range).
-// Direct3D wrote the lit color in 8 bits, so the sum stops at 255.
-vec3 lightObjectsTR4(vec3 rawNormal, vec3 pos, vec3 ambient)
+// Direct3D wrote the lit color in 8 bits, so the sum stops at 255. The
+// parent-side ring of a joint, at a span of 0, takes the item position of
+// the parent mesh.
+vec3 lightObjectsTR4(vec3 rawNormal, vec3 pos, vec3 ambient, float span)
 {
     vec3 N = safeNormalize(rawNormal);
+    vec3 itemPos = I_TR4_JOINT_ENABLED && span <= 0.0
+        ? I_TR4_JOINT_ITEM_POS
+        : I_TR4_ITEM_POS;
 
     vec3 acc = ambient;
     for (int i = 0; i < I_TR4_NUM_LIGHTS; i++) {
-        TR4Light light = getLightTR4(i);
+        TR4Light light = getLightTR4(i, itemPos);
         int type = int(light.pos.w);
         vec3 L;
         float atten = 1.0;
