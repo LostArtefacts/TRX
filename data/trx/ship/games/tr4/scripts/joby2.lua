@@ -27,5 +27,5 @@ require("tr4.inv_setup").apply({
   puzzle_item_4 = { scale = 1280, offset_y = 2, rot_x = -90 },
   puzzle_item_5 = { scale = 1200, offset_y = 23, rot_y = 90 },
   puzzle_item_6 = { scale = 512, offset_y = 5, draws_at_pivot = true },
-  examine_item_1 = { scale = 1300, offset_y = 4, rot_x = 90 },
+  examine_item_1 = { scale = 1300, offset_y = 4, rot_x = -90, rot_z = 180 },
 })
