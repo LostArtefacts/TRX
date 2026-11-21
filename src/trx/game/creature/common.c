@@ -281,24 +281,6 @@ static void M_Kill(ITEM *const item, const ITEM *const sender)
 
 // Whether an object is one of the markers a level places to steer its
 // creatures, rather than something that lives in the world.
-static bool M_IsAIObject(const OBJECT_ID object_id)
-{
-    switch (object_id) {
-    case O_AI_AMBUSH:
-    case O_AI_GUARD:
-    case O_AI_FOLLOW:
-    case O_AI_PATROL_1:
-    case O_AI_PATROL_2:
-    case O_AI_MODIFY:
-    case O_AI_X1:
-    case O_AI_X2:
-    case O_AI_X3:
-        return true;
-    default:
-        return false;
-    }
-}
-
 static bool M_TestWaterBelow(const ITEM *const item, const int32_t y)
 {
     int16_t room_num = item->room_num;
@@ -424,15 +406,6 @@ bool Creature_SameZone(const CREATURE *const creature, ITEM *const target_item)
         Room_GetWorldSector(room, target_item->pos.x, target_item->pos.z)->box;
 
     return zone[item->box_num] == zone[target_item->box_num];
-}
-
-XYZ_32 Creature_GetAITargetPos(const ITEM *const item)
-{
-    if (g_TRVersion < 4 || !M_IsAIObject(item->object_id)
-        || (item->init_flags & AI_OBJECT_FLAGS_NO_OFFSET) != 0) {
-        return item->pos;
-    }
-    return XYZ_32_OffsetYaw(item->pos, item->rot.y, STEP_L);
 }
 
 void Creature_Initialise(const int16_t item_num)
@@ -730,7 +703,7 @@ void Creature_ApplyMood(
     case MOOD_ATTACK: {
         const int32_t smartness = Object_Get(item->object_id)->smartness;
         if (smartness < 0 || Random_GetControl() < smartness) {
-            lot->target = Creature_GetAITargetPos(enemy);
+            lot->target = enemy->pos;
             lot->required_box = enemy->box_num;
             if (lot->setup.fly != 0
                 && Lara_GetLaraInfo()->water_status == LWS_ABOVE_WATER) {
@@ -1724,9 +1697,27 @@ int16_t Creature_AIGuard(CREATURE *const creature)
     return 0;
 }
 
+bool Creature_IsAIObject(const OBJECT_ID object_id)
+{
+    switch (object_id) {
+    case O_AI_AMBUSH:
+    case O_AI_GUARD:
+    case O_AI_FOLLOW:
+    case O_AI_PATROL_1:
+    case O_AI_PATROL_2:
+    case O_AI_MODIFY:
+    case O_AI_X1:
+    case O_AI_X2:
+    case O_AI_X3:
+        return true;
+    default:
+        return false;
+    }
+}
+
 int32_t Creature_GetAIObjectFlags(const ITEM *const item)
 {
-    if (item == nullptr || !M_IsAIObject(item->object_id)) {
+    if (item == nullptr || !Creature_IsAIObject(item->object_id)) {
         return 0;
     }
     if (Creature_IsAIObjectSpent(item)) {
@@ -1787,7 +1778,8 @@ ITEM *Creature_FindAIObjectByOCB(const int32_t ocb)
     ITEM *match = nullptr;
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
-        if (item->room_num == NO_ROOM || !M_IsAIObject(item->object_id)) {
+        if (item->room_num == NO_ROOM
+            || !Creature_IsAIObject(item->object_id)) {
             continue;
         }
         TRX_VALUE value;

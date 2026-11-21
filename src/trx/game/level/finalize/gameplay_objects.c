@@ -1,6 +1,7 @@
 #include <trx/core/log.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims.h>
+#include <trx/game/creature/common.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
@@ -22,7 +23,7 @@
 // finished with in room 255, which is the removed marker rather than a room.
 #define M_AI_OBJECT_NO_ROOM 255
 
-// A guide stands a quarter of a sector in front of the marker it walks to,
+// A creature walks to a quarter of a sector in front of the marker it targets,
 // unless the marker asks otherwise. The original offsets the copy it makes of
 // the marker; the offset depends only on the marker's own facing and flags,
 // which never change, so it is applied to the marker itself.
@@ -101,7 +102,7 @@ static void M_NudgeTR4AIObjects(const LEVEL_CONTEXT *const ctx)
     }
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
-        if (item->room_num == NO_ROOM || M_GetAIBit(item->object_id) == 0
+        if (item->room_num == NO_ROOM || !Creature_IsAIObject(item->object_id)
             || (item->init_flags & M_AI_OBJECT_NO_NUDGE) != 0) {
             continue;
         }

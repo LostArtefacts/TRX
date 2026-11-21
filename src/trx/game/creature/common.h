@@ -6,9 +6,6 @@
 #include <trx/game/sound/ids.h>
 
 #define AI_OBJECT_FLAGS_SPENT 255
-// Marks an AI object that a creature walks to exactly, rather than one click
-// past. See Creature_GetAITargetPos.
-#define AI_OBJECT_FLAGS_NO_OFFSET 0x20
 
 void Creature_Initialise(int16_t item_num);
 bool Creature_Activate(int16_t item_num);
@@ -137,20 +134,14 @@ ITEM *Creature_FindAIObjectByOCB(int32_t ocb);
 ITEM *Creature_FindAITargetObject(
     CREATURE *creature, OBJECT_ID object_id, int32_t ocb);
 
+bool Creature_IsAIObject(OBJECT_ID object_id);
+
 // The flags word the level gave an AI object, which TR4 uses as a mode rather
 // than as the bitfield an item's own flags are. Anything that is not an AI
 // object answers 0, because a creature's enemy is as often Lara or a live
 // item, and their flags mean something else entirely. A spent one answers 255,
 // the value the original writes over its flags with.
 int32_t Creature_GetAIObjectFlags(const ITEM *item);
-
-// Returns the position a creature paths towards for an item. For a TR4 AI
-// object, this is one click along the object's own facing, so that a marker
-// sends the creature past it rather than to a stop on top of it. Objects that
-// carry AI_OBJECT_FLAGS_NO_OFFSET, and everything that is not an AI object,
-// answer their own position. Arrival tests and position snaps use the item's
-// own position instead.
-XYZ_32 Creature_GetAITargetPos(const ITEM *item);
 
 // Whether an AI object has been used up, so the search passes over it. The
 // original says so by writing over the object's own flags word, which is level
