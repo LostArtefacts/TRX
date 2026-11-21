@@ -2754,6 +2754,9 @@
         "flame_emitter_tr4_ground": {
             "name": "\\{review}Источник пламени (TR4, напольный)",
         },
+        "flame_emitter_tr4_spread": {
+            "name": "\\{review}Источник пламени (TR4, рассеянный)",
+        },
         "flame_emitter_tr4_wall": {
             "name": "\\{review}Источник пламени (TR4, настенный)",
         },

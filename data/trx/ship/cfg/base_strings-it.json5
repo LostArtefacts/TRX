@@ -2766,6 +2766,9 @@
         "flame_emitter_tr4_ground": {
             "name": "Emettitore di Fiamme (TR4, Terra)",
         },
+        "flame_emitter_tr4_spread": {
+            "name": "\\{review}Emettitore di Fiamme (TR4, Diffuso)",
+        },
         "flame_emitter_tr4_wall": {
             "name": "Emettitore di Fiamme (TR4, Parete)",
         },

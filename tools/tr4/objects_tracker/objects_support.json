@@ -79,6 +79,7 @@
   "fire_rope":                { "status": "not implemented",       "todo": "port from FIREROPE"                },
   "flame_emitter_small":      { "status": "partially implemented", "todo": "check 100% parity"                 },
   "flame_emitter_tr4_ground": { "status": "fully implemented" },
+  "flame_emitter_tr4_spread": { "status": "partially implemented", "todo": "port the electric arcs (OCB > 0)" },
   "flame_emitter_tr4_wall":   { "status": "fully implemented" },
   "flares_box_item":          { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },
   "floor_blade":              { "status": "fully implemented" },
