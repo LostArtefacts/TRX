@@ -2535,6 +2535,9 @@
         "crocodile": {
             "name": "Crocodile",
         },
+        "crocodile_tr4": {
+            "name": "Crocodile (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "Crossbow Bolts",
         },

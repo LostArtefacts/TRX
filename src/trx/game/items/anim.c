@@ -355,8 +355,12 @@ void Item_PlayAnimSFX(
     const bool item_underwater =
         item->room_num != NO_ROOM && Room_Get(item->room_num)->flags.underwater;
     const ANIM_COMMAND_ENVIRONMENT mode = data->environment;
+    const bool is_water_creature =
+        ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER);
+    const bool is_tr4_water_creature = g_TRVersion >= 4 && is_water_creature;
 
-    if (mode != ACE_ALL && item->room_num != NO_ROOM) {
+    if (mode != ACE_ALL && item->room_num != NO_ROOM
+        && !is_tr4_water_creature) {
         if (Room_Get(item->room_num)->flags.swamp) {
             return;
         }
@@ -379,7 +383,7 @@ void Item_PlayAnimSFX(
     if (play_always) {
         play_mode = SPM_ALWAYS;
     } else if (
-        ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER)
+        (is_water_creature && (!is_tr4_water_creature || item_underwater))
         || (g_Config.audio.enable_underwater_anim_sfx && item_underwater)) {
         play_mode = SPM_UNDERWATER;
     }

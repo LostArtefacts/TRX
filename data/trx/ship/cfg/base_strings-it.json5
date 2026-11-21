@@ -2532,6 +2532,9 @@
         "crocodile": {
             "name": "Coccodrillo",
         },
+        "crocodile_tr4": {
+            "name": "\\{review}Coccodrillo (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "Dardi per Balestra",
         },

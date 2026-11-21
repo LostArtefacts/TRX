@@ -124,6 +124,11 @@
         <property category="TRX" defaultValue="20" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="100" description="Damage dealt by the crocodile bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_CROCODILE_TR4-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="36" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="120" description="Damage dealt by the crocodile's bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_DAMOCLES_SWORD-->
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Damage dealt when Lara is struck by the falling Damocles sword." displayName="Damage" internalName="damage" minValue="0" type="Int" />

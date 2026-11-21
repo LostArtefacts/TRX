@@ -641,6 +641,7 @@ common_sources = [
   'trx/game/objects/creatures/cowboy.c',
   'trx/game/objects/creatures/crawler_mutant.c',
   'trx/game/objects/creatures/crocodile.c',
+  'trx/game/objects/creatures/crocodile_tr4.c',
   'trx/game/objects/creatures/cultist_1.c',
   'trx/game/objects/creatures/cultist_2.c',
   'trx/game/objects/creatures/cultist_3.c',
