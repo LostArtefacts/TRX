@@ -838,6 +838,7 @@ common_sources = [
   'trx/game/objects/traps/floor_roof_blade.c',
   'trx/game/objects/traps/generic_trap.c',
   'trx/game/objects/traps/gondola.c',
+  'trx/game/objects/traps/hammer.c',
   'trx/game/objects/traps/hook.c',
   'trx/game/objects/traps/icicle.c',
   'trx/game/objects/traps/killer_statue.c',

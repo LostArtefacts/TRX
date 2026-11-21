@@ -97,7 +97,8 @@ static bool M_CollideWithItems(const ITEM *const push_item, const XYZ_32 pos)
             const ITEM *const item = Item_Get(item_num);
             item_num = item->next_item;
 
-            if (item == push_item || item == lara_item) {
+            if (item == push_item || item == lara_item
+                || item->object_id == O_HAMMER) {
                 continue;
             }
 
