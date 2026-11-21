@@ -18,6 +18,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/hub.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/rules.h>
@@ -64,6 +65,7 @@ static ITEM m_LaraItem;
 static bool m_BonusFlag;
 static int32_t m_RulesResets;
 static int32_t m_CutSeqResets;
+static int32_t m_HubResets;
 
 // The code counts only the gun types registered in the engine, not the number
 // of weapon slots.
@@ -78,6 +80,7 @@ static void M_SetUp(void)
     m_BonusFlag = false;
     m_RulesResets = 0;
     m_CutSeqResets = 0;
+    m_HubResets = 0;
     memcpy(m_GunTypes, (WEAPON_INFO[])M_GUN_TYPES, sizeof(m_GunTypes));
     m_LiveInv = (INVENTORY_STATE) {};
     m_Lara = (LARA_INFO) {};
@@ -306,6 +309,11 @@ void CutSeq_SetPlayedMask(const uint64_t mask)
     m_CutSeqResets++;
 }
 
+void Hub_Reset(void)
+{
+    m_HubResets++;
+}
+
 const char *EnumMap_ToString(const char *const enum_name, const int32_t value)
 {
     return "?";
@@ -416,6 +424,7 @@ TEST(clearing_the_entries_leaves_the_rest_of_the_playthrough)
     CHECK_EQ_INT(m_Lara.wet[0], 1);
     CHECK_EQ_INT(m_RulesResets, 0);
     CHECK_EQ_INT(m_CutSeqResets, 0);
+    CHECK_EQ_INT(m_HubResets, 0);
 }
 
 TEST(a_fresh_playthrough_resets_the_rest_of_it_too)
@@ -428,6 +437,7 @@ TEST(a_fresh_playthrough_resets_the_rest_of_it_too)
     CHECK_EQ_INT(m_Lara.wet[0], 0);
     CHECK_EQ_INT(m_RulesResets, 1);
     CHECK_EQ_INT(m_CutSeqResets, 1);
+    CHECK_EQ_INT(m_HubResets, 1);
 }
 
 TEST(the_first_level_starts_with_her_pistols_and_nothing_else)

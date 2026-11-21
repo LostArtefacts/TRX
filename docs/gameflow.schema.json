@@ -882,7 +882,7 @@
     },
     "seq_reset_hub": {
       "type": "object",
-      "description": "Takes Lara's keys, puzzle items, pickup items and examine items away as she leaves this level for the given one. This only applies where the `inventory.keep_plot_items` rule is on, as it is in TR4.",
+      "description": "Takes Lara's keys, puzzle items, pickup items and examine items away as she leaves this level for the given one. This only applies where the `inventory.keep_plot_items` rule is on, as it is in TR4. The game also forgets the state of every level that Lara has left, so a later visit to one of them starts it fresh.",
       "properties": {
         "type": {
           "const": "reset_hub"

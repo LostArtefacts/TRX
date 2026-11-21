@@ -880,6 +880,7 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
     JSONW_WRITE(io, "waypoint", Waypoint_Get());
     JSONW_WRITE(io, "waypoint_highest", Waypoint_GetHighest());
+    JSONW_WRITE_NZ(io, "hub_entry_start", Hub_GetEntryStartIndex(level));
     M_WriteSpentAIMarkers(io);
     M_WriteSwitchSequence(io);
     JSONW_POP_AND_SET(io, "misc");
@@ -903,6 +904,11 @@ void SG_File_DumpLevelEndMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "waypoint_highest", Waypoint_GetHighest());
     JSONW_WRITE(io, "hub_next_level", Hub_GetNextLevelIndex());
     JSONW_WRITE(io, "hub_lara_start", Hub_GetLaraStartIndex());
+    if (Hub_GetVehicle() != NO_OBJECT) {
+        SaveGame_WriteIdentity(
+            io, "hub_vehicle", "hub_vehicle_key", CATALOG_OBJECTS,
+            Hub_GetVehicle());
+    }
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");

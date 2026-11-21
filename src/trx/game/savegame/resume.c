@@ -8,6 +8,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/hub.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua/store.h>
@@ -166,6 +167,9 @@ void SG_Resume_ResetAllEntries(void)
 
     // The game store spans a playthrough, so a fresh one starts empty.
     LUA_Store_ClearGame();
+
+    // So does what the levels Lara has left remember.
+    Hub_Reset();
 }
 
 void SG_Resume_ResetEntry(const GF_LEVEL *const level)

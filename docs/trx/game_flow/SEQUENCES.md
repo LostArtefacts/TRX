@@ -284,7 +284,12 @@ default game flow for examples.
       she leaves this level for the one named by <code>level_idx</code>. This
       only applies where the <code>inventory.keep_plot_items</code> rule is on,
       as it is in TR4; elsewhere such items are left behind at the end of every
-      level.
+      level. The game also forgets the state of every level that Lara has left,
+      so a later visit to one of them starts it fresh. A level that only passes
+      Lara on, with no <code>loop_game</code> of its own, counts as the level
+      before it. Only a game flow with at least one <code>reset_hub</code>
+      event remembers the levels that Lara leaves. This works in all games,
+      but of the game flows that TRX ships, only the TR4 one has this event.
     </td>
   </tr>
   <tr valign="top">

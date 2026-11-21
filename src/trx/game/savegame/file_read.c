@@ -1841,6 +1841,12 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
     MUST(M_ReadSpentAIMarkers(io));
 
     {
+        int32_t hub_entry_start = 0;
+        MUST(JSON_READ_OPT(io, "hub_entry_start", &hub_entry_start));
+        Hub_SetEntryStartIndex(Game_GetCurrentLevel(), hub_entry_start);
+    }
+
+    {
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
         RESUME_INFO *const resume = SG_Resume_GetEntry(current_level);
         resume->stats.death_count = -1;
@@ -1889,6 +1895,14 @@ RESULT SG_File_LoadLevelEndMisc(JSON_READ_IO *const io)
     int32_t hub_lara_start = 0;
     MUST(JSON_READ(io, "hub_lara_start", &hub_lara_start));
     Hub_SetLaraStartIndex(hub_lara_start);
+
+    OBJECT_ID hub_vehicle = NO_OBJECT;
+    if (JSON_ReadIO_HasKey(io, "hub_vehicle")) {
+        MUST(SaveGame_ReadIdentity(
+            io, "hub_vehicle", "hub_vehicle_key", CATALOG_OBJECTS,
+            &hub_vehicle));
+    }
+    Hub_SetVehicle(hub_vehicle);
 
     MUST(JSON_POP(io));
     return OK;

@@ -7,6 +7,7 @@
 #include <harness/fake_calls.h>
 
 #include <trx/game/demo.h>
+#include <trx/game/hub.h>
 #include <trx/game/game/enum.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow/common.h>
@@ -613,6 +614,15 @@ __attribute__((weak)) bool LUA_Console_IsRunningCommand(void)
 }
 
 void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
+{
+}
+
+void Hub_StoreLevel(const GF_LEVEL *const level)
+{
+}
+
+void GF_ApplyHubReset(
+    const GF_LEVEL *const level, const GF_LEVEL *const next_level)
 {
 }
 

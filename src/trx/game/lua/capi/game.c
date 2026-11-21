@@ -8,6 +8,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/gym.h>
+#include <trx/game/hub.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -375,7 +376,9 @@ static int M_L_GamePlayLevel(lua_State *const L)
 
     const GF_LEVEL *const current_level = GF_GetCurrentLevel();
     if (current_level != nullptr) {
+        Hub_StoreLevel(current_level);
         SG_Resume_StoreGameToEntry(next_level);
+        GF_ApplyHubReset(current_level, next_level);
         RESUME_INFO *const resume = SG_Resume_GetEntry(next_level);
         if (resume != nullptr) {
             resume->prev_level = current_level->num;

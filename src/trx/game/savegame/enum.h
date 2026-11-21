@@ -79,6 +79,9 @@ typedef enum {
     // Lara's maximum hit points no longer follow her starting health.
     SG_VERSION_23 = 23,
 
+    // Levels that Lara has left keep their state for her return.
+    SG_VERSION_24 = 24,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_23,
+    SG_CURRENT_VERSION = SG_VERSION_24,
 } SAVEGAME_VERSION;
