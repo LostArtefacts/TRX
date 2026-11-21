@@ -81,6 +81,27 @@ static const BITE m_NodeOffsets[16] = {
     { .pos = { 0, 0, 0 }, .mesh_num = 0 },
 };
 
+// Returns whether a spark that follows a node stays behind in the world, after
+// a short random delay. TR4 lets every such spark go; TR3 lets go only those
+// at nodes 2 and 3.
+static bool M_ShouldDetachFromNode(
+    const SPARK *const spark, const int32_t lived)
+{
+    if ((spark->flags & (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE))
+        != (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE)) {
+        return false;
+    }
+    if (g_TRVersion == 4) {
+        return lived > (Random_GetDraw() & 3) + 8;
+    }
+    if (spark->node_num == 2 || spark->node_num == 3) {
+        const int32_t delay = spark->node_num == 3 ? (Random_GetDraw() & 3) + 12
+                                                   : (Random_GetDraw() & 3) + 8;
+        return lived > delay;
+    }
+    return false;
+}
+
 // Stacks the free slots so that the lowest index comes off first.
 static void M_RebuildFreeSlots(void)
 {
@@ -836,18 +857,10 @@ void Sparks_Control(void)
             spark->size = spark->src_size;
         }
 
-        // If attached to a node, detach after a short random delay for some
-        // node types.
-        if ((spark->flags & (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE))
-                == (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE)
-            && (spark->node_num == 2 || spark->node_num == 3)) {
-            const int32_t b = spark->node_num == 3 ? (Random_GetDraw() & 3) + 12
-                                                   : (Random_GetDraw() & 3) + 8;
-            if (lived > b) {
-                spark->pos = Sparks_GetWorldPos(spark);
-                spark->flags &= ~(SPARK_F_ATTACHED_NODE | SPARK_F_ITEM);
-                Sparks_Sync(spark);
-            }
+        if (M_ShouldDetachFromNode(spark, lived)) {
+            spark->pos = Sparks_GetWorldPos(spark);
+            spark->prev_pos = spark->prev_world_pos;
+            spark->flags &= ~(SPARK_F_ATTACHED_NODE | SPARK_F_ITEM);
         }
     }
 
