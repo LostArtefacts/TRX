@@ -630,6 +630,33 @@ static XYZ_32 M_GetHeadPos(const int32_t x, const int32_t y, const int32_t z)
     return pos;
 }
 
+// Returns the head point at the given offset, moved onto the line through
+// the head along the look direction. The line ignores the tilt that idle
+// breathing gives the head, so the look camera stays steady.
+static XYZ_32 M_GetSteadyHeadPos(
+    const int32_t x, const int32_t y, const int32_t z)
+{
+    const XYZ_32 pos = M_GetHeadPos(x, y, z);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    const XYZ_32 axis = XYZ_32_FromYawPitch(
+        lara_item->rot.y + lara->head_rot.y,
+        lara_item->rot.x + lara->head_rot.x, 1 << W2V_SHIFT);
+    const int64_t axis_len2 = XYZ_32_GetLength2_64(axis);
+    if (axis_len2 == 0) {
+        return pos;
+    }
+
+    const XYZ_32 head_pos = M_GetHeadPos(0, 0, 0);
+    const int64_t t =
+        XYZ_32_DotProduct_64(XYZ_32_Subtract(pos, head_pos), axis);
+    return (XYZ_32) {
+        .x = head_pos.x + (int32_t)((t * axis.x) / axis_len2),
+        .y = head_pos.y + (int32_t)((t * axis.y) / axis_len2),
+        .z = head_pos.z + (int32_t)((t * axis.z) / axis_len2),
+    };
+}
+
 static void M_Look(const ITEM *const item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -645,7 +672,7 @@ static void M_Look(const ITEM *const item)
     CLAMP(lara->head_rot.x, M_MIN_LOOK_TILT, M_MAX_LOOK_TILT);
     CLAMP(lara->head_rot.y, M_MIN_LOOK_ROTATION, M_MAX_LOOK_ROTATION);
 
-    XYZ_32 pos_1 = M_GetHeadPos(0, 16, 64);
+    XYZ_32 pos_1 = M_GetSteadyHeadPos(0, 16, 64);
 
     int16_t room_num = lara_item->room_num;
     const XYZ_32 sample_pos = { pos_1.x, pos_1.y + STEP_L, pos_1.z };
@@ -662,7 +689,7 @@ static void M_Look(const ITEM *const item)
 
     if (height == NO_HEIGHT || ceiling == NO_HEIGHT || ceiling >= height
         || pos_1.y > height || pos_1.y < ceiling) {
-        pos_1 = M_GetHeadPos(0, 16, 0);
+        pos_1 = M_GetSteadyHeadPos(0, 16, 0);
         room_num = lara_item->room_num;
         sector = Room_GetSector(
             (XYZ_32) { pos_1.x, pos_1.y + STEP_L, pos_1.z }, &room_num);
@@ -678,12 +705,12 @@ static void M_Look(const ITEM *const item)
 
         if (height == NO_HEIGHT || ceiling == NO_HEIGHT || ceiling >= height
             || pos_1.y > height || pos_1.y < ceiling) {
-            pos_1 = M_GetHeadPos(0, 16, -64);
+            pos_1 = M_GetSteadyHeadPos(0, 16, -64);
         }
     }
 
-    const XYZ_32 pos_2 = M_GetHeadPos(0, 0, -1024);
-    XYZ_32 pos_3 = M_GetHeadPos(0, 0, 2048);
+    const XYZ_32 pos_2 = M_GetSteadyHeadPos(0, 0, -1024);
+    XYZ_32 pos_3 = M_GetSteadyHeadPos(0, 0, 2048);
 
     const XYZ_32 delta = {
         .x = (pos_2.x - pos_1.x) >> 3,
