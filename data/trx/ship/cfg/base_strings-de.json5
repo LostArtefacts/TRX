@@ -3737,6 +3737,18 @@
         "sentry_gun": {
             "name": "\\{review}Roboter-Wachgeschütz",
         },
+        "sequence_door": {
+            "name": "\\{review}Sequenztür",
+        },
+        "sequence_switch_1": {
+            "name": "\\{review}Sequenzschalter 1",
+        },
+        "sequence_switch_2": {
+            "name": "\\{review}Sequenzschalter 2",
+        },
+        "sequence_switch_3": {
+            "name": "\\{review}Sequenzschalter 3",
+        },
         "seth_sarcophagus": {
             "name": "\\{review}Seth-Sarkophag",
         },

@@ -12,6 +12,7 @@
 #include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/switch_sequence.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/rooms.h>
@@ -237,6 +238,7 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
     Walkable_ResetLevel();
     // Must precede Item_Initialise() below, which creates the ropes.
     Rope_Reset();
+    SwitchSequence_Reset();
 
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ObjectProperty_ResetItem(Item_Get(i));
