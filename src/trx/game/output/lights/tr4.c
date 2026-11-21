@@ -446,18 +446,27 @@ static bool M_HasRoom(const M_STAGED_LIST *const list)
     return list->count < OUTPUT_TR4_MAX_STAGED_LIGHTS;
 }
 
-// Port of the retail SetupLight. Every light sits where it is relative to
-// the item, which the shader carries into the object space of the mesh being
-// drawn; the shadow lights only darken the ambient. A light fading out of the
-// previous room keeps the position it had when the item left that room.
+// Port of the retail SetupLight. The shader carries each light into the
+// object space of the mesh being drawn; the shadow lights only darken the
+// ambient. A light of the current room stays where it is in the world, as
+// the original measures it from the item in every frame. A light fading out
+// of the previous room keeps the position it had relative to the item when
+// the item left that room.
 static void M_StageLight(
-    const M_ITEM_ROOM_LIGHT *const light, M_STAGED_LIST *const list)
+    const M_ITEM_ROOM_LIGHT *const light, const bool is_current,
+    M_STAGED_LIST *const list)
 {
-    const XYZ_F pos = {
-        (float)(list->item_pos.x + light->rlp.x),
-        (float)(list->item_pos.y + light->rlp.y),
-        (float)(list->item_pos.z + light->rlp.z),
-    };
+    const XYZ_F pos = is_current
+        ? (XYZ_F) {
+              (float)light->ipos.x,
+              (float)light->ipos.y,
+              (float)light->ipos.z,
+          }
+        : (XYZ_F) {
+              (float)(list->item_pos.x + light->rlp.x),
+              (float)(list->item_pos.y + light->rlp.y),
+              (float)(list->item_pos.z + light->rlp.z),
+          };
     const XYZ_F dir = { light->nx, light->ny, light->nz };
 
     switch (light->type) {
@@ -728,7 +737,7 @@ static void M_FillInstanceLight(OUTPUT_LIGHT_INFO *const info)
         const M_ITEM_ROOM_LIGHT *const lights = il->lights[l];
         for (int32_t i = 0; i < il->n_lights[l]; i++) {
             if (lights[i].active) {
-                M_StageLight(&lights[i], &list);
+                M_StageLight(&lights[i], l == il->cur, &list);
             }
         }
     }
