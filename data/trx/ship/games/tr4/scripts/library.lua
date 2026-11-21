@@ -91,5 +91,5 @@ require("tr4.inv_setup").apply({
     draws_at_pivot = true,
   },
   pickup_item_2 = { scale = 336, offset_y = 8 },
-  examine_item_3 = { scale = 1280, offset_y = 2, rot_x = 90 },
+  examine_item_3 = { scale = 1280, offset_y = 2, rot_x = -90, rot_z = 180 },
 })
