@@ -762,6 +762,7 @@ common_sources = [
   'trx/game/objects/general/gas_emitter.c',
   'trx/game/objects/general/general.c',
   'trx/game/objects/general/generic_switch.c',
+  'trx/game/objects/general/god_head.c',
   'trx/game/objects/general/gong.c',
   'trx/game/objects/general/gong_bonger.c',
   'trx/game/objects/general/henchman_jeep.c',
