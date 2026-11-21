@@ -70,6 +70,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleRemoveItemEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent);
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupMirrorEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleLoadingCameraEvent);
 
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
@@ -107,6 +108,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_REMOVE_ITEM,       M_HandleRemoveItemEvent, nullptr },
     { GFS_SETUP_HORIZON,     M_HandleSetupHorizonEvent, nullptr },
     { GFS_SETUP_LENS_FLARE,  M_HandleSetupLensFlareEvent, nullptr },
+    { GFS_SETUP_MIRROR,      M_HandleSetupMirrorEvent, nullptr },
     { GFS_LOADING_CAMERA,    M_HandleLoadingCameraEvent, nullptr },
 
     // Sentinel to mark the end of the table
@@ -629,6 +631,26 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent)
     return sizeof(GF_SETUP_LENS_FLARE_DATA);
 fail:
     return -1;
+}
+
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupMirrorEvent)
+{
+    JSON_READ_IO *const io = ctx->io;
+    int32_t room_num = 0;
+    int32_t z_plane = 0;
+    if (!Result_Absorb(JSON_READ(io, "room", &room_num))) {
+        return -1;
+    }
+    if (!Result_Absorb(JSON_READ(io, "z_plane", &z_plane))) {
+        return -1;
+    }
+    if (event != nullptr) {
+        GF_SETUP_MIRROR_DATA *const event_data = extra_data;
+        event_data->room_num = (int16_t)room_num;
+        event_data->z_plane = z_plane;
+        event->data = event_data;
+    }
+    return sizeof(GF_SETUP_MIRROR_DATA);
 }
 
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleLoadingCameraEvent)

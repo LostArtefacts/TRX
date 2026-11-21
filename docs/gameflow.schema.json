@@ -510,6 +510,9 @@
           "$ref": "#/definitions/seq_setup_lens_flare"
         },
         {
+          "$ref": "#/definitions/seq_setup_mirror"
+        },
+        {
           "$ref": "#/definitions/seq_enable_lightning"
         },
         {
@@ -1034,6 +1037,29 @@
         "y",
         "z",
         "color"
+      ],
+      "additionalProperties": false
+    },
+    "seq_setup_mirror": {
+      "type": "object",
+      "description": "Makes one room a mirror room: while Lara is in it, she and the effects around her are drawn a second time, reflected across a wall at a fixed z position. The level must carry the reflected copy of the room behind the wall. Equivalent to the OG TR4 script's `Mirror` command.",
+      "properties": {
+        "type": {
+          "const": "setup_mirror"
+        },
+        "room": {
+          "type": "integer",
+          "description": "The room that holds the mirror."
+        },
+        "z_plane": {
+          "type": "integer",
+          "description": "The world z position of the mirror wall."
+        }
+      },
+      "required": [
+        "type",
+        "room",
+        "z_plane"
       ],
       "additionalProperties": false
     },

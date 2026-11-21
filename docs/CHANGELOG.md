@@ -30,6 +30,7 @@
 - Added a `train_ground` game flow level property, which sets the height of the ground beside a moving train. Enemies stay off this ground (TRX2025)
 - Added support for `display_picture` sequence events without a picture, which show a black screen for a script to draw on (#6929 / TRX1810)
 - Added a `respawn` property to pickups, which brings a pickup back each time Lara has none of it (TRX532)
+- Added a `setup_mirror` game flow sequence event, which makes a room show Lara's reflection in one of its walls (TRX688)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
