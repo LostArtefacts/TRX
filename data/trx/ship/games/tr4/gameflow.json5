@@ -570,6 +570,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "mastabas_torch.bin",
+            ],
         },
 
         // 34. The Great Pyramid
