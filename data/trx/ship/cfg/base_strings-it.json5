@@ -2814,6 +2814,9 @@
         "glow_reserved": {
             "name": "Bagliore Mappa",
         },
+        "god_head": {
+            "name": "\\{review}Testa del dio",
+        },
         "gondola": {
             "name": "Gondola",
         },

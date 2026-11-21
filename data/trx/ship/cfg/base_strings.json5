@@ -2830,6 +2830,9 @@
         "glow_reserved": {
             "name": "Map Glow",
         },
+        "god_head": {
+            "name": "God Head",
+        },
         "gondola": {
             "name": "Gondola",
         },
