@@ -2802,6 +2802,9 @@
         "glow_reserved": {
             "name": "Resplandor del mapa",
         },
+        "god_head": {
+            "name": "\\{review}Cabeza del dios",
+        },
         "gondola": {
             "name": "Góndola",
         },

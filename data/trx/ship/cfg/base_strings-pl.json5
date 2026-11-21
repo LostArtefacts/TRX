@@ -2802,6 +2802,9 @@
         "glow_reserved": {
             "name": "Poświata mapy",
         },
+        "god_head": {
+            "name": "\\{review}Głowa boga",
+        },
         "gondola": {
             "name": "Gondola",
         },
