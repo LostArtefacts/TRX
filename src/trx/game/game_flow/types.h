@@ -71,6 +71,11 @@ typedef struct {
 } GF_SETUP_LENS_FLARE_DATA;
 
 typedef struct {
+    int16_t room_num;
+    int32_t z_plane;
+} GF_SETUP_MIRROR_DATA;
+
+typedef struct {
     XYZ_32 source;
     XYZ_32 target;
     int16_t room_num;

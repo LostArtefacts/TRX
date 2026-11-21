@@ -317,6 +317,23 @@ default game flow for examples.
       example, in the Floating Islands of Tomb Raider II.
     </td>
   </tr>
+  <tr valign="top">
+    <td rowspan="2"><code>setup_mirror</code></td>
+    <td><code>room</code></td>
+    <td>Integer</td>
+    <td rowspan="2">
+      Makes a room a mirror room. While Lara is in the room, she and the
+      effects around her are drawn a second time, reflected across a wall at
+      the world position <code>z_plane</code>. The level must contain the
+      reflected copy of the room behind the wall. This sequence matches the
+      TR4 <code>Mirror</code> command, and is used, for example, in the Sacred
+      Lake of Tomb Raider IV.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>z_plane</code></td>
+    <td>Integer</td>
+  </tr>
 </table>
 
 **²** Tomb Raider 2 only.

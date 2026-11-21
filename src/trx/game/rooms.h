@@ -6,5 +6,6 @@
 #include <trx/game/rooms/enum.h>
 #include <trx/game/rooms/floor_data.h>
 #include <trx/game/rooms/geometry.h>
+#include <trx/game/rooms/mirror.h>
 #include <trx/game/rooms/statics.h>
 #include <trx/game/rooms/utils.h>

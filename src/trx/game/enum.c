@@ -295,6 +295,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SETUP_UV_ROTATE, "setup_uv_rotate");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_ENABLE_LIGHTNING, "enable_lightning");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SETUP_LENS_FLARE, "setup_lens_flare");
+    ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SETUP_MIRROR, "setup_mirror");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SET_START_ANIM, "set_lara_start_anim");
     ENUM_MAP(
         GF_SEQUENCE_EVENT_TYPE, GFS_ADD_SECRET_REWARD, "add_secret_reward");

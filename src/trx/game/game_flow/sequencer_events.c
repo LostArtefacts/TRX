@@ -22,6 +22,7 @@
 #include <trx/game/paths.h>
 #include <trx/game/phase.h>
 #include <trx/game/phase/phase_loading_camera.h>
+#include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/game/waypoint.h>
@@ -63,6 +64,7 @@
     X(GFS_SETUP_UV_ROTATE,   M_HandleSetupUVRotate)                            \
     X(GFS_ENABLE_LIGHTNING,  M_HandleEnableLightning)                          \
     X(GFS_SETUP_LENS_FLARE,  M_HandleSetupLensFlare)                          \
+    X(GFS_SETUP_MIRROR,      M_HandleSetupMirror)                             \
     X(GFS_DISABLE_FLOOR,     M_HandleDisableFloor)
 // clang-format on
 
@@ -615,6 +617,17 @@ M_GF_HANDLER(M_HandleSetupLensFlare)
             .z = data->pos.z << 8,
         };
         Output_LensFlares_SetSun(pos, data->color);
+    }
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    return OK;
+}
+
+M_GF_HANDLER(M_HandleSetupMirror)
+{
+    if (seq_ctx != GFSC_STORY) {
+        const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
+        const GF_SETUP_MIRROR_DATA *const data = event->data;
+        Room_SetMirror(data->room_num, data->z_plane);
     }
     *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
     return OK;
