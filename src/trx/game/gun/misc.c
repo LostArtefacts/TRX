@@ -509,7 +509,11 @@ void Gun_HitTargetWithBlast(ITEM *const item, const ITEM *const source)
     // TODO: TR4 lets the baboons, which TRX lacks, die their own way.
     if (item->hit_points <= 0 && Object_CanBeExploded(item)) {
         Creature_Die(
-            Item_GetIndex(item), (CREATURE_DIE_ARGS) { .explode = true });
+            Item_GetIndex(item),
+            (CREATURE_DIE_ARGS) {
+                .explode = true,
+                .gib_flags = Item_ShouldSpawnBlood(item) ? GIB_BLOOD : GIB_NONE,
+            });
     }
 }
 
