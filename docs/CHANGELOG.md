@@ -54,6 +54,7 @@
 - Fixed several differences from the original game in how Lara is lit, such as steps in the light at her joints and sudden changes during animations (TRX1961)
 - Fixed henchmen falling off the train in Desert Railroad (TRX2025)
 - Fixed enemies sometimes heading to the wrong place when they patrol, ambush or follow a set route
+- Fixed an enemy in Desert Railroad falling under the train when it is activated (OG bug) (TRX1979)
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
