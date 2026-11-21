@@ -35,7 +35,6 @@
 #define M_RAIN_NEAR 4096
 #define M_RAIN_MAX_REACH (32 * WALL_L)
 #define M_RAIN_TURN_MARGIN (DEG_45 / 2)
-#define M_RAIN_FALL_SPAN (4 * WALL_L)
 #define M_RAIN_BASE_Y_OFF (-WALL_L)
 #define M_RAIN_BASE_YV 16
 #define M_RAIN_YV_RND_MASK 7
@@ -60,7 +59,6 @@ typedef struct {
     XYZ_32 prev_pos;
     int32_t prev_yv;
     XYZ_32 vel;
-    int32_t land_y;
     uint8_t life;
 } M_RAINDROP;
 
@@ -224,14 +222,23 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
 
 // Finds where rain falling through a point lands: the floor below it, or the
 // water surface where the floor is under water. Reports failure where the
-// landing is not in an outside room.
+// landing is not in an outside room, or where no drop that spawns around the
+// base position can fall to it.
 static bool M_FindLanding(
-    const XYZ_32 pos, int32_t *const out_ceiling, XYZ_32 *const out_pos,
+    const XYZ_32 base_pos, const XYZ_32 pos, XYZ_32 *const out_pos,
     int16_t *const out_room_num)
 {
     int32_t ceiling;
     int32_t floor;
     if (!Room_GetOutsideColumn(pos.x, pos.z, &ceiling, &floor)) {
+        return false;
+    }
+
+    const int32_t top = MAX(ceiling + 1, base_pos.y - M_RAIN_Y_RND_MASK);
+    if (top > base_pos.y || top >= floor
+        || Room_GetOutsideStatus(
+               (XYZ_32) { pos.x, top, pos.z }, nullptr, nullptr)
+            != 1) {
         return false;
     }
 
@@ -247,16 +254,13 @@ static bool M_FindLanding(
             return false;
         }
     }
-    *out_ceiling = ceiling;
     *out_pos = (XYZ_32) { pos.x, height, pos.z };
     *out_room_num = room_num;
     return true;
 }
 
-// Starts a drop over a random spot of open sky, up to a few blocks above
-// where it lands, so that it lands within its life wherever the floor stands.
-// The drop keeps the height it lands at rather than testing the rooms as it
-// falls.
+// Starts a drop over a random spot of the rain, up to two blocks above the
+// base position, where that spot is in an outside room.
 static void M_SpawnRainDrop(
     M_RAINDROP *const drop, const int32_t reach, const int32_t wedge)
 {
@@ -266,19 +270,11 @@ static void M_SpawnRainDrop(
     }
 
     XYZ_32 pos = M_GetSpreadPos(base_pos, reach, wedge);
-    int32_t ceiling;
-    XYZ_32 landing;
-    int16_t room_num;
-    if (!M_FindLanding(pos, &ceiling, &landing, &room_num)) {
+    pos.y -= Random_GetDraw() & M_RAIN_Y_RND_MASK;
+    if (pos.x == 0 || Room_GetOutsideStatus(pos, nullptr, nullptr) != 1) {
         return;
     }
-    const int32_t span = MIN(landing.y - ceiling - 1, M_RAIN_FALL_SPAN);
-    if (span <= 0 || pos.x == 0) {
-        return;
-    }
-    pos.y = landing.y - 1 - ((Random_GetDraw() * span) >> 15);
     drop->pos = pos;
-    drop->land_y = landing.y;
 
     drop->vel.y =
         (uint8_t)((Random_GetDraw() & M_RAIN_YV_RND_MASK) + M_RAIN_BASE_YV);
@@ -364,10 +360,9 @@ static void M_SpawnSplashes(int32_t reach, int32_t wedge)
     if (has_sprites) {
         for (int32_t i = 0; i < count; i++) {
             const XYZ_32 pos = M_GetSpreadPos(base_pos, reach, wedge);
-            int32_t ceiling;
             XYZ_32 landing;
             int16_t room_num;
-            if (M_FindLanding(pos, &ceiling, &landing, &room_num)) {
+            if (M_FindLanding(base_pos, pos, &landing, &room_num)) {
                 M_AddSplash(landing, room_num);
             }
         }
@@ -397,10 +392,9 @@ static void M_SpawnSplashes(int32_t reach, int32_t wedge)
     int32_t num_splashes = 0;
     for (int32_t i = 0; i < num_spots && num_splashes < M_MAX_SPARK_SPLASHES;
          i++) {
-        int32_t ceiling;
         XYZ_32 landing;
         int16_t room_num;
-        if (M_FindLanding(spots[i].pos, &ceiling, &landing, &room_num)) {
+        if (M_FindLanding(base_pos, spots[i].pos, &landing, &room_num)) {
             Sparks_TriggerRainSplash(landing);
             num_splashes++;
         }
@@ -473,7 +467,12 @@ static void M_UpdateRain(void)
         drop->prev_pos = drop->pos;
         drop->prev_yv = drop->vel.y;
 
-        if (drop->pos.y >= drop->land_y || drop->life > 240
+        int16_t room_num = NO_ROOM;
+        const int32_t outside =
+            Room_GetOutsideStatus(drop->pos, nullptr, &room_num);
+        if (outside == -2
+            || (room_num != NO_ROOM && Room_Get(room_num)->flags.underwater)
+            || drop->life > 240
             || ABS(g_Camera.pos.x - drop->pos.x) > max_distance
             || ABS(g_Camera.pos.z - drop->pos.z) > max_distance) {
             drop->pos.x = 0;
@@ -825,14 +824,6 @@ static RESULT M_LoadRain(JSON_READ_IO *const io)
         MUST(JSON_POP(io));
         drop->prev_pos = drop->pos;
         drop->prev_yv = drop->vel.y;
-        int32_t ceiling;
-        XYZ_32 landing;
-        int16_t room_num;
-        if (M_FindLanding(drop->pos, &ceiling, &landing, &room_num)) {
-            drop->land_y = landing.y;
-        } else {
-            drop->pos.x = 0;
-        }
     }
     return OK;
 }
