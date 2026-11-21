@@ -84,10 +84,10 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     lara->interact_target.item_num = NO_ITEM;
 }
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
-                                                  : &m_DefaultBounds;
+    return g_Config.gameplay.enable_walk_to_items ? m_ControlledBounds
+                                                  : m_DefaultBounds;
 }
 
 static bool M_ShowInventory(const ITEM *const item)
@@ -117,7 +117,8 @@ static void M_CollisionControlled(
     item->rot.y += DEG_180;
     item->rot.z = 0;
 
-    if (Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (Lara_TestPosition(item, &bounds)) {
         item->rot = old_rot;
         if (!lara->interact_target.is_moving
             && (!M_ShowInventory(item)
@@ -176,7 +177,8 @@ static void M_Collision(
     item->rot.z = 0;
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         item->rot = old_rot;
         goto normal_collision;
     }

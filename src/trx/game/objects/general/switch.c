@@ -104,25 +104,25 @@ static const M_SWITCH_POS m_JumpSwitchPosition = {
     .controlled = {},
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? &m_SwitchBoundsControlled
-                                                  : &m_SwitchBounds;
+    return g_Config.gameplay.enable_walk_to_items ? m_SwitchBoundsControlled
+                                                  : m_SwitchBounds;
 }
 
-static const OBJECT_BOUNDS *M_BoundsUW(void)
+static OBJECT_BOUNDS M_BoundsUW(const ITEM *const item)
 {
-    return &m_SwitchBoundsUW;
+    return m_SwitchBoundsUW;
 }
 
-static const OBJECT_BOUNDS *M_BoundsUWCeiling(void)
+static OBJECT_BOUNDS M_BoundsUWCeiling(const ITEM *const item)
 {
-    return &m_SwitchBoundsUWCeiling;
+    return m_SwitchBoundsUWCeiling;
 }
 
-static const OBJECT_BOUNDS *M_BoundsJump(void)
+static OBJECT_BOUNDS M_BoundsJump(const ITEM *const item)
 {
-    return &m_SwitchBoundsJump;
+    return m_SwitchBoundsJump;
 }
 
 static int16_t M_TranslateState(
@@ -261,7 +261,8 @@ static void M_CollisionControlled(
     if (Lara_Interact_CanControl(LARA_INTERACT_SWITCH, item_num)) {
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
-        OBJECT_BOUNDS col_bounds = *Object_Get(item->object_id)->bounds_func();
+        OBJECT_BOUNDS col_bounds =
+            Object_Get(item->object_id)->bounds_func(item);
         col_bounds.shift.min.x += bounds->min.x;
         col_bounds.shift.max.x += bounds->max.x;
         col_bounds.shift.min.z += bounds->min.z;
@@ -304,12 +305,12 @@ static void M_Collision(
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
 
     if (!g_Input.action || !Item_IsInactive(item)
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_SWITCH)
-        || !Lara_TestPosition(item, obj->bounds_func())) {
+        || !Lara_TestPosition(item, &bounds)) {
         return;
     }
 
@@ -350,7 +351,8 @@ static void M_CollisionUW(
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 
@@ -393,7 +395,7 @@ static void M_CollisionUWCeiling(
         return;
     }
 
-    OBJECT_BOUNDS bounds = *obj->bounds_func();
+    OBJECT_BOUNDS bounds = obj->bounds_func(item);
     XYZ_32 position = m_SwitchUWPositionCeiling;
     if (Lara_TestPosition(item, &bounds)) {
         if (!Lara_MovePosition(item, &position)) {
@@ -447,7 +449,8 @@ static void M_CollisionJump(
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 
