@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/const.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
@@ -11,11 +12,21 @@
 #include <trx/version.h>
 
 #define M_LF_USE_PUZZLE 80
-// Marks a TR4 slot with an OCB above this value as one that Lara can walk
-// through.
+#define M_LF_PUT_TRIDENT 180
+// Marks a TR4 slot with an OCB above this value as one that has no
+// collision, lets Lara use it from further away and starts the cutscene
+// numbered by the OCB minus this value.
 #define M_CUTSCENE_OCB 1024
 // Marks a used TR4 slot with this OCB as one that Lara can walk through.
 #define M_NO_COLLISION_OCB 999
+
+// TR4 slot types, selected by the OCB. A negative OCB names the Lara
+// animation that the slot plays in place of the usual one.
+typedef enum {
+    M_TYPE_PLAIN,
+    M_TYPE_ANIM,
+    M_TYPE_CUTSCENE,
+} M_TYPE;
 
 typedef struct {
     bool collidable_when_done;
@@ -55,6 +66,33 @@ static const OBJECT_BOUNDS m_ControlledBounds = {
     },
 };
 
+static int32_t M_GetOCB(const ITEM *const item)
+{
+    TRX_VALUE ocb = {};
+    if (!ObjectProperty_GetItemValue(item, "ocb", &ocb)
+        || ocb.type != TVT_S32) {
+        return 0;
+    }
+    return ocb.as_int;
+}
+
+static M_TYPE M_GetType(const ITEM *const item)
+{
+    const int32_t ocb = M_GetOCB(item);
+    if (ocb < 0) {
+        return M_TYPE_ANIM;
+    } else if (ocb > M_CUTSCENE_OCB) {
+        return M_TYPE_CUTSCENE;
+    }
+    return M_TYPE_PLAIN;
+}
+
+static bool M_IsControlled(const ITEM *const item)
+{
+    return g_Config.gameplay.enable_walk_to_items
+        || M_GetType(item) != M_TYPE_PLAIN;
+}
+
 static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
 {
     OBJECT_BOUNDS bounds = m_ControlledBounds;
@@ -70,11 +108,29 @@ static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
     return bounds;
 }
 
+static OBJECT_BOUNDS M_GetUseBounds(const ITEM *const item)
+{
+    OBJECT_BOUNDS bounds = M_GetControlledBounds(item);
+    if (M_GetType(item) == M_TYPE_CUTSCENE) {
+        bounds.shift.min.x -= WALL_L;
+        bounds.shift.max.x += WALL_L;
+        bounds.shift.min.z -= WALL_L;
+        bounds.shift.max.z += WALL_L;
+        bounds.ignore_rot = true;
+    }
+    return bounds;
+}
+
 static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
     return g_Config.gameplay.enable_walk_to_items || g_TRVersion == 4
         ? M_GetControlledBounds(item)
         : m_DefaultBounds;
+}
+
+static OBJECT_BOUNDS M_BoundsEmpty(const ITEM *const item)
+{
+    return M_IsControlled(item) ? M_GetUseBounds(item) : M_Bounds(item);
 }
 
 static XYZ_32 M_GetControlledPosition(const ITEM *const item)
@@ -84,21 +140,6 @@ static XYZ_32 M_GetControlledPosition(const ITEM *const item)
         position.z = Item_GetBoundsAccurate(item)->min.z - 100;
     }
     return position;
-}
-
-static int32_t M_GetOCB(const ITEM *const item)
-{
-    TRX_VALUE ocb = {};
-    if (!ObjectProperty_GetItemValue(item, "ocb", &ocb)
-        || ocb.type != TVT_S32) {
-        return 0;
-    }
-    return ocb.as_int;
-}
-
-static bool M_IsSolid(const ITEM *const item)
-{
-    return M_GetOCB(item) <= M_CUTSCENE_OCB;
 }
 
 static bool M_IsSolidWhenDone(const ITEM *const item)
@@ -169,6 +210,41 @@ static void M_MarkDone(ITEM *const receptacle_item)
     Item_Animate(receptacle_item);
 }
 
+static void M_Finish(ITEM *const receptacle_item)
+{
+    M_ConsumeKeyItem(receptacle_item);
+    M_MarkDone(receptacle_item);
+}
+
+static void M_StartUse(ITEM *const lara_item, ITEM *const receptacle_item)
+{
+    const int32_t ocb = M_GetOCB(receptacle_item);
+    switch (M_GetType(receptacle_item)) {
+    case M_TYPE_ANIM: {
+        const int16_t anim = -ocb;
+        Item_SwitchToAnim(lara_item, anim, 0);
+        lara_item->current_anim_state = LS(LS_CONTROLLED);
+        if (anim != LA(LA_PUT_TRIDENT)) {
+            M_Finish(receptacle_item);
+        }
+        break;
+    }
+
+    case M_TYPE_CUTSCENE:
+        M_Finish(receptacle_item);
+        CutSeq_Request(ocb - M_CUTSCENE_OCB, true);
+        if (!CutSeq_IsActive()) {
+            Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
+        }
+        break;
+
+    case M_TYPE_PLAIN:
+        Item_SwitchToAnim(lara_item, LA(LA_USE_PUZZLE), 0);
+        lara_item->current_anim_state = LS(LS_USE_PUZZLE);
+        break;
+    }
+}
+
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
@@ -191,9 +267,10 @@ static void M_CollisionControlled(
 {
     ITEM *const item = Item_Get(item_num);
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    const M_TYPE type = M_GetType(item);
 
     if (Lara_Interact_CanControl(LARA_INTERACT_RECEPTACLE, item_num)) {
-        const OBJECT_BOUNDS bounds = M_GetControlledBounds(item);
+        const OBJECT_BOUNDS bounds = M_GetUseBounds(item);
         if (Lara_TestPosition(item, &bounds)) {
             if (g_Input.action && !lara->interact_target.is_moving
                 && M_CanShowInventory(item)
@@ -208,10 +285,9 @@ static void M_CollisionControlled(
             }
 
             const XYZ_32 position = M_GetControlledPosition(item);
-            if (Lara_MovePosition(item, &position)) {
-                Item_SwitchToAnim(lara_item, LA(LA_USE_PUZZLE), 0);
-                lara_item->current_anim_state = LS(LS_USE_PUZZLE);
+            if (type == M_TYPE_CUTSCENE || Lara_MovePosition(item, &position)) {
                 Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
+                M_StartUse(lara_item, item);
             }
         } else {
             Lara_Interact_Release(item_num);
@@ -220,9 +296,16 @@ static void M_CollisionControlled(
         lara->interact_target.item_num == item_num
         && lara_item->current_anim_state == LS(LS_USE_PUZZLE)
         && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
-        M_ConsumeKeyItem(item);
-        M_MarkDone(item);
-    } else if (M_IsSolid(item)) {
+        M_Finish(item);
+    } else if (
+        lara->interact_target.item_num == item_num
+        && lara_item->current_anim_state == LS(LS_CONTROLLED)
+        && Item_TestAnimEqual(lara_item, LA(LA_PUT_TRIDENT))
+        && Item_TestFrameEqual(lara_item, M_LF_PUT_TRIDENT)) {
+        M_Finish(item);
+    } else if (
+        lara_item->current_anim_state != LS(LS_CONTROLLED)
+        && type != M_TYPE_CUTSCENE) {
         Object_Collision(item_num, lara_item, coll);
     }
 }
@@ -230,16 +313,16 @@ static void M_CollisionControlled(
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    if (g_Config.gameplay.enable_walk_to_items) {
+    ITEM *const item = Item_Get(item_num);
+    if (M_IsControlled(item)) {
         M_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
-    ITEM *const item = Item_Get(item_num);
     const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (g_TRVersion == 4 && M_IsSolid(item)) {
+    if (g_TRVersion == 4) {
         Object_Collision(item_num, lara_item, coll);
     }
 
@@ -247,8 +330,7 @@ static void M_Collision(
         if (lara_item->current_anim_state == LS(LS_USE_PUZZLE)
             && Lara_TestPosition(item, &bounds)
             && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
-            M_ConsumeKeyItem(item);
-            M_MarkDone(item);
+            M_Finish(item);
         }
         return;
     }
@@ -310,7 +392,7 @@ static void M_SetupEmpty(OBJECT *const obj)
     obj->collision_func = M_Collision;
     obj->handle_save_func = M_HandleSave;
     obj->is_usable_func = M_IsUsable;
-    obj->bounds_func = M_Bounds;
+    obj->bounds_func = M_BoundsEmpty;
     obj->save_flags = true;
     obj->save_anim = true;
     M_DeclareProperties(obj);
