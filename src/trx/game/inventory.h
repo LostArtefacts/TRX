@@ -123,6 +123,8 @@ int32_t Inv_GetItemCount(OBJECT_ID obj_id);
 // for rounds she has no gun to spend. Answers how many were written.
 int32_t Inv_GetDrawnEntries(INVENTORY_ENTRY *entries, int32_t max_count);
 bool Inv_HasItem(OBJECT_ID obj_id);
+// Whether Lara carries an item, either loose or fitted to a weapon.
+bool Inv_IsCarried(OBJECT_ID obj_id);
 bool Inv_HasAttachment(LARA_GUN_TYPE gun_type);
 void Inv_SetItemCount(OBJECT_ID obj_id, int32_t qty);
 bool Inv_AddItem(OBJECT_ID obj_id);

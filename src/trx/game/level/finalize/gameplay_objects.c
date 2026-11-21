@@ -12,6 +12,7 @@
 #include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/general/switch_sequence.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/objects/property.h>
@@ -23,6 +24,8 @@
 // OCB rather than by the ai_bits they also carry. A level parks one it has
 // finished with in room 255, which is the removed marker rather than a room.
 #define M_AI_OBJECT_NO_ROOM 255
+
+#define M_TR4_OCB_RESPAWN 0x80
 
 // A creature walks to a quarter of a sector in front of the marker it targets,
 // unless the marker asks otherwise. The original offsets the copy it makes of
@@ -193,6 +196,16 @@ static void M_PrepareTR4Items(LEVEL_CONTEXT *const ctx)
                 .type = TVT_S32,
                 .as_int = tr4_item->ocb,
             });
+
+        if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_PICKUP)
+            && (tr4_item->ocb & M_TR4_OCB_RESPAWN) != 0) {
+            ObjectProperty_SetItemValueRaw(
+                item, "respawn",
+                (TRX_VALUE) {
+                    .type = TVT_BOOL,
+                    .as_bool = true,
+                });
+        }
     }
 }
 

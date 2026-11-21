@@ -705,6 +705,12 @@ bool Inv_HasItem(const OBJECT_ID object_id)
     return Inv_GetItemCount(object_id) > 0;
 }
 
+bool Inv_IsCarried(const OBJECT_ID object_id)
+{
+    return Inv_HasItem(object_id)
+        || M_IsAttachmentCarried(&m_State, M_GetEntryID(object_id));
+}
+
 void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
 {
     Inv_State_SetCount(&m_State, object_id, qty);
@@ -818,10 +824,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     // There is only one of an attachment, whether loose or on a weapon.
-    const OBJECT_ID attachment_entry_id = M_GetEntryID(object_id);
-    if (M_IsAttachment(attachment_entry_id)
-        && (Inv_HasItem(attachment_entry_id)
-            || M_IsAttachmentCarried(&m_State, attachment_entry_id))) {
+    if (M_IsAttachment(M_GetEntryID(object_id)) && Inv_IsCarried(object_id)) {
         return false;
     }
 
