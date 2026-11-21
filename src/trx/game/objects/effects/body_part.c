@@ -30,7 +30,15 @@ static int16_t M_Throw(const int16_t max_speed)
 
 static void M_TrailBlood(const EFFECT *const effect)
 {
-    if (g_TRVersion >= 3) {
+    if (g_TRVersion == 4) {
+        if ((Random_GetControl() & 1) == 0) {
+            return;
+        }
+        const int32_t x = effect->pos.x + (Random_GetControl() & 0x3F) - 32;
+        const int32_t y = effect->pos.y + (Random_GetControl() & 0x1F) - 16;
+        const int32_t z = effect->pos.z + (Random_GetControl() & 0x3F) - 32;
+        Spawn_Blood(x, y, z, 1, Random_GetControl() << 1, effect->room_num);
+    } else if (g_TRVersion == 3) {
         Sparks_TriggerBloodTR3(effect->pos, effect->rot.y >> 4, 1);
     } else {
         Spawn_Blood(
