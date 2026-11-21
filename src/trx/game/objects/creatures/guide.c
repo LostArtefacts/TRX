@@ -292,6 +292,7 @@ static void M_Control(const int16_t item_num)
     if (p->waypoint == M_WAYPOINT_UNSET) {
         p->waypoint = item->ai_ocb;
     }
+    item->ai_ocb = p->waypoint;
 
     if (p->torch_status == M_TORCH_LIT) {
         M_ControlTorch(item);
@@ -300,7 +301,6 @@ static void M_Control(const int16_t item_num)
     item->ai_bits = AI_FOLLOW;
     CREATURE *const creature = (CREATURE *)item->creature_data;
     Creature_GetAITarget(creature);
-    Creature_FindAITargetObject(creature, O_AI_FOLLOW, p->waypoint);
 
     const AI_INFO lara_info = M_GetAIInfo(item);
     ITEM *const target = M_GetTarget(item, &lara_info);
