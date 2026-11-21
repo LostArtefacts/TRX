@@ -148,6 +148,7 @@ typedef struct {
     GF_LEVEL_SETTINGS settings;
     WEATHER_TYPE weather_type;
     bool water_particles;
+    bool is_train;
 
     struct {
         uint32_t pickups;

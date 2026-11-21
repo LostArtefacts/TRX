@@ -20,6 +20,7 @@
 **Level and game data**
 - Added a `remove_item` game flow sequence event, which takes a given item from Lara's inventory as a level starts (TRX2010)
 - Added `door_9` - `door_12` and `trapdoor_4` - `trapdoor_12` for custom levels (TRX2026)
+- Added a `train` game flow level property, which keeps enemies on the train (TRX2025)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
@@ -37,6 +38,7 @@
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)
 - Fixed Lara snapping into a turn when steering as the jeep starts moving (TRX2017, regression from 1.12)
+- Fixed henchmen falling off the train in Desert Railroad (TRX2025)
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
