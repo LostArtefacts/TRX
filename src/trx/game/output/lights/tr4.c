@@ -539,6 +539,9 @@ static void M_StageLight(
             val2 = (int32_t)((val - light->outer)
                              / ((light->outer - light->inner) / (float)-val2));
         }
+        // Darkens only. Past the outer radius, the original formula turns
+        // negative and washes the item out to white while the shadow fades.
+        val2 = MAX(val2, 0);
         for (int32_t i = 0; i < 3; i++) {
             list->ambient[i] -= (float)val2;
             CLAMP(list->ambient[i], 0.0f, 255.0f);
