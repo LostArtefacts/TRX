@@ -1,4 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.12...develop) - ××××-××-××
+**Lara's movement**
+- Fixed Lara using the ladder-to-crouch animation instead of pulling up onto a ledge from a ladder in some cases (regression from 1.3)
+
 **UI**
 - Fixed a Lua error in the TR4 save and load lists (#7083 / TRX1973)
 
