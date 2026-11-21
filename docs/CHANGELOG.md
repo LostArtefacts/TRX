@@ -29,6 +29,7 @@
 - Added `door_9` - `door_12` and `trapdoor_4` - `trapdoor_12` for custom levels (TRX2026)
 - Added a `train_ground` game flow level property, which sets the height of the ground beside a moving train. Enemies stay off this ground (TRX2025)
 - Added support for `display_picture` sequence events without a picture, which show a black screen for a script to draw on (#6929 / TRX1810)
+- Added a `respawn` property to pickups, which brings a pickup back each time Lara has none of it (TRX532)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
@@ -58,6 +59,7 @@
 - Added Obelisk control (TRX1987)
 - Added Sequence Switch and Sequence Door control (TRX819)
 - Added the game of senet in Tomb of Semerkhet (TRX1990, TRX1991, TRX1992)
+- Added respawning ammo pickups, which return once Lara runs out of that ammo (TRX532)
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)

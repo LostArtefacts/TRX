@@ -52,6 +52,8 @@ typedef struct {
     bool show_pickup_aid;
     bool snap_to_sector;
     bool keep_simulated;
+    bool respawn;
+    bool was_collected;
     int16_t rotation;
     RGB_888 glow_color;
 } M_PRIV;
@@ -157,6 +159,7 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     MUST(JSON_READ_OPT(io, "animate", &p->animate));
+    MUST(JSON_READ_OPT(io, "was_collected", &p->was_collected));
     return OK;
 }
 
@@ -164,6 +167,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "animate", p->animate);
+    JSONW_WRITE_NZ(io, "was_collected", p->was_collected);
 }
 
 static const char *M_CheckRotation(const TRX_VALUE *const in)
@@ -324,9 +328,32 @@ static bool M_CanShowPickupAid(const M_PRIV *const p)
     }
 }
 
+static bool M_IsAwaitingRespawn(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->respawn && p->was_collected && !item->is_visible;
+}
+
+static bool M_CanRespawn(const ITEM *const item)
+{
+    if (!ObjectFamily_Has(item->object_id, OBJ_FAMILY_AMMO)) {
+        return !Inv_IsCarried(item->object_id);
+    }
+    const LARA_GUN_TYPE gun_type = Gun_GetType(
+        ObjectLink_GetInverse(item->object_id, OBJ_LINK_GUN_TO_AMMO));
+    return Inv_GetKindAmmo(gun_type, item->object_id) == 0;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    if (M_IsAwaitingRespawn(item)) {
+        if (M_CanRespawn(item)) {
+            Item_SetVisible(item, true);
+        }
+        return;
+    }
+
     if (!item->is_visible || item->is_finished) {
         Item_RemoveSimulated(item_num);
         return;
@@ -440,12 +467,18 @@ static void M_DoPickup(const int16_t item_num)
     } else {
         Inv_AddItem(item->object_id);
     }
-    Stats_AddPickup();
+    M_PRIV *const p = item->priv;
+    if (!p->was_collected) {
+        Stats_AddPickup();
+    }
+    p->was_collected = true;
     // Notify Lua pickup listeners
     LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num);
 
     Item_SetVisible(item, false);
-    Item_Destroy(item_num);
+    if (!p->respawn) {
+        Item_Destroy(item_num);
+    }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
@@ -474,7 +507,7 @@ static void M_CollectAllAtPos(
         if (Object_Get(check_item->object_id)->collision_func
                 != Pickup_Collision
             || M_IsHeldItem(check_item) || check_item->pos.x != pos.x
-            || check_item->pos.z != pos.z) {
+            || check_item->pos.z != pos.z || M_IsAwaitingRespawn(check_item)) {
             goto loop_end;
         }
 
@@ -1022,6 +1055,11 @@ void Pickup_Setup(OBJECT *const obj)
             "Simulate the item again once it becomes visible, so that it goes "
             "on rotating, glowing and showing its twinkle after a carrier "
             "drops it or a trigger brings it back."),
+        OBJECT_PROPERTY(
+            M_PRIV, respawn, false,
+            "Put the item back in its place each time Lara has none of it. "
+            "For ammo, this means no rounds of its kind left. TR4 levels set "
+            "this with OCB 128."),
         OBJECT_PROPERTY_CHECKED(
             M_PRIV, rotation, 0, M_CheckRotation,
             "How much to rotate the item by each frame while it's active, in "
@@ -1057,7 +1095,9 @@ bool Pickup_Trigger(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     // is_visible prevents the trigger activating before the item has been
     // collected, while is_finished prevents it running more than once.
-    if (item->is_visible || item->is_finished) {
+    const M_PRIV *const p = item->priv;
+    if (item->is_visible || item->is_finished
+        || (!M_IsHeldItem(item) && p->respawn)) {
         return false;
     }
 
