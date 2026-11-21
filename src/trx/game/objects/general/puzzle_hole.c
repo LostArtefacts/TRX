@@ -53,10 +53,10 @@ static const OBJECT_BOUNDS m_ControlledBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
-                                                  : &m_DefaultBounds;
+    return g_Config.gameplay.enable_walk_to_items ? m_ControlledBounds
+                                                  : m_DefaultBounds;
 }
 
 static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
@@ -206,12 +206,12 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (!Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         if (lara_item->current_anim_state == LS(LS_USE_PUZZLE)
-            && Lara_TestPosition(item, obj->bounds_func())
+            && Lara_TestPosition(item, &bounds)
             && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
             M_ConsumeKeyItem(item);
             M_MarkDone(item);
@@ -228,7 +228,7 @@ static void M_Collision(
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 
@@ -241,7 +241,7 @@ static void M_CollisionDone(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     const M_PRIV *const p = item->priv;
@@ -251,7 +251,7 @@ static void M_CollisionDone(
 
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)
-        || !Lara_TestPosition(item, obj->bounds_func())) {
+        || !Lara_TestPosition(item, &bounds)) {
         return;
     }
 

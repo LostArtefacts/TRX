@@ -35,9 +35,9 @@ static const OBJECT_BOUNDS m_PoleBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return &m_PoleBounds;
+    return m_PoleBounds;
 }
 
 static void M_CollisionStanding(
@@ -50,7 +50,8 @@ static void M_CollisionStanding(
     const int16_t old_rot_y = item->rot.y;
     item->rot.y = lara_item->rot.y;
 
-    if (Lara_Interact_Reach(item, obj->bounds_func(), &m_PolePosition)
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (Lara_Interact_Reach(item, &bounds, &m_PolePosition)
         == LARA_REACH_ARRIVED) {
         Item_SwitchToAnim(lara_item, LA(LA_STAND_TO_POLE_GRAB), 0);
         lara_item->current_anim_state = LS(LS_POLE_IDLE);

@@ -79,8 +79,12 @@ static int16_t M_FindReceptacle(
             // If Lara is standing near one, that's our receptacle. If no bounds
             // are set, this assumes is_usable_func has been implemented for
             // specific item tests.
-            if (obj->bounds_func == nullptr
-                || Lara_TestPosition(item, obj->bounds_func())) {
+            if (obj->bounds_func == nullptr) {
+                return item_num;
+            }
+
+            const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+            if (Lara_TestPosition(item, &bounds)) {
                 return item_num;
             }
         }

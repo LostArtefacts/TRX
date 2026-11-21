@@ -17,9 +17,9 @@ static const OBJECT_BOUNDS m_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return &m_Bounds;
+    return m_Bounds;
 }
 
 static void M_Control(const int16_t item_num)
@@ -39,7 +39,8 @@ static void M_Collision(
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         goto cleanup;
     }
 
