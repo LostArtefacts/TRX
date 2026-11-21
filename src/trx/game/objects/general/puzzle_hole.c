@@ -62,6 +62,8 @@ static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
         const BOUNDS_16 *const frame = Item_GetBoundsAccurate(item);
         bounds.shift.min.x = frame->min.x - STEP_L;
         bounds.shift.max.x = frame->max.x + STEP_L;
+        bounds.shift.min.y = -STEP_L;
+        bounds.shift.max.y = +STEP_L;
         bounds.shift.min.z = frame->min.z - STEP_L;
         bounds.shift.max.z = frame->max.z + STEP_L;
     }
