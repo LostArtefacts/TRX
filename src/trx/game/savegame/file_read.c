@@ -1740,6 +1740,17 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
         Output_SetTimeInGame(sunset_timer);
     }
 
+    if (JSON_ReadIO_HasKey(io, "sky_layer_pos")) {
+        MUST(JSON_PUSH(io, "sky_layer_pos"));
+        const size_t count = JSON_ARRAY_LEN(io);
+        for (size_t i = 0; i < count && i < OUTPUT_SKY_LAYER_COUNT; i++) {
+            int32_t pos = 0;
+            MUST(JSON_READ_A(io, i, &pos));
+            Output_Sky_SetLayerPos(i, pos);
+        }
+        MUST(JSON_POP(io));
+    }
+
     {
         // Introduced in TRX 1.4
         int32_t rng_control_seed = 0;

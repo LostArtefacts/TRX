@@ -31,6 +31,7 @@ int32_t Output_Sky_GetTexturePage(void);
 
 const OUTPUT_SKY_LAYER *Output_Sky_GetLayer(int32_t layer_idx);
 int32_t Output_Sky_GetLayerPos(int32_t layer_idx);
+void Output_Sky_SetLayerPos(int32_t layer_idx, int32_t pos);
 // The layer color (with any lightning flash applied) in the OG 128-neutral
 // scale, ready for the shader's VERT_OVERBRIGHT path.
 RGB_888 Output_Sky_GetLayerDrawColor(int32_t layer_idx);
