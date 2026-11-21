@@ -85,7 +85,9 @@ default game flow for examples.
       designated by <code>path</code> is presumed to have a 16:9 aspect ratio
       for this purpose, and as such there's no need for 16x9-specific
       directory.<br/>
-      This logic applies to all images.
+      This logic applies to all images.<br/>
+      Without a <code>path</code>, the screen is black, and a script can draw
+      on it.
     </td>
   </tr>
   <tr valign="top">

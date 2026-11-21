@@ -386,15 +386,17 @@ local TimedContext = h.class("ui.TimedContext", {
 
 ---The context of a picture, for `trx.ui.Screen.PICTURE`.
 ---@class (exact) trx.ui.PictureContext: trx.ui.TimedContext
----@trx.readonly background, can_cross_fade_in, is_loading
+---@trx.readonly background, can_cross_fade_in, is_legal, is_loading
 ---@field background string? The picture, as `trx.ui.primitive.background` takes it, or `nil` for none.
 ---@field is_loading boolean Whether the picture shows while a level loads.
+---@field is_legal boolean Whether the picture is a legal notice, which the Legal screens setting hides.
 ---@field can_cross_fade_in boolean Whether the picture may fade in from the frame shown before it, rather than from black.
 local PictureContext = h.class("ui.PictureContext", {
   extends = "ui.TimedContext",
   fields = {
     background = background,
     is_loading = reported("is_loading"),
+    is_legal = reported("is_legal"),
     can_cross_fade_in = reported("can_cross_fade_in"),
   },
 })

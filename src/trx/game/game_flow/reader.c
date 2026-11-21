@@ -466,9 +466,11 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
 {
     JSON_READ_IO *const io = ctx->io;
     char *expanded_path = nullptr;
+    const bool is_path_optional =
+        event != nullptr && event->type == GFS_DISPLAY_PICTURE;
     SHOULD(M_ReadPath(
-        io, "path", false, GAME_DYNAMIC_PATH_IMAGE_FILE, &expanded_path,
-        event == nullptr));
+        io, "path", is_path_optional, GAME_DYNAMIC_PATH_IMAGE_FILE,
+        &expanded_path, event == nullptr));
 
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
