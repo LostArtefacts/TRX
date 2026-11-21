@@ -49,9 +49,9 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     lara->interact_target.item_num = NO_ITEM;
 }
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return &m_Bounds;
+    return m_Bounds;
 }
 
 static void M_Control(const int16_t item_num)
@@ -95,7 +95,8 @@ static void M_CollisionControlled(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (Lara_TestPosition(item, &bounds)) {
         if (!lara->interact_target.is_moving
             && (!M_ShowInventory(item)
                 || !Lara_Interact_HasActiveTarget(Item_GetIndex(item)))) {
@@ -149,7 +150,8 @@ static void M_Collision(
     item->rot.z = 0;
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         item->rot = old_rot;
         goto normal_collision;
     }

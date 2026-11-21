@@ -7,6 +7,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_LF_USE_PUZZLE 80
 
@@ -48,10 +49,32 @@ static const OBJECT_BOUNDS m_ControlledBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
-                                                  : &m_DefaultBounds;
+    OBJECT_BOUNDS bounds = m_ControlledBounds;
+    if (g_TRVersion == 4) {
+        const BOUNDS_16 *const frame = Item_GetBoundsAccurate(item);
+        bounds.shift.min.x = frame->min.x - STEP_L;
+        bounds.shift.max.x = frame->max.x + STEP_L;
+        bounds.shift.min.z = frame->min.z - STEP_L;
+        bounds.shift.max.z = frame->max.z + STEP_L;
+    }
+    return bounds;
+}
+
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
+{
+    return g_Config.gameplay.enable_walk_to_items ? M_GetControlledBounds(item)
+                                                  : m_DefaultBounds;
+}
+
+static XYZ_32 M_GetControlledPosition(const ITEM *const item)
+{
+    XYZ_32 position = m_ControlledPosition;
+    if (g_TRVersion == 4) {
+        position.z = Item_GetBoundsAccurate(item)->min.z - 100;
+    }
+    return position;
 }
 
 static bool M_IsUsable(const int16_t item_num)
@@ -130,8 +153,8 @@ static void M_CollisionControlled(
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (Lara_Interact_CanControl(LARA_INTERACT_RECEPTACLE, item_num)) {
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (Lara_TestPosition(item, obj->bounds_func())) {
+        const OBJECT_BOUNDS bounds = M_GetControlledBounds(item);
+        if (Lara_TestPosition(item, &bounds)) {
             if (g_Input.action && !lara->interact_target.is_moving
                 && !GF_ShowInventoryKeys(item->object_id)) {
                 Lara_RefuseInteraction();
@@ -143,7 +166,8 @@ static void M_CollisionControlled(
                 return;
             }
 
-            if (Lara_MovePosition(item, &m_ControlledPosition)) {
+            const XYZ_32 position = M_GetControlledPosition(item);
+            if (Lara_MovePosition(item, &position)) {
                 Item_SwitchToAnim(lara_item, LA(LA_USE_PUZZLE), 0);
                 lara_item->current_anim_state = LS(LS_USE_PUZZLE);
                 Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
@@ -171,12 +195,12 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (!Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         if (lara_item->current_anim_state == LS(LS_USE_PUZZLE)
-            && Lara_TestPosition(item, obj->bounds_func())
+            && Lara_TestPosition(item, &bounds)
             && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
             M_ConsumeKeyItem(item);
             M_MarkDone(item);
@@ -193,7 +217,7 @@ static void M_Collision(
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 
@@ -206,7 +230,7 @@ static void M_CollisionDone(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     const M_PRIV *const p = item->priv;
@@ -216,7 +240,7 @@ static void M_CollisionDone(
 
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)
-        || !Lara_TestPosition(item, obj->bounds_func())) {
+        || !Lara_TestPosition(item, &bounds)) {
         return;
     }
 

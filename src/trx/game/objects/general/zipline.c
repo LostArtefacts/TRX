@@ -46,10 +46,10 @@ static const OBJECT_BOUNDS m_ControlledBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
-                                                  : &m_DefaultBounds;
+    return g_Config.gameplay.enable_walk_to_items ? m_ControlledBounds
+                                                  : m_DefaultBounds;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -175,8 +175,8 @@ static void M_CollisionControlled(
     const OBJECT *const obj = Object_Get(item->object_id);
 
     const XYZ_32 move_pos = M_GetControlledPosition(item);
-    if (Lara_Interact_Reach(item, obj->bounds_func(), &move_pos)
-        == LARA_REACH_ARRIVED) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (Lara_Interact_Reach(item, &bounds, &move_pos) == LARA_REACH_ARRIVED) {
         Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
         M_Grab(item, lara_item, lara);
     }
@@ -202,7 +202,8 @@ static void M_Collision(
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 

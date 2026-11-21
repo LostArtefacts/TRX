@@ -5,6 +5,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_LF_USE_KEYHOLE 104
 
@@ -18,6 +19,12 @@ static XYZ_32 m_ControlledPosition = {
     .x = 0,
     .y = 0,
     .z = WALL_L / 2 - LARA_RADIUS * 2,
+};
+
+static XYZ_32 m_ControlledPositionTR4 = {
+    .x = 0,
+    .y = 0,
+    .z = WALL_L / 2 - LARA_RADIUS - 50,
 };
 
 static const OBJECT_BOUNDS m_DefaultBounds = {
@@ -42,10 +49,10 @@ static const OBJECT_BOUNDS m_ControlledBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *M_Bounds(void)
+static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
-                                                  : &m_DefaultBounds;
+    return g_Config.gameplay.enable_walk_to_items ? m_ControlledBounds
+                                                  : m_DefaultBounds;
 }
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
@@ -94,7 +101,8 @@ static void M_CollisionControlled(
 
     if (Lara_Interact_CanControl(LARA_INTERACT_RECEPTACLE, item_num)) {
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (Lara_TestPosition(item, obj->bounds_func())) {
+        const OBJECT_BOUNDS bounds = obj->bounds_func(item);
+        if (Lara_TestPosition(item, &bounds)) {
             if (g_Input.action && !lara->interact_target.is_moving
                 && !GF_ShowInventoryKeys(item->object_id)) {
                 Lara_RefuseInteraction();
@@ -106,7 +114,10 @@ static void M_CollisionControlled(
                 return;
             }
 
-            if (Lara_MovePosition(item, &m_ControlledPosition)) {
+            const XYZ_32 *const position = g_TRVersion == 4
+                ? &m_ControlledPositionTR4
+                : &m_ControlledPosition;
+            if (Lara_MovePosition(item, position)) {
                 Item_SwitchToAnim(lara_item, LA(LA_USE_KEY), 0);
                 lara_item->current_anim_state = LS(LS_USE_KEY);
                 Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
@@ -134,12 +145,12 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (!Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         if (lara_item->current_anim_state == LS(LS_USE_KEY)
-            && Lara_TestPosition(item, obj->bounds_func())
+            && Lara_TestPosition(item, &bounds)
             && Item_TestFrameEqual(lara_item, M_LF_USE_KEYHOLE)) {
             M_ConsumeKeyItem(item);
             M_MarkDone(item);
@@ -156,7 +167,7 @@ static void M_Collision(
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    if (!Lara_TestPosition(item, &bounds)) {
         return;
     }
 
