@@ -44,7 +44,6 @@ typedef struct {
 static VECTOR *m_ScriptWeapons = nullptr;
 static lua_State *m_L = nullptr;
 
-static const WEAPON_INFO *M_WeaponOfAnim(const void *anim);
 static bool M_GetID(const void *self, TRX_VALUE *out);
 static bool M_GetEquipKey(const void *self, TRX_VALUE *out);
 static const char *M_SetKind(void *self, const TRX_VALUE *in);

@@ -36,19 +36,6 @@ static int32_t m_RopeCount = 0;
 static ROPE_PENDULUM m_Pendulum = {};
 static ROPE_PENDULUM m_NullPendulum = {};
 
-static XYZ_32 *M_Normalise(XYZ_32 *v);
-static void M_Mul(const XYZ_32 *v, int32_t scale, XYZ_32 *d);
-static int32_t M_DotProduct(const XYZ_32 *a, const XYZ_32 *b);
-static void M_CrossProduct(const XYZ_32 *a, const XYZ_32 *b, XYZ_32 *n);
-static void M_GetMatrixAngles(const int32_t m[9], int16_t dest[3]);
-static void M_ModelRigid(
-    const XYZ_32 *pa, const XYZ_32 *pb, XYZ_32 *va, XYZ_32 *vb,
-    int32_t rlength);
-static void M_ModelRigidRope(
-    const XYZ_32 *pa, const XYZ_32 *pb, XYZ_32 *va, XYZ_32 *vb,
-    int32_t rlength);
-static void M_SetPendulumPoint(ROPE *rope, int32_t node);
-
 static XYZ_32 *M_Normalise(XYZ_32 *const v)
 {
     const int32_t x = v->x >> 16;

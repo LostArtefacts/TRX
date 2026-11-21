@@ -17,8 +17,6 @@ static double m_BudgetSec = 0.0;
 // entered after a long C-side stall is not blamed for it.
 static double m_DeadlineSec = 0.0;
 
-static void M_Hook(lua_State *L, lua_Debug *ar);
-
 // coroutine.create makes a thread with no hook of its own, so both creators
 // route new threads through the guard. wrap keeps its stock behaviour of
 // re-raising a resume error in the caller.
