@@ -3715,6 +3715,18 @@
         "sentry_gun": {
             "name": "\\{review}Tourelle robotisée",
         },
+        "sequence_door": {
+            "name": "\\{review}Porte à séquence",
+        },
+        "sequence_switch_1": {
+            "name": "\\{review}Interrupteur à séquence 1",
+        },
+        "sequence_switch_2": {
+            "name": "\\{review}Interrupteur à séquence 2",
+        },
+        "sequence_switch_3": {
+            "name": "\\{review}Interrupteur à séquence 3",
+        },
         "seth_sarcophagus": {
             "name": "\\{review}Sarcophage de Seth",
         },

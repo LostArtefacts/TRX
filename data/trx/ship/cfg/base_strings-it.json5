@@ -3742,6 +3742,18 @@
         "sentry_gun": {
             "name": "Torretta di Guardia",
         },
+        "sequence_door": {
+            "name": "\\{review}Porta a Sequenza",
+        },
+        "sequence_switch_1": {
+            "name": "\\{review}Interruttore a Sequenza 1",
+        },
+        "sequence_switch_2": {
+            "name": "\\{review}Interruttore a Sequenza 2",
+        },
+        "sequence_switch_3": {
+            "name": "\\{review}Interruttore a Sequenza 3",
+        },
         "seth_sarcophagus": {
             "name": "Sarcofago di Seth",
         },
