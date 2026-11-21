@@ -18,6 +18,7 @@
 #include <trx/game/locale/path.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output/sky.h>
+#include <trx/game/rooms/const.h>
 #include <trx/game/shell.h>
 #include <trx/version.h>
 
@@ -980,6 +981,7 @@ static RESULT M_LoadLevel(
         }
     }
     MUST(JSON_READ_D(io, "water_particles", &level->water_particles, false));
+    MUST(JSON_READ_D(io, "train_ground", &level->train_ground, NO_HEIGHT));
 
     MUST(JSON_READ_D(
         io, "unobtainable_pickups", &level->unobtainable.pickups, 0));

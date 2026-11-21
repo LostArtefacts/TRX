@@ -245,6 +245,10 @@
           "type": "boolean",
           "description": "Enables PSX-style underwater water particles in this level. TR4 shows them in every water room and ignores this property."
         },
+        "train_ground": {
+          "type": "integer",
+          "description": "Marks the level as set on a moving train and gives the height of the ground beside it, with 256 representing 1 click and 1024 representing 1 sector. Enemies do not walk onto the ground, and henchmen that fall onto it die. Omit for a level without a train."
+        },
         "death_tile": {
           "type": "string",
           "description": "Defines death-tile behavior.",

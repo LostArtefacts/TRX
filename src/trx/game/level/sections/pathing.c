@@ -1,9 +1,11 @@
 #include <trx/core/benchmark.h>
 #include <trx/core/file.h>
 #include <trx/game/const.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/pathing.h>
+#include <trx/game/rooms/const.h>
 
 #include <string.h>
 
@@ -16,6 +18,9 @@ RESULT Level_Section_ReadPathingData(
 {
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    const int32_t train_ground =
+        level != nullptr ? level->train_ground : NO_HEIGHT;
     const int32_t num_boxes = File_ReadCountS32(file);
     Box_InitialiseBoxes(num_boxes);
     for (int32_t i = 0; i < num_boxes; i++) {
@@ -42,6 +47,9 @@ RESULT Level_Section_ReadPathingData(
             if (loader->game_version >= 3) {
                 box->overlap_index |= BOX_BLOCKED;
             }
+        } else if (
+            train_ground != NO_HEIGHT && box->height > train_ground - STEP_L) {
+            box->overlap_index |= BOX_BLOCKED | BOX_BLOCKABLE;
         }
     }
 

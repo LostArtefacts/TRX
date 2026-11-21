@@ -21,6 +21,7 @@
 **Level and game data**
 - Added a `remove_item` game flow sequence event, which takes a given item from Lara's inventory as a level starts (TRX2010)
 - Added `door_9` - `door_12` and `trapdoor_4` - `trapdoor_12` for custom levels (TRX2026)
+- Added a `train_ground` game flow level property, which sets the height of the ground beside a moving train. Enemies stay off this ground (TRX2025)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
@@ -49,6 +50,7 @@
 - Fixed the body parts of enemies killed by explosions not bleeding (TRX1433)
 - Fixed the camera moving to an odd position when Lara climbs through the trapdoor in Menkaure's Pyramid (TRX1685)
 - Fixed several differences from the original game in how Lara is lit, such as steps in the light at her joints and sudden changes during animations (TRX1961)
+- Fixed henchmen falling off the train in Desert Railroad (TRX2025)
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)

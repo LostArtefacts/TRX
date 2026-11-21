@@ -357,9 +357,8 @@ static bool M_TestMonkeyHeight(const ITEM *const item)
 
 static bool M_TouchesDeadlyFloor(const ITEM *const item)
 {
-    // TODO: replace with train GF flag during Desert Railroad implementation.
-    const bool is_train = GF_GetCurrentLevel()->num == 12;
-    return is_train && item->pos.y > -STEP_L;
+    const int32_t ground = GF_GetCurrentLevel()->train_ground;
+    return ground != NO_HEIGHT && item->pos.y > ground - STEP_L;
 }
 
 static bool M_Vault(ITEM *const item, const int16_t angle)
