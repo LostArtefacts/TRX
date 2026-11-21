@@ -5,6 +5,7 @@
 **Camera**
 - Fixed Lara's position not resetting in photo mode if her weapons are drawn (TRX2000, regression from 1.11)
 - Fixed the camera briefly showing Lara when a flyby sequence ends the level (TRX1975)
+- Fixed the camera sometimes getting stuck when a flyby sequence returns to Lara (TRX1684)
 
 **Rendering**
 - Fixed Lara, statics and inventory models not being drawn on some AMD graphics drivers (TRX2024, regression from 1.12)
