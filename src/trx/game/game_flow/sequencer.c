@@ -4,6 +4,7 @@
 #include <trx/debug.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow/sequencer_events.h>
+#include <trx/game/hub.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/level.h>
@@ -174,6 +175,7 @@ RESULT GF_InterpretSequence(
         break;
 
     case GFSC_RESTART:
+        Hub_RepeatEntry(level);
         if (level == GF_GetGymLevel() || level == GF_GetFirstLevel()) {
             SG_Resume_ResetAllEntries();
         } else {

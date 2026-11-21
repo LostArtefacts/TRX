@@ -45,6 +45,11 @@ RESULT GF_DoLevelSequence(
     const GF_LEVEL *start_level, GF_SEQUENCE_CONTEXT seq_ctx,
     GF_COMMAND *out_cmd);
 
+// Applies the reset_hub events as Lara leaves the level for the next one:
+// takes away her plot items, and makes the game forget its waypoints and the
+// levels she has left.
+void GF_ApplyHubReset(const GF_LEVEL *level, const GF_LEVEL *next_level);
+
 // Returns whether a level has ended and shows its statistics. A save made
 // then holds the playthrough without the level, and resumes after them.
 bool GF_IsLevelEnding(void);

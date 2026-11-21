@@ -1,9 +1,10 @@
 // The tables a script keeps across a save.
 //
 // Two scopes: the level store is emptied when a level loads, and the game
-// store lasts a playthrough. Both are plain Lua tables that hold numbers,
-// strings, booleans and tables of those. A value of any other type is dropped
-// when the game is saved, and the key it sat at is named in the log.
+// store lasts a playthrough. A level that Lara comes back to gets back the
+// level store it had when she left. Both are plain Lua tables that hold
+// numbers, strings, booleans and tables of those. A value of any other type is
+// dropped when the game is saved, and the key it sat at is named in the log.
 //
 // A table is written once and named by an id, and every later sighting of it
 // writes the id instead. A table stored in two places therefore loads as one

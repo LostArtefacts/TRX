@@ -33,6 +33,7 @@
 - Added a `setup_mirror` game flow sequence event, which makes a room show Lara's reflection in one of its walls (TRX688)
 - Added a `pulse_flip_group` game flow level property, which keeps the TR4 pulsing lights dark until a given flip group is flipped (TRX2022)
 - Added `win_item_nums` and `lose_item_nums` properties to the senet spinner, which name the items that winning or losing the game of senet starts (TRX2051)
+- Changed the `reset_hub` game flow sequence event to also make the game forget the state of the levels Lara has left (TRX459)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
@@ -41,6 +42,7 @@
 - Fixed tall enemies stopping under an opening into the room above them (TRX2110)
 
 **TR4**
+- Added hubs: a level now keeps its state when Lara leaves it, such as opened doors, killed enemies and collected items, and she finds it as she left it when she comes back. Saves made before this change start these levels fresh (TRX459)
 - Added Blade Ring control (TRX1993)
 - Added Plinth Blade control (TRX1996)
 - Added Catwalk Blade control (TRX1997)
@@ -85,6 +87,7 @@
 - Fixed Lara saying no at used keyholes and filled puzzle slots (TRX2068)
 - Fixed Lara being pushed away from certain keyholes, such as in The Sphinx Complex (TRX2072)
 - Fixed used puzzle slots with an OCB of 999 blocking Lara in custom levels (TRX2072)
+- Fixed restarting a level putting Lara at its start rather than where she entered it, such as in Coastal Ruins
 - Fixed some enemies trying to reach Lara across gaps they cannot cross
 - Fixed flying and swimming enemies failing to follow Lara into some areas
 - Fixed the binocular light barely lighting enemies and other objects (#7089 / TRX1980)

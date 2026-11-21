@@ -12,6 +12,7 @@
 #include <trx/game/game_flow/sequencer_events.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gym.h>
+#include <trx/game/hub.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
@@ -90,6 +91,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     }
 
     if (Game_IsLevelComplete()) {
+        Hub_StoreLevel(Game_GetCurrentLevel());
         Sound_StopAll();
         Music_Stop();
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };

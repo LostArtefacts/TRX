@@ -111,6 +111,33 @@ static void M_StoreGameToNextLevel(
     }
 }
 
+static bool M_IsPlayed(const GF_LEVEL *const level)
+{
+    for (int32_t i = 0; i < level->sequence.length; i++) {
+        if (level->sequence.events[i].type == GFS_LOOP_GAME) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Returns the level whose reset_hub events apply as Lara leaves the given one.
+// A level that is never played, such as the second Sacred Lake in TR4, only
+// passes her on, so the events of the level before it apply.
+static const GF_LEVEL *M_GetHubOrigin(const GF_LEVEL *const level)
+{
+    if (M_IsPlayed(level)) {
+        return level;
+    }
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
+    if (resume == nullptr || resume->prev_level < 0) {
+        return level;
+    }
+    const GF_LEVEL *const prev_level =
+        GF_GetLevel(GFLT_MAIN, resume->prev_level);
+    return prev_level != nullptr ? prev_level : level;
+}
+
 static const GF_LEVEL *M_GetCanonicalNextLevel(const GF_LEVEL *const level)
 {
     // Canonical order is still used for regular level flow; resume inheritance
@@ -142,10 +169,7 @@ M_GF_HANDLER(M_HandleLevelComplete)
         return OK;
     }
     M_StoreGameToNextLevel(current_level, next_level);
-    GF_InventoryModifier_ApplyHubReset(current_level, next_level);
-    if (GF_IsHubReset(current_level, next_level)) {
-        Waypoint_Reset();
-    }
+    GF_ApplyHubReset(current_level, next_level);
     RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
     if (next_resume != nullptr) {
         next_resume->prev_level = current_level->num;
@@ -181,12 +205,19 @@ M_GF_HANDLER(M_HandlePlayLevel)
         }
     }
 
-    if (Lara_GetItem() != nullptr) {
-        Lara_Initialise(level);
-    }
-
+    // Before the state of a remembered level goes back, so that its ambient
+    // track plays on.
     if (level->music_track != MX_INACTIVE) {
         Music_Stop();
+    }
+
+    if (seq_ctx != GFSC_SAVED
+        && (level->type == GFL_NORMAL || level->type == GFL_BONUS)) {
+        SHOULD(Hub_RestoreLevel(level));
+    }
+
+    if (Lara_GetItem() != nullptr) {
+        Lara_Initialise(level);
     }
 
     // post load
@@ -642,6 +673,17 @@ M_GF_HANDLER(M_HandleDisableFloor)
     }
     *out_cmd = gf_cmd;
     return OK;
+}
+
+void GF_ApplyHubReset(
+    const GF_LEVEL *const level, const GF_LEVEL *const next_level)
+{
+    const GF_LEVEL *const hub_origin = M_GetHubOrigin(level);
+    GF_InventoryModifier_ApplyHubReset(hub_origin, next_level);
+    if (GF_IsHubReset(hub_origin, next_level)) {
+        Waypoint_Reset();
+        Hub_Reset();
+    }
 }
 
 bool GF_IsLevelEnding(void)
