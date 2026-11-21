@@ -111,9 +111,10 @@ M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 ---A level, as the game flow file declares it. Everything on it is read-only:
 ---a level is what the game flow says it is.
 ---@class (exact) trx.game.Level
----@trx.readonly is_completed, key, lara_outfit, music_track, num, path,
----  script_path, title, type, unobtainable_ally_kills, unobtainable_kills,
----  unobtainable_pickups, unobtainable_secrets, water_particles
+---@trx.readonly is_completed, is_remembered, key, lara_outfit, music_track,
+---  num, path, script_path, title, type, unobtainable_ally_kills,
+---  unobtainable_kills, unobtainable_pickups, unobtainable_secrets,
+---  water_particles
 ---@field num trx.game.LevelNum
 ---@field key string? What the level is called, taken from the name of the file it loads: `wall.tr2` reads back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file of its own. <!--noref: wall.tr2, wall-->
 ---
@@ -129,6 +130,20 @@ M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 ---@field music_track trx.catalog.music The track that plays when the level starts.
 ---@field water_particles boolean Whether water particles are visible in the level's water.
 ---@field is_completed boolean Whether the player has finished the level in the game being played. The statistics screen counts these to say how far into the game a level is.
+---@field is_remembered boolean Whether the game remembers the state Lara left the level in, which it puts back when she comes back to it, as TR4 does in its hubs. A level counts once she finishes it, and stops counting when the game flow resets the hub or a new game starts.
+---
+---  On the level being played, this tells a return from a first visit. A
+---  script that sets up the level's starting state from
+---  `trx.events.on_game_start` skips that on a return, because the items, the
+---  rooms and `trx.store.level` are already as Lara left them.
+---
+---  ```lua
+---  trx.events.on_game_start(function(is_save)
+---    if not is_save and not trx.game.current_level.is_remembered then
+---      trx.store.level.doors_opened = 0
+---    end
+---  end)
+---  ```
 ---@field unobtainable_pickups integer Pickups the stats screen must not hold against the player, because they cannot be got.
 ---@field unobtainable_kills integer Kills the stats screen must not hold against the player.
 ---@field unobtainable_ally_kills integer Ally kills the stats screen must not hold against the player.
@@ -147,6 +162,7 @@ local Level = h.handle("game.Level", "GF_LEVEL", {
     music_track = "music_track",
     water_particles = "water_particles",
     is_completed = "is_completed",
+    is_remembered = "is_remembered",
     unobtainable_pickups = "unobtainable.pickups",
     unobtainable_kills = "unobtainable.kills",
     unobtainable_ally_kills = "unobtainable.ally_kills",
@@ -333,7 +349,7 @@ M.globe = raw.globe
 ---@alias trx.game.DemoNum integer
 
 ---@class (exact) trx.game.play_level.opts
----@field select? boolean Start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
+---@field select? boolean Start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it, and with every level fresh. Without it the level continues from the one in progress: the level she leaves is remembered as if she had finished it, and a remembered level she goes to is as she left it.
 ---@field ng_plus? boolean Whether to start the bonus game mode.
 ---@field from_save? table The save to take Lara's progress from, as `{ slot_num = 1, pool = trx.savegame.Pool.NORMAL }`. Raises without `select`. The death counter and the restart file then use this save. Without it, `select` builds Lara's inventory as if the game had been played from the first level. <!--noref: select-->
 

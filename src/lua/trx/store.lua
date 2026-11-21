@@ -27,7 +27,7 @@ local h = require("trx.internal.helpers")
 ---@trx.module 21 Persistent storage
 ---@class (exact) trx.store
 ---@trx.readonly game, level
----@field level table What the level remembers. Emptied when a level loads, so a script that wants a starting state writes it from `trx.events.on_game_start`.
+---@field level table What the level remembers. Emptied when a level loads, so a script that wants a starting state writes it from `trx.events.on_game_start`. A level that Lara comes back to gets back what it held when she left, as `trx.game.Level.is_remembered` says.
 ---@field game table What the playthrough remembers. It survives a level change and is emptied only when a new game starts.
 local M = h.module("store")
 

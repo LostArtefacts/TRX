@@ -617,6 +617,11 @@ void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
 {
 }
 
+bool Hub_HasLevel(const GF_LEVEL *const level)
+{
+    return false;
+}
+
 void Hub_StoreLevel(const GF_LEVEL *const level)
 {
 }

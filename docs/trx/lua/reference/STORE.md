@@ -35,5 +35,5 @@ something the level carries, such as the item's index.
 
 ### Properties
 
-- <a id="store.level" name="store.level"></a>**`trx.store.level`** (table). What the level remembers. Emptied when a level loads, so a script that wants a starting state writes it from [`trx.events.on_game_start`](EVENTS.md#events.on_game_start). *(read-only)*
+- <a id="store.level" name="store.level"></a>**`trx.store.level`** (table). What the level remembers. Emptied when a level loads, so a script that wants a starting state writes it from [`trx.events.on_game_start`](EVENTS.md#events.on_game_start). A level that Lara comes back to gets back what it held when she left, as [`trx.game.Level.is_remembered`](GAME.md#game.Level.is_remembered) says. *(read-only)*
 - <a id="store.game" name="store.game"></a>**`trx.store.game`** (table). What the playthrough remembers. It survives a level change and is emptied only when a new game starts. *(read-only)*
