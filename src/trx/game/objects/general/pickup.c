@@ -42,6 +42,7 @@
 #define M_AID_WAIT_MIN           (LOGIC_FPS * 2.5) // 75
 #define M_AID_WAIT_MAX           (LOGIC_FPS * 5)   // 150
 #define M_AID_WAIT_BREAK_CHANCE  0x1200
+#define M_OCB_RESPAWN            0x80
 
 typedef struct {
     int32_t aid_timer;
@@ -51,6 +52,8 @@ typedef struct {
     bool show_pickup_aid;
     bool snap_to_sector;
     bool keep_simulated;
+    bool respawn;
+    bool was_collected;
     int16_t rotation;
     RGB_888 glow_color;
 } M_PRIV;
@@ -156,6 +159,7 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     MUST(JSON_READ_OPT(io, "animate", &p->animate));
+    MUST(JSON_READ_OPT(io, "was_collected", &p->was_collected));
     return OK;
 }
 
@@ -163,6 +167,16 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "animate", p->animate);
+    JSONW_WRITE_NZ(io, "was_collected", p->was_collected);
+}
+
+static int32_t M_GetOCB(const ITEM *const item)
+{
+    TRX_VALUE value;
+    if (!ObjectProperty_GetItemValue(item, "ocb", &value)) {
+        return 0;
+    }
+    return value.as_int;
 }
 
 static const char *M_CheckRotation(const TRX_VALUE *const in)
@@ -177,6 +191,7 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
     p->aid_timer = -1;
     p->secret_mask = 0;
+    p->respawn = g_TRVersion == 4 && (M_GetOCB(item) & M_OCB_RESPAWN) != 0;
 
     if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SECRET)) {
         const GF_LEVEL *const level = Game_GetCurrentLevel();
@@ -351,9 +366,44 @@ static bool M_CanShowPickupAid(const M_PRIV *const p)
     }
 }
 
+static bool M_IsAwaitingRespawn(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->respawn && p->was_collected && !item->is_visible;
+}
+
+static bool M_CanRespawn(const ITEM *const item)
+{
+    switch (item->object_id) {
+    case O_SHOTGUN_AMMO_ITEM:
+    case O_SHOTGUN_AMMO_2_ITEM:
+    case O_CROSSBOW_AMMO_1_ITEM:
+    case O_CROSSBOW_AMMO_2_ITEM:
+    case O_CROSSBOW_AMMO_3_ITEM:
+    case O_GRENADE_AMMO_ITEM:
+    case O_GRENADE_AMMO_2_ITEM:
+    case O_GRENADE_AMMO_3_ITEM:
+    case O_REVOLVER_AMMO_ITEM:
+        break;
+    default:
+        return false;
+    }
+
+    const LARA_GUN_TYPE gun_type = Gun_GetType(
+        ObjectLink_GetInverse(item->object_id, OBJ_LINK_GUN_TO_AMMO));
+    return Inv_GetKindAmmo(gun_type, item->object_id) == 0;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    if (M_IsAwaitingRespawn(item)) {
+        if (M_CanRespawn(item)) {
+            Item_SetVisible(item, true);
+        }
+        return;
+    }
+
     if (!item->is_visible || item->is_finished) {
         Item_RemoveSimulated(item_num);
         return;
@@ -433,12 +483,18 @@ static void M_DoPickup(const int16_t item_num)
     } else {
         Inv_AddItem(item->object_id);
     }
-    Stats_AddPickup();
+    M_PRIV *const p = item->priv;
+    if (!p->was_collected) {
+        Stats_AddPickup();
+    }
+    p->was_collected = true;
     // Notify Lua pickup listeners
     LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num);
 
     Item_SetVisible(item, false);
-    Item_Destroy(item_num);
+    if (!p->respawn) {
+        Item_Destroy(item_num);
+    }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
@@ -467,7 +523,8 @@ static void M_CollectAllAtPos(
         if (Object_Get(check_item->object_id)->collision_func
                 != Pickup_Collision
             || check_item->object_id == O_FLARE_ITEM
-            || check_item->pos.x != pos.x || check_item->pos.z != pos.z) {
+            || check_item->pos.x != pos.x || check_item->pos.z != pos.z
+            || M_IsAwaitingRespawn(check_item)) {
             goto loop_end;
         }
 
@@ -1059,7 +1116,8 @@ bool Pickup_Trigger(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     // is_visible prevents the trigger activating before the item has been
     // collected, while is_finished prevents it running more than once.
-    if (item->is_visible || item->is_finished) {
+    const M_PRIV *const p = item->priv;
+    if (item->is_visible || item->is_finished || p->respawn) {
         return false;
     }
 
