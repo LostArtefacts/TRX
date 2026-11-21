@@ -55,6 +55,12 @@ void Output_AddDynamicLight(XYZ_32 pos, int32_t intensity, int32_t falloff);
 // The same, in color. TR1 and TR2 light rooms in color, but shade objects in
 // brightness alone, where the light stands for its brightest channel.
 void Output_AddDynamicLightRGB(XYZ_32 pos, int32_t falloff, RGB_888 color);
+// Reports whether the lighting model of the game has beams of light.
+bool Output_HasBeamLights(void);
+// A beam of light for this frame, such as the binocular torch, which shines
+// from the start towards the end at an intensity of 0 to 255. It does nothing
+// where the lighting model of the game has no beams.
+void Output_AddBeamLight(XYZ_32 start, XYZ_32 end, int32_t intensity);
 // A volumetric fog bulb for this frame, in any game, on the same terms.
 void Output_AddFogBulb(
     XYZ_32 pos, int32_t radius, int32_t density, RGB_888 color);

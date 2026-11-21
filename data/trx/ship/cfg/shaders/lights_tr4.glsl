@@ -8,11 +8,14 @@
 #define TR4_LIGHT_SPOT 1
 #define TR4_LIGHT_SUN 2
 
+// Matches OUTPUT_DYNAMIC_LIGHT_SPOT.
+#define TR4_DYNAMIC_SPOT 2.0
+
 struct TR4Light {
     vec4 pos;   // w = type
     vec4 color; // rgb 0..1; w = range
     vec4 dir;   // where a spot points or a sun shines; w = att1
-    vec4 cone;  // x = cosine of a spot's cone edge
+    vec4 cone;  // x, y = cosines of a spot's cone edge and fully lit cone
 };
 
 // The lights that the instances of a draw share, in world space. A slot
@@ -40,6 +43,21 @@ TR4Light getLightTR4(int i)
     return light;
 }
 
+// Returns how much of a spot's light reaches along the direction to the
+// vertex, as Direct3D figured it with a falloff of 1: none past the cone edge,
+// all of it inside the fully lit cone, and linear in the cosine between them.
+float spotFactorTR4(vec3 toVertex, vec3 dir, float edge, float inner)
+{
+    float rho = dot(toVertex, safeNormalize(dir));
+    if (rho <= edge) {
+        return 0.0;
+    }
+    if (rho >= inner) {
+        return 1.0;
+    }
+    return (rho - edge) / (inner - edge);
+}
+
 // Lights a vertex as the retail game's Direct3D lights did: in object space,
 // from the vertex itself, with the legacy attenuation att1 * (1 - d / range).
 // Direct3D wrote the lit color in 8 bits, so the sum stops at 255.
@@ -63,9 +81,9 @@ vec3 lightObjectsTR4(vec3 rawNormal, vec3 pos, vec3 ambient)
             }
             L = d / dist;
             atten = light.dir.w * (1.0 - dist / light.color.w);
-            if (type == TR4_LIGHT_SPOT
-                && dot(-L, safeNormalize(light.dir.xyz)) <= light.cone.x) {
-                continue;
+            if (type == TR4_LIGHT_SPOT) {
+                atten *= spotFactorTR4(
+                    -L, light.dir.xyz, light.cone.x, light.cone.y);
             }
         }
         float val = dot(N, L);
@@ -86,17 +104,21 @@ vec3 lightOwnTR4(float shade)
 }
 
 // Port of the retail room dynamic lighting, which hands each light to
-// Direct3D as a point light (InitDynamicLighting). The light fades linearly
-// to its range and reaches only faces turned towards it, so it does not
-// show through walls. The material is white, so the sum on faces clamps at
-// full brightness. Billboards have no normal and keep the plain falloff.
-// Returns the contribution in the "128 = neutral" L scale.
+// Direct3D as a point light, and the beam light as a spotlight
+// (InitDynamicLighting). The light fades linearly to its range and reaches
+// only faces turned towards it, so it does not show through walls. The
+// material is white, so the sum on faces clamps at full brightness.
+// Billboards have no normal and keep the plain falloff. Returns the
+// contribution in the "128 = neutral" L scale.
 vec3 lightDynamicRoomTR4(vec3 rawNormal, vec4 vertexPos, bool isBillboard)
 {
     vec3 add = vec3(0.0);
     vec3 n = safeNormalize(rawNormal / float(1 << 14));
     for (int i = 0; i < uNumLights; i++) {
-        float falloff = uLights[i].falloff * 0.625; // (f >> 1) + (f >> 3)
+        bool isSpot = uLights[i].kind == TR4_DYNAMIC_SPOT;
+        float falloff = isSpot
+            ? uLights[i].falloff
+            : uLights[i].falloff * 0.625; // (f >> 1) + (f >> 3)
         if (falloff <= 0.0) {
             continue;
         }
@@ -107,6 +129,11 @@ vec3 lightDynamicRoomTR4(vec3 rawNormal, vec4 vertexPos, bool isBillboard)
         }
         float dist = sqrt(distSq);
         float val2 = (falloff - dist) / falloff;
+        if (isSpot) {
+            val2 *= spotFactorTR4(
+                -d / max(dist, 1.0), uLights[i].dir.xyz, uLights[i].dir.w,
+                uLights[i].coneInner);
+        }
         float val = isBillboard
             ? val2
             : val2 * max(dot(n, d / max(dist, 1.0)), 0.0);
@@ -127,7 +154,7 @@ vec3 lightDynamicStaticTR4(vec4 vertexPos)
     vec3 add = vec3(0.0);
     for (int i = 0; i < uNumLights; i++) {
         float falloff = uLights[i].falloff;
-        if (falloff <= 0.0) {
+        if (falloff <= 0.0 || uLights[i].kind == TR4_DYNAMIC_SPOT) {
             continue;
         }
         float dist = length(uLights[i].pos.xyz - vertexPos.xyz) * 1.7;

@@ -465,7 +465,10 @@ void Camera_Binoculars_Update(void)
     Room_GetSector(g_Camera.pos.pos, &g_Camera.pos.room_num);
     g_Camera.mic_pos = g_Camera.pos;
 
-    if (m_TorchActive) {
+    if (m_TorchActive && Output_HasBeamLights()) {
+        Output_AddBeamLight(
+            g_Camera.pos.pos, g_Camera.target.pos, M_TORCH_BRIGHTNESS);
+    } else if (m_TorchActive) {
         M_EmitTorch(g_Camera.pos.pos, g_Camera.target.pos);
     }
     if (m_LaserSight) {

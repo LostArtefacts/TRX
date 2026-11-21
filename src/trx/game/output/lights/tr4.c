@@ -40,6 +40,12 @@
 // How many of the light lists put in batches last a new list is matched
 // against.
 #define M_BATCH_RUNS 32
+// The beam light of the OG InitDynamicLighting: how far it reaches, and the
+// full angles in radians of its fully lit cone and of its cone edge, as
+// Direct3D takes them.
+#define M_BEAM_RANGE 20480.0f
+#define M_BEAM_UMBRA 0.25f
+#define M_BEAM_PENUMBRA 1.25f
 
 // Room light baked at level load (the OG PCLIGHT_INFO, drawroom.cpp
 // ProcessRoomData).
@@ -116,6 +122,7 @@ typedef struct {
         float range;
         float att1;
         float cone; // cosine of a spot's cone edge
+        float cone_inner; // cosine of a spot's fully lit cone
     } lights[OUTPUT_TR4_MAX_STAGED_LIGHTS];
 } M_STAGED_LIST;
 
@@ -512,6 +519,7 @@ static void M_StageLight(
             .range = light->cutoff,
             .att1 = m_CurrentIsProp ? 2.0f : 1.0f,
             .cone = light->outer,
+            .cone_inner = light->outer,
         };
         break;
 
@@ -544,6 +552,27 @@ static void M_StageDynamicLights(M_STAGED_LIST *const list)
         }
         const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
         const LIGHT *const light = &entry->light;
+        const XYZ_F pos = {
+            (float)light->pos.x,
+            (float)light->pos.y,
+            (float)light->pos.z,
+        };
+        if (entry->kind == OUTPUT_DYNAMIC_LIGHT_SPOT) {
+            list->lights[list->count++] = (typeof(list->lights[0])) {
+                .type = M_STAGED_SPOT,
+                .pos = pos,
+                .dir = light->u.tr4.dir,
+                .r = light->color.r / 255.0f,
+                .g = light->color.g / 255.0f,
+                .b = light->color.b / 255.0f,
+                .range = light->u.tr4.cutoff,
+                .att1 = 1.0f,
+                .cone = light->u.tr4.outer_radius,
+                .cone_inner = light->u.tr4.inner_radius,
+            };
+            continue;
+        }
+
         const int32_t raw_falloff = light->u.legacy.falloff.value_1;
         const float range = (raw_falloff >> 1) + (raw_falloff >> 3);
         if (range <= 0.0f) {
@@ -552,11 +581,7 @@ static void M_StageDynamicLights(M_STAGED_LIST *const list)
 
         list->lights[list->count++] = (typeof(list->lights[0])) {
             .type = M_STAGED_POINT,
-            .pos = {
-                (float)light->pos.x,
-                (float)light->pos.y,
-                (float)light->pos.z,
-            },
+            .pos = pos,
             .r = light->color.r / 255.0f,
             .g = light->color.g / 255.0f,
             .b = light->color.b / 255.0f,
@@ -799,7 +824,7 @@ static void M_FillSlotLight(
                      (float)light->type },
             .color = { light->r, light->g, light->b, light->range },
             .dir = { light->dir.x, light->dir.y, light->dir.z, light->att1 },
-            .cone = { light->cone },
+            .cone = { light->cone, light->cone_inner },
         };
     }
     out[2][0] = (float)M_PlaceInstanceLights(lights, src, list->count);
@@ -888,6 +913,37 @@ static void M_AddDynamicLightRGB(
     Vector_Add(Output_GetDynamicLights(), &light);
 }
 
+// Port of the beam light of the OG InitDynamicLighting and
+// InitItemDynamicLighting, a Direct3D spotlight that the binocular torch sets
+// up through LaraTorch.
+static void M_AddBeamLight(
+    const XYZ_32 start, const XYZ_32 end, const int32_t intensity)
+{
+    const float dx = (float)(end.x - start.x);
+    const float dy = (float)(end.y - start.y);
+    const float dz = (float)(end.z - start.z);
+    const float len = sqrtf(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+
+    int32_t value = intensity;
+    CLAMP(value, 0, 255);
+    const OUTPUT_DYNAMIC_LIGHT light = {
+        .light = {
+            .pos = start,
+            .color = { .r = value, .g = value, .b = 0 },
+            .layout = LIGHT_LAYOUT_TR4,
+            .type = LIGHT_TYPE_SPOT,
+            .u.tr4 = {
+                .inner_radius = cosf(M_BEAM_UMBRA / 2.0f),
+                .outer_radius = cosf(M_BEAM_PENUMBRA / 2.0f),
+                .cutoff = M_BEAM_RANGE,
+                .dir = { dx / len, dy / len, dz / len },
+            },
+        },
+        .kind = OUTPUT_DYNAMIC_LIGHT_SPOT,
+    };
+    Vector_Add(Output_GetDynamicLights(), &light);
+}
+
 static void M_Init(void)
 {
     if (m_StagedPool == nullptr) {
@@ -965,6 +1021,7 @@ const LIGHTING_MODEL g_LightingModelTR4 = {
     .calculate_static_mesh_light = M_CalculateStaticMeshLight,
     .add_dynamic_light = Output_Lights_TR3_AddDynamicLight,
     .add_dynamic_light_rgb = M_AddDynamicLightRGB,
+    .add_beam_light = M_AddBeamLight,
     .begin_scene = M_BeginScene,
     .prepare_scene = Output_FogBulbs_PrepareScene,
     .animate = M_Animate,
