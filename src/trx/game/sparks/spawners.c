@@ -39,6 +39,121 @@ static RGB_888 M_GetBloodShadeColor(const int32_t shade)
     return (RGB_888) { shade, 0, 0 };
 }
 
+static void M_TriggerExplosionSpark(
+    const XYZ_32 pos, const int32_t extras, const int32_t dynamic,
+    const int32_t uw, const int16_t room_num)
+{
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+    if (sprite_idx == NO_ITEM) {
+        return;
+    }
+
+    int32_t safe_extras = extras;
+    CLAMP(safe_extras, 0, 3);
+    static const uint8_t extras_table[4] = { 0, 4, 7, 10 };
+
+    SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_EXPLOSION);
+    *spark = (SPARK) {
+        .on = true,
+        .context = SPARK_CONTEXT_EXPLOSION,
+        .src_color = { 255, 0, 0 },
+        .dst_color = { 0, 0, 0 },
+        .draw_type = DRAW_BLEND_ADD,
+        .extras = (uint8_t)(
+            safe_extras
+            | ((extras_table[safe_extras] + (Random_GetControl() & 7) - 4)
+               << 3)),
+        .life = 0,
+        .dynamic = (int8_t)dynamic,
+        .sprite_idx = sprite_idx,
+        .sprite_obj_id = O_SPARKS_GFX,
+        .pos = pos,
+        .vel = {
+            .x = (Random_GetControl() & 0xFFF) - 2048,
+            .y = (Random_GetControl() & 0xFFF) - 2048,
+            .z = (Random_GetControl() & 0xFFF) - 2048,
+        },
+        .gravity = 0,
+        .max_y_vel = 0,
+        .friction = 0,
+        .flags = SPARK_F_SPRITE | SPARK_F_SCALE,
+        .scalar = 3,
+        .room_num = (uint8_t)room_num,
+    };
+
+    if (uw == 1) {
+        spark->src_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
+        spark->src_color.b = 32;
+        spark->dst_color.r = 192;
+        spark->dst_color.g = (uint8_t)((Random_GetControl() & 0x1F) + 64);
+        spark->dst_color.b = 0;
+        spark->col_fade_speed = 7;
+        spark->fade_to_black = 8;
+        spark->life = (uint8_t)((Random_GetControl() & 7) + 16);
+        spark->flags |= SPARK_F_UNDERWATER;
+    } else {
+        spark->src_color.g = (uint8_t)((Random_GetControl() & 0xF) + 32);
+        spark->src_color.b = 0;
+        spark->dst_color.r = (uint8_t)((Random_GetControl() & 0x3F) + 192);
+        spark->dst_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
+        spark->dst_color.b = 32;
+        spark->col_fade_speed = 8;
+        spark->fade_to_black = 16;
+        spark->life = (uint8_t)((Random_GetControl() & 7) + 24);
+    }
+    spark->s_life = spark->life;
+
+    if (dynamic == -2) {
+        spark->dynamic = Sparks_AllocDynamic(uw == 1 ? 2 : 1);
+    }
+
+    if (dynamic != -2 || uw == 1) {
+        spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+        spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+        spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+    } else {
+        spark->pos.x = pos.x + (Random_GetControl() & 0x1FF) - 256;
+        spark->pos.y = pos.y + (Random_GetControl() & 0x1FF) - 256;
+        spark->pos.z = pos.z + (Random_GetControl() & 0x1FF) - 256;
+    }
+
+    spark->friction = (uint8_t)(uw == 1 ? 0x11 : 0x33);
+
+    spark->flags |= SPARK_F_ALT_SPRITE;
+    if ((Random_GetControl() & 1) != 0) {
+        spark->flags |= SPARK_F_ROTATE;
+        spark->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
+        // TR4 spins either way; TR3 only clockwise and slower.
+        const int32_t rot_add = g_TRVersion == 4
+            ? (Random_GetControl() & 0xFF) + 128
+            : MIN((Random_GetControl() & 0x7F) + 32, 127);
+        spark->rot_add = (int8_t)rot_add;
+    }
+
+    spark->src_size.width = (uint8_t)((Random_GetControl() & 0xF) + 40);
+    // TR4 keeps the puff square; TR3 stretches it vertically.
+    spark->src_size.height = g_TRVersion == 4
+        ? spark->src_size.width
+        : (uint8_t)(spark->src_size.width + (Random_GetControl() & 7) + 8);
+    spark->dst_size.width = (uint8_t)(spark->src_size.width << 1);
+    spark->dst_size.height = (uint8_t)(spark->src_size.height << 1);
+    spark->size = spark->src_size;
+
+    if (uw == 2) {
+        const RGB_888 src = spark->src_color;
+        const RGB_888 dst = spark->dst_color;
+        spark->src_color = (RGB_888) { src.b, src.r, src.g };
+        spark->dst_color = (RGB_888) { dst.b, dst.r, dst.g };
+        spark->color = spark->src_color;
+        spark->flags |= SPARK_F_GREEN;
+    } else if (extras != 0) {
+        Sparks_TriggerExplosionSmoke(pos, uw, room_num);
+    } else {
+        Sparks_TriggerExplosionSmokeEnd(pos, uw, room_num);
+    }
+    Sparks_FinishSetup(spark);
+}
+
 void Sparks_TriggerBubble(
     const int32_t x, const int32_t y, const int32_t z, const int32_t size,
     const int32_t size_range, const int16_t effect_num)
@@ -863,121 +978,28 @@ void Sparks_TriggerUnderwaterExplosionAt(
 }
 
 void Sparks_TriggerExplosionSparks(
-    XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num)
+    const XYZ_32 pos, const int32_t extras, const int32_t dynamic,
+    const int32_t uw, const int16_t room_num)
 {
     if (!Sparks_IsPosInRange(pos, 30)) {
         return;
     }
 
-    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
-    if (sprite_idx == NO_ITEM) {
+    M_TriggerExplosionSpark(pos, extras, dynamic, uw, room_num);
+    if (Room_IsMirror(room_num)) {
+        M_TriggerExplosionSpark(
+            Room_ReflectInMirror(pos), extras, dynamic, uw, room_num);
+    }
+}
+
+void Sparks_TriggerChildExplosion(
+    const XYZ_32 pos, const int32_t extras, const int32_t dynamic,
+    const int32_t uw, const int16_t room_num)
+{
+    if (!Sparks_IsPosInRange(pos, 30)) {
         return;
     }
-
-    int32_t safe_extras = extras;
-    CLAMP(safe_extras, 0, 3);
-    static const uint8_t extras_table[4] = { 0, 4, 7, 10 };
-
-    SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_EXPLOSION);
-    *spark = (SPARK) {
-        .on = true,
-        .context = SPARK_CONTEXT_EXPLOSION,
-        .src_color = { 255, 0, 0 },
-        .dst_color = { 0, 0, 0 },
-        .draw_type = DRAW_BLEND_ADD,
-        .extras = (uint8_t)(
-            safe_extras
-            | ((extras_table[safe_extras] + (Random_GetControl() & 7) - 4)
-               << 3)),
-        .life = 0,
-        .dynamic = (int8_t)dynamic,
-        .sprite_idx = sprite_idx,
-        .sprite_obj_id = O_SPARKS_GFX,
-        .pos = pos,
-        .vel = {
-            .x = (Random_GetControl() & 0xFFF) - 2048,
-            .y = (Random_GetControl() & 0xFFF) - 2048,
-            .z = (Random_GetControl() & 0xFFF) - 2048,
-        },
-        .gravity = 0,
-        .max_y_vel = 0,
-        .friction = 0,
-        .flags = SPARK_F_SPRITE | SPARK_F_SCALE,
-        .scalar = 3,
-        .room_num = (uint8_t)room_num,
-    };
-
-    if (uw == 1) {
-        spark->src_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
-        spark->src_color.b = 32;
-        spark->dst_color.r = 192;
-        spark->dst_color.g = (uint8_t)((Random_GetControl() & 0x1F) + 64);
-        spark->dst_color.b = 0;
-        spark->col_fade_speed = 7;
-        spark->fade_to_black = 8;
-        spark->life = (uint8_t)((Random_GetControl() & 7) + 16);
-        spark->flags |= SPARK_F_UNDERWATER;
-    } else {
-        spark->src_color.g = (uint8_t)((Random_GetControl() & 0xF) + 32);
-        spark->src_color.b = 0;
-        spark->dst_color.r = (uint8_t)((Random_GetControl() & 0x3F) + 192);
-        spark->dst_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
-        spark->dst_color.b = 32;
-        spark->col_fade_speed = 8;
-        spark->fade_to_black = 16;
-        spark->life = (uint8_t)((Random_GetControl() & 7) + 24);
-    }
-    spark->s_life = spark->life;
-
-    if (dynamic == -2) {
-        spark->dynamic = Sparks_AllocDynamic(uw == 1 ? 2 : 1);
-    }
-
-    if (dynamic != -2 || uw == 1) {
-        spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
-        spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
-        spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
-    } else {
-        spark->pos.x = pos.x + (Random_GetControl() & 0x1FF) - 256;
-        spark->pos.y = pos.y + (Random_GetControl() & 0x1FF) - 256;
-        spark->pos.z = pos.z + (Random_GetControl() & 0x1FF) - 256;
-    }
-
-    spark->friction = (uint8_t)(uw == 1 ? 0x11 : 0x33);
-
-    spark->flags |= SPARK_F_ALT_SPRITE;
-    if ((Random_GetControl() & 1) != 0) {
-        spark->flags |= SPARK_F_ROTATE;
-        spark->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
-        // TR4 spins either way; TR3 only clockwise and slower.
-        const int32_t rot_add = g_TRVersion == 4
-            ? (Random_GetControl() & 0xFF) + 128
-            : MIN((Random_GetControl() & 0x7F) + 32, 127);
-        spark->rot_add = (int8_t)rot_add;
-    }
-
-    spark->src_size.width = (uint8_t)((Random_GetControl() & 0xF) + 40);
-    // TR4 keeps the puff square; TR3 stretches it vertically.
-    spark->src_size.height = g_TRVersion == 4
-        ? spark->src_size.width
-        : (uint8_t)(spark->src_size.width + (Random_GetControl() & 7) + 8);
-    spark->dst_size.width = (uint8_t)(spark->src_size.width << 1);
-    spark->dst_size.height = (uint8_t)(spark->src_size.height << 1);
-    spark->size = spark->src_size;
-
-    if (uw == 2) {
-        const RGB_888 src = spark->src_color;
-        const RGB_888 dst = spark->dst_color;
-        spark->src_color = (RGB_888) { src.b, src.r, src.g };
-        spark->dst_color = (RGB_888) { dst.b, dst.r, dst.g };
-        spark->color = spark->src_color;
-        spark->flags |= SPARK_F_GREEN;
-    } else if (extras != 0) {
-        Sparks_TriggerExplosionSmoke(pos, uw, room_num);
-    } else {
-        Sparks_TriggerExplosionSmokeEnd(pos, uw, room_num);
-    }
-    Sparks_FinishSetup(spark);
+    M_TriggerExplosionSpark(pos, extras, dynamic, uw, room_num);
 }
 
 void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
@@ -1152,6 +1174,9 @@ void Sparks_TriggerFlashSmoke(const XYZ_32 pos, const int16_t room_num)
     spark->src_size = spark->size;
     spark->dst_size.width = (uint8_t)((size + 4) << 1);
     spark->dst_size.height = spark->dst_size.width;
+    if (Room_IsMirror(room_num)) {
+        spark->flags |= SPARK_F_MIRROR;
+    }
     Sparks_FinishSetup(spark);
 }
 
@@ -1816,6 +1841,9 @@ void Sparks_TriggerGunSmokeDirected(
         spark->size.height = size >> 2;
         spark->src_size.height = spark->size.width;
         spark->dst_size.height = size;
+    }
+    if (Room_IsMirror(Lara_GetItem()->room_num)) {
+        spark->flags |= SPARK_F_MIRROR;
     }
     Sparks_FinishSetup(spark);
 }

@@ -13,6 +13,7 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/version.h>
 
 #define M_MAX_SPARKS 400
@@ -304,6 +305,18 @@ static void M_UpdateWind(void)
     m_SmokeWind = (XZ_32) { .x = wind.x, .z = wind.z };
 
     m_HairWindZ = 0;
+}
+
+// Returns a copy of the spark moved across the mirror plane. Only a spark
+// that is not attached to an item or an effect has a reflection.
+static SPARK M_GetReflection(const SPARK *const spark)
+{
+    SPARK reflection = *spark;
+    reflection.pos = Room_ReflectInMirror(spark->pos);
+    reflection.prev_pos = Room_ReflectInMirror(spark->prev_pos);
+    reflection.prev_world_pos = Room_ReflectInMirror(spark->prev_world_pos);
+    reflection.vel.z = -spark->vel.z;
+    return reflection;
 }
 
 void Sparks_SaveSpark(JSON_WRITE_IO *const io, const SPARK *const spark)
@@ -803,7 +816,7 @@ void Sparks_Control(void)
             const XYZ_32 spark_pos = Sparks_GetWorldPos(spark);
 
             for (int32_t j = 0; j < (int32_t)(spark->extras & 7U); j++) {
-                Sparks_TriggerExplosionSparks(
+                Sparks_TriggerChildExplosion(
                     spark_pos, (int32_t)(spark->extras & 7U) - 1,
                     spark->dynamic, uw, spark->room_num);
                 spark->dynamic = -1;
@@ -939,6 +952,10 @@ void Sparks_DrawAll(void)
         }
 
         OutputSource_PolyFX_StageSpark(spark);
+        if ((spark->flags & SPARK_F_MIRROR) != 0U) {
+            const SPARK reflection = M_GetReflection(spark);
+            OutputSource_PolyFX_StageSpark(&reflection);
+        }
     }
 }
 
