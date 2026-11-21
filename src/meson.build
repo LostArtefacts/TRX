@@ -856,6 +856,7 @@ common_sources = [
   'trx/game/objects/traps/icicle.c',
   'trx/game/objects/traps/killer_statue.c',
   'trx/game/objects/traps/lava_wedge.c',
+  'trx/game/objects/traps/lightning_conductor.c',
   'trx/game/objects/traps/lightning_emitter.c',
   'trx/game/objects/traps/midas_touch.c',
   'trx/game/objects/traps/mine.c',

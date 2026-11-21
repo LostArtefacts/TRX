@@ -3167,6 +3167,9 @@
         "lift": {
             "name": "\\{review}Ліфт",
         },
+        "lightning_conductor": {
+            "name": "\\{review}Громовідвід",
+        },
         "lightning_emitter": {
             "name": "\\{review}Джерело блискавок",
         },

@@ -3140,6 +3140,9 @@
         "lift": {
             "name": "Aufzug",
         },
+        "lightning_conductor": {
+            "name": "\\{review}Blitzableiter",
+        },
         "lightning_emitter": {
             "name": "Blitzerzeuger",
         },
