@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 885 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 886 names
 
     Every object TRX has a name for.
 
@@ -187,7 +187,7 @@ convert between the two.
     `MOORED_BOAT`, `MOUNTED_GUN`, `MOUSE`, `MOVABLE_BLOCK_1`, `MOVABLE_BLOCK_2`,
     `MOVABLE_BLOCK_3`, `MOVABLE_BLOCK_4`, `MOVING_BAR`, `MOVING_FLOOR`,
     `MP5_AMMO_ITEM`, `MP5_AMMO_OPTION`, `MP5_ITEM`, `MP5_OPTION`, `MP_1`,
-    `MP_2`, `MUMMY`, `NATLA`, `NATLA_GUN`, `ON_OFF_LIGHT`, `ORCA`,
+    `MP_2`, `MUMMY`, `NATLA`, `NATLA_GUN`, `OBELISK`, `ON_OFF_LIGHT`, `ORCA`,
     `PASSPORT_CLOSED`, `PASSPORT_OPTION`, `PATROL_DOG`, `PDA_OPTION`,
     `PENDULUM_1`, `PENDULUM_2`, `PHOTO_OPTION`, `PICKUP_AID`, `PICKUP_ITEM_1`,
     `PICKUP_ITEM_1_COMBO_1`, `PICKUP_ITEM_1_COMBO_2`, `PICKUP_ITEM_2`,
@@ -286,7 +286,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 225 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 227 names
 
     Every sound sample TRX has a name for.
 
@@ -308,8 +308,9 @@ convert between the two.
     `CLICK`, `COWBOY_SPEECH`, `CRUNCH_1`, `CRUNCH_2`, `CURTAIN`,
     `DAMOCLES_SWORD`, `DART`, `DISC`, `DOORBELL`, `DOOR_CHIME`, `DOOR_THUD`,
     `DRAGON_FEET`, `DRAGON_FIRE`, `DRIPS_REVERB`, `EARTHQUAKE_1`,
-    `EARTHQUAKE_2`, `EARTHQUAKE_LOOP`, `ENEMY_HIT_1`, `ENEMY_HIT_2`,
-    `ENGLISH_HOY`, `EXPLOSION_1`, `EXPLOSION_2`, `EXPLOSION_3`, `EXPLOSION_FX`,
+    `EARTHQUAKE_2`, `EARTHQUAKE_LOOP`, `ELECTRIC_ARCING_LOOP`,
+    `ELECTRIC_ONE_SHOT`, `ENEMY_HIT_1`, `ENEMY_HIT_2`, `ENGLISH_HOY`,
+    `EXPLOSION_1`, `EXPLOSION_2`, `EXPLOSION_3`, `EXPLOSION_FX`,
     `FLAME_THROWER_LOOP`, `FLOOD`, `FOOTSTEPS_GRAVEL`, `FOOTSTEPS_ICE`,
     `FOOTSTEPS_METAL`, `FOOTSTEPS_MUD`, `FOOTSTEPS_SAND_OR_GRASS`,
     `FOOTSTEPS_SNOW`, `FOOTSTEPS_WOOD`, `GLASS_BREAK`, `GUIDE_SCARE`,

@@ -855,6 +855,7 @@ common_sources = [
   'trx/game/objects/traps/midas_touch.c',
   'trx/game/objects/traps/mine.c',
   'trx/game/objects/traps/movable_block.c',
+  'trx/game/objects/traps/obelisk.c',
   'trx/game/objects/traps/pendulum.c',
   'trx/game/objects/traps/plinth_blade.c',
   'trx/game/objects/traps/plough.c',
