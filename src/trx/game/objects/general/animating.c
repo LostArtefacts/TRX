@@ -1,9 +1,37 @@
+#include <trx/game/collision.h>
+#include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sound.h>
+
+#define M_HELICOPTER_OCB 666
 
 typedef struct {
     bool collidable;
 } M_PRIV;
+
+static int32_t M_GetOCB(const ITEM *item);
+static void M_ControlHelicopter(ITEM *item);
+
+static int32_t M_GetOCB(const ITEM *const item)
+{
+    TRX_VALUE value = {};
+    if (!ObjectProperty_GetItemValue(item, "ocb", &value)
+        || value.type != TVT_S32) {
+        return 0;
+    }
+    return value.as_int;
+}
+
+static void M_ControlHelicopter(ITEM *const item)
+{
+    XYZ_32 pos = {};
+    Collide_GetJointAbsPosition(item, &pos, 0);
+    Sound_Effect(SFX_HELICOPTER_LOOP, &pos, SPM_NORMAL);
+    if (item->frame_num == Item_GetAnim(item)->frame_end) {
+        item->trigger.mask = 0;
+    }
+}
 
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
@@ -24,6 +52,9 @@ static void M_Control(const int16_t item_num)
     }
 
     Item_Animate(item);
+    if (M_GetOCB(item) == M_HELICOPTER_OCB) {
+        M_ControlHelicopter(item);
+    }
 
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos, &room_num);
