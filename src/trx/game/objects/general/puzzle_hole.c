@@ -7,6 +7,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_LF_USE_PUZZLE 80
 
@@ -52,6 +53,28 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
                                                   : &m_DefaultBounds;
+}
+
+static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
+{
+    OBJECT_BOUNDS bounds = m_ControlledBounds;
+    if (g_TRVersion == 4) {
+        const BOUNDS_16 *const frame = Item_GetBoundsAccurate(item);
+        bounds.shift.min.x = frame->min.x - STEP_L;
+        bounds.shift.max.x = frame->max.x + STEP_L;
+        bounds.shift.min.z = frame->min.z - STEP_L;
+        bounds.shift.max.z = frame->max.z + STEP_L;
+    }
+    return bounds;
+}
+
+static XYZ_32 M_GetControlledPosition(const ITEM *const item)
+{
+    XYZ_32 position = m_ControlledPosition;
+    if (g_TRVersion == 4) {
+        position.z = Item_GetBoundsAccurate(item)->min.z - 100;
+    }
+    return position;
 }
 
 static bool M_IsUsable(const int16_t item_num)
@@ -130,8 +153,8 @@ static void M_CollisionControlled(
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (Lara_Interact_CanControl(LARA_INTERACT_RECEPTACLE, item_num)) {
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (Lara_TestPosition(item, obj->bounds_func())) {
+        const OBJECT_BOUNDS bounds = M_GetControlledBounds(item);
+        if (Lara_TestPosition(item, &bounds)) {
             if (g_Input.action && !lara->interact_target.is_moving
                 && !GF_ShowInventoryKeys(item->object_id)) {
                 Lara_RefuseInteraction();
@@ -143,7 +166,8 @@ static void M_CollisionControlled(
                 return;
             }
 
-            if (Lara_MovePosition(item, &m_ControlledPosition)) {
+            const XYZ_32 position = M_GetControlledPosition(item);
+            if (Lara_MovePosition(item, &position)) {
                 Item_SwitchToAnim(lara_item, LA(LA_USE_PUZZLE), 0);
                 lara_item->current_anim_state = LS(LS_USE_PUZZLE);
                 Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
