@@ -2951,7 +2951,7 @@ endif
 # engine code, so they mirror nothing under trx/.
 python_exe = find_program('python3', required: false)
 if python_exe.found()
-  foreach name : ['lua_sources', 'update_lua_docs', 'lua_annot', 'game_strings', 'cfuncs', 'cdecls', 'object_taxonomy']
+  foreach name : ['lua_sources', 'update_lua_docs', 'lua_annot', 'game_strings', 'cfuncs', 'cdecls', 'cforwards', 'object_taxonomy']
     test(
       'tools.' + name,
       python_exe,

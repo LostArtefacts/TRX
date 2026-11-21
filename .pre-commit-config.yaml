@@ -72,6 +72,12 @@ repos:
     language: python
     files: \.c$
 
+  - id: lint-forward-decls
+    name: Static functions are declared ahead only where used ahead
+    entry: tools/lint/checks/forward_decls
+    language: python
+    files: \.c$
+
   - id: lint-object-property-binding
     name: Bound object properties have somewhere to land
     entry: tools/lint/checks/object_property_binding
