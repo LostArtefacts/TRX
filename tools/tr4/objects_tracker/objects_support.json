@@ -25,7 +25,7 @@
   "baboon_invisible":         { "status": "not implemented",       "todo": "port from BABOON_INV"              },
   "baboon_normal":            { "status": "not implemented",       "todo": "port from BABOON_NORMAL"           },
   "baboon_silent":            { "status": "not implemented",       "todo": "port from BABOON_SILENT"           },
-  "bat":                      { "status": "partially implemented", "todo": "check 100% parity"                 },
+  "bat":                      { "status": "fully implemented" },
   "big_beetle":               { "status": "not implemented",       "todo": "port from BIG_BEETLE"              },
   "big_scorpion":             { "status": "not implemented",       "todo": "port from SCORPION"                },
   "bird_blade":               { "status": "not implemented",       "todo": "port from BIRD_BLADE"              },
