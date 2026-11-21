@@ -26,6 +26,8 @@ typedef enum {
     OUTPUT_DYNAMIC_LIGHT_LUM = 0,
     // colored; falloff is a radius << OUTPUT_DYNAMIC_FALLOFF_SHIFT
     OUTPUT_DYNAMIC_LIGHT_RGB = 1,
+    // colored spotlight in the TR4 layout (Output_AddBeamLight)
+    OUTPUT_DYNAMIC_LIGHT_SPOT = 2,
 } OUTPUT_DYNAMIC_LIGHT_KIND;
 
 typedef struct {
@@ -58,6 +60,8 @@ typedef struct {
     void (*add_dynamic_light)(XYZ_32 pos, int32_t intensity, int32_t falloff);
     void (*add_dynamic_light_rgb)(
         XYZ_32 pos, int32_t falloff, RGB_888 color); // nullable
+    void (*add_beam_light)(
+        XYZ_32 start, XYZ_32 end, int32_t intensity); // nullable
 
     void (*begin_scene)(void); // nullable
     // Called at render time once the scene's view matrix is final;
