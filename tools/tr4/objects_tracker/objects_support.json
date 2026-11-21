@@ -47,7 +47,7 @@
   "clockwork_beetle_combo_2": { "status": "not implemented",       "todo": "port from CLOCKWORK_BEETLE_COMBO2" },
   "cog_1":                    { "status": "partially implemented", "todo": "check 100% parity"                 },
   "cog_switch":               { "status": "fully implemented" },
-  "crocodile":                { "status": "partially implemented", "todo": "check 100% parity"                 },
+  "crocodile_tr4":            { "status": "fully implemented" },
   "crossbow_ammo_1_item":     { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },
   "crossbow_ammo_2_item":     { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },
   "crossbow_ammo_3_item":     { "status": "partially implemented", "todo": "check 100% parity", "levels": { "0-5": "fully implemented" } },

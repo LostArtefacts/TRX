@@ -2527,6 +2527,9 @@
         "crocodile": {
             "name": "Crocodile",
         },
+        "crocodile_tr4": {
+            "name": "\\{review}Crocodile (TR4)",
+        },
         "crossbow_ammo_1_item": {
             "name": "\\{review}Flèches d'arbalète",
         },
