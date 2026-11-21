@@ -68,6 +68,10 @@
             "heading_items": "РЕЧІ",
             "heading_option": "НАЛАШТУВАННЯ",
         },
+        "legal": {
+            "tr4_core": "\\{review}(C) & TM Core Design Limited 1999.",
+            "tr4_eidos": "\\{review}(C) & видано Eidos Interactive Limited 1999. Усі права захищено.",
+        },
         "misc": {
             "demo_mode": "Демо режим",
             "empty_slot_fmt": "- ПУСТИЙ СЛОТ -",

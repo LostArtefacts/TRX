@@ -68,6 +68,10 @@
             "heading_items": "ITEMS",
             "heading_option": "OPTION",
         },
+        "legal": {
+            "tr4_core": "(C) & TM Core Design Limited 1999.",
+            "tr4_eidos": "(C) & Published by Eidos Interactive Limited 1999. All Rights Reserved.",
+        },
         "misc": {
             "demo_mode": "Demo Mode",
             "empty_slot_fmt": "- EMPTY SLOT -",

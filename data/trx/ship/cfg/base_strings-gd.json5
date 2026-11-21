@@ -68,6 +68,10 @@
             "heading_items": "NITHEAN",
             "heading_option": "ROGHAINN",
         },
+        "legal": {
+            "tr4_core": "\\{review}(C) & TM Core Design Limited 1999.",
+            "tr4_eidos": "\\{review}(C) & foillsichte le Eidos Interactive Limited 1999. Gach còir glèidhte.",
+        },
         "misc": {
             "demo_mode": "Modh Taisbeanaidh",
             "empty_slot_fmt": "- SLOT FALAMH -",

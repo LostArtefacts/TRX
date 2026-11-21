@@ -68,6 +68,10 @@
             "heading_items": "OBJETS",
             "heading_option": "OPTION",
         },
+        "legal": {
+            "tr4_core": "\\{review}(C) & TM Core Design Limited 1999.",
+            "tr4_eidos": "\\{review}(C) & publié par Eidos Interactive Limited 1999. Tous droits réservés.",
+        },
         "misc": {
             "demo_mode": "Mode Démo",
             "empty_slot_fmt": "- EMPLACEMENT VIDE %d -",
