@@ -48,6 +48,7 @@
 - Added Spike Ball control (TRX2008)
 - Added Mapper control (TRX2004)
 - Added Bull Guardian control (TRX2006)
+- Added Lightning Conductor control (TRX2047)
 - Added Lara turning translucent while the look key is held, as in the original game (TRX836)
 - Added the game's logo and copyright notice to the screen shown as the game starts (#6929 / TRX1810)
 - Added the torch, which Lara can pick up, carry, drop and throw (TRX475)

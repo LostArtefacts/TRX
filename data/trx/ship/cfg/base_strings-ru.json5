@@ -3140,6 +3140,9 @@
         "lift": {
             "name": "\\{review}Лифт",
         },
+        "lightning_conductor": {
+            "name": "\\{review}Громоотвод",
+        },
         "lightning_emitter": {
             "name": "Излучатель молний",
         },

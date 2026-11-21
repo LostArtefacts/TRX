@@ -3222,6 +3222,9 @@
         "lift": {
             "name": "Lift",
         },
+        "lightning_conductor": {
+            "name": "Lightning Conductor",
+        },
         "lightning_emitter": {
             "name": "Lightning Emitter",
         },

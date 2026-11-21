@@ -119,7 +119,7 @@
   "large_medipack_item":      { "status": "fully implemented" },
   "lasersight_item":          { "status": "partially implemented", "todo": "check 100% parity"                 },
   "lens_flare":               { "status": "fully implemented" },
-  "lightning_conductor":      { "status": "not implemented",       "todo": "port from LIGHTNING_CONDUCTOR"     },
+  "lightning_conductor":      { "status": "fully implemented" },
   "locust_emitter":           { "status": "not implemented",       "todo": "port from FISH"                    },
   "mapper":                   { "status": "fully implemented" },
   "mine":                     { "status": "partially implemented", "todo": "check 100% parity"                 },

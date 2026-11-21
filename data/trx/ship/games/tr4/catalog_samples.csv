@@ -72,12 +72,14 @@
 157, bats_1
 163, flood
 182, thunder
+183, thunder_crack
 191, cleaner_loop
 194, guide_scare
 195, rib_idle
 197, rib_moving
 197, electric_arcing_loop
 198, electric_one_shot
+197, electric_arcing
 202, quad_front_impact
 204, flame_thrower_loop
 208, alarm_1

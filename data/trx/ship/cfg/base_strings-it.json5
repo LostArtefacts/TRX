@@ -3167,6 +3167,9 @@
         "lift": {
             "name": "Ascensore",
         },
+        "lightning_conductor": {
+            "name": "\\{review}Parafulmine",
+        },
         "lightning_emitter": {
             "name": "Emettitore di Fulmini",
         },

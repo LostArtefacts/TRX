@@ -3128,6 +3128,9 @@
         "lift": {
             "name": "Ascensor",
         },
+        "lightning_conductor": {
+            "name": "\\{review}Pararrayos",
+        },
         "lightning_emitter": {
             "name": "Emisor de rayos",
         },

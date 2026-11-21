@@ -3140,6 +3140,9 @@
         "lift": {
             "name": "\\{review}Ascenseur",
         },
+        "lightning_conductor": {
+            "name": "\\{review}Paratonnerre",
+        },
         "lightning_emitter": {
             "name": "Émetteur de foudre",
         },
