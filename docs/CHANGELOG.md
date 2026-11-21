@@ -61,6 +61,7 @@
 - Fixed an enemy in Desert Railroad falling under the train when it is activated (OG bug) (TRX1979)
 - Fixed the canopic jars facing away and the Fire Circle Scroll and Scrap of Paper showing upside down in the inventory (OG bug) (TRX1602)
 - Fixed the helicopter in Desert Railroad making no sound
+- Fixed the jeep appearing to bleed when it drives through a boulder in Valley of the Kings (OG bug) (TRX2003)
 
 **Lua**
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
