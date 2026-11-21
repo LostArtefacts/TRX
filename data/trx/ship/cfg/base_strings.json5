@@ -2788,6 +2788,9 @@
         "flame_emitter_tr4_ground": {
             "name": "Flame Emitter (TR4 Ground)",
         },
+        "flame_emitter_tr4_spread": {
+            "name": "Flame Emitter (TR4 Spread)",
+        },
         "flame_emitter_tr4_wall": {
             "name": "Flame Emitter (TR4 Wall)",
         },

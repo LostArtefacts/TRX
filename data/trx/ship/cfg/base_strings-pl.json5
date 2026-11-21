@@ -2761,6 +2761,9 @@
         "flame_emitter_tr4_ground": {
             "name": "\\{review}Emiter płomieni (TR4, naziemny)",
         },
+        "flame_emitter_tr4_spread": {
+            "name": "\\{review}Emiter płomieni (TR4, rozproszony)",
+        },
         "flame_emitter_tr4_wall": {
             "name": "\\{review}Emiter płomieni (TR4, ścienny)",
         },

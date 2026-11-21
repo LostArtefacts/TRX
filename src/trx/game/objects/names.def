@@ -285,6 +285,7 @@ X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_SMALL,      "Flame Emitter (Small)|Fire Emitte
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_JET,        "Flame Emitter (Jet)|Fire Emitter (Jet)")
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_SIDE,       "Flame Emitter (Side)|Fire Emitter (Side)")
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_TR4_GROUND, "Flame Emitter (TR4 Ground)")
+X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_TR4_SPREAD, "Flame Emitter (TR4 Spread)")
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_TR4_WALL,   "Flame Emitter (TR4 Wall)")
 X_OBJ_NAME_DEFINE(O_GONDOLA,                  "Gondola")
 X_OBJ_NAME_DEFINE(O_HOOK,                     "Hook")
