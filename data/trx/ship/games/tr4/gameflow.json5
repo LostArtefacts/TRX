@@ -70,7 +70,6 @@
             "path": "ang_race.tr4",
             "music_track": 110,
             "lara_outfit": "tr4_young",
-            // "timer": true,
             "sequence":[
                 {"type": "setup_horizon", "layer": 0, "color": "#A0A0C0", "speed": 7},
                 {"type": "loading_camera", "source_x": 82362, "source_y": -258, "source_z": 18777, "target_x": 84018, "target_y": -1495, "target_z": 20276, "room": 33},
