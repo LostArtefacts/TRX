@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "\\{review}Gardien taurin",
         },
+        "burning_torch_item": {
+            "name": "\\{review}Torche enflammée",
+        },
         "camera_target": {
             "name": "\\{review}Cible de caméra",
         },
@@ -3925,6 +3928,9 @@
         },
         "tony": {
             "name": "\\{review}Tony",
+        },
+        "torch_anim": {
+            "name": "\\{review}Animation de torche",
         },
         "torso": {
             "name": "Torso",

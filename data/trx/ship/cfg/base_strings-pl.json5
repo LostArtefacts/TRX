@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "\\{review}Byczy strażnik",
         },
+        "burning_torch_item": {
+            "name": "\\{review}Płonąca pochodnia",
+        },
         "camera_target": {
             "name": "Obiekt kamery",
         },
@@ -3925,6 +3928,9 @@
         },
         "tony": {
             "name": "Tony",
+        },
+        "torch_anim": {
+            "name": "\\{review}Animacja pochodni",
         },
         "torso": {
             "name": "Gigantyczny mutant",

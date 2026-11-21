@@ -2461,6 +2461,9 @@
         "bull_guardian": {
             "name": "\\{review}Guardiano taurino",
         },
+        "burning_torch_item": {
+            "name": "\\{review}Torcia Accesa",
+        },
         "camera_target": {
             "name": "Obiettivo Telecamera",
         },
@@ -3955,6 +3958,9 @@
         },
         "tony": {
             "name": "Tony",
+        },
+        "torch_anim": {
+            "name": "\\{review}Animazione Torcia",
         },
         "torso": {
             "name": "Torso|Adam|Mutante Gigante",

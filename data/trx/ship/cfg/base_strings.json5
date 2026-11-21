@@ -2464,6 +2464,9 @@
         "bull_guardian": {
             "name": "Bull Guardian",
         },
+        "burning_torch_item": {
+            "name": "Burning Torch|Torch",
+        },
         "camera_target": {
             "name": "Camera Target",
         },
@@ -4078,6 +4081,9 @@
         },
         "tony": {
             "name": "Tony",
+        },
+        "torch_anim": {
+            "name": "Torch Animation",
         },
         "torso": {
             "name": "Torso|Adam|Giant Mutant",

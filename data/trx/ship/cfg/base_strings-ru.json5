@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "\\{review}Страж-бык",
         },
+        "burning_torch_item": {
+            "name": "\\{review}Горящий факел",
+        },
         "camera_target": {
             "name": "Цель камеры",
         },
@@ -3925,6 +3928,9 @@
         },
         "tony": {
             "name": "\\{review}Тони",
+        },
+        "torch_anim": {
+            "name": "\\{review}Анимация факела",
         },
         "torso": {
             "name": "Торсо|Адам|Безногий мутант",
