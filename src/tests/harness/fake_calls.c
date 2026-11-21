@@ -26,11 +26,6 @@ static int32_t m_CallCount;
 static void (*m_Resets[FAKE_MAX_RESETS])(void);
 static int32_t m_ResetCount;
 
-static void M_Fail(const char *what, int32_t limit);
-static void M_CheckArgName(const char *name);
-static void M_PushValue(lua_State *L, const char *name, const TRX_VALUE *value);
-static void M_PushArgs(lua_State *L, const FAKE_CALL *call);
-
 static void M_Fail(const char *const what, const int32_t limit)
 {
     fprintf(stderr, "more than %d %s recorded; raise the limit\n", limit, what);
