@@ -2,11 +2,13 @@
 
 #include <trx/config.h>
 #include <trx/core/math/geom.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/cutseq/playback.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/input.h>
 #include <trx/game/items/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/electric.h>
@@ -21,6 +23,9 @@
 #include <trx/game/rooms.h>
 #include <trx/version.h>
 
+#define M_LOOK_HEAD_HEIGHT 512
+#define M_LOOK_FADE_IN_STEP 8
+
 typedef enum {
     M_ARMS_EMPTY,
     M_ARMS_PISTOLS,
@@ -30,6 +35,9 @@ typedef enum {
 
 static bool m_CacheMatrices = false;
 static bool m_IsLara = true;
+// Lara's opacity, out of 255. TR4 makes her translucent while the look key is
+// held, by how close the camera is to her head, and fades her back in after.
+static int32_t m_LookAlpha = 255;
 
 static M_ARMS M_GetArms(const LARA_GUN_TYPE gun_type)
 {
@@ -103,6 +111,36 @@ static void M_CalculateLight(
     } else {
         Output_CalculateObjectLighting(item, &frame->bounds);
     }
+}
+
+static void M_UpdateLookAlpha(const ITEM *const item)
+{
+    if (g_TRVersion != 4) {
+        return;
+    }
+
+    if (g_Input.look) {
+        const XYZ_32 head = {
+            .x = item->pos.x,
+            .y = item->pos.y - M_LOOK_HEAD_HEIGHT,
+            .z = item->pos.z,
+        };
+        m_LookAlpha = XYZ_32_GetDistance(head, g_Camera.pos.pos) >> 2;
+        CLAMP(m_LookAlpha, 0, 255);
+    } else if (Output_IsControlFrame() && m_LookAlpha < 255) {
+        m_LookAlpha = MIN(m_LookAlpha + M_LOOK_FADE_IN_STEP, 255);
+    }
+}
+
+static bool M_PushLookAlpha(void)
+{
+    if (!m_IsLara || m_LookAlpha >= 255) {
+        return false;
+    }
+    RGBA_F tint = Output_GetTint();
+    tint.a *= m_LookAlpha / 255.0f;
+    Output_PushTintOverride(tint);
+    return true;
 }
 
 static void M_CacheMatrix(const LARA_MESH mesh)
@@ -256,6 +294,7 @@ static bool M_Draw_I(
     if (!Lara_Vehicle_IsMounted()) {
         OutputSource_Shadows_Draw(obj->shadow_size, shadow_bounds, item);
     }
+    const bool is_faded = M_PushLookAlpha();
 
     MATRIX saved_matrix = *g_MatrixPtr;
     MATRIX wsaved_matrix = *g_WMatrixPtr;
@@ -494,6 +533,9 @@ static bool M_Draw_I(
 
     Matrix_Pop();
     Matrix_Pop();
+    if (is_faded) {
+        Output_PopTintOverride();
+    }
     return true;
 }
 
@@ -503,6 +545,7 @@ bool Lara_Draw(const ITEM *const item)
     m_IsLara = item == lara_item;
     if (m_IsLara) {
         Output_Water_ObserveLaraFrame();
+        M_UpdateLookAlpha(item);
     }
     if (m_IsLara
         && (!item->is_visible || item->trigger.spent || item->mesh_bits == 0)) {
@@ -545,6 +588,7 @@ bool Lara_Draw(const ITEM *const item)
     if (!Lara_Vehicle_IsMounted()) {
         OutputSource_Shadows_Draw(obj->shadow_size, shadow_bounds, item);
     }
+    const bool is_faded = M_PushLookAlpha();
 
     MATRIX saved_matrix = *g_MatrixPtr;
     MATRIX wsaved_matrix = *g_WMatrixPtr;
@@ -816,6 +860,9 @@ bool Lara_Draw(const ITEM *const item)
 
     Matrix_Pop();
     Matrix_Pop();
+    if (is_faded) {
+        Output_PopTintOverride();
+    }
 
 finish:
     if (m_IsLara && lara->electric != 0) {
