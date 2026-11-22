@@ -263,6 +263,7 @@ void Game_TickEndFrame(void)
     Output_AnimateTextures(1);
     Output_Overlay_UpdateLetterbox();
     Output_Sky_Update();
+    Output_TrainFloor_Update();
     Output_Flash_Update();
 }
 

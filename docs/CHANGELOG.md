@@ -65,6 +65,7 @@
 - Added the mirrors in Sacred Lake and Coastal Ruins, which show Lara's reflection (TRX688)
 - Added Sprinkler control, which puts out Lara's torch (TRX475)
 - Added Lara's death on the ground beside the train in Desert Railroad, as in the original game
+- Added the ground, track and rocks beside the train in Desert Railroad (TRX2069)
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)

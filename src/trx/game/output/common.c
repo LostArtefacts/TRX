@@ -22,9 +22,11 @@
 #include <trx/game/output/sources/shadows.h>
 #include <trx/game/output/sources/sky.h>
 #include <trx/game/output/sources/sprites.h>
+#include <trx/game/output/sources/train_floor.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
+#include <trx/game/output/train_floor.h>
 #include <trx/game/shell.h>
 #include <trx/gl/context.h>
 #include <trx/gl/renderer.h>
@@ -61,6 +63,7 @@ static void M_Shutdown(void)
     OutputSource_RoomsDebug_Shutdown();
     OutputSource_Objects_Shutdown();
     OutputSource_Sprites_Shutdown();
+    OutputSource_TrainFloor_Shutdown();
     OutputSource_Lightnings_Shutdown();
     OutputSource_Sky_Shutdown();
     OutputSource_PolyFX_Shutdown();
@@ -105,6 +108,7 @@ RESULT Output_Init(void)
     OutputSource_RoomsDebug_Init();
     OutputSource_Objects_Init(m_Batcher);
     OutputSource_Sprites_Init(m_Batcher);
+    OutputSource_TrainFloor_Init(m_Batcher);
     OutputSource_Lightnings_Init();
     OutputSource_PolyFX_Init();
     OutputSource_Shadows_Init(m_Batcher);
@@ -262,12 +266,14 @@ void Output_DispatchLevelLoad(void)
     Output_Textures_ObserveLevelLoad();
     Output_Lights_ObserveLevelLoad();
     Output_Sky_ObserveLevelLoad();
+    Output_TrainFloor_ObserveLevelLoad();
     Output_BinocularMask_ObserveLevelLoad();
 
     OutputSource_Objects_ObserveLevelLoad();
     OutputSource_Rooms_ObserveLevelLoad();
     OutputSource_RoomsDebug_ObserveLevelLoad();
     OutputSource_Sprites_ObserveLevelLoad();
+    OutputSource_TrainFloor_ObserveLevelLoad();
 
     MeshBatcher_Seal(m_Batcher);
 
@@ -277,11 +283,13 @@ void Output_DispatchLevelLoad(void)
 void Output_DispatchLevelUnload(void)
 {
     Output_Sky_ObserveLevelUnload();
+    Output_TrainFloor_ObserveLevelUnload();
     Output_BinocularMask_ObserveLevelUnload();
     OutputSource_Objects_ObserveLevelUnload();
     OutputSource_Rooms_ObserveLevelUnload();
     OutputSource_RoomsDebug_ObserveLevelUnload();
     OutputSource_Sprites_ObserveLevelUnload();
+    OutputSource_TrainFloor_ObserveLevelUnload();
 }
 
 void Output_RefreshObjectMeshes(void)

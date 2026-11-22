@@ -12,5 +12,6 @@
 #include <trx/game/output/sky.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
+#include <trx/game/output/train_floor.h>
 #include <trx/game/output/types.h>
 #include <trx/game/output/vars.h>
