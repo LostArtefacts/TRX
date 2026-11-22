@@ -1,3 +1,7 @@
+local cutscenes = require("tr4.cutscenes")
+
+local TROOPS_CUTSCENES = { 25, 26 }
+
 trx.events.on_game_start(function()
   trx.objects.animating_13.properties.collidable = false
 end)
@@ -20,3 +24,11 @@ require("tr4.inv_setup").apply({
     rot_y = 180,
   },
 })
+
+for _, num in ipairs(TROOPS_CUTSCENES) do
+  cutscenes.register(num, {
+    on_start = function()
+      trx.cutscenes.set_lara_return({ x = 55396, y = -1792, z = 77122 }, -7105)
+    end,
+  })
+end

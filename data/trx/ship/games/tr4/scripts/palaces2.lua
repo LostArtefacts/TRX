@@ -1,3 +1,7 @@
+local cutscenes = require("tr4.cutscenes")
+
+local DEMIGOD_CUTSCENE = 22
+
 trx.events.on_game_start(function()
   trx.objects.animating_16.properties.collidable = false
   trx.items[26].properties.crowbar = true
@@ -52,4 +56,10 @@ require("tr4.inv_setup").apply({
     draws_at_pivot = true,
   },
   pickup_item_2 = { scale = 336, offset_y = 8 },
+})
+
+cutscenes.register(DEMIGOD_CUTSCENE, {
+  on_start = function()
+    trx.cutscenes.set_lara_return({ x = 72770, y = -11776, z = 54077 }, 0)
+  end,
 })
