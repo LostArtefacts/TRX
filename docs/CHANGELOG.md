@@ -98,6 +98,7 @@
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
 - Added `trx.weapons.Kind.TORCH` and `trx.catalog.weapons.TORCH` for the TR4 torch (TRX475)
 - Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished
+- Changed TR4 cutscenes to leave Lara at the scene's origin, as in the original game, unless `trx.cutscenes.set_lara_return` names another place (TRX2062)
 
 ## [1.12](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...trx-1.12) - 2026-11-02
 Showcase: https://youtu.be/80O5jT7Q1FY

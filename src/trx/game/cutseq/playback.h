@@ -73,9 +73,9 @@ void CutSeq_SetActorVisible(int32_t actor, bool visible);
 void CutSeq_SetActorNodeMesh(
     int32_t actor, int32_t node, OBJECT_ID obj_id, int32_t src_node);
 
-// Where Lara stands once the running cutscene ends. It starts as where she
-// was when the cutscene was requested; a script may place her elsewhere, as
-// the original engine does for the scenes that move her.
+// Where Lara stands once the running cutscene ends. By default, she stays at
+// the scene's origin, facing angle 0, as in the original game. A script may
+// place her elsewhere, as the original game does for the scenes that move her.
 void CutSeq_SetLaraReturn(XYZ_32 pos, int16_t rot);
 
 // The box Lara's shadow takes while a cutscene runs, or null when none does.
