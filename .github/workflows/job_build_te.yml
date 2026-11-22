@@ -31,6 +31,8 @@ jobs:
           submodules: 'true'
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          allow-unsafe-pr-checkout: ${{ github.event_name == 'pull_request_target' }}
+          persist-credentials: ${{ github.event_name != 'pull_request_target' }}
 
       - name: Resolve artifact names
         id: vars
