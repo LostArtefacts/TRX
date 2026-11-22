@@ -55,8 +55,9 @@ void OutputSource_Objects_ObserveObjectMeshGeometry(
 
 void OutputSource_Objects_StageObjectMesh(const OBJECT_MESH *mesh);
 // Stages a joint mesh whose parent-side ring, the vertices with a tint factor
-// of 0, is lit as if the item stood moved by the shift.
+// of 0, is lit as if the item stood moved by parent_shift, and whose other
+// vertices are lit as if it stood moved by child_shift.
 void OutputSource_Objects_StageJointMesh(
-    const OBJECT_MESH *mesh, XYZ_F joint_shift);
+    const OBJECT_MESH *mesh, XYZ_F parent_shift, XYZ_F child_shift);
 
 const SCENE_SOURCE *OutputSource_Objects_GetSource(void);

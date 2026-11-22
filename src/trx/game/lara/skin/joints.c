@@ -381,9 +381,9 @@ void Lara_Joints_Draw(
         (child->_23 - parent->_23) / (float)(1 << W2V_SHIFT),
     };
     if (interpolated) {
-        Output_DrawJointMesh_I(mesh, clip, light_shift);
+        Output_DrawJointMesh_I(mesh, clip, light_shift, (XYZ_F) {});
     } else {
-        Output_DrawJointMesh(mesh, clip, light_shift);
+        Output_DrawJointMesh(mesh, clip, light_shift, (XYZ_F) {});
     }
     Output_Water_PopLaraMesh();
 }

@@ -16,10 +16,11 @@ typedef struct {
     struct {
         // Index into the TR4 per-scene staged light pool; -1 = none.
         int32_t handle;
-        // How far the parent-side ring of a joint mesh moves the item
-        // position it is lit from.
+        // How far the parent-side ring of a joint mesh, and the rest of the
+        // mesh, move the item position they are lit from.
         bool has_joint_shift;
         XYZ_F joint_shift;
+        XYZ_F item_shift;
     } tr4;
 } OUTPUT_LIGHT_INFO;
 
