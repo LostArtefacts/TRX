@@ -87,6 +87,7 @@
 - Fixed the jeep appearing to bleed when it drives through a boulder in Valley of the Kings (OG bug) (TRX2003)
 - Fixed enemies walking past some places on their route and stopping short of others (TRX1999)
 - Fixed the pulsing blue lights in Citadel, Inside the Great Pyramid and Temple of Horus shining a steady orange and lacking their screen flashes and camera shake (TRX2022)
+- Fixed white lights in custom levels shining a steady pale light instead of flickering in the color set by their OCB (TRX2053)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
