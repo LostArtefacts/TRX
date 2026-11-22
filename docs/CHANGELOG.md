@@ -72,6 +72,7 @@
 - Fixed the moving sky layer jumping back to its start when a save is loaded (TRX2018)
 - Fixed Lara standing too far back when using certain keyholes and puzzle slots (TRX1959)
 - Fixed keyholes and puzzle slots opening the inventory, or Lara saying no, when she does not have the item (TRX2061)
+- Fixed Lara saying no at used keyholes and filled puzzle slots (TRX2068)
 - Fixed some enemies trying to reach Lara across gaps they cannot cross
 - Fixed flying and swimming enemies failing to follow Lara into some areas
 - Fixed the binocular light barely lighting enemies and other objects (#7089 / TRX1980)

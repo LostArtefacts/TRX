@@ -256,7 +256,8 @@ static void M_CollisionDone(
         Object_Collision(item_num, lara_item, coll);
     }
 
-    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
+    if (g_TRVersion == 4 || !g_Input.action || lara->gun_status != LGS_ARMLESS
+        || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)
         || !Lara_TestPosition(item, &bounds)) {
         return;
