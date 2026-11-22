@@ -13,7 +13,9 @@ permissions:
   pull-requests: write
 jobs:
   pr_comment:
-    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    if: >-
+      (github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'pull_request_target')
+      && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
@@ -24,10 +26,32 @@ jobs:
           script: |
             // Function Definitions
 
+            // A `pull_request_target` run has the default branch tip as its
+            // head SHA, so the build names the pull request commit in its run
+            // name instead.
+            function builtSha() {
+              const run = context.payload.workflow_run;
+              if (run.event !== 'pull_request_target') {
+                return run.head_sha;
+              }
+              const match = /^Test build of #\d+ at ([0-9a-f]{40})$/.exec(run.display_title);
+              if (!match) {
+                throw new NoMatchingPRError(`Unexpected run name: ${run.display_title}`);
+              }
+              return match[1];
+            }
+
             class NoMatchingPRError extends Error {
               constructor(message) {
                 super(message);
                 this.name = "NoMatchingPRError";
+              }
+            }
+
+            class NoArtifactsError extends Error {
+              constructor(message) {
+                super(message);
+                this.name = "NoArtifactsError";
               }
             }
 
@@ -36,14 +60,14 @@ jobs:
              * @returns {Object} PR details containing prNumber, prRef, prRepoId.
              * @throws {Error} If no matching PR is found.
              */
-            async function fetchPRDetails() {
+            async function fetchPRDetails(sha) {
               const iterator = github.paginate.iterator(github.rest.pulls.list, {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
               });
               for await (const { data } of iterator) {
                 for (const pull of data) {
-                  if (pull.head.sha === '${{github.event.workflow_run.head_sha}}') {
+                  if (pull.head.sha === sha) {
                     return {
                       prNumber: pull.number,
                       prRef: pull.head.ref,
@@ -67,7 +91,7 @@ jobs:
                 run_id: context.payload.workflow_run.id,
               });
               if (!(artifactsResponse.data && artifactsResponse.data.artifacts && artifactsResponse.data.artifacts.length)) {
-                throw new Error("No artifacts found for the workflow run");
+                throw new NoArtifactsError("No artifacts found for the workflow run");
               }
               return artifactsResponse.data.artifacts;
             }
@@ -128,17 +152,18 @@ jobs:
                 log(`PR Number: ${prNumber}`);
               }
               log(`PRs: https://api.github.com/repos/${context.repo.owner}/${context.repo.repo}/pulls`);
-              log(`SHA: ${{github.event.workflow_run.head_sha}}`);
+              log(`SHA: ${sha}`);
               process.exit(exitCode);
             }
 
             // Main Code Execution
 
-            let prNumber, prRef, prRepoId;
+            let sha, prNumber, prRef, prRepoId;
 
             // Fetch PR details
             try {
-              ({ prNumber, prRef, prRepoId } = await fetchPRDetails());
+              sha = builtSha();
+              ({ prNumber, prRef, prRepoId } = await fetchPRDetails(sha));
               core.info(`Found PR: #${prNumber}, Ref: ${prRef}, Repo ID: ${prRepoId}`);
             } catch (error) {
               handleError(error, 'fetch PR details', undefined);
@@ -150,6 +175,12 @@ jobs:
               allArtifacts = await fetchAllArtifacts();
               core.info(`Artifacts fetched successfully`);
             } catch (error) {
+              // A `pull_request_target` run builds nothing when its gate
+              // leaves the pull request to `pull_request`.
+              if (error instanceof NoArtifactsError && context.payload.workflow_run.event === 'pull_request_target') {
+                core.info('The run built nothing; no comment to post');
+                return;
+              }
               handleError(error, 'fetch artifacts', prNumber);
             }
 

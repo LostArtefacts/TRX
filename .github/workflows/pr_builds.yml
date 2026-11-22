@@ -1,39 +1,127 @@
 name: Create a test build
 
-permissions:
-  contents: write
+# A run started by `pull_request_target` names the commit it builds, because
+# its own head SHA is the tip of the default branch. The comment workflow reads
+# the SHA from this name to find the pull request.
+run-name: >-
+  ${{ github.event_name == 'pull_request_target'
+  && format('Test build of #{0} at {1}', github.event.pull_request.number, github.event.pull_request.head.sha)
+  || github.event.pull_request.title || github.event.head_commit.message }}
 
-# Keep the trigger on `pull_request`, never `pull_request_target`. On a fork PR
-# `pull_request` runs with a read-only token and withholds every repository
-# secret, so the `secrets: inherit` below resolves to nothing an attacker can
-# reach. Switching to `pull_request_target` would run this same untrusted code
-# in the base-repo context with those secrets exposed, turning a hostile PR into
-# a full secret leak.
+permissions:
+  contents: read
+
+# `pull_request` builds every pull request. It runs with a read-only token and
+# no repository secrets on a fork, so untrusted code reaches nothing. GitHub
+# does not start it while the pull request has a merge conflict.
+#
+# `pull_request_target` still starts during a merge conflict, but it runs in
+# the base repository with its token and caches. The `gate` job therefore lets
+# it build only when the pull request conflicts and both its author and the
+# user who triggered the event have write access to this repository. Such a
+# user can already run any code here by pushing a branch, so the build gives
+# them nothing new. The gate never checks out pull request code. The build
+# jobs pass no secrets and do not save caches on either event.
 on:
   pull_request:
+  pull_request_target:
   push:
     branches:
       - '!stable'
       - '!develop'
 
 jobs:
+  gate:
+    name: Decide whether to build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      build: ${{ steps.gate.outputs.build }}
+    steps:
+      - id: gate
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            if (context.eventName !== 'pull_request_target') {
+              core.setOutput('build', 'true');
+              return;
+            }
+
+            const pr = context.payload.pull_request;
+
+            async function hasWriteAccess(username) {
+              try {
+                const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  username,
+                });
+                return data.permission === 'admin' || data.permission === 'write';
+              } catch (error) {
+                core.info(`No permission found for ${username}: ${error.message}`);
+                return false;
+              }
+            }
+
+            for (const username of new Set([pr.user.login, context.payload.sender.login])) {
+              if (!(await hasWriteAccess(username))) {
+                core.info(`${username} has no write access; skipping the build`);
+                core.setOutput('build', 'false');
+                return;
+              }
+            }
+
+            // GitHub computes the mergeable state in the background and
+            // returns null until it is known.
+            let mergeable = null;
+            for (let attempt = 0; attempt < 12 && mergeable === null; attempt++) {
+              if (attempt > 0) {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+              }
+              const { data } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+              });
+              if (data.head.sha !== pr.head.sha) {
+                core.info('The pull request has a newer commit; skipping the build');
+                core.setOutput('build', 'false');
+                return;
+              }
+              mergeable = data.mergeable;
+            }
+
+            if (mergeable === true) {
+              core.info('The pull request merges cleanly; pull_request builds it');
+              core.setOutput('build', 'false');
+              return;
+            }
+            core.info(`Building the conflicting pull request (mergeable: ${mergeable})`);
+            core.setOutput('build', 'true');
+
   package_linux:
     name: Linux
+    needs:
+      - gate
+    if: needs.gate.outputs.build == 'true'
     uses: ./.github/workflows/job_build.yml
     with:
       platform: linux
       target: debug
       zip: false
-    secrets: inherit
 
   package_win:
     name: Windows
+    needs:
+      - gate
+    if: needs.gate.outputs.build == 'true'
     uses: ./.github/workflows/job_build.yml
     with:
       platform: win
       target: debug
       zip: false
-    secrets: inherit
 
   package_win_te:
     name: Build Tomb Editor bundle
@@ -44,7 +132,6 @@ jobs:
       target: debug
       zip: false
       windows_artifact_name: ${{ needs.package_win.outputs.trx_asset }}
-    secrets: inherit
 
   # package_mac:
   #   name: Mac
