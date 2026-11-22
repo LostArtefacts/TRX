@@ -2878,7 +2878,7 @@ unit_tests += {
 }
 
 # Compiles each source once for all the tests that list it. Tests that build
-# with the same arguments and dependencies form a group, and each group
+# with the same arguments form a group, and each group
 # compiles the union of their sources into one library. A test links the
 # objects of its own list only, never the whole library, so a source missing
 # from the list is still a link error. The objects link in the order of the
@@ -2888,6 +2888,7 @@ group_keys = []
 group_sources = {}
 group_args = {}
 group_deps = {}
+group_dep_names = {}
 foreach spec : unit_tests
   name = spec['name']
   test_src = spec.get('src', [])
@@ -2939,24 +2940,29 @@ foreach spec : unit_tests
     endif
   endforeach
 
-  # Groups by the dependencies that change how a source compiles. A library
-  # found by name, such as libm, adds only link arguments, so it does not
-  # count, and a dependency listed twice counts once.
-  compile_deps = []
-  dep_names = []
+  group = ' '.join(test_args)
+  if group not in group_keys
+    group_keys += group
+    group_sources += {group: []}
+    group_args += {group: test_args}
+    group_deps += {group: []}
+    group_dep_names += {group: []}
+  endif
+  # Gives each group the include paths and compile flags of every dependency
+  # that one of its tests lists. These flags serve the headers of the
+  # dependency only, so they leave other sources unchanged. Each test still
+  # links only the dependencies it lists. A library found by name, such as
+  # libm, has no compile flags, and a dependency listed twice counts once.
+  compile_deps = group_deps[group]
+  dep_names = group_dep_names[group]
   foreach dep : test_deps
     if dep.type_name() != 'library' and dep.name() not in dep_names
       compile_deps += dep.partial_dependency(compile_args: true, includes: true)
       dep_names += dep.name()
     endif
   endforeach
-  group = ' '.join(test_args) + ' | ' + ' '.join(dep_names)
-  if group not in group_keys
-    group_keys += group
-    group_sources += {group: []}
-    group_args += {group: test_args}
-    group_deps += {group: compile_deps}
-  endif
+  group_deps += {group: compile_deps}
+  group_dep_names += {group: dep_names}
   group_paths = group_sources[group]
   foreach path : paths
     if path not in group_paths
