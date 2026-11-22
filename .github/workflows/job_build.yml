@@ -80,7 +80,7 @@ jobs:
       # Only a push from a trusted branch writes the shared ccache. Pull requests
       # skip this step and stay restore-only.
       - name: Save ccache
-        if: ${{ github.event_name != 'pull_request' && steps.ccache.outputs.cache-primary-key && (inputs.platform == 'linux' || inputs.platform == 'win') }}
+        if: ${{ !startsWith(github.event_name, 'pull_request') && steps.ccache.outputs.cache-primary-key && (inputs.platform == 'linux' || inputs.platform == 'win') }}
         uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .cache/ccache
