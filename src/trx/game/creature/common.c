@@ -391,7 +391,7 @@ static void M_TickPoison(ITEM *const item)
 
 bool Creature_SameZone(const CREATURE *const creature, ITEM *const target_item)
 {
-    if (creature->lot.setup.fly != 0) {
+    if (g_TRVersion < 4 && creature->lot.setup.fly != 0) {
         return true;
     }
 
