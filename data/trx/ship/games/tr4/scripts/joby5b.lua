@@ -1,3 +1,7 @@
+local cutscenes = require("tr4.cutscenes")
+
+local LEVEL_END_CUTSCENE = 23
+
 trx.events.on_game_start(function()
   trx.objects.animating_16.properties.collidable = false
   trx.objects.scaled_spikes.properties.scaled_spikes_mode =
@@ -33,3 +37,5 @@ require("tr4.inv_setup").apply({
   key_item_12 = { scale = 768, offset_y = 4, rot_x = -90 },
   puzzle_item_5 = { scale = 1200, offset_y = 23, rot_y = 90 },
 })
+
+cutscenes.register(LEVEL_END_CUTSCENE, { on_end = trx.game.end_level })

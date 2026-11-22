@@ -93,6 +93,7 @@
 - Fixed the pulsing blue lights in Citadel, Inside the Great Pyramid and Temple of Horus shining a steady orange and lacking their screen flashes and camera shake (TRX2022)
 - Fixed white lights in custom levels shining a steady pale light instead of flickering in the color set by their OCB (TRX2053)
 - Fixed Lara standing in a different place than in the original game after several cutscenes, such as in Temple of Karnak, Alexandria and Citadel (TRX2062)
+- Fixed Citadel Gate, Citadel and Temple of Horus not ending after their final cutscene (TRX2076)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
