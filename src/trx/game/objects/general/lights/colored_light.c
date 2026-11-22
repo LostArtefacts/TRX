@@ -6,6 +6,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
@@ -17,6 +18,8 @@
 #define M_PULSE_FALLOFF    18
 // clang-format on
 
+#define M_ELECTRICAL_FALLOFF 16
+
 typedef struct {
     RGB_888 color;
 } M_PRIV;
@@ -25,6 +28,11 @@ typedef struct {
     int32_t ocb;
     int16_t phase;
 } M_PULSE_PRIV;
+
+typedef struct {
+    RGB_888 color;
+    int32_t life;
+} M_ELECTRICAL_PRIV;
 
 static void M_InitialiseGeneric(const int16_t item_num, const RGB_888 color)
 {
@@ -134,6 +142,83 @@ static void M_SetupPulse(OBJECT *const obj)
     obj->save_flags = true;
 }
 
+static void M_InitialiseElectrical(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_ELECTRICAL_PRIV *const p = item->priv;
+    const int32_t ocb = M_GetOCB(item);
+    p->color = (RGB_888) {
+        .r = (ocb & 0x1F) << 3,
+        .g = ((ocb >> 5) & 0x1F) << 3,
+        .b = ((ocb >> 10) & 0x1F) << 3,
+    };
+}
+
+static void M_ControlElectrical(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_ELECTRICAL_PRIV *const p = item->priv;
+    if (!Item_IsTriggerActive(item)) {
+        p->life = 0;
+        return;
+    }
+
+    int32_t shade;
+    if (p->life < 16) {
+        shade = (Random_GetControl() & 0x3F) << 2;
+        p->life++;
+    } else if (p->life < 96) {
+        if ((int32_t)Output_GetTimeInGame() % 16 == 0
+            || (Random_GetControl() & 7) == 0) {
+            shade = 192 - (Random_GetControl() & 0x3F);
+        } else {
+            shade = Random_GetControl() & 0x3F;
+        }
+        p->life++;
+    } else if (p->life < 160) {
+        shade = 96 - (Random_GetControl() & 0x1F);
+        if ((Random_GetControl() & 0x1F) == 0 && p->life > 128) {
+            p->life = 160;
+        } else {
+            p->life++;
+        }
+    } else {
+        shade = 255 - (Random_GetControl() & 0x1F);
+    }
+
+    const RGB_888 color = {
+        .r = (shade * p->color.r) >> 8,
+        .g = (shade * p->color.g) >> 8,
+        .b = (shade * p->color.b) >> 8,
+    };
+    Output_AddDynamicLightRGB(item->pos, M_ELECTRICAL_FALLOFF, color);
+}
+
+static RESULT M_LoadElectricalPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_ELECTRICAL_PRIV *const p = item->priv;
+    MUST(JSON_READ_OPT(io, "life", &p->life));
+    return OK;
+}
+
+static void M_SaveElectricalPriv(
+    const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_ELECTRICAL_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "life", p->life);
+}
+
+static void M_SetupElectrical(OBJECT *const obj)
+{
+    obj->priv_size = sizeof(M_ELECTRICAL_PRIV);
+    obj->priv_load_func = M_LoadElectricalPriv;
+    obj->priv_save_func = M_SaveElectricalPriv;
+    obj->initialise_func = M_InitialiseElectrical;
+    obj->control_func = M_ControlElectrical;
+    obj->draw_func = nullptr;
+    obj->save_flags = true;
+}
+
 #define M_DEFINE_LIGHT(name, r, g, b)                                          \
     static void M_Initialise##name(const int16_t num)                          \
     {                                                                          \
@@ -149,7 +234,6 @@ static void M_SetupPulse(OBJECT *const obj)
 M_DEFINE_LIGHT(RED, 255, 0, 0)
 M_DEFINE_LIGHT(GREEN, 0, 255, 0)
 M_DEFINE_LIGHT(BLUE, 0, 0, 255)
-M_DEFINE_LIGHT(WHITE, 224, 224, 255)
 
 #undef M_DEFINE_LIGHT
 
@@ -169,3 +253,20 @@ static void M_SetupAmber(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_AMBER_LIGHT, M_SetupAmber)
+
+static void M_InitialiseWhite(const int16_t item_num)
+{
+    M_InitialiseGeneric(item_num, (RGB_888) { 224, 224, 255 });
+}
+
+static void M_SetupWhite(OBJECT *const obj)
+{
+    if (g_TRVersion == 4) {
+        M_SetupElectrical(obj);
+        return;
+    }
+    M_SetupCommon(obj);
+    obj->initialise_func = M_InitialiseWhite;
+}
+
+REGISTER_OBJECT(O_WHITE_LIGHT, M_SetupWhite)
