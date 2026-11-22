@@ -358,8 +358,51 @@ static bool M_AnyFireActive(void)
     return false;
 }
 
+// Pairs each fire with the closest fire of the same size from the previous
+// frame, so that a moving fire interpolates between frames. The closest pairs
+// match first, so a fire that stays in place keeps its own position when a
+// new fire starts nearby. Each previous fire matches only once. A fire with
+// no match nearby starts at its own position.
+static void M_MatchPrevFires(void)
+{
+    bool is_matched[M_MAX_FIRES] = {};
+    while (true) {
+        int32_t best_fire = -1;
+        M_FIRE *best_prev = nullptr;
+        int64_t best_dist = (int64_t)M_MAX_TRACK_DIST * M_MAX_TRACK_DIST;
+        for (int32_t i = 0; i < M_MAX_FIRES; i++) {
+            const M_FIRE *const fire = &m_Fires[i];
+            if (fire->on == 0 || is_matched[i]) {
+                continue;
+            }
+            for (int32_t j = 0; j < M_MAX_FIRES; j++) {
+                M_FIRE *const prev = &m_PrevFires[j];
+                if (prev->on == 0 || prev->size != fire->size) {
+                    continue;
+                }
+                const XYZ_32 delta = XYZ_32_Subtract(prev->pos, fire->pos);
+                const int64_t dist = XYZ_32_GetLength2_64(delta);
+                if (dist <= best_dist) {
+                    best_fire = i;
+                    best_prev = prev;
+                    best_dist = dist;
+                }
+            }
+        }
+
+        if (best_prev == nullptr) {
+            return;
+        }
+        m_Fires[best_fire].prev_pos = best_prev->pos;
+        is_matched[best_fire] = true;
+        best_prev->on = 0;
+    }
+}
+
 static void M_Control(void)
 {
+    M_MatchPrevFires();
+
     // Spawning draws from the control RNG that demo playback is locked to, so
     // only run the pool while a fire is registered this frame. Existing sparks
     // still advance to fade out; that path draws no RNG.
@@ -431,33 +474,6 @@ static RESULT M_Load(JSON_READ_IO *const io)
     return OK;
 }
 
-// Returns the position of the closest fire of the same size from the previous
-// frame, so that a moving fire interpolates between frames. Each previous fire
-// matches only once. A fire with no match nearby starts at its own position.
-static XYZ_32 M_ClaimPrevPos(const XYZ_32 pos, const int32_t size)
-{
-    M_FIRE *best = nullptr;
-    int64_t best_dist = (int64_t)M_MAX_TRACK_DIST * M_MAX_TRACK_DIST;
-    for (int32_t i = 0; i < M_MAX_FIRES; i++) {
-        M_FIRE *const prev = &m_PrevFires[i];
-        if (prev->on == 0 || prev->size != size) {
-            continue;
-        }
-        const XYZ_32 delta = XYZ_32_Subtract(prev->pos, pos);
-        const int64_t dist = XYZ_32_GetLength2_64(delta);
-        if (dist <= best_dist) {
-            best = prev;
-            best_dist = dist;
-        }
-    }
-
-    if (best == nullptr) {
-        return pos;
-    }
-    best->on = 0;
-    return best->pos;
-}
-
 void FX_Fire_Add(
     const XYZ_32 pos, const int32_t size, const int16_t room_num,
     const int32_t fade)
@@ -472,7 +488,7 @@ void FX_Fire_Add(
             on = 1;
         }
         fire->pos = pos;
-        fire->prev_pos = M_ClaimPrevPos(pos, size);
+        fire->prev_pos = pos;
         fire->size = size;
         fire->room_num = room_num;
         fire->on = on;
