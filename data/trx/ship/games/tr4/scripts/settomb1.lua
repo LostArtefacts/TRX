@@ -18,7 +18,6 @@ trx.events.on_game_start(function(is_save)
   trx.objects.waterfall_1.properties.hide_when_inactive = true
   trx.objects.waterfall_2.properties.loop_sound = trx.items.WaterfallSound.SAND
   trx.objects.waterfall_2.properties.hide_when_inactive = true
-  trx.items[0].properties.collidable_when_done = false
   trx.objects.scaled_spikes.properties.scaled_spikes_mode =
     trx.items.ScaledSpikesMode.EXTENDED
   trx.objects.small_scorpion.properties.is_venomous = false
