@@ -622,6 +622,9 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         M_DrawSingleRoom(Room_Get(draw_room_num));
     }
 
+    Output_Water_SetupAboveWater(false);
+    Output_TrainFloor_Draw();
+
     const ITEM *const lara_item = Lara_GetItem();
     if (!M_IsSceneryOnly() && lara_item != nullptr && Object_Get(O_LARA)->loaded
         && Lara_Mesh_IsReady()) {

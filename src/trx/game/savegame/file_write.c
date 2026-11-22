@@ -824,6 +824,7 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "sky_layer_pos");
+    JSONW_WRITE(io, "train_floor_pos", Output_TrainFloor_GetMapPos());
     JSONW_WRITE(io, "rng_control_seed", Random_GetControlSeed());
     JSONW_WRITE(io, "rng_draw_seed", Random_GetDrawSeed());
     JSONW_WRITE(io, "weather_type", FX_Weather_GetWeather());

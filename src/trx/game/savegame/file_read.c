@@ -1780,6 +1780,12 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
         MUST(JSON_POP(io));
     }
 
+    if (JSON_ReadIO_HasKey(io, "train_floor_pos")) {
+        int32_t train_floor_pos = 0;
+        MUST(JSON_READ(io, "train_floor_pos", &train_floor_pos));
+        Output_TrainFloor_SetMapPos(train_floor_pos);
+    }
+
     {
         // Introduced in TRX 1.4
         int32_t rng_control_seed = 0;
