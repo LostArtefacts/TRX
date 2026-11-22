@@ -1302,7 +1302,11 @@ bool Creature_Animate(
         }
     }
 
-    if (lot->setup.fly != 0) {
+    // In TR4, a dead flyer drops to the floor instead of flying towards its
+    // last target.
+    const bool is_flying =
+        lot->setup.fly != 0 && (g_TRVersion < 4 || item->hit_points > 0);
+    if (is_flying) {
         int32_t dy = creature->target.y - item->pos.y;
         CLAMP(dy, -lot->setup.fly, lot->setup.fly);
 
