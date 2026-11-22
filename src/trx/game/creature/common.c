@@ -1419,7 +1419,9 @@ bool Creature_Animate(
         } else if (item->pos.y < item->floor) {
             item->pos.y = item->floor;
         }
-        item->rot.x = 0;
+        if (g_TRVersion < 4) {
+            item->rot.x = 0;
+        }
     }
 
     if (g_TRVersion <= 3
