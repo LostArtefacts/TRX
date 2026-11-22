@@ -231,7 +231,7 @@ static void M_BakeRoomLights(void)
             baked->r = light->color.r * (1.0f / 255.0f) * intensity;
             baked->g = light->color.g * (1.0f / 255.0f) * intensity;
             baked->b = light->color.b * (1.0f / 255.0f) * intensity;
-            if (quirk_light->type != LIGHT_TYPE_SUN) {
+            if (quirk_light->type == LIGHT_TYPE_SHADOW) {
                 baked->shadow = (int32_t)(intensity * 255.0f);
             }
             baked->pos = (XYZ_F) {
