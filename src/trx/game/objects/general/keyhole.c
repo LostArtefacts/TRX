@@ -61,6 +61,25 @@ static bool M_CanShowInventory(const ITEM *const item)
         || Inv_HasItem(Object_FindReceptacleKey(item->object_id));
 }
 
+static bool M_IsSolid(const ITEM *const item)
+{
+    if (g_TRVersion != 4) {
+        return true;
+    }
+    // Keyholes 7 to 12 have no collision in TR4, as in the original game.
+    switch (item->object_id) {
+    case O_KEY_HOLE_7:
+    case O_KEY_HOLE_8:
+    case O_KEY_HOLE_9:
+    case O_KEY_HOLE_10:
+    case O_KEY_HOLE_11:
+    case O_KEY_HOLE_12:
+        return false;
+    default:
+        return true;
+    }
+}
+
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -138,7 +157,7 @@ static void M_CollisionControlled(
         && Item_TestFrameEqual(lara_item, M_LF_USE_KEYHOLE)) {
         M_ConsumeKeyItem(item);
         M_MarkDone(item);
-    } else {
+    } else if (M_IsSolid(item)) {
         Object_Collision(item_num, lara_item, coll);
     }
 }
