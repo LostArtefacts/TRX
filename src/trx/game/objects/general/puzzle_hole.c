@@ -14,6 +14,8 @@
 // Marks a TR4 slot with an OCB above this value as one that Lara can walk
 // through.
 #define M_CUTSCENE_OCB 1024
+// Marks a used TR4 slot with this OCB as one that Lara can walk through.
+#define M_NO_COLLISION_OCB 999
 
 typedef struct {
     bool collidable_when_done;
@@ -81,11 +83,26 @@ static XYZ_32 M_GetControlledPosition(const ITEM *const item)
     return position;
 }
 
-static bool M_IsSolid(const ITEM *const item)
+static int32_t M_GetOCB(const ITEM *const item)
 {
     TRX_VALUE ocb = {};
-    return !ObjectProperty_GetItemValue(item, "ocb", &ocb)
-        || ocb.type != TVT_S32 || ocb.as_int <= M_CUTSCENE_OCB;
+    if (!ObjectProperty_GetItemValue(item, "ocb", &ocb)
+        || ocb.type != TVT_S32) {
+        return 0;
+    }
+    return ocb.as_int;
+}
+
+static bool M_IsSolid(const ITEM *const item)
+{
+    return M_GetOCB(item) <= M_CUTSCENE_OCB;
+}
+
+static bool M_IsSolidWhenDone(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->collidable_when_done
+        && (g_TRVersion != 4 || M_GetOCB(item) != M_NO_COLLISION_OCB);
 }
 
 static bool M_CanShowInventory(const ITEM *const item)
@@ -251,8 +268,7 @@ static void M_CollisionDone(
     const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    const M_PRIV *const p = item->priv;
-    if (g_Config.gameplay.enable_walk_to_items && p->collidable_when_done) {
+    if (g_Config.gameplay.enable_walk_to_items && M_IsSolidWhenDone(item)) {
         Object_Collision(item_num, lara_item, coll);
     }
 

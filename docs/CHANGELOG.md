@@ -74,6 +74,7 @@
 - Fixed keyholes and puzzle slots opening the inventory, or Lara saying no, when she does not have the item (TRX2061)
 - Fixed Lara saying no at used keyholes and filled puzzle slots (TRX2068)
 - Fixed Lara being pushed away from certain keyholes, such as in The Sphinx Complex (TRX2072)
+- Fixed used puzzle slots with an OCB of 999 blocking Lara in custom levels (TRX2072)
 - Fixed some enemies trying to reach Lara across gaps they cannot cross
 - Fixed flying and swimming enemies failing to follow Lara into some areas
 - Fixed the binocular light barely lighting enemies and other objects (#7089 / TRX1980)
