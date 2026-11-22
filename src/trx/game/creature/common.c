@@ -923,7 +923,14 @@ void Creature_Underwater(ITEM *const item, const int32_t depth)
         return;
     }
 
-    item->pos.y = wh + depth;
+    if (g_TRVersion >= 4) {
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+        const int32_t height = Room_GetHeight(sector, item->pos);
+        item->pos.y = MIN(wh + depth, height);
+    } else {
+        item->pos.y = wh + depth;
+    }
     if (item->rot.x > 2 * DEG_1) {
         item->rot.x -= 2 * DEG_1;
     } else {
