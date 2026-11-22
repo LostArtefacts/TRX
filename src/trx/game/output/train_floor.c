@@ -204,3 +204,8 @@ void Output_TrainFloor_Draw(void)
         }
     }
 }
+
+bool Output_TrainFloor_IsEnabled(void)
+{
+    return M_IsEnabled();
+}
