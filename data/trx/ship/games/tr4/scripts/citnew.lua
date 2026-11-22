@@ -10,3 +10,7 @@ cutscenes.register(JEAN_YVES_CUTSCENE, {
 })
 
 cutscenes.register(LEVEL_END_CUTSCENE, { on_end = trx.game.end_level })
+
+trx.cutscenes[LEVEL_END_CUTSCENE]:on_end(function()
+  trx.inventory.set_count(trx.catalog.objects.quest_item_1, 1)
+end)
