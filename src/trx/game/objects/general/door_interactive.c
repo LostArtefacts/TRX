@@ -161,6 +161,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->initialise_func = Door_Initialise;
     obj->control_func = M_Control;
     obj->draw_func = Item_DrawUnclipped;
+    obj->draw_room_num_func = Door_GetDrawRoomNum;
     obj->priv_size = Door_GetPrivSize();
     obj->save_flags = true;
     obj->save_anim = true;

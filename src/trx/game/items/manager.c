@@ -161,12 +161,27 @@ static BOUNDS_32 M_GetOccupancyBounds(const ITEM *const item)
     };
 }
 
+static int16_t M_GetDrawRoomNum(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->draw_room_num_func == nullptr) {
+        return NO_ROOM;
+    }
+    return obj->draw_room_num_func(item);
+}
+
 static void M_AddToDrawQueues(const int16_t item_num, const int16_t room_num)
 {
     if (room_num == NO_ROOM) {
         return;
     }
     const ITEM *const item = &m_Items[item_num];
+    const int16_t draw_room_num = M_GetDrawRoomNum(item);
+    if (draw_room_num != NO_ROOM) {
+        Room_AddDrawnItem(draw_room_num, item_num);
+        return;
+    }
+
     const BOUNDS_32 bounds = M_GetOccupancyBounds(item);
     M_AddToRoomAndNeighbours(item_num, room_num, &bounds);
 
@@ -660,7 +675,10 @@ void Item_Initialise(const int16_t item_num)
     }
 
     if (item->room_num != NO_ROOM) {
-        Room_AddDrawnItem(item->room_num, item_num);
+        const int16_t draw_room_num = M_GetDrawRoomNum(item);
+        Room_AddDrawnItem(
+            draw_room_num != NO_ROOM ? draw_room_num : item->room_num,
+            item_num);
     }
 
     // The gate keeps the level's starting cast quiet: only an item initialised

@@ -25,6 +25,7 @@ typedef struct {
     M_DOOR_POS d1flip;
     M_DOOR_POS d2;
     M_DOOR_POS d2flip;
+    int16_t draw_room_num;
     bool crowbar;
     bool lift;
     int32_t lift_count;
@@ -320,6 +321,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = Door_Initialise;
     obj->control_func = M_Control;
     obj->draw_func = Item_DrawUnclipped;
+    obj->draw_room_num_func = Door_GetDrawRoomNum;
     obj->collision_func = M_Collision;
     obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
@@ -368,6 +370,7 @@ void Door_Initialise(const int16_t item_num)
     }
 
     room_num = p->d1.sector->portal_room.wall;
+    p->draw_room_num = g_TRVersion >= 2 ? room_num : NO_ROOM;
     M_Shut(&p->d1);
     M_Shut(&p->d1flip);
 
@@ -405,6 +408,12 @@ void Door_ShutPortals(ITEM *const item)
     M_Shut(&p->d2);
     M_Shut(&p->d1flip);
     M_Shut(&p->d2flip);
+}
+
+int16_t Door_GetDrawRoomNum(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->draw_room_num;
 }
 
 size_t Door_GetPrivSize(void)

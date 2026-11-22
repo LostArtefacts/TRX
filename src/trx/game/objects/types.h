@@ -128,6 +128,9 @@ typedef struct OBJECT {
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);
     int16_t (*carrier_item_num_func)(const ITEM *item);
+    // Returns the one room the item is drawn from. NO_ROOM draws the item
+    // from its own room and from every neighbour that its bounds reach.
+    int16_t (*draw_room_num_func)(const ITEM *item);
     bool (*can_drop_items_func)(const ITEM *item);
     bool (*can_interpolate_func)(
         const ITEM *item, int32_t frame_a, int32_t frame_b);
