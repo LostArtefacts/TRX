@@ -239,9 +239,9 @@ end)
 
 - <a id="cutscenes.set_lara_return" name="cutscenes.set_lara_return"></a>[lua]`trx.cutscenes.set_lara_return(pos, [rot])`  
   Places Lara where the next cutscene to end leaves her. A cutscene stands
-  her at its own origin while it plays and puts her back where it found her
-  afterwards; this says to put her somewhere else instead, as the original
-  game does for the scenes that carry her along.
+  her at its own origin, facing angle 0, while it plays and leaves her there
+  afterwards, as the original game does; this says to put her somewhere else
+  instead, as the original game does for the scenes that carry her along.
 
   It holds for one cutscene, whether named before [`trx.cutscenes.play`](#cutscenes.play) or
   while the scene runs, and is forgotten once she has been placed.

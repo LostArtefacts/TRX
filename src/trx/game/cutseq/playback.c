@@ -105,8 +105,8 @@ static struct {
     M_ACTOR actors[CUTSEQ_MAX_ACTORS];
     LARA_POSE lara_pose;
     CAMERA_TYPE old_cam_type;
-    // Where the scene leaves Lara. Present once a script has named the place,
-    // rather than the request having taken where it found her.
+    // Where the scene leaves Lara, present once a script has named the place.
+    // Without it, she stays at the scene's origin, as in the original game.
     struct {
         XYZ_32 pos;
         int16_t rot;
@@ -432,7 +432,11 @@ static void M_Finish(void)
 
     M_ReleaseNodes();
     Lara_Pose_SetOverride(nullptr);
-    M_TeleportLara(m_State.lara_return.pos, m_State.lara_return.rot);
+    if (m_State.lara_return.is_present) {
+        M_TeleportLara(m_State.lara_return.pos, m_State.lara_return.rot);
+    } else {
+        M_TeleportLara(info->origin, 0);
+    }
     if (Lara_GetLaraInfo()->water_status == LWS_CHEAT) {
         Lara_Cheat_ExitFlyMode();
         Lara_Cheat_EnterFlyMode();
@@ -593,12 +597,6 @@ void CutSeq_Request(const int32_t num, const bool fade_out)
         return;
     }
 
-    // A script may name the place before asking for the scene as readily as
-    // during it.
-    if (!m_State.lara_return.is_present) {
-        m_State.lara_return.pos = Lara_GetItem()->pos;
-        m_State.lara_return.rot = Lara_GetItem()->rot.y;
-    }
     // A flyby that asks for a scene would otherwise run on behind the fade, and
     // one that has run out flies back to Lara through the void. Stopping it
     // holds the camera still while the screen fades out.

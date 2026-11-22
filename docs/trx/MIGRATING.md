@@ -15,6 +15,12 @@ order: 3
    draw key, and it never enters the inventory. A script that goes through
    `trx.weapons.all` to hand out or show weapons should leave it out.
 
+2. **TR4 cutscenes leave Lara at the scene's origin**
+   When a cutscene ends, Lara now stays at the scene's origin, facing angle
+   0, as in the original game. Before this, she went back to the place where
+   she stood when the scene started. A script that needs her somewhere else
+   must name the place with `trx.cutscenes.set_lara_return`.
+
 ### Version 1.11 to 1.12
 
 1. **`display_time` no longer counts the fades**
