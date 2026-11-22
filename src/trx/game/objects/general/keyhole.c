@@ -179,7 +179,9 @@ static void M_Collision(
     }
 
     if (!Item_IsInactive(item)) {
-        Lara_RefuseInteraction();
+        if (g_TRVersion != 4) {
+            Lara_RefuseInteraction();
+        }
     } else if (
         M_CanShowInventory(item) && !GF_ShowInventoryKeys(item->object_id)) {
         Lara_RefuseInteraction();
