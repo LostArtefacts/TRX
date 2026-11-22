@@ -95,6 +95,7 @@
 - Fixed white lights in custom levels shining a steady pale light instead of flickering in the color set by their OCB (TRX2053)
 - Fixed Lara standing in a different place than in the original game after several cutscenes, such as in Temple of Karnak, Alexandria and Citadel (TRX2062)
 - Fixed Citadel Gate, Citadel and Temple of Horus not ending after their final cutscene (TRX2076)
+- Fixed Lara arriving in The Sphinx Complex without the Amulet of Horus (TRX2080)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)

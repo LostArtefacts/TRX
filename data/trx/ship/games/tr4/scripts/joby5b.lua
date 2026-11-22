@@ -39,3 +39,9 @@ require("tr4.inv_setup").apply({
 })
 
 cutscenes.register(LEVEL_END_CUTSCENE, { on_end = trx.game.end_level })
+
+trx.cutscenes[LEVEL_END_CUTSCENE]:on_end(function()
+  for i = 2, 6 do
+    trx.inventory.set_count(trx.catalog.objects["quest_item_" .. i], 0)
+  end
+end)
