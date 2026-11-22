@@ -2903,6 +2903,23 @@ foreach spec : unit_tests
   endforeach
   test_engine += spec.get('engine', [])
 
+  # Sorts the arguments, so that two tests that give the same arguments in a
+  # different order form one group. Meson has no sort function.
+  sorted_args = []
+  foreach arg : test_args
+    head = []
+    tail = []
+    foreach other : sorted_args
+      if other <= arg
+        head += other
+      else
+        tail += other
+      endif
+    endforeach
+    sorted_args = head + [arg] + tail
+  endforeach
+  test_args = sorted_args
+
   paths = [name + '.c']
   if spec.get('stubs', true)
     paths += test_stubs
