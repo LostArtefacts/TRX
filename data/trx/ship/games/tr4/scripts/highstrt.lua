@@ -1,6 +1,7 @@
 local cutscenes = require("tr4.cutscenes")
 
 local TROOPS_CUTSCENES = { 25, 26 }
+local LEVEL_END_CUTSCENE = 11
 
 trx.events.on_game_start(function()
   trx.objects.animating_13.properties.collidable = false
@@ -32,3 +33,5 @@ for _, num in ipairs(TROOPS_CUTSCENES) do
     end,
   })
 end
+
+cutscenes.register(LEVEL_END_CUTSCENE, { on_end = trx.game.end_level })
