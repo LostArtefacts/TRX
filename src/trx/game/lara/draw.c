@@ -190,14 +190,19 @@ static bool M_PushLookAlpha(void)
     return true;
 }
 
-static void M_CacheMatrix(const LARA_MESH mesh)
+static void M_CacheMatrix(const LARA_MESH mesh, const bool interpolated)
 {
     if (!m_CacheMatrices) {
         return;
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    Matrix_Push();
+    if (interpolated) {
+        Matrix_Interpolate();
+    }
     lara->mesh_pos_matrices[mesh] = *g_WMatrixPtr;
+    Matrix_Pop();
 }
 
 static void M_DrawEquipmentMesh(
@@ -301,12 +306,12 @@ static void M_DrawBodyPart(
     if (mesh_rots_2 != nullptr) {
         Matrix_TranslateRel32_I(bone[mesh - 1].pos);
         Matrix_Rot16_ID(mesh_rots_1[mesh], mesh_rots_2[mesh]);
-        M_CacheMatrix(mesh);
+        M_CacheMatrix(mesh, true);
         M_DrawLaraMesh(Lara_GetItem(), mesh, clip, true);
     } else {
         Matrix_TranslateRel32(bone[mesh - 1].pos);
         Matrix_Rot16(mesh_rots_1[mesh]);
-        M_CacheMatrix(mesh);
+        M_CacheMatrix(mesh, false);
         M_DrawLaraMesh(Lara_GetItem(), mesh, clip, false);
     }
 }
@@ -377,7 +382,7 @@ static bool M_Draw_I(
     Matrix_InitInterpolate(frac, rate);
     Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
     Matrix_Rot16_ID(mesh_rots_1[LM_HIPS], mesh_rots_2[LM_HIPS]);
-    M_CacheMatrix(LM_HIPS);
+    M_CacheMatrix(LM_HIPS, true);
     M_DrawLaraMesh(item, LM_HIPS, clip, true);
     M_DrawEquipment(LM_HIPS, clip, true);
 
@@ -404,7 +409,7 @@ static bool M_Draw_I(
 
     Matrix_Rot16_ID(mesh_rots_1[LM_TORSO], mesh_rots_2[LM_TORSO]);
     Matrix_Rot16_I(lara->interp.result.torso_rot);
-    M_CacheMatrix(LM_TORSO);
+    M_CacheMatrix(LM_TORSO, true);
     M_DrawLaraMesh(item, LM_TORSO, clip, true);
     M_DrawEquipment(LM_TORSO, clip, true);
 
@@ -412,7 +417,7 @@ static bool M_Draw_I(
     Matrix_TranslateRel32_I(bone[LM_HEAD - 1].pos);
     Matrix_Rot16_ID(mesh_rots_1[LM_HEAD], mesh_rots_2[LM_HEAD]);
     Matrix_Rot16_I(lara->interp.result.head_rot);
-    M_CacheMatrix(LM_HEAD);
+    M_CacheMatrix(LM_HEAD, true);
     M_DrawLaraMesh(item, LM_HEAD, clip, true);
     M_DrawEquipment(LM_HEAD, clip, true);
 
@@ -450,7 +455,7 @@ static bool M_Draw_I(
         }
 
         Matrix_Rot16_ID(mesh_rots_1[LM_UARM_L], mesh_rots_2[LM_UARM_L]);
-        M_CacheMatrix(LM_UARM_L);
+        M_CacheMatrix(LM_UARM_L, true);
         M_DrawLaraMesh(item, LM_UARM_L, clip, true);
 
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots_1, mesh_rots_2, clip);
@@ -480,7 +485,7 @@ static bool M_Draw_I(
                 .frame_base[lara->right_arm.frame_num - anim->frame_base]
                 .mesh_rots;
         Matrix_Rot16(mesh_rots_1[LM_UARM_R]);
-        M_CacheMatrix(LM_UARM_R);
+        M_CacheMatrix(LM_UARM_R, false);
         M_DrawLaraMesh(item, LM_UARM_R, clip, false);
 
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots_1, nullptr, clip);
@@ -507,7 +512,7 @@ static bool M_Draw_I(
                 .frame_base[lara->left_arm.frame_num - anim->frame_base]
                 .mesh_rots;
         Matrix_Rot16(mesh_rots_1[LM_UARM_L]);
-        M_CacheMatrix(LM_UARM_L);
+        M_CacheMatrix(LM_UARM_L, false);
         M_DrawLaraMesh(item, LM_UARM_L, clip, false);
 
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots_1, nullptr, clip);
@@ -533,7 +538,7 @@ static bool M_Draw_I(
             lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
         mesh_rots_2 = mesh_rots_1;
         Matrix_Rot16_ID(mesh_rots_1[LM_UARM_R], mesh_rots_2[LM_UARM_R]);
-        M_CacheMatrix(LM_UARM_R);
+        M_CacheMatrix(LM_UARM_R, true);
         M_DrawLaraMesh(item, LM_UARM_R, clip, true);
 
 // NOTE: gcc wrongly complains about mesh_rots_1 possibly being nullptr.
@@ -671,7 +676,7 @@ bool Lara_Draw(const ITEM *const item)
 
     Matrix_TranslateRel16(pose != nullptr ? pose->offset : frame->offset);
     Matrix_Rot16(mesh_rots[LM_HIPS]);
-    M_CacheMatrix(LM_HIPS);
+    M_CacheMatrix(LM_HIPS, false);
     M_DrawLaraMesh(item, LM_HIPS, clip, false);
     M_DrawEquipment(LM_HIPS, clip, false);
 
@@ -697,7 +702,7 @@ bool Lara_Draw(const ITEM *const item)
 
     Matrix_Rot16(mesh_rots[LM_TORSO]);
     Matrix_Rot16(lara->interp.result.torso_rot);
-    M_CacheMatrix(LM_TORSO);
+    M_CacheMatrix(LM_TORSO, false);
     M_DrawLaraMesh(item, LM_TORSO, clip, false);
     M_DrawEquipment(LM_TORSO, clip, false);
 
@@ -705,7 +710,7 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_TranslateRel32(bone[LM_HEAD - 1].pos);
     Matrix_Rot16(mesh_rots[LM_HEAD]);
     Matrix_Rot16(lara->interp.result.head_rot);
-    M_CacheMatrix(LM_HEAD);
+    M_CacheMatrix(LM_HEAD, false);
     M_DrawLaraMesh(item, LM_HEAD, clip, false);
     M_DrawEquipment(LM_HEAD, clip, false);
 
@@ -840,7 +845,7 @@ bool Lara_Draw(const ITEM *const item)
                     .mesh_rots;
         }
         Matrix_Rot16(mesh_rots[LM_UARM_L]);
-        M_CacheMatrix(LM_UARM_L);
+        M_CacheMatrix(LM_UARM_L, false);
         M_DrawLaraMesh(item, LM_UARM_L, clip, false);
 
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots, nullptr, clip);
@@ -868,7 +873,7 @@ bool Lara_Draw(const ITEM *const item)
                 lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
         }
         Matrix_Rot16(mesh_rots[LM_UARM_R]);
-        M_CacheMatrix(LM_UARM_R);
+        M_CacheMatrix(LM_UARM_R, false);
         M_DrawLaraMesh(item, LM_UARM_R, clip, false);
 
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots, nullptr, clip);
