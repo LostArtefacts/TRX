@@ -438,7 +438,17 @@ static void M_CreateLightList(M_ITEM_LIGHT *const il, const int16_t room_num)
     }
 
     M_FadeLightList(cur, il->n_lights[il->cur]);
-    M_FadeLightList(il->lights[1 - il->cur], il->n_lights[1 - il->cur]);
+
+    // Turns off each light of the previous room when its fade-out ends. The
+    // float fade can stop just above zero and leave the light active.
+    M_ITEM_ROOM_LIGHT *const prev = il->lights[1 - il->cur];
+    const int32_t prev_count = il->n_lights[1 - il->cur];
+    M_FadeLightList(prev, prev_count);
+    for (int32_t i = 0; i < prev_count; i++) {
+        if (prev[i].fcnt == 0) {
+            prev[i].active = false;
+        }
+    }
 }
 
 static bool M_HasRoom(const M_STAGED_LIST *const list)
