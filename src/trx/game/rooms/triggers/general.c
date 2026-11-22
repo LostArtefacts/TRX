@@ -6,6 +6,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
+#include <trx/version.h>
 
 // Remove the bodies of items marked to be cleared once dead. Part of the OG
 // performance work, generously used in Opera House and Barkhang Monastery.
@@ -46,8 +47,13 @@ static void M_HandleFinish(
     const TRIGGER *const trigger, const TRIGGER_CMD *const cmd,
     TRIGGER_STATUS *const status)
 {
+    const int16_t level_idx = (int16_t)(intptr_t)cmd->parameter;
+    if (g_TRVersion == 4 && level_idx == 0) {
+        return;
+    }
+
     Game_SetIsLevelComplete(true);
-    Hub_SetNextLevelIndex((int16_t)(intptr_t)cmd->parameter);
+    Hub_SetNextLevelIndex(level_idx);
     Hub_SetLaraStartIndex(trigger->timer);
 }
 
