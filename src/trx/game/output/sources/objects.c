@@ -434,7 +434,8 @@ static void M_ResyncGeometry(
 }
 
 static void M_Stage(
-    const OBJECT_MESH *const mesh, const XYZ_F *const joint_shift)
+    const OBJECT_MESH *const mesh, const XYZ_F *const joint_shift,
+    const XYZ_F item_shift)
 {
     M_PRIV *const p = &m_Priv;
     M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
@@ -456,6 +457,7 @@ static void M_Stage(
         light_info.tr4.has_joint_shift = true;
         light_info.tr4.joint_shift = *joint_shift;
     }
+    light_info.tr4.item_shift = item_shift;
 
     const VIEWPORT_RECT *const scissor = Output_GetObjectScissor();
     OUTPUT_WATER_LINE water_line = {};
@@ -612,13 +614,14 @@ void OutputSource_Objects_ObserveObjectMeshGeometry(
 
 void OutputSource_Objects_StageObjectMesh(const OBJECT_MESH *const mesh)
 {
-    M_Stage(mesh, nullptr);
+    M_Stage(mesh, nullptr, (XYZ_F) {});
 }
 
 void OutputSource_Objects_StageJointMesh(
-    const OBJECT_MESH *const mesh, const XYZ_F joint_shift)
+    const OBJECT_MESH *const mesh, const XYZ_F parent_shift,
+    const XYZ_F child_shift)
 {
-    M_Stage(mesh, &joint_shift);
+    M_Stage(mesh, &parent_shift, child_shift);
 }
 
 const SCENE_SOURCE *OutputSource_Objects_GetSource(void)

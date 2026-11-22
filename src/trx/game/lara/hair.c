@@ -16,6 +16,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output/common.h>
+#include <trx/game/output/draw.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/water.h>
 #include <trx/game/rooms.h>
@@ -78,10 +79,12 @@ static struct {
     // authored per outfit (see LARA_SKIN_BRAID_HEAD_SEAM).
     M_SEGMENT_SEAM head[M_MAX_BRAIDS];
     // A single reused buffer for the welded vertices of the segment currently
-    // being staged; sized to the largest segment mesh.
+    // being staged; sized to the largest segment mesh. The tint factor is 0
+    // on the upper ring and 1 elsewhere.
     struct {
         XYZ_F *pos;
         XYZ_F *normal;
+        float *tint;
         int32_t capacity;
     } scratch;
     // The pairing rotation each bridge's lower ring last settled on, per
@@ -490,6 +493,8 @@ static void M_EnsureScratch(const int32_t vertex_count)
         Memory_Realloc(m_Joints.scratch.pos, sizeof(XYZ_F) * vertex_count);
     m_Joints.scratch.normal =
         Memory_Realloc(m_Joints.scratch.normal, sizeof(XYZ_F) * vertex_count);
+    m_Joints.scratch.tint =
+        Memory_Realloc(m_Joints.scratch.tint, sizeof(float) * vertex_count);
     m_Joints.scratch.capacity = vertex_count;
 }
 
@@ -509,6 +514,7 @@ static void M_SeedFromMesh(const OBJECT_MESH *const mesh)
                         mesh->lighting.normals[i].y,
                         mesh->lighting.normals[i].z }
             : (XYZ_F) { 0.0f, 0.0f, 0.0f };
+        m_Joints.scratch.tint[i] = 1.0f;
     }
 }
 
@@ -519,7 +525,8 @@ static void M_RestoreMesh(const int32_t mesh_idx)
     M_SeedFromMesh(mesh);
     Output_DispatchObjectMeshGeometry(
         mesh_idx, m_Joints.scratch.pos,
-        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr, nullptr);
+        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr,
+        m_Joints.scratch.tint);
 }
 
 static void M_ResetJoints(void)
@@ -551,6 +558,7 @@ static void M_Shutdown(void)
 {
     Memory_FreePointer(&m_Joints.scratch.pos);
     Memory_FreePointer(&m_Joints.scratch.normal);
+    Memory_FreePointer(&m_Joints.scratch.tint);
     m_Joints.scratch.capacity = 0;
 }
 
@@ -706,7 +714,7 @@ static int32_t M_PickShift(
 static void M_ApplySeam(
     const OBJECT_MESH *const mesh, const OBJECT_MESH *const source,
     const MATRIX *const source_matrix, const M_SEGMENT_SEAM *const seam,
-    const int32_t shift, const XYZ_F *const targets)
+    const int32_t shift, const XYZ_F *const targets, const float tint)
 {
     const bool has_normals = mesh->num_lights > 0;
     const bool source_has_normals = source->num_lights > 0;
@@ -715,6 +723,7 @@ static void M_ApplySeam(
         const int32_t va = seam->pairs[(k + shift) % n].vertex_a;
         const int32_t vb = seam->pairs[k].vertex_b;
         m_Joints.scratch.pos[va] = targets[k];
+        m_Joints.scratch.tint[va] = tint;
         if (has_normals && source_has_normals && vb < source->num_lights) {
             m_Joints.scratch.normal[va] = Lara_Seam_TransformNormal(
                 source_matrix, g_WMatrixPtr, source->lighting.normals[vb]);
@@ -722,13 +731,26 @@ static void M_ApplySeam(
     }
 }
 
+// Returns how far the item position moves for TR4 to light a mesh drawn with
+// g_WMatrixPtr as the mesh drawn with the source matrix is lit.
+static XYZ_F M_GetLightShift(const MATRIX *const source_matrix)
+{
+    return (XYZ_F) {
+        (g_WMatrixPtr->_03 - source_matrix->_03) / (float)(1 << W2V_SHIFT),
+        (g_WMatrixPtr->_13 - source_matrix->_13) / (float)(1 << W2V_SHIFT),
+        (g_WMatrixPtr->_23 - source_matrix->_23) / (float)(1 << W2V_SHIFT),
+    };
+}
+
 // Rebuilds a bridge's rings from the anchors either side of it: the upper
 // ring keeps its authored pairing - the head mesh's for bridge 0 - and the
 // lower ring rotates its pairing to fit, absorbing however much the two
-// anchors have rolled against each other.
+// anchors have rolled against each other. TR4 copies the lit color of each
+// ring from its anchor, so the shifts light each ring as its anchor is lit.
 static void M_WeldBridge(
     const int32_t braid_idx, const int32_t seg_base, const int32_t j,
-    const MATRIX *const anchor_matrices)
+    const MATRIX *const anchor_matrices, XYZ_F *const upper_shift,
+    XYZ_F *const lower_shift)
 {
     const int32_t mesh_idx = seg_base + j;
     const OBJECT_MESH *const mesh = Object_GetMesh(mesh_idx);
@@ -754,25 +776,31 @@ static void M_WeldBridge(
 
     XYZ_F targets[SEAM_MAX_VERTEX_PAIRS];
     float upper_roll = 0.0f;
+    *upper_shift = (XYZ_F) {};
     if (upper->count > 0) {
         M_SeamTargets(upper, upper_mesh, upper_matrix, targets);
         upper_roll = M_RingRoll(upper, mesh, targets);
-        M_ApplySeam(mesh, upper_mesh, upper_matrix, upper, 0, targets);
+        M_ApplySeam(mesh, upper_mesh, upper_matrix, upper, 0, targets, 0.0f);
+        *upper_shift = M_GetLightShift(upper_matrix);
     }
 
     const M_SEGMENT_SEAM *const lower = &m_Joints.lower[j];
+    *lower_shift = (XYZ_F) {};
     if (j + 1 < M_HAIR_SEGMENTS && lower->count > 0) {
         const OBJECT_MESH *const lower_mesh = Object_GetMesh(seg_base + j + 1);
         const MATRIX *const lower_matrix = &anchor_matrices[j + 1];
         M_SeamTargets(lower, lower_mesh, lower_matrix, targets);
         const int32_t shift = M_PickShift(
             lower, mesh, targets, upper_roll, &m_Joints.shifts[braid_idx][j]);
-        M_ApplySeam(mesh, lower_mesh, lower_matrix, lower, shift, targets);
+        M_ApplySeam(
+            mesh, lower_mesh, lower_matrix, lower, shift, targets, 1.0f);
+        *lower_shift = M_GetLightShift(lower_matrix);
     }
 
     Output_DispatchObjectMeshGeometry(
         mesh_idx, m_Joints.scratch.pos,
-        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr, nullptr);
+        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr,
+        m_Joints.scratch.tint);
 }
 
 // A render roll for every segment. The physics yaws a node from atan2 of its
@@ -1056,16 +1084,26 @@ void Lara_Hair_Draw(void)
             Matrix_RotX(s->interp.result.rot.x);
             Matrix_RotZ(rolls[j]);
 
+            XYZ_F upper_shift = {};
+            XYZ_F lower_shift = {};
             if (m_Joints.enabled) {
-                M_WeldBridge(i, seg_base, j, anchor_matrices);
+                M_WeldBridge(
+                    i, seg_base, j, anchor_matrices, &upper_shift,
+                    &lower_shift);
             }
 
+            const OBJECT_MESH *const mesh = Object_GetMesh(seg_base + j);
             Output_Water_PushLaraMesh(
                 LM_HEAD,
                 (GAME_VECTOR) { .pos = s->interp.result.pos,
                                 .room_num = lara_item->room_num },
-                Object_GetMesh(seg_base + j)->radius);
-            Object_DrawMesh(seg_base + j, CLIP_FULLY_VISIBLE, false);
+                mesh->radius);
+            if (m_Joints.enabled) {
+                Output_DrawJointMesh(
+                    mesh, CLIP_FULLY_VISIBLE, upper_shift, lower_shift);
+            } else {
+                Object_DrawMesh(seg_base + j, CLIP_FULLY_VISIBLE, false);
+            }
             Output_Water_PopLaraMesh();
             Matrix_Pop();
         }

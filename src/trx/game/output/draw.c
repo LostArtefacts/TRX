@@ -96,20 +96,22 @@ void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const CLIP clip)
 }
 
 void Output_DrawJointMesh(
-    const OBJECT_MESH *const mesh, const CLIP clip, const XYZ_F light_shift)
+    const OBJECT_MESH *const mesh, const CLIP clip, const XYZ_F parent_shift,
+    const XYZ_F child_shift)
 {
-    OutputSource_Objects_StageJointMesh(mesh, light_shift);
+    OutputSource_Objects_StageJointMesh(mesh, parent_shift, child_shift);
     if (g_Config.debug.enable_debug_spheres) {
         Output_DrawSphere(XYZ_32_From16(mesh->center), mesh->radius);
     }
 }
 
 void Output_DrawJointMesh_I(
-    const OBJECT_MESH *const mesh, const CLIP clip, const XYZ_F light_shift)
+    const OBJECT_MESH *const mesh, const CLIP clip, const XYZ_F parent_shift,
+    const XYZ_F child_shift)
 {
     Matrix_Push();
     Matrix_Interpolate();
-    Output_DrawJointMesh(mesh, clip, light_shift);
+    Output_DrawJointMesh(mesh, clip, parent_shift, child_shift);
     Matrix_Pop();
 }
 

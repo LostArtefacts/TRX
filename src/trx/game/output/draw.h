@@ -9,11 +9,11 @@ void Output_DrawObjectMesh(const OBJECT_MESH *mesh, CLIP clip);
 void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, CLIP clip);
 // Draws a mesh that joins two meshes of an item. TR4 lights the parent-side
 // ring, the vertices with a tint factor of 0, as if the item stood moved by
-// the shift, and the other vertices as the mesh is drawn.
+// parent_shift, and the other vertices as if it stood moved by child_shift.
 void Output_DrawJointMesh(
-    const OBJECT_MESH *mesh, CLIP clip, XYZ_F light_shift);
+    const OBJECT_MESH *mesh, CLIP clip, XYZ_F parent_shift, XYZ_F child_shift);
 void Output_DrawJointMesh_I(
-    const OBJECT_MESH *mesh, CLIP clip, XYZ_F light_shift);
+    const OBJECT_MESH *mesh, CLIP clip, XYZ_F parent_shift, XYZ_F child_shift);
 void Output_DrawRoom(const ROOM *room, bool is_outside);
 
 // scale multiplies the sprite's own size around its anchor point.
