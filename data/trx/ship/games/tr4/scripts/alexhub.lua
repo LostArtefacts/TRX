@@ -1,3 +1,12 @@
+local cutscenes = require("tr4.cutscenes")
+
+local JEAN_YVES_CUTSCENES = {
+  [17] = { pos = { x = 54706, y = -8192, z = 50470 }, rot = 4514 },
+  [18] = { pos = { x = 55311, y = -8192, z = 53160 }, rot = 2304 },
+  [19] = { pos = { x = 53469, y = -8192, z = 48687 }, rot = 23355 },
+  [20] = { pos = { x = 55348, y = -8192, z = 50436 }, rot = -9731 },
+}
+
 trx.events.on_game_start(function()
   trx.items[38].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[39].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
@@ -45,3 +54,11 @@ require("tr4.inv_setup").apply({
   },
   pickup_item_2 = { scale = 336, offset_y = 8 },
 })
+
+for num, place in pairs(JEAN_YVES_CUTSCENES) do
+  cutscenes.register(num, {
+    on_start = function()
+      trx.cutscenes.set_lara_return(place.pos, place.rot)
+    end,
+  })
+end

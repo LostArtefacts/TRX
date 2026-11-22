@@ -1465,6 +1465,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── ang_race.lua
 │   │   │   ├── angkor1.lua
 │   │   │   ├── bikebit.lua
+│   │   │   ├── citnew.lua
 │   │   │   ├── cortyard.lua
 │   │   │   ├── csplit1.lua
 │   │   │   ├── csplit2.lua
@@ -3123,6 +3124,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── ang_race.lua
     │   │   │   │   ├── angkor1.lua
     │   │   │   │   ├── bikebit.lua
+    │   │   │   │   ├── citnew.lua
     │   │   │   │   ├── cortyard.lua
     │   │   │   │   ├── csplit1.lua
     │   │   │   │   ├── csplit2.lua

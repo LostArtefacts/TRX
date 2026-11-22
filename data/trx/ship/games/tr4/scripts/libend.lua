@@ -1,3 +1,7 @@
+local cutscenes = require("tr4.cutscenes")
+
+local VON_CROY_CUTSCENE = 10
+
 trx.events.on_game_start(function()
   trx.items[13].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
 end)
@@ -27,4 +31,10 @@ require("tr4.inv_setup").apply({
     draws_at_pivot = true,
   },
   pickup_item_2 = { scale = 336, offset_y = 8 },
+})
+
+cutscenes.register(VON_CROY_CUTSCENE, {
+  on_start = function()
+    trx.cutscenes.set_lara_return({ x = 68756, y = 512, z = 56493 }, 983)
+  end,
 })
