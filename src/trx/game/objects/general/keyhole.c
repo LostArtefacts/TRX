@@ -55,6 +55,12 @@ static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
                                                   : m_DefaultBounds;
 }
 
+static bool M_CanShowInventory(const ITEM *const item)
+{
+    return g_TRVersion != 4
+        || Inv_HasItem(Object_FindReceptacleKey(item->object_id));
+}
+
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -104,6 +110,7 @@ static void M_CollisionControlled(
         const OBJECT_BOUNDS bounds = obj->bounds_func(item);
         if (Lara_TestPosition(item, &bounds)) {
             if (g_Input.action && !lara->interact_target.is_moving
+                && M_CanShowInventory(item)
                 && !GF_ShowInventoryKeys(item->object_id)) {
                 Lara_RefuseInteraction();
                 return;
@@ -173,7 +180,8 @@ static void M_Collision(
 
     if (!Item_IsInactive(item)) {
         Lara_RefuseInteraction();
-    } else if (!GF_ShowInventoryKeys(item->object_id)) {
+    } else if (
+        M_CanShowInventory(item) && !GF_ShowInventoryKeys(item->object_id)) {
         Lara_RefuseInteraction();
     }
 }

@@ -88,6 +88,12 @@ static bool M_IsSolid(const ITEM *const item)
         || ocb.type != TVT_S32 || ocb.as_int <= M_CUTSCENE_OCB;
 }
 
+static bool M_CanShowInventory(const ITEM *const item)
+{
+    return g_TRVersion != 4
+        || Inv_HasItem(Object_FindReceptacleKey(item->object_id));
+}
+
 static bool M_IsUsable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -167,6 +173,7 @@ static void M_CollisionControlled(
         const OBJECT_BOUNDS bounds = M_GetControlledBounds(item);
         if (Lara_TestPosition(item, &bounds)) {
             if (g_Input.action && !lara->interact_target.is_moving
+                && M_CanShowInventory(item)
                 && !GF_ShowInventoryKeys(item->object_id)) {
                 Lara_RefuseInteraction();
                 return;
@@ -232,7 +239,7 @@ static void M_Collision(
         return;
     }
 
-    if (!GF_ShowInventoryKeys(item->object_id)) {
+    if (M_CanShowInventory(item) && !GF_ShowInventoryKeys(item->object_id)) {
         Lara_RefuseInteraction();
     }
 }
