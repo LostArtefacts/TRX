@@ -14,6 +14,7 @@
 #include <trx/game/viewport.h>
 
 #define M_CHASE_ELEVATION (WALL_L * 3 / 2) // = 1536
+#define M_TRAIN_SHAKE 12
 
 static CAMERA_STRATEGY m_Strategies[CAMERA_MODE_NUMBER_OF] = {};
 
@@ -47,6 +48,20 @@ static void M_OffsetReset(void)
 static const CAMERA_STRATEGY *M_GetStrategy(void)
 {
     return &m_Strategies[g_Config.visuals.camera_mode];
+}
+
+// Shakes the camera target on a moving train, as the OG DrawTrainFloor does
+// with a bounce of -12. The shake draws from the draw random source, so that
+// the control random source stays in step with existing recordings.
+static void M_ApplyTrainShake(void)
+{
+    if (!Output_TrainFloor_IsEnabled()) {
+        return;
+    }
+    const int32_t shift = M_TRAIN_SHAKE >> 1;
+    g_Camera.target.x += (Random_GetDraw() % M_TRAIN_SHAKE) - shift;
+    g_Camera.target.y += (Random_GetDraw() % M_TRAIN_SHAKE) - shift;
+    g_Camera.target.z += (Random_GetDraw() % M_TRAIN_SHAKE) - shift;
 }
 
 const CAMERA_LOOK_SETTINGS *Camera_GetLookSettings(const bool on_surface)
@@ -157,6 +172,8 @@ void Camera_ApplyBounce(void)
             g_Camera.target.z += shake.z;
         }
         g_Camera.bounce += 5;
+    } else {
+        M_ApplyTrainShake();
     }
 }
 

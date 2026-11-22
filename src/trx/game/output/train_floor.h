@@ -19,3 +19,4 @@ int32_t Output_TrainFloor_GetMapPos(void);
 void Output_TrainFloor_SetMapPos(int32_t pos);
 
 void Output_TrainFloor_Draw(void);
+bool Output_TrainFloor_IsEnabled(void);
