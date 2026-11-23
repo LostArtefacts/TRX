@@ -25,6 +25,49 @@ local function switch_off(object, room_num)
 end
 
 cutscenes.register(JEAN_YVES_CUTSCENE, {
+  chat = {
+    {
+      lara = true,
+      ranges = {
+        { 386, 419 },
+        { 430, 489 },
+        { 1021, 1058 },
+        { 1072, 1175 },
+      },
+    },
+    {
+      actor = 3,
+      node = 18,
+      ranges = {
+        { 97, 136 },
+        { 174, 197 },
+        { 214, 308 },
+        { 329, 372 },
+        { 511, 672 },
+        { 684, 781 },
+        { 812, 845 },
+        { 863, 988 },
+      },
+      speech_heads = {
+        trx.catalog.objects.actor_2_speech_head_1,
+        trx.catalog.objects.actor_2_speech_head_2,
+      },
+    },
+    {
+      actor = 1,
+      node = 21,
+      ranges = {
+        { 1614, 1641 },
+        { 1657, 1726 },
+        { 1741, 1760 },
+        { 1775, 1974 },
+      },
+      speech_heads = {
+        trx.catalog.objects.actor_1_speech_head_1,
+        trx.catalog.objects.actor_1_speech_head_2,
+      },
+    },
+  },
   hidden_actors = { 1, 2, 4, 5, 6, 7, 8, 9 },
   actor_cues = {
     [1194] = { hide = { 3 } },
@@ -57,6 +100,31 @@ cutscenes.register(JEAN_YVES_CUTSCENE, {
 })
 
 cutscenes.register(LEVEL_END_CUTSCENE, {
+  chat = {
+    {
+      lara = true,
+      ranges = {
+        { 684, 715 },
+        { 1314, 1372 },
+        { 1392, 1417 },
+        { 1792, 1824 },
+      },
+    },
+    {
+      actor = 1,
+      node = 21,
+      ranges = {
+        { 290, 317 },
+        { 330, 375 },
+        { 388, 673 },
+        { 729, 1301 },
+      },
+      speech_heads = {
+        trx.catalog.objects.actor_1_speech_head_1,
+        trx.catalog.objects.actor_1_speech_head_2,
+      },
+    },
+  },
   hidden_actors = { 1, 2, 3, 4, 5, 6, 7, 8 },
   actor_cues = {
     [201] = { show = { 1 } },

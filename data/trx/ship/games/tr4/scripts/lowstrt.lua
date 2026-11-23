@@ -35,6 +35,37 @@ require("tr4.inv_setup").apply({
 })
 
 cutscenes.register(DETONATOR_CUTSCENE, {
+  chat = {
+    {
+      lara = true,
+      ranges = {
+        { 91, 122 },
+        { 139, 172 },
+        { 504, 552 },
+        { 565, 637 },
+        { 648, 678 },
+        { 1596, 1616 },
+        { 1774, 1821 },
+      },
+    },
+    {
+      actor = 1,
+      node = 14,
+      ranges = {
+        { 209, 490 },
+        { 701, 975 },
+        { 1146, 1583 },
+        { 1654, 1768 },
+        { 1839, 1879 },
+        { 1893, 1930 },
+        { 1940, 2160 },
+      },
+      speech_heads = {
+        trx.catalog.objects.actor_1_speech_head_1,
+        trx.catalog.objects.actor_1_speech_head_2,
+      },
+    },
+  },
   hide = { trx.catalog.objects.animating_13 },
   on_end = function()
     local items = trx.items.query

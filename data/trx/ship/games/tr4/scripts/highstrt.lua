@@ -37,9 +37,60 @@ require("tr4.inv_setup").apply({
   },
 })
 
+local TROOP_SPEECH_HEADS = {
+  trx.catalog.objects.actor_1_speech_head_1,
+  trx.catalog.objects.actor_1_speech_head_2,
+}
+
+local TROOPS_CHAT = {
+  [25] = {
+    {
+      lara = true,
+      ranges = {
+        { 476, 578 },
+        { 976, 1018 },
+        { 1028, 1069 },
+        { 1317, 1340 },
+        { 2065, 2178 },
+        { 2835, 2865 },
+      },
+    },
+    {
+      actor = 1,
+      node = 14,
+      ranges = {
+        { 289, 363 },
+        { 378, 449 },
+        { 596, 604 },
+        { 635, 744 },
+        { 764, 780 },
+        { 811, 959 },
+        { 1088, 1157 },
+        { 1191, 1313 },
+        { 1360, 2046 },
+        { 2227, 2295 },
+        { 2330, 2821 },
+        { 2877, 3322 },
+      },
+      speech_heads = TROOP_SPEECH_HEADS,
+    },
+  },
+  [26] = {
+    {
+      actor = 1,
+      node = 14,
+      ranges = {
+        { 108, 432 },
+      },
+      speech_heads = TROOP_SPEECH_HEADS,
+    },
+  },
+}
+
 for _, num in ipairs(TROOPS_CUTSCENES) do
   cutscenes.register(num, {
     hide = { trx.catalog.objects.animating_5 },
+    chat = TROOPS_CHAT[num],
     on_start = function()
       trx.cutscenes.set_lara_return({ x = 55396, y = -1792, z = 77122 }, -7105)
     end,
@@ -47,6 +98,33 @@ for _, num in ipairs(TROOPS_CUTSCENES) do
 end
 
 cutscenes.register(LEVEL_END_CUTSCENE, {
+  chat = {
+    {
+      lara = true,
+      ranges = {
+        { 1216, 1232 },
+        { 1241, 1323 },
+        { 1337, 1393 },
+        { 1678, 1706 },
+        { 1927, 1954 },
+      },
+    },
+    {
+      actor = 2,
+      node = 14,
+      ranges = {
+        { 1141, 1181 },
+        { 1509, 1666 },
+        { 1758, 1914 },
+        { 1964, 2016 },
+        { 2194, 2261 },
+      },
+      speech_heads = {
+        trx.catalog.objects.actor_1_speech_head_1,
+        trx.catalog.objects.actor_1_speech_head_2,
+      },
+    },
+  },
   hide = {
     trx.catalog.objects.animating_1,
     trx.catalog.objects.animating_5,
