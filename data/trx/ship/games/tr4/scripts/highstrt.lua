@@ -2,6 +2,46 @@ local cutscenes = require("tr4.cutscenes")
 
 local TROOPS_CUTSCENES = { 25, 26 }
 local LEVEL_END_CUTSCENE = 11
+local FADE_FRAME = 2772
+local FADE_TICKS = 16
+
+-- Flickers two fires across the scene on these frames, as the original game
+-- does.
+local function fire_color()
+  return {
+    r = 192 + trx.random.randint(0, 0x3F),
+    g = 128 + trx.random.randint(0, 0x1F),
+    b = trx.random.randint(0, 0x3F),
+  }
+end
+
+local function flicker_fires(frame)
+  if frame < 2536 or frame > 2710 then
+    return
+  end
+  if trx.random.chance(0.5) then
+    trx.fx.emit_light({
+      pos = { x = 58672 - trx.random.randint(0, 0xFFF), y = -2816, z = 57865 },
+      radius = 24 * 128,
+      color = fire_color(),
+    })
+  end
+  trx.fx.emit_light({
+    pos = { x = 60672 - trx.random.randint(0, 0xFFF), y = -2816, z = 56865 },
+    radius = 31 * 128,
+    color = fire_color(),
+  })
+end
+
+-- Fades the screen to black before the scene ends, as the original game does.
+local function fade_out()
+  require("common.ui.fade").across({
+    from = 0,
+    to = 1,
+    ticks = FADE_TICKS,
+    drop_on = { "title", "unload" },
+  })
+end
 
 -- Takes every running enemy out of the level, as the original game does when
 -- this scene starts, so that none attacks Lara while it plays.
@@ -149,6 +189,8 @@ cutscenes.register(LEVEL_END_CUTSCENE, {
     [2383] = { show = { 1 } },
     [2790] = { show = { 4, 6 } },
   },
+  frames = { [FADE_FRAME] = fade_out },
+  on_frame = flicker_fires,
   on_start = remove_enemies,
   on_end = trx.game.end_level,
 })
