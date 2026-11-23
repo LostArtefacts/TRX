@@ -81,6 +81,7 @@
 - Fixed Lara being blocked by an invisible wall in The Sphinx Complex (TRX1594)
 - Fixed the body parts of enemies killed by explosions not bleeding (TRX1433)
 - Fixed the camera moving to an odd position when Lara climbs through the trapdoor in Menkaure's Pyramid (TRX1685)
+- Fixed the camera not centring on Lara while she opens a trapdoor (TRX2086)
 - Fixed several differences from the original game in how Lara is lit, such as steps in the light at her joints and along her braid, and sudden changes during animations (TRX1961, TRX2056)
 - Fixed Lara briefly appearing washed out and flatly lit in some places, such as Temple of Karnak and City of the Dead (OG bug) (TRX1982)
 - Fixed henchmen falling off the train in Desert Railroad (TRX2025)
