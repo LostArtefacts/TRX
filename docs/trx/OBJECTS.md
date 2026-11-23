@@ -147,6 +147,17 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### big_scorpion
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">80</td><td>Maximum hit points.</td></tr>
+<tr><td><code>pince_damage</code></td><td colspan="3" align="center">120</td><td>Damage dealt by the pincer.</td></tr>
+<tr><td><code>sting_damage</code></td><td colspan="3" align="center">120</td><td>Damage dealt by the sting.</td></tr>
+<tr><td><code>is_venomous</code></td><td colspan="3" align="center">true</td><td>Whether or not the sting poisons Lara.</td></tr>
+</tbody>
+</table>
+
 #### big_spider
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (37)</th><th align="center">TR3</th><th>Description</th></tr></thead>

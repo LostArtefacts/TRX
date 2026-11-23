@@ -2395,6 +2395,9 @@
         "big_pod": {
             "name": "\\{review}Великий кокон",
         },
+        "big_scorpion": {
+            "name": "\\{review}Великий скорпіон",
+        },
         "big_spider": {
             "name": "\\{review}Гігантський павук",
         },

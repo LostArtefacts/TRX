@@ -2383,6 +2383,9 @@
         "big_pod": {
             "name": "Spàlag Mhòr",
         },
+        "big_scorpion": {
+            "name": "\\{review}Sgairp mhòr",
+        },
         "big_spider": {
             "name": "Damhan-allaidh Fuamhaireil",
         },

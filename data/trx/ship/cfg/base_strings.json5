@@ -2397,6 +2397,9 @@
         "big_pod": {
             "name": "Big Pod",
         },
+        "big_scorpion": {
+            "name": "Big Scorpion",
+        },
         "big_spider": {
             "name": "Giant Spider",
         },

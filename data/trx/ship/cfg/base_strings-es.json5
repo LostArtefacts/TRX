@@ -2395,6 +2395,9 @@
         "big_pod": {
             "name": "Cápsula grande",
         },
+        "big_scorpion": {
+            "name": "\\{review}Escorpión grande",
+        },
         "big_spider": {
             "name": "Araña gigante",
         },

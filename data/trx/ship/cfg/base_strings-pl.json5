@@ -2383,6 +2383,9 @@
         "big_pod": {
             "name": "Duży kokon",
         },
+        "big_scorpion": {
+            "name": "\\{review}Duży skorpion",
+        },
         "big_spider": {
             "name": "Gigantyczny pająk",
         },
