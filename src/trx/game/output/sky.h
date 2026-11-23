@@ -25,6 +25,9 @@ void Output_Sky_SetColorAdd(bool enabled);
 // (OG's hardcoded specular gradient on the horizon mesh's first 16 quads).
 void Output_Sky_SetFogGradient(bool enabled);
 void Output_Sky_SetLightningEnabled(bool enabled);
+// Starts a long flash of lightning at once, as the original game does on set
+// frames of some cutscenes. It shows only where the level has lightning.
+void Output_Sky_StrikeLightning(void);
 // Atlas page holding the level's sky image; -1 if none is loaded.
 void Output_Sky_SetTexturePage(int32_t page_idx);
 int32_t Output_Sky_GetTexturePage(void);

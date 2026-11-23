@@ -35,6 +35,16 @@ M.Type = h.enum("weather.Type", "WEATHER_TYPE", Type)
 ---@type fun(type: trx.weather.Type)
 M.set = raw.set
 
+---Flashes the sky with a long burst of lightning at once, as the original
+---game does on set frames of some cutscenes. It shows only in a level whose
+---game flow turns lightning on.
+---
+---```lua
+---trx.weather.strike_lightning()
+---```
+---@type fun()
+M.strike_lightning = raw.strike_lightning
+
 h.properties(M, "weather", {
   current = {
     get = raw.get,

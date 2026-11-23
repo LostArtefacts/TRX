@@ -37,4 +37,8 @@ float FX_Weather_GetSeverity(void)
     return m_Severity;
 }
 
+void FX_Weather_StrikeLightning(void)
+{
+}
+
 FAKE_ON_RESET(M_Reset)

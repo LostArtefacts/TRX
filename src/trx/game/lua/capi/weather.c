@@ -37,11 +37,19 @@ static int M_L_WeatherGetSeverity(lua_State *const L)
     return 1;
 }
 
+// trxc.weather.strike_lightning()
+static int M_L_WeatherStrikeLightning(lua_State *const L)
+{
+    FX_Weather_StrikeLightning();
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "set", M_L_WeatherSet },
     { "get", M_L_WeatherGet },
     { "set_severity", M_L_WeatherSetSeverity },
     { "get_severity", M_L_WeatherGetSeverity },
+    { "strike_lightning", M_L_WeatherStrikeLightning },
     { nullptr, nullptr },
 };
 

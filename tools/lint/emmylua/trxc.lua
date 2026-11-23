@@ -615,3 +615,4 @@ trxc = {}
 ---@field get_severity fun(): number
 ---@field set fun(type: trx.weather.Type)
 ---@field set_severity fun(severity: number)
+---@field strike_lightning fun()

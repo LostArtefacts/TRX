@@ -14,6 +14,7 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/output.h>
 #include <trx/game/output/shaders/mesh.h>
+#include <trx/game/output/sky.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/vars.h>
@@ -929,6 +930,11 @@ void FX_Weather_SetSeverity(const float severity)
 {
     m_Severity = severity;
     CLAMP(m_Severity, 0.0f, (float)WEATHER_SEVERITY_MAX);
+}
+
+void FX_Weather_StrikeLightning(void)
+{
+    Output_Sky_StrikeLightning();
 }
 
 static const FX_MODULE m_Module = {

@@ -240,6 +240,12 @@ void Output_Sky_SetLightningEnabled(const bool enabled)
     m_LightningEnabled = enabled;
 }
 
+void Output_Sky_StrikeLightning(void)
+{
+    m_LightningCount = (Random_GetDraw() & 0x1F) + 64;
+    m_dLightningRand = (Random_GetDraw() & 0xFF) + 256;
+}
+
 void Output_Sky_SetTexturePage(const int32_t page_idx)
 {
     m_TexturePage = page_idx;
