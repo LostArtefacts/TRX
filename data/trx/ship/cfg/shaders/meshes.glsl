@@ -210,10 +210,11 @@ vec3 shadeTR4(
     bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
     // An unlit color is a plain color that modulates the texture, as the OG
     // draws its effects, unless VERT_OVERBRIGHT marks it as light on the
-    // 128-neutral scale.
-    bool neutral_scale = uLightingEnabled == 0
-        || (flags & VERT_NO_LIGHTING) == 0u
-        || (flags & (VERT_FLAT_SHADED | VERT_OVERBRIGHT)) != 0u;
+    // 128-neutral scale. A flat-shaded color is always a plain color, so it
+    // keeps its full brightness with every lighting curve.
+    bool neutral_scale = (flags & VERT_FLAT_SHADED) == 0u
+        && (uLightingEnabled == 0 || (flags & VERT_NO_LIGHTING) == 0u
+            || (flags & VERT_OVERBRIGHT) != 0u);
     vec3 L = lightIn
             * ((overbright || saturate) && neutral_scale ? 255.0 / 128.0 : 1.0)
         + lightAdd;
@@ -387,7 +388,7 @@ void main(void) {
     vec3 lightIn;
     vec3 modulate;
     if ((gOut.flags & VERT_FLAT_SHADED) != 0u) {
-        lightIn = vec3(128.0 / 255.0); // neutral: no lighting, no overbright
+        lightIn = vec3(1.0);
         modulate = inColor.rgb;
     } else if (uLightingEnabled == 0) {
         lightIn = vec3(128.0 / 255.0);

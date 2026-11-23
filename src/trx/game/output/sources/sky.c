@@ -187,7 +187,8 @@ static void M_RenderPass(
     for (int32_t i = 0; i < p->layer_count; i++) {
         const M_LAYER *const layer = &p->layers[i];
         RGB_888 color = layer->color;
-        if (texture_page < 0) {
+        if (texture_page < 0
+            && g_Config.rendering.lighting_curve != LIGHTING_CURVE_FLAT) {
             // The flat-shaded fallback bypasses the overbright path, so
             // apply the neutral-scale doubling on the CPU.
             color.r = MIN(color.r * 2, 255);
