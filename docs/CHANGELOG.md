@@ -107,6 +107,7 @@
 - Fixed smoke looking patchy rather than soft, such as from guns and sprinklers (TRX2106)
 - Fixed smoke looking patchy rather than soft, such as from guns and sprinklers (TRX2106)
 - Fixed sparks and smoke staying bright in the distance instead of fading out with the fog (TRX2107)
+- Fixed distance fog taking the color of the fog bulbs, such as in Angkor Wat and Temple of Karnak, instead of staying black as in the original game (TRX2108)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
