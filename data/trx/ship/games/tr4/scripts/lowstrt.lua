@@ -1,3 +1,8 @@
+local cutscenes = require("tr4.cutscenes")
+
+local DETONATOR_CUTSCENE = 24
+local DETONATOR_ROOM = 107
+
 trx.events.on_game_start(function()
   trx.items[45].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[7].properties.flash_room_nums = { 87, 22, 10, 15 }
@@ -27,4 +32,16 @@ require("tr4.inv_setup").apply({
     rot_x = -90,
     rot_y = 180,
   },
+})
+
+cutscenes.register(DETONATOR_CUTSCENE, {
+  on_end = function()
+    local items = trx.items.query
+      :of_object(trx.catalog.objects.puzzle_item_8_combo_1)
+      :in_room(DETONATOR_ROOM)
+      :matches()
+    for _, item in ipairs(items) do
+      item:trigger()
+    end
+  end,
 })
