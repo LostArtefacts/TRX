@@ -8,6 +8,8 @@
 --
 --   cutscenes.register(7, {
 --     hide = { trx.catalog.objects.door_5 },
+--     hidden_actors = { 3, 4 },
+--     actor_cues = { [906] = { show = { 3, 4 }, hide = { 1 } } },
 --     on_start = function() end,
 --     frames = { [675] = function() end },
 --     on_frame = function(frame) end,
@@ -73,6 +75,15 @@ local function hide_for_scene(objects)
     end
   end
   return hidden
+end
+
+-- Sets which actors are drawn. A scene brings its whole cast on from its first
+-- frame, so the actors a scene names in `hidden_actors` start hidden, and its
+-- `actor_cues` show and hide actors on the frames the original game does.
+local function set_actors_visible(actors, visible)
+  for _, actor in ipairs(actors or {}) do
+    trx.cutscenes.set_actor_visible(actor, visible)
+  end
 end
 
 local function show_after_scene(hidden)
@@ -197,12 +208,18 @@ function M.register(num, def)
       speakers = def.chat and prepare_chat(def.chat) or {},
       hidden = def.hide and hide_for_scene(def.hide) or {},
     }
+    set_actors_visible(def.hidden_actors, false)
     if def.on_start then
       def.on_start()
     end
   end)
 
   trx.cutscenes[num]:on_frame(function(_, frame)
+    local cue = def.actor_cues and def.actor_cues[frame]
+    if cue then
+      set_actors_visible(cue.show, true)
+      set_actors_visible(cue.hide, false)
+    end
     local handler = def.frames and def.frames[frame]
     if handler then
       handler(frame)
