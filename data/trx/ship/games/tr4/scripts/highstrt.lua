@@ -39,6 +39,7 @@ require("tr4.inv_setup").apply({
 
 for _, num in ipairs(TROOPS_CUTSCENES) do
   cutscenes.register(num, {
+    hide = { trx.catalog.objects.animating_5 },
     on_start = function()
       trx.cutscenes.set_lara_return({ x = 55396, y = -1792, z = 77122 }, -7105)
     end,
@@ -46,6 +47,10 @@ for _, num in ipairs(TROOPS_CUTSCENES) do
 end
 
 cutscenes.register(LEVEL_END_CUTSCENE, {
+  hide = {
+    trx.catalog.objects.animating_1,
+    trx.catalog.objects.animating_5,
+  },
   on_start = remove_enemies,
   on_end = trx.game.end_level,
 })

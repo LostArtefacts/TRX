@@ -7,6 +7,7 @@
 --   local cutscenes = require("tr4.cutscenes")
 --
 --   cutscenes.register(7, {
+--     hide = { trx.catalog.objects.door_5 },
 --     on_start = function() end,
 --     frames = { [675] = function() end },
 --     on_frame = function(frame) end,
@@ -54,6 +55,31 @@ end
 function M.set_items_visible(object, visible)
   for _, item in ipairs(trx.items.query:of_object(object):matches()) do
     item.is_visible = visible
+  end
+end
+
+-- Hides the items of the objects a scene names in its `hide` entry while it
+-- plays, and shows each one again when it ends. A scene draws its own copy of
+-- some level items, and the original engine hides the level's copy for the
+-- length of the scene. An item that is hidden already stays hidden.
+local function hide_for_scene(objects)
+  local hidden = {}
+  for _, object in ipairs(objects) do
+    for _, item in
+      ipairs(trx.items.query:of_object(object):visible():matches())
+    do
+      item.is_visible = false
+      hidden[#hidden + 1] = item
+    end
+  end
+  return hidden
+end
+
+local function show_after_scene(hidden)
+  for _, item in ipairs(hidden) do
+    if item:is_valid() then
+      item.is_visible = true
+    end
   end
 end
 
@@ -167,7 +193,10 @@ function M.register(num, def)
   local state = {}
 
   trx.cutscenes[num]:on_start(function()
-    state = { speakers = def.chat and prepare_chat(def.chat) or {} }
+    state = {
+      speakers = def.chat and prepare_chat(def.chat) or {},
+      hidden = def.hide and hide_for_scene(def.hide) or {},
+    }
     if def.on_start then
       def.on_start()
     end
@@ -187,6 +216,8 @@ function M.register(num, def)
   end)
 
   trx.cutscenes[num]:on_end(function()
+    show_after_scene(state.hidden or {})
+    state.hidden = nil
     for _, speaker in ipairs(state.speakers or {}) do
       if speaker.lara then
         clear_head(speaker)

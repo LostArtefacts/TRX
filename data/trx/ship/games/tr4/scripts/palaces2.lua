@@ -59,6 +59,7 @@ require("tr4.inv_setup").apply({
 })
 
 cutscenes.register(DEMIGOD_CUTSCENE, {
+  hide = { trx.catalog.objects.door_6 },
   on_start = function()
     trx.cutscenes.set_lara_return({ x = 72770, y = -11776, z = 54077 }, 0)
   end,

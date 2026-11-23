@@ -34,6 +34,7 @@ require("tr4.inv_setup").apply({
 })
 
 cutscenes.register(VON_CROY_CUTSCENE, {
+  hide = { trx.catalog.objects.door_5 },
   on_start = function()
     trx.cutscenes.set_lara_return({ x = 68756, y = 512, z = 56493 }, 983)
   end,
