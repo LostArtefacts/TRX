@@ -32,6 +32,7 @@
 - Added a `respawn` property to pickups, which brings a pickup back each time Lara has none of it (TRX532)
 - Added a `setup_mirror` game flow sequence event, which makes a room show Lara's reflection in one of its walls (TRX688)
 - Added a `pulse_flip_group` game flow level property, which keeps the TR4 pulsing lights dark until a given flip group is flipped (TRX2022)
+- Added `win_item_nums` and `lose_item_nums` properties to the senet spinner, which name the items that winning or losing the game of senet starts (TRX2051)
 
 **TR3**
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)

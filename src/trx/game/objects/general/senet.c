@@ -1,5 +1,6 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/debug.h>
 #include <trx/game/fx/shockwave.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
@@ -91,21 +92,24 @@ static int32_t M_GetSide(const int32_t piece)
     return piece >= M_SIDE_PIECES ? M_SIDE_ENEMY : M_SIDE_LARA;
 }
 
-static void M_TriggerInRoom(const int16_t room_num, const OBJECT_ID obj_id)
+static void M_StartItems(const ITEM *const spinner, const char *const name)
 {
-    int16_t item_num = Room_Get(room_num)->item_num;
-    while (item_num != NO_ITEM) {
-        ITEM *const item = Item_Get(item_num);
-        const int16_t next_num = item->next_item;
-        if (item->object_id == obj_id) {
-            item->trigger.mask = TRIGGER_MASK_ALL;
-            Item_Activate(item_num, false);
+    TRX_VALUE value;
+    if (!ObjectProperty_GetItemValue(spinner, name, &value)) {
+        return;
+    }
+    for (int32_t i = 0; i < value.as_list.count; i++) {
+        const int32_t item_num = value.as_list.values[i];
+        if (item_num < 0 || item_num >= Item_GetTotalCount()) {
+            LOG_WARNING("%s: no item %d", name, item_num);
+            continue;
         }
-        item_num = next_num;
+        Item_Get(item_num)->trigger.mask = TRIGGER_MASK_ALL;
+        Item_Activate(item_num, false);
     }
 }
 
-static bool M_CheckWinner(const int32_t side)
+static bool M_CheckWinner(const ITEM *const spinner, const int32_t side)
 {
     const int32_t first = side == M_SIDE_LARA ? 0 : M_SIDE_PIECES;
     for (int32_t i = first; i < first + M_SIDE_PIECES; i++) {
@@ -114,16 +118,8 @@ static bool M_CheckWinner(const int32_t side)
         }
     }
 
-    // These rooms belong to Tomb of Semerkhet, the only level with the game.
-    if (side == M_SIDE_LARA) {
-        M_TriggerInRoom(0, O_RAISING_BLOCK_2);
-        M_TriggerInRoom(19, O_RAISING_BLOCK_2);
-    } else {
-        M_TriggerInRoom(20, O_TRAPDOOR_1);
-        M_TriggerInRoom(21, O_TRAPDOOR_1);
-        M_TriggerInRoom(22, O_TRAPDOOR_1);
-        M_TriggerInRoom(81, O_TRAPDOOR_1);
-    }
+    M_StartItems(
+        spinner, side == M_SIDE_LARA ? "win_item_nums" : "lose_item_nums");
     return true;
 }
 
@@ -313,7 +309,7 @@ static void M_MovePiece(ITEM *const spinner)
         M_Shockwave(item, color, -32);
         M_Shockwave(item, color, 48);
         Item_Destroy(item_num);
-        if (M_CheckWinner(side)) {
+        if (M_CheckWinner(spinner, side)) {
             M_FadeOutGame();
             m_Game.piece_moving = -1;
             return;
@@ -672,6 +668,15 @@ static void M_SetupSpinner(OBJECT *const obj)
     obj->priv_save_func = M_SaveSpinnerPriv;
     obj->save_flags = true;
     obj->save_anim = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_STORED(
+            "win_item_nums", (S32_LIST) {},
+            "Numbers of the items that start when Lara wins the game."),
+        OBJECT_PROPERTY_STORED(
+            "lose_item_nums", (S32_LIST) {},
+            "Numbers of the items that start when Lara loses the game."));
 }
 
 REGISTER_OBJECT(O_SENET_PIECE_1, M_SetupPiece)

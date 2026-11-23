@@ -4062,6 +4062,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### senet_spinner
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>win_item_nums</code></td><td colspan="3" align="center">{}</td><td>Numbers of the items that start when Lara wins the game.</td></tr>
+<tr><td><code>lose_item_nums</code></td><td colspan="3" align="center">{}</td><td>Numbers of the items that start when Lara loses the game.</td></tr>
+</tbody>
+</table>
+
 #### shotgun_ammo_2_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>

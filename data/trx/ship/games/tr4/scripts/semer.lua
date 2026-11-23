@@ -30,6 +30,11 @@ trx.events.on_game_start(function(is_save)
   trx.items[79].properties.use_idle_pose = true
   trx.items[80].properties.use_idle_pose = true
 
+  -- Winning the game of senet raises the blocks in rooms 0 and 19; losing it
+  -- opens the trapdoors in rooms 20, 21, 22 and 81.
+  trx.items[2].properties.win_item_nums = { 0, 1, 6, 7, 8 }
+  trx.items[2].properties.lose_item_nums = { 15, 16, 17, 90 }
+
   require("tr4.expanding_blocks").initialise(
     trx.objects.raising_block_1,
     true,
