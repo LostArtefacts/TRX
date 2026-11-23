@@ -1,3 +1,5 @@
+trx.creatures.add_ally(trx.catalog.objects.soldier_1)
+
 trx.events.on_game_start(function(is_save)
   trx.objects.animating_13.properties.collidable = false
   trx.items[36].properties.switch_mode = trx.items.SwitchMode.HIDDEN_PICKUP

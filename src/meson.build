@@ -686,6 +686,7 @@ common_sources = [
   'trx/game/objects/creatures/shiva.c',
   'trx/game/objects/creatures/skate_kid.c',
   'trx/game/objects/creatures/skidoo_driver.c',
+  'trx/game/objects/creatures/soldier_1.c',
   'trx/game/objects/creatures/sophia.c',
   'trx/game/objects/creatures/spider.c',
   'trx/game/objects/creatures/swat.c',

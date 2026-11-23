@@ -216,7 +216,7 @@
   "smashable_switch_2":       { "status": "not implemented",       "todo": "port from SWITCH_TYPE8"            },
   "smashable_vehicle_wall":   { "status": "fully implemented" },
   "smoke_emitter_black":      { "status": "partially implemented", "todo": "check 100% parity"                 },
-  "soldier_1":                { "status": "not implemented",       "todo": "port from TROOPS"                  },
+  "soldier_1":                { "status": "fully implemented" },
   "solider_2":                { "status": "not implemented",       "todo": "port from SAS"                     },
   "spike_ball":               { "status": "fully implemented" },
   "sprinkler":                { "status": "fully implemented" },

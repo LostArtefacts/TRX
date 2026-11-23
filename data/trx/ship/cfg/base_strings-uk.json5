@@ -3896,6 +3896,9 @@
         "snow_sprite": {
             "name": "\\{review}Слід снігохода",
         },
+        "soldier_1": {
+            "name": "\\{review}Солдат 1",
+        },
         "sophia": {
             "name": "\\{review}Софія",
         },

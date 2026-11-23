@@ -773,6 +773,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### soldier_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">40</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">23</td><td>Damage dealt by each shot that hits.</td></tr>
+</tbody>
+</table>
+
 #### sophia
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (57)</th><th>Description</th></tr></thead>

@@ -3806,6 +3806,9 @@
         "snow_sprite": {
             "name": "Estela de moto de nieve",
         },
+        "soldier_1": {
+            "name": "\\{review}Soldado 1",
+        },
         "sophia": {
             "name": "Sophia",
         },
