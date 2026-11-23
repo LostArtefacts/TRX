@@ -10,10 +10,12 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 
+#include <math.h>
 #include <string.h>
 
 // clang-format off
@@ -27,7 +29,10 @@
 #define M_FADE_LIFE        16
 #define M_CORE_SHADE       64
 #define M_CORE_HALF_WIDTH  4.0f
-#define M_GLOW_HALF_WIDTH  1.0f
+#define M_GLOW_MIN_WIDTH   4
+#define M_GLOW_WIDTH_END   0x4000
+#define M_GLOW_REF_PERSP   (REF_PERSP * 2)
+#define M_GLOW_COARSE_SHIFT 8
 #define M_FADE_START       (12 * WALL_L)
 #define M_FADE_END         (20 * WALL_L)
 #define M_FADE_SHIFT       13
@@ -180,6 +185,66 @@ static RGBA_8888 M_FadeColor(
     };
 }
 
+static void M_GetGlowScreenPos(
+    const XYZ_32 pos, const int32_t depth, int32_t *const out_x,
+    int32_t *const out_y)
+{
+    // clang-format off
+    const int64_t x = (
+        g_ViewMatrix._00 * pos.x +
+        g_ViewMatrix._01 * pos.y +
+        g_ViewMatrix._02 * pos.z +
+        g_ViewMatrix._03) >> W2V_SHIFT;
+    const int64_t y = (
+        g_ViewMatrix._10 * pos.x +
+        g_ViewMatrix._11 * pos.y +
+        g_ViewMatrix._12 * pos.z +
+        g_ViewMatrix._13) >> W2V_SHIFT;
+    // clang-format on
+    *out_x = (int32_t)(x * M_GLOW_REF_PERSP / depth);
+    *out_y = (int32_t)(y * M_GLOW_REF_PERSP / depth);
+}
+
+// Returns the half width of the glow in world units. The original game sets
+// a base width in screen pixels, narrowing it with depth down to a floor, and
+// scales it by the screen length of the segment divided by 16. Its
+// normalisation of the side vector measures that length only in steps of 256
+// pixels, so it divides by those steps only from 512 pixels up. The screen is
+// taken as a 1280x960 viewport, so that the glow matches the original game at
+// that resolution and does not depend on the render resolution.
+static float M_GetGlowHalfWidth(
+    const M_BOLT *const bolt, const XYZ_32 from, const XYZ_32 to,
+    const int32_t depth)
+{
+    const int32_t to_depth = M_GetViewDepth(to);
+    if (depth <= 0 || to_depth <= 0) {
+        return 0.0f;
+    }
+
+    int32_t pixels = depth < M_GLOW_WIDTH_END
+        ? ((M_GLOW_WIDTH_END - depth) * bolt->size) >> 16
+        : 0;
+    CLAMPL(pixels, M_GLOW_MIN_WIDTH);
+
+    int32_t from_x;
+    int32_t from_y;
+    int32_t to_x;
+    int32_t to_y;
+    M_GetGlowScreenPos(from, depth, &from_x, &from_y);
+    M_GetGlowScreenPos(to, to_depth, &to_x, &to_y);
+    const int32_t dx = from_x - to_x;
+    const int32_t dy = from_y - to_y;
+    const int32_t coarse_x = dx >> M_GLOW_COARSE_SHIFT;
+    const int32_t coarse_y = dy >> M_GLOW_COARSE_SHIFT;
+    int32_t steps =
+        (int32_t)sqrtf((float)(coarse_x * coarse_x + coarse_y * coarse_y));
+    CLAMPL(steps, 1);
+
+    const float length = sqrtf((float)dx * dx + (float)dy * dy);
+    const float half_width = length * pixels / (16.0f * steps);
+    return half_width * depth / (float)M_GLOW_REF_PERSP;
+}
+
 static bool M_IsInDrawRange(const M_BOLT *const bolt)
 {
     const XYZ_32 lara_pos = Lara_GetItem()->pos;
@@ -222,7 +287,8 @@ static void M_DrawBolt(
             const RGBA_8888 glow_color = M_FadeColor(glow, keep, shift);
             OutputSource_PolyFX_StageSpriteLineSegment(
                 sprite_idx, points[i], glow_color, points[i + 1], glow_color,
-                bolt->size * M_GLOW_HALF_WIDTH, DRAW_BLEND_ADD);
+                M_GetGlowHalfWidth(bolt, points[i], points[i + 1], depth),
+                DRAW_BLEND_ADD);
         }
     }
 }
