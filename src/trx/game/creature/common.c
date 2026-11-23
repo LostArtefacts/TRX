@@ -1398,9 +1398,15 @@ bool Creature_Animate(
             }
         }
     } else {
-        sector = Room_GetSector(item->pos, &room_num);
+        // TR3 and TR4 read the ceiling above the top of the body, so that a
+        // body that reaches into the room above meets the ceiling of that
+        // room.
+        const XYZ_32 ceiling_pos = g_TRVersion >= 3
+            ? (XYZ_32) { item->pos.x, y, item->pos.z }
+            : item->pos;
+        sector = Room_GetSector(ceiling_pos, &room_num);
         if (g_TRVersion >= 3) {
-            const int32_t ceiling = Room_GetCeiling(sector, item->pos);
+            const int32_t ceiling = Room_GetCeiling(sector, ceiling_pos);
             int32_t min_y = bounds->min.y;
             switch (item->object_id) {
             case O_TREX:
@@ -1415,8 +1421,8 @@ bool Creature_Animate(
 
             if (item->pos.y + min_y < ceiling) {
                 item->pos = old;
-                sector = Room_GetSector(item->pos, &room_num);
             }
+            sector = Room_GetSector(item->pos, &room_num);
         }
 
         item->floor = Room_GetHeight(sector, item->pos);
