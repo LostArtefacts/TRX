@@ -51,7 +51,12 @@ static void M_GiveAllMedpacksImpl(void)
 static void M_ReinitialiseGunMeshes(void)
 {
     Lara_Mesh_Initialise(Game_GetCurrentLevel());
-    Gun_InitialiseNewWeapon();
+    // Leaves the arm of a held item, such as the torch, as it is. A torch that
+    // she is dropping or throwing may already be out of her hand, and a reset
+    // arm would draw it there again.
+    if (!Gun_Registry_Get(Lara_GetLaraInfo()->gun_type)->is_held_item) {
+        Gun_InitialiseNewWeapon();
+    }
 }
 
 static void M_ClearHandWeaponMeshes(void)
