@@ -2,6 +2,7 @@
 1, floor_shake
 3, bubbles
 4, finish_level
+5, activate_camera
 7, rubble
 8, swap_crowbar
 11, explosion

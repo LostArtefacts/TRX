@@ -46,6 +46,7 @@ typedef struct {
     int32_t new_effect;
     bool is_heavy;
     int32_t heavy_mask;
+    KEY_TRIGGER_PART key_part;
 } TRIGGER_STATUS;
 
 // A flip-map slot's accumulated trigger state. The mask is the 0..31 editor

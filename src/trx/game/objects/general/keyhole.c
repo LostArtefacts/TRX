@@ -227,14 +227,20 @@ static void M_Setup(OBJECT *const obj)
     obj->is_usable_func = M_IsUsable;
 }
 
-bool Keyhole_Trigger(const int16_t item_num)
+bool Keyhole_Trigger(const int16_t item_num, const bool is_armed)
 {
     ITEM *const item = Item_Get(item_num);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (!Item_IsInPlay(item) || lara->gun_status == LGS_HANDS_BUSY) {
+    const bool is_busy = lara->gun_status == LGS_HANDS_BUSY;
+    if (is_armed && is_busy) {
+        return true;
+    }
+    if (!Item_IsInPlay(item) || is_busy) {
         return false;
     }
-    Item_SetFinished(item, true);
+    if (!is_armed) {
+        Item_SetFinished(item, true);
+    }
     return true;
 }
 

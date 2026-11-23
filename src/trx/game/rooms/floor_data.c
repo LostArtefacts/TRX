@@ -70,6 +70,7 @@ static const LARA_STATE_ID m_ClimbStates[] = {
 static void (*m_Handlers[TO_NUMBER_OF])(
     const TRIGGER *trigger, const TRIGGER_CMD *cmd,
     TRIGGER_STATUS *status) = {};
+static KEY_TRIGGER_PART m_ArmedKeyPart = KTP_ALL;
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
@@ -216,6 +217,7 @@ static bool M_TestSectorTrigger(
         .flip_group = -1,
         .flip_available = false,
         .new_effect = -1,
+        .key_part = KTP_ALL,
     };
 
     if (is_heavy) {
@@ -270,9 +272,12 @@ static bool M_TestSectorTrigger(
         }
 
         case TT_KEY: {
-            if (!Keyhole_Trigger(trigger->item_index)) {
+            if (!Keyhole_Trigger(
+                    trigger->item_index, m_ArmedKeyPart != KTP_ALL)) {
                 return false;
             }
+            status.key_part = m_ArmedKeyPart;
+            m_ArmedKeyPart = KTP_ALL;
             break;
         }
 
@@ -376,6 +381,7 @@ static void M_ReinterpretTR4Sector(SECTOR *const sector)
 void Room_ParseFloorData(
     const int16_t *floor_data, const int32_t floor_data_size)
 {
+    m_ArmedKeyPart = KTP_ALL;
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         for (int32_t j = 0; j < room->size.x * room->size.z; j++) {
@@ -593,4 +599,9 @@ bool Room_IsAntiTrigger(const TRIGGER_TYPE type)
 {
     return type == TT_ANTIPAD || type == TT_ANTITRIGGER
         || type == TT_HEAVY_ANTITRIGGER;
+}
+
+void Room_ArmKeyTrigger(const KEY_TRIGGER_PART part)
+{
+    m_ArmedKeyPart = part;
 }

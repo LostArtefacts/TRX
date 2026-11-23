@@ -100,6 +100,14 @@ typedef enum {
     TT_CLIMB,
 } TRIGGER_TYPE;
 
+// Selects the commands of a key trigger that fire while Lara is still busy with
+// the animation that uses the receptacle.
+typedef enum {
+    KTP_ALL,
+    // Fires every command except the item commands.
+    KTP_CAMERA,
+} KEY_TRIGGER_PART;
+
 typedef enum {
     // clang-format off
     LADDER_NONE    = 0,

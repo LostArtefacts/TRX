@@ -26,6 +26,10 @@ static void M_Handle(
     const TRIGGER *const trigger, const TRIGGER_CMD *const cmd,
     TRIGGER_STATUS *const status)
 {
+    if (status->key_part == KTP_CAMERA) {
+        return;
+    }
+
     const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
     const ITEM_TRIGGER_KIND kind = M_MapKind(trigger->type);
 
