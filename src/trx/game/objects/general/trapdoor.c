@@ -348,9 +348,7 @@ static void M_AssertCamera(
     if (clamp_to_ceiling) {
         CLAMPL(cam_pos.y, Room_Get(item->room_num)->max_ceiling);
     }
-    Camera_UpdateDynamicFixedObject(cam_pos, item->room_num);
-    g_Camera.num = Camera_GetDynamicFixedObjectIdx();
-    g_Camera.type = CAM_FIXED;
+    Camera_UseForcedFixed(cam_pos, item->room_num);
 }
 
 static void M_FloorCollision(
