@@ -117,6 +117,7 @@
 - Fixed distance fog taking the color of the fog bulbs, such as in Angkor Wat and Temple of Karnak, instead of staying black as in the original game (TRX2108)
 - Fixed the smoke from shattered objects fading out too soon (TRX2111)
 - Fixed Lara walking through a closed sequence door in Underneath the Sphinx (OG bug) (TRX2036)
+- Fixed the trail of the fire wraith turning blue at a distance (OG bug) (TRX2038)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
