@@ -1,5 +1,5 @@
--- TR4 levels use flip effect 28 to set the fog color. The timer picks one of
--- the colors below. Timer 100 turns fog bulbs off.
+-- TR4 levels use flip effect 28 to set the color of the fog bulbs. The timer
+-- picks one of the colors below. Timer 100 turns fog bulbs off.
 --
 -- The table matches the original engine colors. A mod can change it or use
 -- the effect for different behavior.
@@ -47,23 +47,28 @@ M.colors = {
 
 local BULBS_KEY = "visuals.enable_fog_bulbs"
 
--- The color the effect last picked, kept so the distance fog goes back to it
--- when fog bulbs are turned on again.
-local held_color = nil
+-- The store is the same table for the life of the session, and a load fills it
+-- again, so the timer the effect last picked comes back with a save.
+local store = trx.store.level
 
--- The original colors the distance fog only while volumetric fog is on: the
--- effect belongs to that feature, so the fog falls back to the level color, or
--- to the player's, where the bulbs are off.
-local function apply_fog_color()
-  trx.fx.fog_color = trx.config.get(BULBS_KEY) and held_color or nil
+-- Colors the fog bulbs with the color of a timer. The original changes only
+-- the bulbs with this effect: its distance fog stays black, and the two
+-- levels that it fogs in another color set that color in the game flow.
+local function color_bulbs(timer)
+  local color = M.colors[timer]
+  if color == nil then
+    trx.log.warning("flip effect " .. FLIP_EFFECT .. " has no color " .. timer)
+    return
+  end
+  for _, bulb in pairs(trx.fx.fog_bulbs) do
+    bulb.color = color
+  end
 end
 
-trx.config.on_change(BULBS_KEY, apply_fog_color)
-
--- The color belongs to the level that picked it, and a level change clears the
--- override the engine holds.
-trx.events.on_level_unload(function()
-  held_color = nil
+trx.events.on_game_start(function()
+  if store.fog_color_timer ~= nil then
+    color_bulbs(store.fog_color_timer)
+  end
 end)
 
 -- Turns fog bulbs off, or restores the player setting. The original turns
@@ -82,14 +87,8 @@ trx.events.on_flip_effect(FLIP_EFFECT, function(timer)
     return
   end
   hold_bulbs_off(false)
-
-  local color = M.colors[timer]
-  if color == nil then
-    trx.log.warning("flip effect " .. FLIP_EFFECT .. " has no color " .. timer)
-    return
-  end
-  held_color = color
-  apply_fog_color()
+  store.fog_color_timer = timer
+  color_bulbs(timer)
 end)
 
 return M
