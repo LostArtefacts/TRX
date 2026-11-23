@@ -136,6 +136,15 @@ static int M_L_CutscenesSetActorVisible(lua_State *const L)
     return 0;
 }
 
+// trxc.cutscenes.set_node_visible(actor: trx.cutscenes.ActorNum, node: trx.cutscenes.NodeNum, visible: boolean)
+static int M_L_CutscenesSetNodeVisible(lua_State *const L)
+{
+    const int32_t actor = M_CheckActor(L, 1);
+    const int32_t node = M_CheckNode(L, 2);
+    CutSeq_SetActorNodeVisible(actor, node, lua_toboolean(L, 3));
+    return 0;
+}
+
 // trxc.cutscenes.set_node_mesh(actor: trx.cutscenes.ActorNum, node: trx.cutscenes.NodeNum, object_id: trx.catalog.objects, mesh_num?: integer)
 static int M_L_CutscenesSetNodeMesh(lua_State *const L)
 {
@@ -243,6 +252,7 @@ static const luaL_Reg m_Module[] = {
     { "get_count", M_L_CutscenesGetCount },
     { "get_actor_count", M_L_CutscenesGetActorCount },
     { "set_actor_visible", M_L_CutscenesSetActorVisible },
+    { "set_node_visible", M_L_CutscenesSetNodeVisible },
     { "set_node_mesh", M_L_CutscenesSetNodeMesh },
     { "clear_node_mesh", M_L_CutscenesClearNodeMesh },
     { "is_played", M_L_CutscenesIsPlayed },

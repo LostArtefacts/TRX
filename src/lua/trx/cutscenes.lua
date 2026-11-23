@@ -272,6 +272,20 @@ h.properties(M, "cutscenes", {
 ---@type fun(actor: trx.cutscenes.ActorNum, visible: boolean)
 M.set_actor_visible = raw.set_actor_visible
 
+---Whether one node of an actor is drawn. The original game hides a single
+---mesh of some actors for all or part of a scene.
+---
+---It lasts as long as the cutscene, and every node starts out visible.
+---
+---```lua
+---trx.cutscenes.set_node_visible(6, 0, false)
+---```
+---@param actor trx.cutscenes.ActorNum
+---@param node trx.cutscenes.NodeNum
+---@param visible boolean Whether the node is drawn.
+---@type fun(actor: trx.cutscenes.ActorNum, node: trx.cutscenes.NodeNum, visible: boolean)
+M.set_node_visible = raw.set_node_visible
+
 ---Draws another object's mesh in place of the one an actor's node carries.
 ---This is how a talking head goes on a body: the speech-head objects hold a
 ---mouth in each shape, and swapping between them while a line plays is what

@@ -181,6 +181,22 @@ end)
   end)
   ```
 
+- <a id="cutscenes.set_node_visible" name="cutscenes.set_node_visible"></a>[lua]`trx.cutscenes.set_node_visible(actor, node, visible)`  
+  Whether one node of an actor is drawn. The original game hides a single
+  mesh of some actors for all or part of a scene.
+
+  It lasts as long as the cutscene, and every node starts out visible.
+
+  Parameters:
+  - <a id="cutscenes.set_node_visible.actor" name="cutscenes.set_node_visible.actor"></a>**`actor`** ([trx.cutscenes.ActorNum](#cutscenes.ActorNum)).
+  - <a id="cutscenes.set_node_visible.node" name="cutscenes.set_node_visible.node"></a>**`node`** ([trx.cutscenes.NodeNum](#cutscenes.NodeNum)).
+  - <a id="cutscenes.set_node_visible.visible" name="cutscenes.set_node_visible.visible"></a>**`visible`** (boolean). Whether the node is drawn.
+
+  Example:
+  ```lua
+  trx.cutscenes.set_node_visible(6, 0, false)
+  ```
+
 - <a id="cutscenes.set_node_mesh" name="cutscenes.set_node_mesh"></a>[lua]`trx.cutscenes.set_node_mesh(actor, node, object, [mesh_num])`  
   Draws another object's mesh in place of the one an actor's node carries.
   This is how a talking head goes on a body: the speech-head objects hold a

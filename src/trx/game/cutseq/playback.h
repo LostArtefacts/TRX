@@ -70,6 +70,10 @@ int32_t CutSeq_GetActorCount(void);
 // carries the same rule per scene in its own code.
 void CutSeq_SetActorVisible(int32_t actor, bool visible);
 
+// Whether one mesh of an actor is drawn. The original game hides single
+// meshes of some actors for the length of a scene.
+void CutSeq_SetActorNodeVisible(int32_t actor, int32_t node, bool visible);
+
 // Draws another object's mesh in place of the one the actor's node carries,
 // which is how a talking head is put on a body. Pass NO_OBJECT to take the
 // override back off.

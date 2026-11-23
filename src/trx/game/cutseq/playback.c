@@ -81,6 +81,7 @@ typedef struct {
     CUTSEQ_POSE pose_curr;
     CUTSEQ_POSE pose_draw;
     bool is_hidden;
+    uint32_t hidden_nodes;
     M_MESH_OVERRIDE overrides[CUTSEQ_MAX_MESHES];
     ITEM dummy_item;
 } M_ACTOR;
@@ -336,6 +337,7 @@ static bool M_Begin(const int32_t num)
         actor->pose_draw = actor->pose_curr;
 
         actor->is_hidden = false;
+        actor->hidden_nodes = 0;
         for (int32_t j = 0; j < CUTSEQ_MAX_MESHES; j++) {
             actor->overrides[j].obj_id = NO_OBJECT;
         }
@@ -688,6 +690,16 @@ void CutSeq_SetActorVisible(const int32_t actor, const bool visible)
     m_State.actors[actor].is_hidden = !visible;
 }
 
+void CutSeq_SetActorNodeVisible(
+    const int32_t actor, const int32_t node, const bool visible)
+{
+    if (actor < 0 || actor >= CUTSEQ_MAX_ACTORS || node < 0
+        || node >= CUTSEQ_MAX_MESHES) {
+        return;
+    }
+    TOGGLE_BIT(m_State.actors[actor].hidden_nodes, 1u << node, !visible);
+}
+
 void CutSeq_SetActorNodeMesh(
     const int32_t actor, const int32_t node, const OBJECT_ID obj_id,
     const int32_t src_node)
@@ -950,6 +962,9 @@ void CutSeq_DrawActors(void)
             },
             mesh_count - 1);
         while (Anim_Walk_Next(&walk)) {
+            if ((actor->hidden_nodes & (1u << walk.joint)) != 0) {
+                continue;
+            }
             const M_MESH_OVERRIDE *const override =
                 &actor->overrides[walk.joint];
             const OBJECT *const src_obj = override->obj_id == NO_OBJECT

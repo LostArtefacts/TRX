@@ -156,6 +156,7 @@ trxc = {}
 ---@field set_lara_shadow_bounds fun(bounds: trx.math.Box)
 ---@field set_letterbox fun(ratio: number)
 ---@field set_node_mesh fun(actor: trx.cutscenes.ActorNum, node: trx.cutscenes.NodeNum, object_id: trx.catalog.objects, mesh_num?: integer)
+---@field set_node_visible fun(actor: trx.cutscenes.ActorNum, node: trx.cutscenes.NodeNum, visible: boolean)
 ---@field set_played fun(num: trx.cutscenes.Num, played: boolean)
 
 ---@class (exact) trxc.enum
