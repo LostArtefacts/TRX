@@ -656,6 +656,7 @@ common_sources = [
   'trx/game/objects/creatures/enemy_jeep.c',
   'trx/game/objects/creatures/guide.c',
   'trx/game/objects/creatures/gunman.c',
+  'trx/game/objects/creatures/hammerhead.c',
   'trx/game/objects/creatures/henchman.c',
   'trx/game/objects/creatures/horus.c',
   'trx/game/objects/creatures/hybrid_mutant.c',
