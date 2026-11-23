@@ -51,8 +51,9 @@ static const OBJECT_BOUNDS m_ControlledBounds = {
 
 static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? m_ControlledBounds
-                                                  : m_DefaultBounds;
+    return g_Config.gameplay.enable_walk_to_items || g_TRVersion == 4
+        ? m_ControlledBounds
+        : m_DefaultBounds;
 }
 
 static bool M_CanShowInventory(const ITEM *const item)
@@ -173,6 +174,10 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    if (g_TRVersion == 4 && M_IsSolid(item)) {
+        Object_Collision(item_num, lara_item, coll);
+    }
 
     if (!Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         if (lara_item->current_anim_state == LS(LS_USE_KEY)

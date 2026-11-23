@@ -237,6 +237,10 @@ static void M_Collision(
     const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
+    if (g_TRVersion == 4 && M_IsSolid(item)) {
+        Object_Collision(item_num, lara_item, coll);
+    }
+
     if (!Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         if (lara_item->current_anim_state == LS(LS_USE_PUZZLE)
             && Lara_TestPosition(item, &bounds)
@@ -272,7 +276,8 @@ static void M_CollisionDone(
     const OBJECT_BOUNDS bounds = Object_Get(item->object_id)->bounds_func(item);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (g_Config.gameplay.enable_walk_to_items && M_IsSolidWhenDone(item)) {
+    if ((g_Config.gameplay.enable_walk_to_items || g_TRVersion == 4)
+        && M_IsSolidWhenDone(item)) {
         Object_Collision(item_num, lara_item, coll);
     }
 
