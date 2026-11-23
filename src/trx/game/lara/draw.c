@@ -174,8 +174,10 @@ static void M_UpdateLookAlpha(const ITEM *const item)
         return;
     }
 
+    // The original game clears the input while a cutscene and its fades run,
+    // so look does not fade Lara until the cutscene is over.
     int32_t *const alpha = M_GetLookAlpha();
-    if (g_Input.look) {
+    if (g_Input.look && !CutSeq_IsActive()) {
         XYZ_32 head = {
             .x = item->pos.x,
             .y = item->pos.y - M_LOOK_HEAD_HEIGHT,
