@@ -563,6 +563,24 @@ static VECTOR *M_GetScheduledVectorForDrawType(
     return p->scheduled_transparent;
 }
 
+// Darkens a TR4 spark across the fog range, so that it is black where the
+// fog ends, as the original game does.
+static RGB_888 M_FadeSparkColor(const RGB_888 color, const int32_t depth)
+{
+    const int32_t fog_start = Output_GetFogStart();
+    const int32_t fog_end = Output_GetFogEnd();
+    if (fog_end <= fog_start || depth <= fog_start) {
+        return color;
+    }
+    const int32_t keep = MAX(fog_end - depth, 0);
+    const int32_t range = fog_end - fog_start;
+    return (RGB_888) {
+        .r = (uint8_t)(color.r * keep / range),
+        .g = (uint8_t)(color.g * keep / range),
+        .b = (uint8_t)(color.b * keep / range),
+    };
+}
+
 void OutputSource_PolyFX_Init(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -942,7 +960,7 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         vpos_z = 1;
     }
 
-    const RGB_888 render_color = use_current_state
+    RGB_888 render_color = use_current_state
         ? spark->color
         : (RGB_888) {
               .r = (uint8_t)LERP(
@@ -952,6 +970,9 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
               .b = (uint8_t)LERP(
                   (int32_t)spark->prev_color.b, (int32_t)spark->color.b, ratio),
           };
+    if (g_TRVersion == 4) {
+        render_color = M_FadeSparkColor(render_color, vpos_z);
+    }
 
     // TR4 draws non-sprite sparks as short line streaks trailing behind the
     // velocity; TR3 draws them as flat quads.
