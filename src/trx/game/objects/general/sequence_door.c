@@ -67,14 +67,19 @@ static void M_Control(const int16_t item_num)
     const int32_t ocb = M_GetOCB(item);
 
     if (!p->is_armed) {
-        if (item->current_anim_state == DOOR_STATE_CLOSED && M_IsResult(ocb)) {
-            if (ocb != M_FIRST_RESULT && ocb != M_FALLBACK_RESULT
-                && !SwitchSequence_IsUsed(M_FIRST_RESULT)) {
-                SwitchSequence_SetEntries(m_FallbackEntries);
-                return;
+        if (item->current_anim_state == DOOR_STATE_CLOSED) {
+            // Also shuts a door that a wrong order has closed. The original
+            // game leaves its portals open, so Lara can walk through it.
+            Door_ShutPortals(item);
+            if (M_IsResult(ocb)) {
+                if (ocb != M_FIRST_RESULT && ocb != M_FALLBACK_RESULT
+                    && !SwitchSequence_IsUsed(M_FIRST_RESULT)) {
+                    SwitchSequence_SetEntries(m_FallbackEntries);
+                    return;
+                }
+                item->goal_anim_state = DOOR_STATE_OPEN;
+                p->is_armed = true;
             }
-            item->goal_anim_state = DOOR_STATE_OPEN;
-            p->is_armed = true;
         }
     } else if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DOOR_STATE_CLOSED) {
