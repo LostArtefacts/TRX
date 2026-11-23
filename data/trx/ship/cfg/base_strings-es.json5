@@ -2587,6 +2587,9 @@
         "dart_emitter": {
             "name": "Emisor de dardos",
         },
+        "demigod_3": {
+            "name": "\\{review}Semidiós 3",
+        },
         "desert_eagle_ammo_item": {
             "name": "Cargadores de Desert Eagle",
         },
@@ -2863,6 +2866,12 @@
         "hook": {
             "name": "Gancho",
         },
+        "horus": {
+            "name": "\\{review}Horus",
+        },
+        "horus_statue": {
+            "name": "\\{review}Estatua de Horus",
+        },
         "hot_liquid": {
             "name": "Fuego extra",
         },
@@ -2877,6 +2886,9 @@
         },
         "inv_background": {
             "name": "Fondo de menú",
+        },
+        "jean_yves": {
+            "name": "\\{review}Jean-Yves",
         },
         "jelly": {
             "name": "Medusa",
@@ -3214,6 +3226,9 @@
         },
         "moored_boat": {
             "name": "Lancha",
+        },
+        "motorbike": {
+            "name": "\\{review}Motocicleta",
         },
         "mounted_gun": {
             "name": "Arma fija",

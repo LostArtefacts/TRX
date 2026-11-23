@@ -2578,6 +2578,9 @@
         "dart_emitter": {
             "name": "Sgaoiladair Dàrt",
         },
+        "demigod_3": {
+            "name": "\\{review}Leth-dhia 3",
+        },
         "desert_eagle_ammo_item": {
             "name": "Lòin an Desert Eagle",
         },
@@ -2875,6 +2878,12 @@
         "hook": {
             "name": "Dubhan",
         },
+        "horus": {
+            "name": "\\{review}Horus",
+        },
+        "horus_statue": {
+            "name": "\\{review}Ìomhaigh Horus",
+        },
         "hot_liquid": {
             "name": "Leaghan Teth",
         },
@@ -2892,6 +2901,9 @@
         },
         "jackal": {
             "name": "Cù|Seacal",
+        },
+        "jean_yves": {
+            "name": "\\{review}Jean-Yves",
         },
         "jeep": {
             "name": "Jeep",
@@ -3226,6 +3238,9 @@
         },
         "moored_boat": {
             "name": "Bàta",
+        },
+        "motorbike": {
+            "name": "\\{review}Motar-baidhsagal",
         },
         "mounted_gun": {
             "name": "Gunna Stèidhichte",

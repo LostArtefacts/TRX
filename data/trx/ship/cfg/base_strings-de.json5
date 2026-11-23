@@ -2578,6 +2578,9 @@
         "dart_emitter": {
             "name": "Pfeilerzeuger",
         },
+        "demigod_3": {
+            "name": "\\{review}Halbgott 3",
+        },
         "desert_eagle_ammo_item": {
             "name": "\\{review}Magazine der Desert Eagle",
         },
@@ -2875,6 +2878,12 @@
         "hook": {
             "name": "Hook",
         },
+        "horus": {
+            "name": "\\{review}Horus",
+        },
+        "horus_statue": {
+            "name": "\\{review}Horus-Statue",
+        },
         "hot_liquid": {
             "name": "Extra Feuer",
         },
@@ -2892,6 +2901,9 @@
         },
         "jackal": {
             "name": "\\{review}Hund|\\{review}Schakal",
+        },
+        "jean_yves": {
+            "name": "\\{review}Jean-Yves",
         },
         "jeep": {
             "name": "\\{review}Jeep",
@@ -3226,6 +3238,9 @@
         },
         "moored_boat": {
             "name": "Boot",
+        },
+        "motorbike": {
+            "name": "\\{review}Motorrad",
         },
         "mounted_gun": {
             "name": "\\{review}Montiertes Geschütz",

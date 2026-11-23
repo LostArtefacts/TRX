@@ -2600,6 +2600,9 @@
         "dart_emitter": {
             "name": "Dart Emitter",
         },
+        "demigod_3": {
+            "name": "Demigod 3",
+        },
         "desert_eagle_ammo_item": {
             "name": "Desert Eagle Clips",
         },
@@ -2911,6 +2914,12 @@
         "hook": {
             "name": "Hook",
         },
+        "horus": {
+            "name": "Horus",
+        },
+        "horus_statue": {
+            "name": "Horus Statue",
+        },
         "hot_liquid": {
             "name": "Extra Fire",
         },
@@ -2928,6 +2937,9 @@
         },
         "jackal": {
             "name": "Dog|Jackal",
+        },
+        "jean_yves": {
+            "name": "Jean-Yves",
         },
         "jeep": {
             "name": "Jeep",
@@ -3312,6 +3324,9 @@
         },
         "moored_boat": {
             "name": "Boat",
+        },
+        "motorbike": {
+            "name": "Motorbike",
         },
         "mounted_gun": {
             "name": "Mounted Gun",
