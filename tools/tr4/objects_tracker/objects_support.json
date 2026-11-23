@@ -100,7 +100,7 @@
   "horus":                    { "status": "not implemented",       "todo": "port from SETHA"                   },
   "horus_statue":             { "status": "fully implemented" },
   "jackal":                   { "status": "fully implemented" },
-  "jean_yves":                { "status": "not implemented",       "todo": "port from JEAN_YVES"               },
+  "jean_yves":                { "status": "fully implemented" },
   "jeep":                     { "status": "fully implemented" },
   "key_hole_1":               { "status": "fully implemented" },
   "key_hole_2":               { "status": "fully implemented" },
