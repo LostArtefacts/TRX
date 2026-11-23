@@ -61,7 +61,7 @@
 - Added Lara crouching while she holds the torch, which the original game does not allow (TRX2067)
 - Added Turn Switch control (TRX798)
 - Added Bat control (TRX1988)
-- Added the spread flame emitter's fires, used in Pharos, Temple of Isis and Cleopatra's Palaces
+- Added the spread flame emitter, which shows fires in Pharos, Temple of Isis and Cleopatra's Palaces, and electric arcs in Temple of Karnak and Sacred Lake (TRX1985)
 - Added Crocodile control (TRX1984)
 - Added Small Beetle control (TRX2007)
 - Added God Head control (TRX1994)

@@ -2,8 +2,8 @@
 //
 // These map two Core Design objects whose behaviour is heavily overloaded on
 // the OCB (trigger_flags): a single object slot switches between fire and
-// several unrelated jobs. Only the fire is ported here; the rest is left as
-// TODOs so the mess stays contained and visible.
+// several unrelated jobs. Only the fire and the electric arcs are ported
+// here; the rest is left as TODOs so the mess stays contained and visible.
 //
 // O_FLAME_EMITTER_TR4_GROUND (Core FLAME_EMITTER):
 //   OCB >= 0 : big static ground/brazier fire (ported). Also drives the library
@@ -19,20 +19,25 @@
 //   OCB <  0    : a flip-map trigger, not a flame at all (not ported).
 //
 // O_FLAME_EMITTER_TR4_SPREAD (Core FLAME_EMITTER3):
-//   OCB 0 : small flames that flicker across one sector (ported).
-//   OCB > 0 : electric arcs, to a point ahead or to ANIMATING3 items that
-//             share the OCB (not ported).
+//   OCB 0   : small flames that flicker across one sector (ported).
+//   OCB != 0: electric arcs (ported). Every one crackles with short sparks.
+//             OCB 2 and 4 also strike a point two sectors behind the emitter.
+//             OCB 3 and above also strike the ANIMATING3 items that share the
+//             OCB, and the one with OCB 0, in turn.
 //
 // The ground and wall emitters are also torch-lighting targets: Lara lights
 // her torch from a burning one, and lights an unlit one with her burning torch.
 
 #include <trx/config.h>
 #include <trx/core/math.h>
+#include <trx/game/collision.h>
 #include <trx/game/fx/fire.h>
+#include <trx/game/fx/lightning.h>
 #include <trx/game/gun.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/output.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
@@ -42,11 +47,31 @@
 #define M_IGNITE_DISTANCE_SQR 0x40000
 #define M_SPREAD_BURN_DISTANCE_SQR 202500
 #define M_SPREAD_BURN_DAMAGE 5
+#define M_ARC_REACH (WALL_L * 2)
+#define M_ARC_SPARK_SPREAD 0x1FF
+#define M_ARC_SIZE 32
+#define M_ARC_GLOW 64
+#define M_ARC_BEHIND_SEGMENTS 3
+#define M_ARC_TARGET_SEGMENTS 5
+#define M_ARC_SPARK_SEGMENTS 3
+#define M_ARC_LIFE 24
+#define M_ARC_LONG_LIFE 32
+#define M_ARC_TARGET_COUNT 2
+
+typedef enum {
+    M_OCB_ARC_BEHIND_1 = 2,
+    M_OCB_ARC_BEHIND_2 = 4,
+    // Applies to this OCB and all above it.
+    M_OCB_ARC_TARGETS = 3,
+} M_OCB;
 
 typedef struct {
     int16_t timer;
     int16_t offsets;
     bool second;
+    // The ANIMATING3 items that the arcs strike in turn: the one that shares
+    // the OCB of the emitter, and the one with OCB 0.
+    int16_t arc_target_nums[M_ARC_TARGET_COUNT];
 } M_SPREAD_PRIV;
 
 static const uint8_t m_SpreadOffsets[16][2] = {
@@ -183,6 +208,113 @@ static void M_BurnLaraInSpread(const ITEM *const item)
     }
 }
 
+static void M_InitialiseSpread(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_SPREAD_PRIV *const p = item->priv;
+    p->arc_target_nums[0] = NO_ITEM;
+    p->arc_target_nums[1] = NO_ITEM;
+
+    const int32_t ocb = M_GetOCB(item);
+    if (ocb < M_OCB_ARC_TARGETS) {
+        return;
+    }
+
+    for (int16_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const other = Item_Get(i);
+        if (other->object_id != O_ANIMATING_3) {
+            continue;
+        }
+        const int32_t other_ocb = M_GetOCB(other);
+        if (other_ocb == ocb) {
+            p->arc_target_nums[0] = i;
+        } else if (other_ocb == 0) {
+            p->arc_target_nums[1] = i;
+        }
+    }
+}
+
+static void M_CreateArc(
+    const XYZ_32 src, const XYZ_32 dst, const RGB_888 color,
+    const uint8_t segments)
+{
+    if ((Random_GetControl() & 3) == 0) {
+        FX_Lightning_Create(&(FX_LIGHTNING_SETUP) {
+            .src = src,
+            .dst = dst,
+            .variation = (Random_GetControl() & 0x1F) + 96,
+            .color = color,
+            .life = M_ARC_LONG_LIFE,
+            .size = M_ARC_SIZE,
+            .segments = segments,
+            .flags = FX_LIGHTNING_F_CURVED,
+        });
+    } else {
+        FX_Lightning_Create(&(FX_LIGHTNING_SETUP) {
+            .src = src,
+            .dst = dst,
+            .variation = (Random_GetControl() & 0x1F) + 64,
+            .color = color,
+            .life = M_ARC_LIFE,
+            .size = M_ARC_SIZE,
+            .segments = segments,
+            .flags = FX_LIGHTNING_F_NONE,
+        });
+    }
+}
+
+static void M_ControlArcs(const ITEM *const item, const int32_t ocb)
+{
+    const M_SPREAD_PRIV *const p = item->priv;
+    Sound_Effect(SFX_ELECTRIC_ARCING_LOOP, &item->pos, SPM_NORMAL);
+    const uint8_t g = (Random_GetControl() & 0x3F) + 192;
+    const uint8_t b = (Random_GetControl() & 0x3F) + 192;
+    const RGB_888 color = { .r = 0, .g = g, .b = b };
+    const int32_t counter = (int32_t)Output_GetTimeInGame();
+
+    if ((counter & 3) == 0
+        && (ocb == M_OCB_ARC_BEHIND_1 || ocb == M_OCB_ARC_BEHIND_2)) {
+        const XYZ_32 dst =
+            XYZ_32_OffsetYaw(item->pos, item->rot.y - DEG_180, M_ARC_REACH);
+        M_CreateArc(item->pos, dst, color, M_ARC_BEHIND_SEGMENTS);
+    }
+
+    const int16_t target_num = p->arc_target_nums[(counter >> 2) & 1];
+    if (ocb >= M_OCB_ARC_TARGETS && (counter & 1) == 0
+        && target_num != NO_ITEM) {
+        const ITEM *const target = Item_Get(target_num);
+        XYZ_32 dst = { .x = 0, .y = -64, .z = 20 };
+        Collide_GetJointAbsPosition(target, &dst, 0);
+        if ((counter & 3) == 0) {
+            M_CreateArc(item->pos, dst, color, M_ARC_TARGET_SEGMENTS);
+        }
+        if (ocb != M_OCB_ARC_TARGETS || M_GetOCB(target) != 0) {
+            FX_Lightning_CreateGlow(dst, color, M_ARC_GLOW);
+        }
+    }
+
+    if ((counter & 3) == 2) {
+        XYZ_32 dst = item->pos;
+        dst.x += (Random_GetControl() & M_ARC_SPARK_SPREAD)
+            - (M_ARC_SPARK_SPREAD + 1) / 2;
+        dst.y += (Random_GetControl() & M_ARC_SPARK_SPREAD)
+            - (M_ARC_SPARK_SPREAD + 1) / 2;
+        dst.z += (Random_GetControl() & M_ARC_SPARK_SPREAD)
+            - (M_ARC_SPARK_SPREAD + 1) / 2;
+        FX_Lightning_Create(&(FX_LIGHTNING_SETUP) {
+            .src = item->pos,
+            .dst = dst,
+            .variation = (Random_GetControl() & 0xF) + 16,
+            .color = color,
+            .life = M_ARC_LIFE,
+            .size = M_ARC_SIZE,
+            .segments = M_ARC_SPARK_SEGMENTS,
+            .flags = FX_LIGHTNING_F_CURVED | FX_LIGHTNING_F_MOVING_END,
+        });
+        FX_Lightning_CreateGlow(item->pos, color, M_ARC_GLOW);
+    }
+}
+
 static void M_ControlSpread(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -190,8 +322,9 @@ static void M_ControlSpread(const int16_t item_num)
         return;
     }
 
-    if (M_GetOCB(item) != 0) {
-        // TODO: electric arcs, not ported.
+    const int32_t ocb = M_GetOCB(item);
+    if (ocb != 0) {
+        M_ControlArcs(item, ocb);
         return;
     }
 
@@ -238,6 +371,7 @@ static void M_SetupWall(OBJECT *const obj)
 
 static void M_SetupSpread(OBJECT *const obj)
 {
+    obj->initialise_func = M_InitialiseSpread;
     obj->control_func = M_ControlSpread;
     obj->draw_func = nullptr;
     obj->save_flags = true;
