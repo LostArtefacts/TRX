@@ -205,7 +205,6 @@ static bool M_CanCollide(
         return false;
     }
 
-    // TODO: TR4 also leaves out the burning floor, which TRX lacks.
     const OBJECT *const obj = Object_Get(other->object_id);
     if (other != lara_item
         && (obj->collision_func == nullptr || obj->draw_func == nullptr)) {

@@ -2464,6 +2464,9 @@
         "bull_guardian": {
             "name": "Bull Guardian",
         },
+        "burning_floor": {
+            "name": "Burning Floor",
+        },
         "burning_torch_item": {
             "name": "Burning Torch|Torch",
         },

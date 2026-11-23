@@ -35,7 +35,7 @@
   "bull_guardian":            { "status": "fully implemented" },
   "bridge_flat":              { "status": "fully implemented" },
   "bridge_tilt_1":            { "status": "fully implemented" },
-  "burning_floor":            { "status": "not implemented",       "todo": "port from BURNING_FLOOR"           },
+  "burning_floor":            { "status": "fully implemented" },
   "cairo_dragon":             { "status": "not implemented",       "todo": "port from MUTANT"                  },
   "camera_target":            { "status": "fully implemented" },
   "catwalk_blade":            { "status": "fully implemented" },

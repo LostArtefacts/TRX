@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "\\{review}Страж-бык",
         },
+        "burning_floor": {
+            "name": "\\{review}Горящий пол",
+        },
         "burning_torch_item": {
             "name": "\\{review}Горящий факел",
         },

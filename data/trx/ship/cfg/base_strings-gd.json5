@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "Neach-dìon Tarbh",
         },
+        "burning_floor": {
+            "name": "\\{review}Ùrlar a' losgadh",
+        },
         "burning_torch_item": {
             "name": "\\{review}Leus a' losgadh",
         },

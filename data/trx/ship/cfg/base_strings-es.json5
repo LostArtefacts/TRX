@@ -2458,6 +2458,9 @@
         "bull_guardian": {
             "name": "\\{review}Guardián taurino",
         },
+        "burning_floor": {
+            "name": "\\{review}Suelo en llamas",
+        },
         "burning_torch_item": {
             "name": "\\{review}Antorcha encendida",
         },

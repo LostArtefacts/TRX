@@ -48,7 +48,7 @@ convert between the two.
     - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 907 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 908 names
 
     Every object TRX has a name for.
 
@@ -80,7 +80,7 @@ convert between the two.
     `BIRD_TWEETER_1`, `BIRD_TWEETER_2`, `BLADE`, `BLADE_RING`, `BLOOD`,
     `BLOOD_PINK`, `BLUE_LIGHT`, `BOAR`, `BOAT`, `BOAT_BITS`, `BODY_PART`,
     `BOUNCING_BOULDER`, `BRIDGE_FLAT`, `BRIDGE_TILT_1`, `BRIDGE_TILT_2`,
-    `BUBBLE_1`, `BUBBLE_2`, `BUBBLE_EMITTER`, `BULL_GUARDIAN`,
+    `BUBBLE_1`, `BUBBLE_2`, `BUBBLE_EMITTER`, `BULL_GUARDIAN`, `BURNING_FLOOR`,
     `BURNING_TORCH_ITEM`, `CAMERA_TARGET`, `CARCASS`, `CATWALK_BLADE`,
     `CEILING_SPIKES`, `CEILING_TRAPDOOR_1`, `CEILING_TRAPDOOR_2`, `CENTAUR`,
     `CENTAUR_STATUE`, `CIVILIAN`, `CLAW_MUTANT`, `CLAW_MUTANT_PLASMA_BALL`,
