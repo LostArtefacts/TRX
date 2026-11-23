@@ -123,8 +123,8 @@ static void M_TriggerMist(const ITEM *const item)
     spark->vel.y = 2 * (Random_GetControl() & 0x1FF) + 512;
     spark->vel.z = 2 * (Random_GetControl() & 0x1FF) - 512;
     spark->friction = 3;
-    spark->flags =
-        SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SMOKE | SPARK_F_ROTATE
+        | SPARK_F_SPRITE | SPARK_F_SCALE;
     spark->rot_angle = Random_GetControl() & 0xFFF;
     if ((Random_GetControl() & 1) != 0) {
         spark->rot_add = -64 - (Random_GetControl() & 0x3F);

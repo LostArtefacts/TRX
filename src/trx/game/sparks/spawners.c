@@ -1153,8 +1153,8 @@ void Sparks_TriggerFlashSmoke(const XYZ_32 pos, const int16_t room_num)
         spark->friction = 0x55;
     }
 
-    spark->flags =
-        SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SMOKE | SPARK_F_ROTATE
+        | SPARK_F_SPRITE | SPARK_F_SCALE;
     if (room->flags.wind) {
         spark->flags |= SPARK_F_OUTSIDE;
     }
@@ -1813,6 +1813,7 @@ void Sparks_TriggerGunSmokeDirected(
     } else {
         spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
+    spark->flags |= SPARK_F_SMOKE;
 
     spark->scalar = 3;
     spark->gravity = -2 - (Random_GetControl() & 1);

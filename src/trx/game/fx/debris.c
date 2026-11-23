@@ -197,7 +197,8 @@ static void M_TriggerSmoke(const XYZ_32 pos)
     spark->friction = 7;
     spark->scalar = 2;
 
-    spark->flags = SPARK_F_SPRITE | SPARK_F_SCALE;
+    spark->flags =
+        SPARK_F_ALT_SPRITE | SPARK_F_SMOKE | SPARK_F_SPRITE | SPARK_F_SCALE;
     if ((Random_GetControl() & 1) != 0) {
         spark->flags |= SPARK_F_ROTATE;
         spark->rot_angle = Random_GetControl() & 0xFFF;
