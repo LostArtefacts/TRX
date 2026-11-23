@@ -48,13 +48,18 @@ static void M_GiveAllMedpacksImpl(void)
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 10);
 }
 
+static bool M_IsHoldingItem(void)
+{
+    return Gun_Registry_Get(Lara_GetLaraInfo()->gun_type)->is_held_item;
+}
+
 static void M_ReinitialiseGunMeshes(void)
 {
     Lara_Mesh_Initialise(Game_GetCurrentLevel());
     // Leaves the arm of a held item, such as the torch, as it is. A torch that
     // she is dropping or throwing may already be out of her hand, and a reset
     // arm would draw it there again.
-    if (!Gun_Registry_Get(Lara_GetLaraInfo()->gun_type)->is_held_item) {
+    if (!M_IsHoldingItem()) {
         Gun_InitialiseNewWeapon();
     }
 }
@@ -62,7 +67,7 @@ static void M_ReinitialiseGunMeshes(void)
 static void M_ClearHandWeaponMeshes(void)
 {
     Gun_SetLaraHandRMesh(LGT_UNARMED);
-    if (!Gun_Flare_IsMeshActive()) {
+    if (!Gun_Flare_IsMeshActive() && !M_IsHoldingItem()) {
         Gun_SetLaraHandLMesh(LGT_UNARMED);
     }
 }
@@ -74,6 +79,9 @@ static void M_ResetGunStatus(void)
     const bool has_flare = Gun_Flare_IsMeshActive();
     if (has_flare) {
         lara_info->gun_type = Gun_GetFlareType();
+        return;
+    }
+    if (M_IsHoldingItem()) {
         return;
     }
 
@@ -295,7 +303,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         && lara_info->gun_type == Gun_GetFlareType();
     if (lara_info->gun_item_num != NO_ITEM || is_flare_undrawing) {
         lara_info->gun_status = LGS_UNDRAW;
-    } else if (!Gun_Registry_Get(lara_info->gun_type)->is_held_item) {
+    } else if (!M_IsHoldingItem()) {
         lara_info->gun_status = LGS_ARMLESS;
         M_ClearHandWeaponMeshes();
         M_ReinitialiseGunMeshes();
