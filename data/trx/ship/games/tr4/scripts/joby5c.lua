@@ -4,6 +4,11 @@ local CUTSCENE = 27
 local CUTSCENE_ROOM = 55
 local CUTSCENE_FLIP_GROUP = 8
 local QUEST_ITEM_COUNT = 6
+-- The scene hides the amulet in its copy of the shrine until Lara places
+-- it, as the original game does.
+local AMULET_ACTOR = 1
+local AMULET_NODE = 9
+local AMULET_FRAME = 283
 
 trx.events.on_game_start(function()
   trx.objects.scaled_spikes.properties.scaled_spikes_mode =
@@ -26,7 +31,13 @@ trx.events.on_cutscene_trigger(function(num)
 end)
 
 cutscenes.register(CUTSCENE, {
+  frames = {
+    [AMULET_FRAME] = function()
+      trx.cutscenes.set_node_visible(AMULET_ACTOR, AMULET_NODE, true)
+    end,
+  },
   on_start = function()
+    trx.cutscenes.set_node_visible(AMULET_ACTOR, AMULET_NODE, false)
     -- Hides the closed shrine for good, as the scene draws its own copy and
     -- the open shrine replaces it once the scene ends.
     cutscenes.hide_items(trx.catalog.objects.animating_4)
