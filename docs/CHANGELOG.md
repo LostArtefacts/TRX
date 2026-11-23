@@ -137,6 +137,7 @@
 - Fixed the train wheels in Alexandria sitting too low (OG bug) (TRX2119)
 - Fixed mis-rotated textures in Angkor Wat, Tomb of Seth and KV5 (OG bug) (TRX2117)
 - Fixed Jean-Yves missing from Alexandria (TRX2101)
+- Fixed the Horus statue not changing during the final cutscene of the first Temple of Horus level (TRX2101)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
