@@ -142,6 +142,9 @@ void ObjectProperty_ApplyDeclarations(
 // is why object code never has to look a property up.
 void ObjectProperty_ApplyToItem(ITEM *item);
 
+// The getters return a list borrowed from the store, which stays valid until
+// the property is set again.
+//
 // The setters return nullptr once the value is stored, or why it was refused,
 // as Field_Set does for a plain member. A value outside what the property's
 // member can hold, or outside what its `check` accepts, is turned away rather

@@ -222,7 +222,7 @@ end
     Computed properties (derived, not stored on the object):
     - <a id="items.Item.bounds" name="items.Item.bounds"></a>**`bounds`**: [trx.math.Box](MATH.md#math.Box). The item's bounding box for the frame it is on. The numbers are in the item's own frame, so they say how far the model reaches around [`pos`](#items.Item.pos) before [`rot`](#items.Item.rot) turns it, and they change as the item animates.
     - <a id="items.Item.joint_count" name="items.Item.joint_count"></a>**`joint_count`**: integer. How many joints the item's model is built from. A joint number runs from `0` up to one less than this.
-    - <a id="items.Item.properties" name="items.Item.properties"></a>**`properties`**: table. Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
+    - <a id="items.Item.properties" name="items.Item.properties"></a>**`properties`**: table. Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. A list property reads as a table of integers and takes one. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
     - <a id="items.Item.room" name="items.Item.room"></a>**`room`**: [trx.rooms.Room](ROOMS.md#rooms.Room). The room containing this item.
 
     Methods:

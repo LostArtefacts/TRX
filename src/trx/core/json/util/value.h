@@ -17,7 +17,8 @@ void JSONValue_Write(
 // Reads `value` into `out` as `type`. Reports a value that is not there, holds
 // the wrong shape, or names an enum the map does not know; the caller decides
 // whether to fall back on its own default. A read string is borrowed from
-// `value`.
+// `value`. A read list is allocated, and the caller frees its values with
+// Memory_Free.
 RESULT JSONValue_ReadFrom(
     const JSON_VALUE *value, TRX_VALUE_TYPE type, const void *param,
     TRX_VALUE *out);

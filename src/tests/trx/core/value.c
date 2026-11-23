@@ -149,6 +149,27 @@ TEST(equal_ptr_compares_by_type)
     CHECK(!Value_EqualPtr(TVT_STRING, &s1, &s3));
 }
 
+TEST(lists_compare_by_their_values)
+{
+    const int32_t a_values[] = { 1, 2, 3 };
+    const int32_t b_values[] = { 1, 2, 3 };
+    const int32_t c_values[] = { 1, 2, 4 };
+    const TRX_VALUE a = Value_Of(((S32_LIST) { 3, a_values }));
+    const TRX_VALUE b = Value_Of(((S32_LIST) { 3, b_values }));
+    const TRX_VALUE c = Value_Of(((S32_LIST) { 3, c_values }));
+    const TRX_VALUE shorter = Value_Of(((S32_LIST) { 2, a_values }));
+    CHECK_EQ_INT(a.type, TVT_S32_LIST);
+    CHECK_EQ_STR(Value_TypeName(TVT_S32_LIST), "S32_LIST");
+    CHECK(Value_Equal(&a, &b));
+    CHECK(!Value_Equal(&a, &c));
+    CHECK(!Value_Equal(&a, &shorter));
+
+    TRX_VALUE out;
+    CHECK(!Value_Parse(TVT_S32_LIST, nullptr, "1 2 3", &out));
+    int32_t storage = 0;
+    CHECK_NOT_NULL(Value_WritePtr(TVT_S32_LIST, &storage, &a));
+}
+
 TEST(copy_ptr_moves_scalars_and_owns_strings)
 {
     int32_t src_i = 77;

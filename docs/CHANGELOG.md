@@ -107,6 +107,7 @@
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
 - Added `trx.fx.SparkContext.RAIN` for rain splashes, which reported `SPLASH` before. A spark spawned with it gives way to other sparks when the pool is full (TRX1962)
 - Added `trx.weapons.Kind.TORCH` and `trx.catalog.weapons.TORCH` for the TR4 torch (TRX475)
+- Added item and object properties that hold a list of integers, which a script reads and writes as a table (TRX2051)
 - Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished
 - Changed TR4 cutscenes to leave Lara at the scene's origin, as in the original game, unless `trx.cutscenes.set_lara_return` names another place (TRX2062)
 

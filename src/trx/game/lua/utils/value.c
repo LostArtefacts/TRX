@@ -114,6 +114,28 @@ static TRX_VALUE M_CheckColor(
     return value;
 }
 
+static S32_LIST M_CheckS32List(lua_State *const L, const int idx)
+{
+    const int abs_idx = lua_absindex(L, idx);
+    luaL_checktype(L, abs_idx, LUA_TTABLE);
+    const int32_t count = (int32_t)luaL_len(L, abs_idx);
+    int32_t *const values =
+        count > 0 ? lua_newuserdatauv(L, count * sizeof(int32_t), 0) : nullptr;
+    for (int32_t i = 0; i < count; i++) {
+        lua_geti(L, abs_idx, i + 1);
+        int is_integer = 0;
+        const lua_Integer value = lua_tointegerx(L, -1, &is_integer);
+        if (is_integer == 0 || value < INT32_MIN || value > INT32_MAX) {
+            luaL_argerror(
+                L, idx,
+                lua_pushfstring(L, "entry %d must be an integer", i + 1));
+        }
+        values[i] = (int32_t)value;
+        lua_pop(L, 1);
+    }
+    return (S32_LIST) { .count = count, .values = values };
+}
+
 void LUA_SetColorConstructor(lua_State *const L, const int idx)
 {
     lua_pushvalue(L, idx);
@@ -158,6 +180,14 @@ void LUA_PushValue(lua_State *const L, const TRX_VALUE *const value)
             lua_pushnil(L);
         } else {
             lua_pushstring(L, value->as_str);
+        }
+        break;
+
+    case TVT_S32_LIST:
+        lua_createtable(L, value->as_list.count, 0);
+        for (int32_t i = 0; i < value->as_list.count; i++) {
+            lua_pushinteger(L, value->as_list.values[i]);
+            lua_rawseti(L, -2, i + 1);
         }
         break;
     }
@@ -215,6 +245,10 @@ TRX_VALUE LUA_CheckValue(
         // allowed (e.g. item.name = nil removes the name).
         value.as_str =
             lua_isnoneornil(L, idx) ? nullptr : luaL_checkstring(L, idx);
+        break;
+
+    case TVT_S32_LIST:
+        value.as_list = M_CheckS32List(L, idx);
         break;
     }
 

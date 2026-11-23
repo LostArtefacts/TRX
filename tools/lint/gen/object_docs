@@ -625,6 +625,8 @@ def infer_stored_type(value_expr: str, constants: dict[str, str]) -> str:
         return "XYZ"
     if "RGB_888" in expr:
         return "RGB"
+    if "S32_LIST" in expr:
+        return "LIST"
     if re.search(r"\d\.\d", expr):
         return "DOUBLE"
     return "INT"
@@ -1007,6 +1009,10 @@ def format_value(
             for channel in split_args(info.value_expr)
         ]
         return f"({', '.join(channels)})"
+    if info.macro_type == "LIST":
+        values = re.search(r"\{(?P<values>[^{}]*)\}", info.value_expr)
+        inner = values.group("values").strip() if values else ""
+        return f"{{ {inner} }}" if inner else "{}"
     return evaluate_expression(
         info.value_expr, info.constants, game_version, music_catalog
     )
@@ -1210,11 +1216,16 @@ class XmlExporter:
             if not self.property_catalog.has_object(object_id):
                 continue
 
+            # Tomb Editor has no list type, so a list property stays out of
+            # its catalogs.
             props = self.property_catalog.properties_for(object_id)
             properties = [
                 self._build_property_dict(name, props[name])
                 for name in props
+                if props[name].macro_type != "LIST"
             ]
+            if not properties:
+                continue
             key = tuple(tuple(sorted(prop.items())) for prop in properties)
             group = grouped_moveables.setdefault(
                 key,

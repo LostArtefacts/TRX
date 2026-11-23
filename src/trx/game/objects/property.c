@@ -24,17 +24,42 @@ struct OBJECT_PROPERTY_ENTRY {
     void (*set)(ITEM *item, const TRX_VALUE *value);
 };
 
-// Object properties are numeric: the declaration macros produce only S32, BOOL,
-// XYZ_32, RGB_888 and DOUBLE, none of which own memory. A text-valued property
-// would need string ownership the set does not carry, so it is refused at the
-// door.
+// Object properties are numbers or lists of numbers. The set keeps its own copy
+// of a list, but it has no ownership for strings, so a text-valued property is
+// refused at the door.
 static void M_AssertNumeric(const TRX_VALUE_TYPE type)
 {
     ASSERT(type != TVT_STRING && type != TVT_DYNAMIC_ENUM);
 }
 
+static void M_FreeValue(TRX_VALUE *const value)
+{
+    if (value->type == TVT_S32_LIST) {
+        Memory_Free((void *)value->as_list.values);
+        value->as_list = (S32_LIST) {};
+    }
+}
+
+// Copies `src` into `dst`, which owns a copy of a list. The copy is made before
+// the old list is freed, so `src` may borrow from `dst`.
+static void M_StoreValue(TRX_VALUE *const dst, const TRX_VALUE *const src)
+{
+    TRX_VALUE copy = *src;
+    if (src->type == TVT_S32_LIST && src->as_list.count > 0) {
+        const size_t size = src->as_list.count * sizeof(int32_t);
+        int32_t *const values = Memory_Alloc(size);
+        memcpy(values, src->as_list.values, size);
+        copy.as_list.values = values;
+    }
+    M_FreeValue(dst);
+    *dst = copy;
+}
+
 static void M_FreeSet(OBJECT_PROPERTY_SET *const set)
 {
+    for (int32_t i = 0; i < set->count; i++) {
+        M_FreeValue(&set->entries[i].value);
+    }
     Memory_FreePointer(&set->entries);
     set->count = 0;
 }
@@ -148,7 +173,7 @@ static OBJECT_PROPERTY_ENTRY *M_AddEntry(
     OBJECT_PROPERTY_ENTRY *entry = M_GetEntry(properties, name);
     if (entry != nullptr) {
         entry->description = description;
-        entry->value = *value;
+        M_StoreValue(&entry->value, value);
         return entry;
     }
 
@@ -160,8 +185,8 @@ static OBJECT_PROPERTY_ENTRY *M_AddEntry(
     *entry = (OBJECT_PROPERTY_ENTRY) {
         .name = name,
         .description = description,
-        .value = *value,
     };
+    M_StoreValue(&entry->value, value);
     return entry;
 }
 
@@ -180,7 +205,7 @@ static const char *M_ApplyObjectValue(
     if (err != nullptr) {
         return err;
     }
-    entry->value = *value;
+    M_StoreValue(&entry->value, value);
     M_WriteLiveValueToItems(obj, entry);
     return nullptr;
 }
@@ -374,7 +399,7 @@ void ObjectProperty_WriteItemOverrides(
     JSON_OBJECT *const props = JSON_WriteIO_GetCurrentObject(io);
     for (int32_t i = 0; i < item->properties.count; i++) {
         const OBJECT_PROPERTY_ENTRY *const entry = &item->properties.entries[i];
-        // Object properties are numeric, so no enum-map name is in play;
+        // Object properties hold no enums, so no enum-map name is in play;
         // nullptr is the right param.
         JSONValue_Write(
             props, entry->name, entry->value.type, nullptr, &entry->value);
@@ -414,6 +439,7 @@ RESULT ObjectProperty_ReadItemOverrides(
         // A save is not worth losing over one value the property no longer
         // takes; the item keeps the object's.
         const char *const err = M_ApplyItemValue(item, entry->name, &value);
+        M_FreeValue(&value);
         if (err != nullptr) {
             LOG_WARNING("%s: %s", entry->name, err);
         }

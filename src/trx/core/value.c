@@ -27,11 +27,12 @@
     _(TVT_RGB_F, "RGB_F", RGB_F)                                               \
     _(TVT_STRING, "STRING", char *)                                            \
     _(TVT_ENUM, "ENUM", int32_t)                                               \
-    _(TVT_DYNAMIC_ENUM, "DYNAMIC_ENUM", char *)
+    _(TVT_DYNAMIC_ENUM, "DYNAMIC_ENUM", char *)                                \
+    _(TVT_S32_LIST, "S32_LIST", S32_LIST)
 
 // TAG, storage C type, carrier member. The types a plain load or store moves
-// without narrowing; XYZ_16 narrows and strings are caller-managed, so both are
-// handled apart from this table.
+// without narrowing; XYZ_16 narrows, and strings and lists are caller-managed,
+// so they are handled apart from this table.
 #define M_VALUE_COPY_TYPES(_)                                                  \
     _(TVT_BOOL, bool, as_bool)                                                 \
     _(TVT_S8, int8_t, as_int)                                                  \
@@ -180,6 +181,9 @@ void Value_ReadPtr(
     case TVT_DYNAMIC_ENUM:
         out->as_str = *(const char *const *)src;
         break;
+    case TVT_S32_LIST:
+        out->as_list = *(const S32_LIST *)src;
+        break;
     }
 }
 
@@ -274,6 +278,8 @@ const char *Value_WritePtr(
     case TVT_STRING:
     case TVT_DYNAMIC_ENUM:
         return "string storage is caller-managed";
+    case TVT_S32_LIST:
+        return "list storage is caller-managed";
     }
     return nullptr;
 }
@@ -357,6 +363,9 @@ bool Value_Parse(
     case TVT_STRING:
         out->as_str = str;
         return true;
+
+    case TVT_S32_LIST:
+        return false;
     }
     return false;
 }
@@ -407,6 +416,8 @@ const char *Value_Format(
         return value->as_str != nullptr ? value->as_str : "";
     case TVT_STRING:
         return value->as_str != nullptr ? value->as_str : "";
+    case TVT_S32_LIST:
+        return "";
     }
     return "";
 }
@@ -508,6 +519,16 @@ bool Value_Equal(const TRX_VALUE *const a, const TRX_VALUE *const b)
             return a->as_str == b->as_str;
         }
         return strcmp(a->as_str, b->as_str) == 0;
+    case TVT_S32_LIST:
+        if (a->as_list.count != b->as_list.count) {
+            return false;
+        }
+        for (int32_t i = 0; i < a->as_list.count; i++) {
+            if (a->as_list.values[i] != b->as_list.values[i]) {
+                return false;
+            }
+        }
+        return true;
     }
     return false;
 }

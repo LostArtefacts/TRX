@@ -69,7 +69,7 @@ end
 ---@field names table Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`. <!--noref: medipack-->
 ---@field description string? The text the game shows when the player examines the object, or `nil` where it cannot be examined. An empty description can still be examined: the player turns it without reading anything.
 ---@field default_names table The compile-time English names. A lookup tries these when the player's language has no matching name, so an English name still reaches the object in a translated install.
----@field properties table The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `trx.items.Item.properties` to change one item only. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).
+---@field properties table The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `trx.items.Item.properties` to change one item only. A list property reads as a table of integers and takes one. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).
 local Object = h.handle("objects.Object", "OBJECT", {
   fields = {
     loaded = "loaded",

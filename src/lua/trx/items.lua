@@ -298,7 +298,7 @@ end
 ---@field room trx.rooms.Room The room containing this item.
 ---@field bounds trx.math.Box The item's bounding box for the frame it is on. The numbers are in the item's own frame, so they say how far the model reaches around `trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the item animates.
 ---@field joint_count integer How many joints the item's model is built from. A joint number runs from `0` up to one less than this.
----@field properties table Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).
+---@field properties table Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. A list property reads as a table of integers and takes one. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).
 local Item = h.handle("items.Item", "ITEM", {
   fields = {
     pos = "pos",

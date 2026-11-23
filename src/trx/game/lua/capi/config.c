@@ -133,6 +133,8 @@ static const char *M_KindName(const TRX_VALUE_TYPE type)
         return "dynamic_enum";
     case TVT_STRING:
         return "string";
+    case TVT_S32_LIST:
+        return "list";
     }
     return "";
 }

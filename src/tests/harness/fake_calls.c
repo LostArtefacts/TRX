@@ -76,6 +76,7 @@ static void M_PushValue(
     case TVT_XYZ_32:
     case TVT_RGB_888:
     case TVT_RGB_F:
+    case TVT_S32_LIST:
         break;
     }
     // Reached only by an argument of a type nothing records yet. Failing here
