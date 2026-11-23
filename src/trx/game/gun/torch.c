@@ -31,6 +31,7 @@ typedef enum {
     M_ARM_DROP = 1,
     M_ARM_THROW = 2,
     M_ARM_LIGHT = 3,
+    M_ARM_DOUSE = 4,
 } M_ARM_STATE;
 
 typedef enum {
@@ -74,11 +75,6 @@ static const OBJECT_BOUNDS m_FireBounds = {
 };
 
 static int32_t m_FlameCount = 0;
-
-static bool M_IsSprinkler(const int32_t item_num)
-{
-    return item_num != NO_ITEM && Item_Get(item_num)->object_id == O_SPRINKLER;
-}
 
 static void M_SetArm(const M_ANIM anim_idx, const int16_t frame_num)
 {
@@ -217,8 +213,11 @@ static void M_ControlArm(void)
         break;
 
     case M_ARM_LIGHT:
+    case M_ARM_DOUSE:
         if (lara_item->current_anim_state != LS(LS_CONTROLLED)) {
-            lara->lit_torch = !M_IsSprinkler(lara->interact_target.item_num);
+            if (lara->left_arm.lock == M_ARM_LIGHT) {
+                lara->lit_torch = true;
+            }
             lara->flare.control = true;
             lara->left_arm.lock = M_ARM_HOLD;
             M_SetArm(M_ANIM_HOLD, 0);
@@ -315,7 +314,8 @@ static void M_StartLighting(const int16_t item_num, ITEM *const lara_item)
         lara_item->current_anim_state = LS(LS_CONTROLLED);
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->flare.control = false;
-        lara->left_arm.lock = M_ARM_LIGHT;
+        lara->left_arm.lock =
+            item->object_id == O_SPRINKLER ? M_ARM_DOUSE : M_ARM_LIGHT;
         lara->interact_target.item_num = item_num;
     }
     item->rot = old_rot;
