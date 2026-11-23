@@ -2869,6 +2869,9 @@
         "hammer": {
             "name": "\\{review}Martello",
         },
+        "hammerhead": {
+            "name": "\\{review}Squalo martello",
+        },
         "harpoon_bolt": {
             "name": "Dardo Arpione",
         },

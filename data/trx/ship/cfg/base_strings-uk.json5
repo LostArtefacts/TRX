@@ -2869,6 +2869,9 @@
         "hammer": {
             "name": "\\{review}Молот",
         },
+        "hammerhead": {
+            "name": "\\{review}Акула-молот",
+        },
         "harpoon_bolt": {
             "name": "Гарпунний болт",
         },

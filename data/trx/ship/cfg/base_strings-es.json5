@@ -2854,6 +2854,9 @@
         "hammer": {
             "name": "\\{review}Martillo",
         },
+        "hammerhead": {
+            "name": "\\{review}Tiburón martillo",
+        },
         "harpoon_bolt": {
             "name": "Arpón (proyectil)",
         },

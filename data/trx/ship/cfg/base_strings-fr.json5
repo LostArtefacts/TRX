@@ -2857,6 +2857,9 @@
         "hammer": {
             "name": "\\{review}Marteau",
         },
+        "hammerhead": {
+            "name": "\\{review}Requin-marteau",
+        },
         "harpoon_bolt": {
             "name": "\\{review}Bolt de harpon",
         },
