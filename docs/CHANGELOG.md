@@ -38,6 +38,7 @@
 - Fixed inconsistent texturing and vertex alignment on Lara's holstered Desert Eagle meshes (OG bug) (TRX1964)
 - Fixed pickup aids not showing in heavy rain when rain splashes are enabled (TRX1962, regression from 1.12)
 - Fixed rain falling in some indoor areas, such as in Highland Fling (#7113 / TRX2031, regression from 1.12)
+- Fixed tall enemies stopping under an opening into the room above them (TRX2110)
 
 **TR4**
 - Added Blade Ring control (TRX1993)
