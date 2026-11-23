@@ -21,6 +21,10 @@ bool Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
 // both ways.
 bool Room_TestTriggersEx(const ITEM *item, bool is_heavy);
 bool Room_IsAntiTrigger(TRIGGER_TYPE type);
+// Lets the next key trigger fire the given part of its commands while Lara is
+// busy with the animation that uses the receptacle. The trigger fires that part
+// once, and fires in full when the animation ends.
+void Room_ArmKeyTrigger(KEY_TRIGGER_PART part);
 
 #define REGISTER_TRIGGER_HANDLER(cmd_type, handle_func)                        \
     __attribute__((constructor)) static void                                   \
