@@ -54,8 +54,8 @@ void SG_File_DumpMisc(JSON_WRITE_IO *io);
 void SG_File_DumpLevelEndMisc(JSON_WRITE_IO *io);
 // Writes what the current level keeps for Lara's return: its own items, the
 // state of its rooms, cameras and music triggers, its ambient track, its
-// statistics and its level store. Lara and the items spawned during play are
-// left out.
+// switch sequence, its statistics and its level store. Lara and the items
+// spawned during play are left out.
 void SG_File_DumpLevelState(JSON_WRITE_IO *io, const GF_LEVEL *level);
 // End of writer functions =====================================================
 

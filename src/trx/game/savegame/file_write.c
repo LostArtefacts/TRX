@@ -930,6 +930,7 @@ void SG_File_DumpLevelState(
     JSONW_POP_AND_SET(io, "music");
 
     M_WriteSpentAIMarkers(io);
+    M_WriteSwitchSequence(io);
 
     const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     if (resume != nullptr) {
