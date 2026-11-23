@@ -98,7 +98,7 @@
   "horse":                    { "status": "not implemented",       "todo": "port from HORSE"                   },
   "horseman":                 { "status": "not implemented",       "todo": "port from HORSEMAN"                },
   "horus":                    { "status": "not implemented",       "todo": "port from SETHA"                   },
-  "horus_statue":             { "status": "not implemented",       "todo": "port from HORUS_STATUE"            },
+  "horus_statue":             { "status": "fully implemented" },
   "jackal":                   { "status": "fully implemented" },
   "jean_yves":                { "status": "not implemented",       "todo": "port from JEAN_YVES"               },
   "jeep":                     { "status": "fully implemented" },

@@ -140,6 +140,7 @@ X_OBJ_NAME_DEFINE(O_MOUNTED_GUN, "Mounted Gun")
 X_OBJ_NAME_DEFINE(O_MINE_CART,   "Mine Cart")
 X_OBJ_NAME_DEFINE(O_RIB,         "Rigid Inflatable Boat|RIB")
 X_OBJ_NAME_DEFINE(O_JEEP,        "Jeep")
+X_OBJ_NAME_DEFINE(O_MOTORBIKE,   "Motorbike")
 
 // Enemies
 X_OBJ_NAME_DEFINE(O_BACON_LARA,           "Bacon Lara")
@@ -265,6 +266,9 @@ X_OBJ_NAME_DEFINE(O_WRAITH_1,             "Wraith 1")
 X_OBJ_NAME_DEFINE(O_WRAITH_2,             "Wraith 2")
 X_OBJ_NAME_DEFINE(O_WRAITH_3,             "Wraith 3")
 X_OBJ_NAME_DEFINE(O_WRAITH_4,             "Wraith 4")
+X_OBJ_NAME_DEFINE(O_JEAN_YVES,            "Jean-Yves")
+X_OBJ_NAME_DEFINE(O_HORUS,                "Horus")
+X_OBJ_NAME_DEFINE(O_DEMIGOD_3,            "Demigod 3")
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "Wall-mounted Blade")
@@ -379,6 +383,7 @@ X_OBJ_NAME_DEFINE(O_SEQUENCE_SWITCH_2,      "Sequence Switch 2")
 X_OBJ_NAME_DEFINE(O_SEQUENCE_SWITCH_3,      "Sequence Switch 3")
 X_OBJ_NAME_DEFINE(O_DRAWBRIDGE,             "Drawbridge")
 X_OBJ_NAME_DEFINE(O_GENERAL,                "Minisub")
+X_OBJ_NAME_DEFINE(O_HORUS_STATUE,           "Horus Statue")
 // Slot-numbered receptacles
 #define X_PICKUP_KEY(n)                                                        \
     X_OBJ_NAME_DEFINE(                                                         \

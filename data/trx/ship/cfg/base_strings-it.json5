@@ -2590,6 +2590,9 @@
         "dart_emitter": {
             "name": "Emettitore di Dardi",
         },
+        "demigod_3": {
+            "name": "\\{review}Semidio 3",
+        },
         "desert_eagle_ammo_item": {
             "name": "Caricatori per Desert Eagle",
         },
@@ -2887,6 +2890,12 @@
         "hook": {
             "name": "Gancio",
         },
+        "horus": {
+            "name": "\\{review}Horus",
+        },
+        "horus_statue": {
+            "name": "\\{review}Statua di Horus",
+        },
         "hot_liquid": {
             "name": "Fuoco Extra",
         },
@@ -2904,6 +2913,9 @@
         },
         "jackal": {
             "name": "Cane|Sciacallo",
+        },
+        "jean_yves": {
+            "name": "\\{review}Jean-Yves",
         },
         "jeep": {
             "name": "Jeep",
@@ -3253,6 +3265,9 @@
         },
         "moored_boat": {
             "name": "Barca",
+        },
+        "motorbike": {
+            "name": "\\{review}Motocicletta",
         },
         "mounted_gun": {
             "name": "Mitragliatrice Fissa",

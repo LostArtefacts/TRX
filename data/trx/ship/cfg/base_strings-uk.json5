@@ -2590,6 +2590,9 @@
         "dart_emitter": {
             "name": "\\{review}Дротикомет",
         },
+        "demigod_3": {
+            "name": "\\{review}Напівбог 3",
+        },
         "desert_eagle_ammo_item": {
             "name": "Магазини на Дезерт Ігл",
         },
@@ -2887,6 +2890,12 @@
         "hook": {
             "name": "\\{review}Гак",
         },
+        "horus": {
+            "name": "\\{review}Гор",
+        },
+        "horus_statue": {
+            "name": "\\{review}Статуя Гора",
+        },
         "hot_liquid": {
             "name": "\\{review}Додатковий вогонь",
         },
@@ -2904,6 +2913,9 @@
         },
         "jackal": {
             "name": "\\{review}Собака|Шакал",
+        },
+        "jean_yves": {
+            "name": "\\{review}Жан-Ів",
         },
         "jeep": {
             "name": "\\{review}Джип",
@@ -3253,6 +3265,9 @@
         },
         "moored_boat": {
             "name": "\\{review}Човен",
+        },
+        "motorbike": {
+            "name": "\\{review}Мотоцикл",
         },
         "mounted_gun": {
             "name": "\\{review}Станковий кулемет",
