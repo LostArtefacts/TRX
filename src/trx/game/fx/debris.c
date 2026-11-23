@@ -8,8 +8,10 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/game/collision.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
@@ -50,6 +52,7 @@ typedef struct {
     uint16_t vertices[3];
     RGB_888 ambient;
     uint16_t flags;
+    bool scatter;
 } M_MESH_DATA;
 
 typedef struct {
@@ -61,6 +64,7 @@ typedef struct {
     int16_t flags;
     int16_t face_count;
     int32_t xz_vel;
+    bool scatter;
 } M_SHATTER_SOURCE;
 
 typedef struct {
@@ -246,7 +250,7 @@ static void M_TriggerDebris(
     debris->pos = pos->pos;
     debris->prev_pos = pos->pos;
 
-    if ((mesh_data->flags & 1) != 0) {
+    if (mesh_data->scatter) {
         debris->dir = Random_GetControl() << 1;
         debris->speed = (Random_GetControl() & 0xF) + 16;
     } else {
@@ -276,7 +280,7 @@ static void M_TriggerDebris(
             M_GetVertexIntensity(mesh_data->mesh, mesh_data->vertices[i]);
     }
 
-    if ((mesh_data->flags & 1) != 0) {
+    if (mesh_data->scatter) {
         debris->y_rot = Random_GetControl() << 1;
         debris->x_rot = debris->y_rot;
     }
@@ -361,6 +365,7 @@ static void M_Spawn(const M_SHATTER_SOURCE *const source)
 
     M_MESH_DATA mesh_data = {
         .mesh = source->mesh,
+        .scatter = source->scatter,
         .ambient = M_IsMeshPrelit(source->mesh)
             ? (RGB_888) {}
             : Room_Get(source->room_num)->ambient_rgb,
@@ -606,8 +611,32 @@ void FX_Debris_ShatterItem(
         .face_count = face_count,
         .room_num = room_num,
         .xz_vel = xz_vel,
+        .scatter = shatter_item->scatter,
     };
     M_Spawn(&source);
+}
+
+bool FX_Debris_ShatterItemMesh(
+    ITEM *const item, const int32_t mesh_idx, const int16_t face_count,
+    const int32_t xz_vel, const bool scatter)
+{
+    if (!Item_IsMeshVisible(item, mesh_idx)) {
+        return false;
+    }
+
+    XYZ_32 pos = {};
+    Collide_GetJointAbsPosition(item, &pos, mesh_idx);
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const SHATTER_ITEM shatter_item = {
+        .pos = pos,
+        .mesh = Object_GetMesh(obj->mesh_idx + mesh_idx),
+        .bit = ITEM_MESH(mesh_idx),
+        .yaw = item->rot.y,
+        .scatter = scatter,
+    };
+    FX_Debris_ShatterItem(&shatter_item, face_count, item->room_num, xz_vel);
+    Item_SetMeshVisible(item, mesh_idx, false);
+    return true;
 }
 
 void FX_Debris_ShatterStatic(
