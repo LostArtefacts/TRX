@@ -384,14 +384,14 @@ static bool M_IsInsideRoom(const ITEM *const item)
         && Room_GetCeiling(sector, item->pos) <= item->pos.y;
 }
 
-// Fades the trail with distance, and swaps red and blue as OG does.
+// Fades the trail with distance.
 static RGBA_8888 M_FadeTrailColor(const RGBA_8888 color, const int32_t depth)
 {
     const int32_t keep = M_TRAIL_FADE_END - depth;
     return (RGBA_8888) {
-        .r = (color.b * keep) >> 13,
+        .r = (color.r * keep) >> 13,
         .g = (color.g * keep) >> 13,
-        .b = (color.r * keep) >> 13,
+        .b = (color.b * keep) >> 13,
         .a = color.a,
     };
 }
