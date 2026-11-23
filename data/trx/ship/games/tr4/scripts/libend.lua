@@ -35,6 +35,15 @@ require("tr4.inv_setup").apply({
 
 cutscenes.register(VON_CROY_CUTSCENE, {
   hide = { trx.catalog.objects.door_5 },
+  hidden_actors = { 1, 2, 3, 4 },
+  actor_cues = {
+    [906] = { show = { 1, 2, 3, 4 } },
+    [1205] = { hide = { 1, 2, 3, 4 } },
+    [1316] = { show = { 1, 2, 3, 4 } },
+    [1747] = { hide = { 1, 2, 3, 4 } },
+    [2007] = { show = { 1, 2, 3, 4 } },
+    [2241] = { hide = { 2, 3, 4 } },
+  },
   on_start = function()
     trx.cutscenes.set_lara_return({ x = 68756, y = 512, z = 56493 }, 983)
   end,
