@@ -35,6 +35,7 @@ require("tr4.inv_setup").apply({
 })
 
 cutscenes.register(DETONATOR_CUTSCENE, {
+  hide = { trx.catalog.objects.animating_13 },
   on_end = function()
     local items = trx.items.query
       :of_object(trx.catalog.objects.puzzle_item_8_combo_1)

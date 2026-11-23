@@ -4,10 +4,25 @@ local cutscenes = require("tr4.cutscenes")
 -- name all four. The stage is the furthest waypoint she has reached, and only
 -- the scene for that stage plays, as in the original game.
 local JEAN_YVES_CUTSCENES = {
-  [17] = { stage = 0, pos = { x = 54706, y = -8192, z = 50470 }, rot = 4514 },
+  [17] = {
+    stage = 0,
+    pos = { x = 54706, y = -8192, z = 50470 },
+    rot = 4514,
+    hide = { trx.catalog.objects.animating_4 },
+  },
   [18] = { stage = 1, pos = { x = 55311, y = -8192, z = 53160 }, rot = 2304 },
-  [19] = { stage = 2, pos = { x = 53469, y = -8192, z = 48687 }, rot = 23355 },
-  [20] = { stage = 3, pos = { x = 55348, y = -8192, z = 50436 }, rot = -9731 },
+  [19] = {
+    stage = 2,
+    pos = { x = 53469, y = -8192, z = 48687 },
+    rot = 23355,
+    hide = { trx.catalog.objects.animating_4 },
+  },
+  [20] = {
+    stage = 3,
+    pos = { x = 55348, y = -8192, z = 50436 },
+    rot = -9731,
+    hide = { trx.catalog.objects.animating_4 },
+  },
 }
 
 trx.events.on_game_start(function()
@@ -60,6 +75,7 @@ require("tr4.inv_setup").apply({
 
 for num, place in pairs(JEAN_YVES_CUTSCENES) do
   cutscenes.register(num, {
+    hide = place.hide,
     on_start = function()
       trx.cutscenes.set_lara_return(place.pos, place.rot)
     end,
