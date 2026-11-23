@@ -309,6 +309,42 @@ static void M_UpdateWind(void)
 
 // Returns a copy of the spark moved across the mirror plane. Only a spark
 // that is not attached to an item or an effect has a reflection.
+static bool M_IsDarkerThan(const SPARK *const spark, const uint8_t value)
+{
+    return spark->color.r < value && spark->color.g < value
+        && spark->color.b < value;
+}
+
+// Picks a sparser smoke sprite as the spark grows darker. TR4 uses fewer
+// steps than TR3 and changes later, so its smoke keeps the soft sprites for
+// longer.
+static void M_UpdateAltSprite(SPARK *const spark)
+{
+    const int32_t base = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+    if (base == NO_ITEM) {
+        return;
+    }
+
+    spark->sprite_obj_id = O_SPARKS_GFX;
+    if (g_TRVersion >= 4) {
+        if (M_IsDarkerThan(spark, 24)) {
+            spark->sprite_idx = base + 2;
+        } else if (M_IsDarkerThan(spark, 80)) {
+            spark->sprite_idx = base + 1;
+        } else {
+            spark->sprite_idx = base;
+        }
+    } else if (M_IsDarkerThan(spark, 16)) {
+        spark->sprite_idx = base + 3;
+    } else if (M_IsDarkerThan(spark, 64)) {
+        spark->sprite_idx = base + 2;
+    } else if (M_IsDarkerThan(spark, 96)) {
+        spark->sprite_idx = base + 1;
+    } else {
+        spark->sprite_idx = base;
+    }
+}
+
 static SPARK M_GetReflection(const SPARK *const spark)
 {
     SPARK reflection = *spark;
@@ -784,24 +820,7 @@ void Sparks_Control(void)
         }
 
         if ((spark->flags & SPARK_F_ALT_SPRITE) != 0U) {
-            const int32_t base = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
-            if (base != NO_ITEM) {
-                spark->sprite_obj_id = O_SPARKS_GFX;
-                if (spark->color.r < 16 && spark->color.g < 16
-                    && spark->color.b < 16) {
-                    spark->sprite_idx = base + 3;
-                } else if (
-                    spark->color.r < 64 && spark->color.g < 64
-                    && spark->color.b < 64) {
-                    spark->sprite_idx = base + 2;
-                } else if (
-                    spark->color.r < 96 && spark->color.g < 96
-                    && spark->color.b < 96) {
-                    spark->sprite_idx = base + 1;
-                } else {
-                    spark->sprite_idx = base;
-                }
-            }
+            M_UpdateAltSprite(spark);
         }
 
         if (lived == (int32_t)(spark->extras >> 3)
