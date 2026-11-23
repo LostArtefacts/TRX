@@ -3,25 +3,80 @@ local cutscenes = require("tr4.cutscenes")
 -- Jean-Yves has a scene for each stage of Lara's progress, and his triggers
 -- name all four. The stage is the furthest waypoint she has reached, and only
 -- the scene for that stage plays, as in the original game.
+local JEAN_YVES = trx.catalog.objects.jean_yves
+local ANIMATING_4 = trx.catalog.objects.animating_4
+
 local JEAN_YVES_CUTSCENES = {
   [17] = {
     stage = 0,
     pos = { x = 54706, y = -8192, z = 50470 },
     rot = 4514,
-    hide = { trx.catalog.objects.animating_4 },
+    hide = { ANIMATING_4, JEAN_YVES },
+    chat = {
+      { 45, 86 },
+      { 122, 196 },
+      { 258, 370 },
+      { 398, 445 },
+      { 467, 490 },
+      { 518, 537 },
+      { 547, 564 },
+      { 579, 619 },
+      { 641, 650 },
+      { 668, 714 },
+      { 733, 788 },
+    },
   },
-  [18] = { stage = 1, pos = { x = 55311, y = -8192, z = 53160 }, rot = 2304 },
+  [18] = {
+    stage = 1,
+    pos = { x = 55311, y = -8192, z = 53160 },
+    rot = 2304,
+    hide = { JEAN_YVES },
+    chat = {
+      { 47, 59 },
+      { 75, 113 },
+      { 123, 250 },
+      { 331, 419 },
+      { 437, 570 },
+      { 592, 652 },
+    },
+  },
   [19] = {
     stage = 2,
     pos = { x = 53469, y = -8192, z = 48687 },
     rot = 23355,
-    hide = { trx.catalog.objects.animating_4 },
+    hide = { ANIMATING_4, JEAN_YVES },
+    chat = {
+      { 224, 251 },
+      { 288, 304 },
+      { 328, 472 },
+      { 502, 794 },
+      { 1028, 1042 },
+      { 1067, 1182 },
+      { 1206, 1294 },
+      { 1330, 1386 },
+      { 1402, 1427 },
+    },
   },
   [20] = {
     stage = 3,
     pos = { x = 55348, y = -8192, z = 50436 },
     rot = -9731,
-    hide = { trx.catalog.objects.animating_4 },
+    hide = { ANIMATING_4, JEAN_YVES },
+    chat = {
+      { 150, 158 },
+      { 174, 187 },
+      { 208, 312 },
+      { 334, 418 },
+      { 437, 457 },
+      { 479, 525 },
+      { 547, 623 },
+      { 640, 662 },
+      { 751, 811 },
+      { 828, 859 },
+      { 879, 894 },
+      { 908, 942 },
+      { 955, 962 },
+    },
   },
 }
 
@@ -76,6 +131,17 @@ require("tr4.inv_setup").apply({
 for num, place in pairs(JEAN_YVES_CUTSCENES) do
   cutscenes.register(num, {
     hide = place.hide,
+    chat = {
+      {
+        actor = 1,
+        node = 18,
+        ranges = place.chat,
+        speech_heads = {
+          trx.catalog.objects.actor_2_speech_head_1,
+          trx.catalog.objects.actor_2_speech_head_2,
+        },
+      },
+    },
     on_start = function()
       trx.cutscenes.set_lara_return(place.pos, place.rot)
     end,
