@@ -80,7 +80,9 @@ static void M_AddStrip(
 {
     const SCENE_PASS pass =
         Output_Textures_GetObjectTextureScenePass(texture_idx);
-    uint16_t flags = VERT_NO_WIBBLE | VERT_OVERBRIGHT;
+    // The OG overwrites the strips' fog value with the ramp, so the strips
+    // take no distance fog.
+    uint16_t flags = VERT_NO_FOG | VERT_NO_WIBBLE | VERT_OVERBRIGHT;
     if (pass == SCENE_PASS_OPAQUE) {
         flags |= VERT_NO_ALPHA_DISCARD;
     }
