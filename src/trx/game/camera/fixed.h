@@ -6,6 +6,9 @@ void Camera_InitialiseFixedObjects(int32_t num_objects);
 int32_t Camera_GetFixedObjectCount(void);
 int32_t Camera_GetDynamicFixedObjectIdx(void);
 void Camera_UpdateDynamicFixedObject(XYZ_32 pos, int16_t room_num);
+// Switches to a fixed camera at the given position that follows the centre
+// of Lara's animation bounds, matching the TR4 forced fixed camera.
+void Camera_UseForcedFixed(XYZ_32 pos, int16_t room_num);
 OBJECT_VECTOR *Camera_GetFixedObject(int32_t object_idx);
 bool Camera_IsLocked(int32_t camera_num);
 
