@@ -51,6 +51,21 @@ static const BITE m_Bite = {
     .mesh_num = 6,
 };
 
+static int32_t M_GetOCB(const ITEM *const item)
+{
+    TRX_VALUE value;
+    if (!ObjectProperty_GetItemValue(item, "ocb", &value)) {
+        return 0;
+    }
+    return value.as_int;
+}
+
+static bool M_IsAlwaysAggressive(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->always_aggressive || M_GetOCB(item) != 0;
+}
+
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -163,7 +178,7 @@ static void M_Control(const int16_t item_num)
     case M_STATE_REST:
         creature->maximum_turn = 0;
 
-        if (info.distance < M_ALERT_DIST || p->always_aggressive) {
+        if (info.distance < M_ALERT_DIST || M_IsAlwaysAggressive(item)) {
             item->goal_anim_state = M_STATE_GET_UP;
         } else if (Random_GetControl() == 0) {
             item->goal_anim_state = M_STATE_STIR;
@@ -173,7 +188,7 @@ static void M_Control(const int16_t item_num)
     case M_STATE_STIR:
         creature->maximum_turn = 0;
 
-        if (info.distance < M_ALERT_DIST || p->always_aggressive) {
+        if (info.distance < M_ALERT_DIST || M_IsAlwaysAggressive(item)) {
             item->goal_anim_state = M_STATE_GET_UP;
         } else if (Random_GetControl() == 0) {
             item->goal_anim_state = M_STATE_REST;
@@ -285,9 +300,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_HIT_POINTS),
         OBJECT_PROPERTY(
-            M_PRIV, always_aggressive, true,
-            "Whether or not the guardian always targets Lara; if disabled, it "
-            "must first be shot."),
+            M_PRIV, always_aggressive, false,
+            "Whether or not the guardian gets up at once; if disabled, it "
+            "rests until Lara comes near."),
         OBJECT_PROPERTY(
             M_PRIV, damage, M_DAMAGE, "Damage dealt by the run attack."));
 }
