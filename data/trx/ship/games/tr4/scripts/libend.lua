@@ -2,6 +2,23 @@ local cutscenes = require("tr4.cutscenes")
 
 local VON_CROY_CUTSCENE = 10
 
+-- Flickers firelight across the scene on these frames, as the original game
+-- does.
+local function flicker_fire(frame)
+  if frame < 2360 or frame > 2450 or trx.random.randint(0, 7) < 4 then
+    return
+  end
+  trx.fx.emit_light({
+    pos = { x = 68646, y = -2304, z = 59714 + trx.random.randint(0, 0x3FF) },
+    radius = 15 * 128,
+    color = {
+      r = 192 + trx.random.randint(0, 0x3F),
+      g = 128 + trx.random.randint(0, 0x1F),
+      b = trx.random.randint(0, 0x3F),
+    },
+  })
+end
+
 trx.events.on_game_start(function()
   trx.items[13].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
 end)
@@ -79,4 +96,5 @@ cutscenes.register(VON_CROY_CUTSCENE, {
   on_start = function()
     trx.cutscenes.set_lara_return({ x = 68756, y = 512, z = 56493 }, 983)
   end,
+  on_frame = flicker_fire,
 })
