@@ -179,7 +179,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1000</td><td>Maximum hit points.</td></tr>
-<tr><td><code>always_aggressive</code></td><td colspan="3" align="center">true</td><td>Whether or not the guardian always targets Lara; if disabled, it must first be shot.</td></tr>
+<tr><td><code>always_aggressive</code></td><td colspan="3" align="center">false</td><td>Whether or not the guardian gets up at once; if disabled, it rests until Lara comes near.</td></tr>
 <tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the run attack.</td></tr>
 </tbody>
 </table>
