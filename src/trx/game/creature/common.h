@@ -3,6 +3,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/creature/types.h>
 #include <trx/game/items/enum.h>
+#include <trx/game/lara/enum.h>
 #include <trx/game/sound/ids.h>
 
 #define AI_OBJECT_FLAGS_SPENT 255
@@ -64,6 +65,17 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
 
 void Creature_SpecialKill(
     ITEM *item, int32_t kill_anim, int32_t kill_state, int32_t lara_kill_state);
+
+// Kills Lara in the creature's grip, as TR4 does. The creature plays its kill
+// animation, and Lara plays hers from the creature's position and facing.
+void Creature_KillLara(
+    ITEM *item, int32_t kill_anim, int32_t kill_state,
+    LARA_ANIMATION_ID lara_anim);
+
+// Watches the creature from a fixed camera two sectors in front of it and one
+// sector above it, as TR4 does while a creature kills Lara. The camera holds
+// for one frame.
+void Creature_WatchKill(const ITEM *item);
 void Creature_TestBoxDamage(int16_t item_num);
 
 typedef struct {
