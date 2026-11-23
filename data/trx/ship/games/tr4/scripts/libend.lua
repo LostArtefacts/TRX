@@ -34,6 +34,38 @@ require("tr4.inv_setup").apply({
 })
 
 cutscenes.register(VON_CROY_CUTSCENE, {
+  chat = {
+    {
+      lara = true,
+      ranges = {
+        { 283, 296 },
+        { 305, 603 },
+        { 1244, 1312 },
+        { 1759, 1795 },
+        { 1806, 1848 },
+        { 1878, 1912 },
+        { 1925, 1947 },
+        { 1960, 2000 },
+      },
+    },
+    {
+      actor = 1,
+      node = 21,
+      ranges = {
+        { 963, 1056 },
+        { 1069, 1137 },
+        { 1153, 1204 },
+        { 1339, 1739 },
+        { 2027, 2193 },
+        { 2200, 2333 },
+        { 2368, 2406 },
+      },
+      speech_heads = {
+        trx.catalog.objects.actor_1_speech_head_1,
+        trx.catalog.objects.actor_1_speech_head_2,
+      },
+    },
+  },
   hide = { trx.catalog.objects.door_5 },
   hidden_actors = { 1, 2, 3, 4 },
   actor_cues = {
