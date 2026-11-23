@@ -17,3 +17,6 @@ float FX_Weather_GetSeverity(void);
 
 // Clamps to [0, WEATHER_SEVERITY_MAX].
 void FX_Weather_SetSeverity(float severity);
+// Flashes the sky with lightning at once. It shows only where the level has
+// lightning.
+void FX_Weather_StrikeLightning(void);

@@ -45,3 +45,13 @@ The runtime weather effect the current level shows.
   ```lua
   trx.weather.set(trx.weather.Type.SNOW)
   ```
+
+- <a id="weather.strike_lightning" name="weather.strike_lightning"></a>[lua]`trx.weather.strike_lightning()`  
+  Flashes the sky with a long burst of lightning at once, as the original
+  game does on set frames of some cutscenes. It shows only in a level whose
+  game flow turns lightning on.
+
+  Example:
+  ```lua
+  trx.weather.strike_lightning()
+  ```
