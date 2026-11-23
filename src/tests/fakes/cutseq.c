@@ -66,6 +66,11 @@ void CutSeq_SetActorVisible(const int32_t actor, const bool visible)
 {
 }
 
+void CutSeq_SetActorNodeVisible(
+    const int32_t actor, const int32_t node, const bool visible)
+{
+}
+
 void CutSeq_SetActorNodeMesh(
     const int32_t actor, const int32_t node, const OBJECT_ID object_id,
     const int32_t mesh_idx)
