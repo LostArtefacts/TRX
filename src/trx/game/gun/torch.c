@@ -152,7 +152,6 @@ static void M_CreateItem(const bool thrown)
 
     BurningTorch_SetLit(item, lara->lit_torch);
     BurningTorch_Drop(item);
-    Item_AddSimulated(item_num);
 }
 
 static void M_Release(const bool thrown)
