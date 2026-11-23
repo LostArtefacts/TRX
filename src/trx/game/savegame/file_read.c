@@ -1926,6 +1926,7 @@ RESULT SG_File_LoadLevelState(
     MUST(JSON_POP(io));
 
     MUST(M_ReadSpentAIMarkers(io));
+    MUST(M_LoadSwitchSequence(io));
 
     // The level's statistics are those Lara left it with. A death since then
     // still counts.
