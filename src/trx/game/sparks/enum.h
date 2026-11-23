@@ -16,6 +16,7 @@ enum {
     SPARK_F_ATTACHED_NODE = 0x1000,
     SPARK_F_GREEN         = 0x2000,
     SPARK_F_MIRROR        = 0x4000,
+    SPARK_F_SMOKE         = 0x8000,
     // clang-format on
 };
 

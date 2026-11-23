@@ -317,7 +317,8 @@ static bool M_IsDarkerThan(const SPARK *const spark, const uint8_t value)
 
 // Picks a sparser smoke sprite as the spark grows darker. TR4 uses fewer
 // steps than TR3 and changes later, so its smoke keeps the soft sprites for
-// longer.
+// longer. In TR4, only the sparks marked as smoke change sprite; the others
+// keep the first sprite, as the plain sparks of the original game do.
 static void M_UpdateAltSprite(SPARK *const spark)
 {
     const int32_t base = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
@@ -327,7 +328,9 @@ static void M_UpdateAltSprite(SPARK *const spark)
 
     spark->sprite_obj_id = O_SPARKS_GFX;
     if (g_TRVersion >= 4) {
-        if (M_IsDarkerThan(spark, 24)) {
+        if ((spark->flags & SPARK_F_SMOKE) == 0U) {
+            spark->sprite_idx = base;
+        } else if (M_IsDarkerThan(spark, 24)) {
             spark->sprite_idx = base + 2;
         } else if (M_IsDarkerThan(spark, 80)) {
             spark->sprite_idx = base + 1;
