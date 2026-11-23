@@ -608,7 +608,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.flip_effects" name="catalog.flip_effects"></a>[lua]`trx.catalog.flip_effects` - 73 names
+- <a id="catalog.flip_effects" name="catalog.flip_effects"></a>[lua]`trx.catalog.flip_effects` - 74 names
 
     Every item action a flip effect can trigger.
 
@@ -620,7 +620,7 @@ convert between the two.
 
     <details><summary>Click here to see a list of all symbols.</summary>
 
-    `ACTIVATE_CAMERA`, `ASSAULT_FINISHED`, `ASSAULT_PENALTY_30`,
+    `ACTIVATE_CAMERA`, `ACTIVATE_KEY`, `ASSAULT_FINISHED`, `ASSAULT_PENALTY_30`,
     `ASSAULT_PENALTY_8`, `ASSAULT_RESET`, `ASSAULT_START`, `ASSAULT_STOP`,
     `BOILER`, `BUBBLES`, `CAMERA_SHAKE`, `CHAIN_BLOCK`, `CHANDELIER`,
     `CLEAR_SMALL_BEETLES`, `CURTAIN`, `DROP_SAND`, `DYNAMIC_LIGHT_OFF`,
