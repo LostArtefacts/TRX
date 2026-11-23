@@ -10,8 +10,8 @@
 void LUA_SetColorConstructor(lua_State *L, int idx);
 
 // Pushes a TRX_VALUE onto the Lua stack in its natural Lua shape: a boolean, an
-// integer, a number, an {x,y,z} table, a color, or a string (a null string as
-// nil).
+// integer, a number, an {x,y,z} table, a color, a string (a null string as
+// nil), or a table of integers.
 void LUA_PushValue(lua_State *L, const TRX_VALUE *value);
 
 // The same, for a value read off a member: `owner_idx` and `key_idx` say which
@@ -23,5 +23,6 @@ void LUA_PushMemberValue(
 
 // Reads the argument at `idx` as a value of `type`, the inverse of
 // LUA_PushValue. Raises a Lua error if the argument is the wrong shape. A nil
-// string reads as a null value.
+// string reads as a null value. A list is read into a buffer pushed onto the
+// stack, so the value stays valid until the calling C function returns.
 TRX_VALUE LUA_CheckValue(lua_State *L, int idx, TRX_VALUE_TYPE type);

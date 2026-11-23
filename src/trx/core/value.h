@@ -30,11 +30,19 @@ typedef enum {
     // string storage, validated and labelled through the dynamic enum registry
     // keyed on the token passed as `param`.
     TVT_DYNAMIC_ENUM,
+    // A list of int32 values, held in storage that the supplier owns.
+    TVT_S32_LIST,
 } TRX_VALUE_TYPE;
+
+typedef struct {
+    int32_t count;
+    const int32_t *values;
+} S32_LIST;
 
 // Widened carrier: every integer width rides in as_int and XYZ_16 in as_xyz,
 // so a caller narrows on store by the type alone and never needs a second tag.
-// as_str is borrowed - ownership stays with whoever supplied the string.
+// as_str and as_list are borrowed - ownership stays with whoever supplied the
+// string or the list.
 typedef struct {
     TRX_VALUE_TYPE type;
     union {
@@ -45,6 +53,7 @@ typedef struct {
         RGB_888 as_rgb;
         RGB_F as_rgb_f;
         const char *as_str;
+        S32_LIST as_list;
     };
 } TRX_VALUE;
 
@@ -98,6 +107,12 @@ static inline TRX_VALUE Value_Make_TVT_STRING(const char *value)
     return (TRX_VALUE) { .type = TVT_STRING, .as_str = value };
 }
 
+// Not in the table for the same reason as a string: the values are borrowed.
+static inline TRX_VALUE Value_Make_TVT_S32_LIST(const S32_LIST value)
+{
+    return (TRX_VALUE) { .type = TVT_S32_LIST, .as_list = value };
+}
+
 // The TRX_VALUE carrying `value_`, tagged by the C type of the expression
 // itself. The counterpart of Value_TypeOf for a value rather than a member: a
 // declared default states the value and nothing else, and cannot be tagged as
@@ -115,6 +130,7 @@ static inline TRX_VALUE Value_Make_TVT_STRING(const char *value)
         (value_),                                                              \
          VALUE_PLAIN_TYPES(M_VALUE_MAKER_OF) char *: Value_Make_TVT_STRING,    \
          const char *: Value_Make_TVT_STRING,                                  \
+         S32_LIST: Value_Make_TVT_S32_LIST,                                    \
          default: Value_Make_TVT_S32)(value_))
 
 // Stable machine-readable name, e.g. "S16", "XYZ_32", "ENUM".
@@ -138,19 +154,21 @@ const char *Value_CheckRange(TRX_VALUE_TYPE type, const TRX_VALUE *in);
 void Value_Wrap(TRX_VALUE_TYPE type, TRX_VALUE *value);
 
 // Narrows `in` into the storage at `dst`. Returns nullptr on success or an
-// error message; the range check runs first. String storage is caller-managed,
-// so a string type reports an error rather than writing a borrowed pointer.
+// error message; the range check runs first. String and list storage is
+// caller-managed, so a string or a list type reports an error rather than
+// writing a borrowed pointer.
 const char *Value_WritePtr(TRX_VALUE_TYPE type, void *dst, const TRX_VALUE *in);
 
 // Resolves a string into `out`. `param` is the EnumMap name for TVT_ENUM and
 // the dynamic enum token for TVT_DYNAMIC_ENUM; unused otherwise. A parsed
-// string value borrows `str`. Returns false if the string does not fit.
+// string value borrows `str`. Returns false if the string does not fit, and
+// always for TVT_S32_LIST, which has no text form.
 bool Value_Parse(
     TRX_VALUE_TYPE type, const void *param, const char *str, TRX_VALUE *out);
 
 // Serializes `value` to a static string (see String_FormatStatic). `human`
 // selects a localized enum label over its machine name; `param` is as in
-// Value_Parse.
+// Value_Parse. A list formats as an empty string.
 const char *Value_Format(
     TRX_VALUE_TYPE type, const void *param, const TRX_VALUE *value, bool human);
 

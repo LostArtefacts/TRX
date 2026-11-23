@@ -1,6 +1,7 @@
 #include <trx/core/json/util/value.h>
 
 #include <trx/core/enum_map.h>
+#include <trx/core/memory.h>
 #include <trx/core/strings.h>
 
 #include <stdio.h>
@@ -64,6 +65,15 @@ void JSONValue_Write(
         JSON_ObjectAppendString(
             obj, key, value->as_str != nullptr ? value->as_str : "");
         break;
+
+    case TVT_S32_LIST: {
+        JSON_ARRAY *const arr = JSON_ArrayNew();
+        for (int32_t i = 0; i < value->as_list.count; i++) {
+            JSON_ArrayAppendInt(arr, value->as_list.values[i]);
+        }
+        JSON_ObjectAppendArray(obj, key, arr);
+        break;
+    }
     }
 }
 
@@ -173,6 +183,24 @@ RESULT JSONValue_ReadFrom(
         FAIL_IF(value->type != JSON_TYPE_STRING, "text was expected");
         out->as_str = JSON_ValueGetString(value, nullptr);
         return OK;
+
+    case TVT_S32_LIST: {
+        const JSON_ARRAY *const arr = JSON_ValueAsArray(value);
+        FAIL_IF(arr == nullptr, "a list was expected");
+        const int32_t count = (int32_t)arr->length;
+        int32_t *const values =
+            count > 0 ? Memory_Alloc(count * sizeof(int32_t)) : nullptr;
+        for (int32_t i = 0; i < count; i++) {
+            const JSON_VALUE *const elem = JSON_ArrayGetValue(arr, i);
+            if (elem == nullptr || elem->type != JSON_TYPE_NUMBER) {
+                Memory_Free(values);
+                return FAIL("a list of whole numbers was expected");
+            }
+            values[i] = JSON_ValueGetInt(elem, 0);
+        }
+        out->as_list = (S32_LIST) { .count = count, .values = values };
+        return OK;
+    }
     }
     return FAIL("the value is of no type this reads");
 }
