@@ -3,6 +3,17 @@ local cutscenes = require("tr4.cutscenes")
 local TROOPS_CUTSCENES = { 25, 26 }
 local LEVEL_END_CUTSCENE = 11
 
+-- Takes every running enemy out of the level, as the original game does when
+-- this scene starts, so that none attacks Lara while it plays.
+local function remove_enemies()
+  for _, item in ipairs(trx.items.query:simulated():matches()) do
+    if trx.objects[item.object_id].is_intelligent then
+      item.is_visible = false
+      item:deactivate()
+    end
+  end
+end
+
 trx.events.on_game_start(function()
   trx.objects.animating_13.properties.collidable = false
 end)
@@ -34,4 +45,7 @@ for _, num in ipairs(TROOPS_CUTSCENES) do
   })
 end
 
-cutscenes.register(LEVEL_END_CUTSCENE, { on_end = trx.game.end_level })
+cutscenes.register(LEVEL_END_CUTSCENE, {
+  on_start = remove_enemies,
+  on_end = trx.game.end_level,
+})
