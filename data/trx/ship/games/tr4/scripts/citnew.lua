@@ -6,6 +6,8 @@ local FLAME = trx.catalog.objects.flame_emitter_tr4_wall
 local AMBER_LIGHT = trx.catalog.objects.amber_light
 local AMBER_LIGHT_ROOM = 177
 local AMBER_LIGHT_FRAME = 2980
+-- Both scenes hide the first mesh of this actor, as the original game does.
+local HIDDEN_MESH_ACTOR = 6
 
 local function in_room(object, room_num)
   return trx.items.query:of_object(object):in_room(room_num):matches()
@@ -89,6 +91,7 @@ cutscenes.register(JEAN_YVES_CUTSCENE, {
   },
   on_start = function()
     trx.cutscenes.set_lara_return({ x = 61868, y = 0, z = 44994 }, -16060)
+    trx.cutscenes.set_node_visible(HIDDEN_MESH_ACTOR, 0, false)
     switch_on(FLAME, 169)
     switch_on(FLAME, 184)
   end,
@@ -139,6 +142,7 @@ cutscenes.register(LEVEL_END_CUTSCENE, {
     [1750] = { hide = { 1, 2, 3, 4, 5 } },
   },
   on_start = function()
+    trx.cutscenes.set_node_visible(HIDDEN_MESH_ACTOR, 0, false)
     switch_on(FLAME, 184)
     switch_on(AMBER_LIGHT, AMBER_LIGHT_ROOM)
   end,
