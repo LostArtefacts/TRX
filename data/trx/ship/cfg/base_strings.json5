@@ -924,6 +924,11 @@
             "bare": "Bare",
             "bordered": "Bordered",
         },
+        "stats_transition_style": {
+            "immediate": "Immediate",
+            "tr2": "TR2",
+            "tr3": "TR3",
+        },
         "sunglasses_mode": {
             "off": "Off",
             "opaque": "Opaque",
@@ -1966,6 +1971,10 @@
         "ui.stats_fade_effects": {
             "title": "Stats fade effects",
             "description": "Fine-tunes the fade effects to be enabled or disabled in the end of the level statistics screen. Needs the Fade Effects option to be enabled to work.",
+        },
+        "ui.stats_transition_style": {
+            "title": "Stats transition style",
+            "description": "Controls when and how the end of level statistics appear. Immediate will show them before the fade effect has finished. The other two options will only show them after the fade effect has finished, with TR2 delaying the music cue as well, whereas TR3 plays the music immediately. Needs the Stats Fade Effects option to be enabled to work.",
         },
         "ui.text_scale": {
             "title": "Text scale",

@@ -924,6 +924,11 @@
             "bare": "Simple",
             "bordered": "Con bordes",
         },
+        "stats_transition_style": {
+            "immediate": "\\{review}Inmediato",
+            "tr2": "\\{review}TR2",
+            "tr3": "\\{review}TR3",
+        },
         "sunglasses_mode": {
             "off": "Desactivado",
             "opaque": "Opaco",
@@ -1966,6 +1971,10 @@
         "ui.stats_fade_effects": {
             "title": "Efectos de fundido de estadísticas",
             "description": "Ajusta con precisión los efectos de fundido que se activan o desactivan en la pantalla de estadísticas del final del nivel. Requiere que la opción Efectos de fundido esté activada para funcionar.",
+        },
+        "ui.stats_transition_style": {
+            "title": "\\{review}Estilo de transición",
+            "description": "\\{review}Controla cuándo y cómo se muestran las estadísticas al final del nivel. La opción «Inmediato» las mostrará antes de que termine el efecto de desvanecimiento. Las otras dos opciones solo las mostrarán una vez que haya terminado dicho efecto. En TR2 también se retrasará la reproducción de la música, mientras que en TR3 la música se reproducirá inmediatamente. Para que funcione, es necesario activar la opción «Efectos de desvanecimiento de las estadísticas».",
         },
         "ui.text_scale": {
             "title": "Escala del texto",

@@ -191,6 +191,7 @@ X_CFG_ENUM(rendering.upscaling_filter,                   TEXTURE_FILTER_POINT, T
 X_CFG_ENUM(rendering.vertex_snap_mode,                   VERTEX_SNAP_MODE_DISABLED, VERTEX_SNAP_MODE)
 X_CFG_ENUM(ui.menu_style,                                UI_STYLE_PS1, UI_STYLE)
 X_CFG_ENUM(ui.stats.style,                               STATS_STYLE_BORDERED, STATS_STYLE)
+X_CFG_ENUM(ui.stats_transition_style,                    STATS_TRANSITION_IMMEDIATE, STATS_TRANSITION_STYLE)
 X_CFG_ENUM(visuals.braid_status,                         BRAID_STATUS_ON, BRAID_STATUS)
 X_CFG_ENUM(visuals.sunglasses_mode,                      SUNGLASSES_MODE_OFF, SUNGLASSES_MODE)
 X_CFG_ENUM(visuals.water_tint_mode,                      WATER_TINT_MODE_RESPONSIVE, WATER_TINT_MODE)

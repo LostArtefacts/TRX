@@ -924,6 +924,11 @@
             "bare": "\\{review}Simple",
             "bordered": "\\{review}Encadré",
         },
+        "stats_transition_style": {
+            "immediate": "\\{review}Immédiat",
+            "tr2": "\\{review}TR2",
+            "tr3": "\\{review}TR3",
+        },
         "sunglasses_mode": {
             "off": "\\{review}Désactivé",
             "opaque": "\\{review}Opaque",
@@ -1966,6 +1971,10 @@
         "ui.stats_fade_effects": {
             "title": "\\{review}Effets de fondu des statistiques",
             "description": "\\{review}Affine les effets de fondu à activer ou désactiver dans l'écran des statistiques de fin de niveau. Nécessite que l'option Effets de fondu soit activée pour fonctionner.",
+        },
+        "ui.stats_transition_style": {
+            "title": "\\{review}Style de transition",
+            "description": "\\{review}Détermine quand et comment les statistiques de fin de niveau sont affichées. L'option « Immédiat » les affichera avant la fin de l'effet de fondu. Les deux autres options ne les afficheront qu'une fois l'effet de fondu terminé. Dans TR2, la lecture de la musique sera également retardée, tandis que dans TR3, la musique sera jouée immédiatement. Pour fonctionner, cette option nécessite que l'option « Effets de fondu des statistiques » soit activée.",
         },
         "ui.text_scale": {
             "title": "Échelle de texte",

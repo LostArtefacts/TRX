@@ -14,6 +14,7 @@
         "ui.ammo_counter_location": "bottom_right",
         "ui.healthbar_location": "top_right",
         "ui.airbar_location": "top_right",
+        "ui.stats_transition_style": "tr3",
         "audio.enable_ps1_sfx": true,
         "gameplay.restore_ps1_enemies": true,
         "gameplay.save_crystal_mode": "save_pickup",

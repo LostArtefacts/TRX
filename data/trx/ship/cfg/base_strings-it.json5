@@ -924,6 +924,11 @@
             "bare": "Senza bordi",
             "bordered": "Con bordi",
         },
+        "stats_transition_style": {
+            "immediate": "\\{review}Immediato",
+            "tr2": "\\{review}TR2",
+            "tr3": "\\{review}TR3",
+        },
         "sunglasses_mode": {
             "off": "Disabilitato",
             "opaque": "Opaco",
@@ -1966,6 +1971,10 @@
         "ui.stats_fade_effects": {
             "title": "Dissolvenza statistiche",
             "description": "Abilita o disabilita l'effetto di dissolvenza nella schermata delle statistiche di fine livello. Per funzionare, è necessario che l'opzione \"Effetti di dissolvenza\" sia abilitata.",
+        },
+        "ui.stats_transition_style": {
+            "title": "\\{review}Stile transizione",
+            "description": "\\{review}Controlla quando e come vengono visualizzate le statistiche alla fine del livello. L'opzione 'Immediato' le mostrerà prima che l'effetto di dissolvenza sia terminato. Le altre due opzioni le mostreranno solo dopo il termine dell'effetto di dissolvenza. In TR2 verrà ritardata anche la riproduzione della musica, mentre in TR3 la musica verrà riprodotta immediatamente. Per funzionare, richiede che l'opzione 'Dissolvenza statistiche' sia attivata.",
         },
         "ui.text_scale": {
             "title": "Dimensione testo",

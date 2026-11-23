@@ -3,6 +3,7 @@
 - Fixed Lara using the ladder-to-crouch animation instead of pulling up onto a ledge from a ladder in some cases (regression from 1.3)
 
 **UI**
+- Added an option to change how the end-of-level statistics are presented when fade effects are enabled (Graphics → UI → Stats transition style) (#4260)
 - Fixed a Lua error in the TR4 save and load lists (#7083 / TRX1973)
 
 **Camera**

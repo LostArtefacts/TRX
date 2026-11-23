@@ -924,6 +924,11 @@
             "bare": "\\{review}Einfach",
             "bordered": "\\{review}Mit Rahmen",
         },
+        "stats_transition_style": {
+            "immediate": "\\{review}Unmittelbar",
+            "tr2": "\\{review}TR2",
+            "tr3": "\\{review}TR3",
+        },
         "sunglasses_mode": {
             "off": "\\{review}Aus",
             "opaque": "\\{review}Undurchsichtig",
@@ -1966,6 +1971,10 @@
         "ui.stats_fade_effects": {
             "title": "\\{review}Statistik-Ausblend-Effekte",
             "description": "\\{review}Feinabstimmung, ob die Ausblend-Effekte im Statistikbildschirm am Ende des Levels aktiviert oder deaktiviert sind. Die Option Ausblend-Effekte muss aktiviert sein, damit dies funktioniert.",
+        },
+        "ui.stats_transition_style": {
+            "title": "\\{review}Statistikstil",
+            "description": "\\{review}Legt fest, wann und wie die Statistiken am Ende eines Levels angezeigt werden. Die Option „Sofort“ zeigt sie an, bevor der Überblendeffekt abgeschlossen ist. Die beiden anderen Optionen zeigen sie erst an, nachdem der Überblendeffekt abgeschlossen ist. In TR2 wird dabei auch die Musikwiedergabe verzögert, während die Musik in TR3 sofort abgespielt wird. Damit diese Funktion funktioniert, muss die Option „Statistik-Überblendeffekte“ aktiviert sein.",
         },
         "ui.text_scale": {
             "title": "Textgröße",

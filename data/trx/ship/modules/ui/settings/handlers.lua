@@ -347,6 +347,11 @@ local HANDLERS = {
     offered = background_style_offered,
   },
   ["ui.stats_fade_effects"] = { available = fades },
+  ["ui.stats_transition_style"] = {
+    available = function()
+      return get("ui.stats_fade_effects") and fades()
+    end,
+  },
   ["ui.background_blur"] = { slow = 5, fast = 10 },
   ["visuals.enable_exit_fade_effects"] = { available = fades },
   ["ui.bar_scale"] = { slow = 1, fast = 5, available = bars },
