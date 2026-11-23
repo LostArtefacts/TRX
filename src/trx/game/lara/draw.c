@@ -609,7 +609,9 @@ bool Lara_Draw(const ITEM *const item)
     const ITEM *const lara_item = Lara_GetItem();
     m_IsLara = item == lara_item;
     if (m_IsLara) {
-        Output_Water_ObserveLaraFrame();
+        if (!Output_IsMirrored()) {
+            Output_Water_ObserveLaraFrame();
+        }
         M_UpdateLookAlpha(item);
     }
     if (m_IsLara
