@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "\\{review}Gardien taurin",
         },
+        "burning_floor": {
+            "name": "\\{review}Sol enflammé",
+        },
         "burning_torch_item": {
             "name": "\\{review}Torche enflammée",
         },

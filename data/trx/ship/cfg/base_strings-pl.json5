@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "\\{review}Byczy strażnik",
         },
+        "burning_floor": {
+            "name": "\\{review}Płonąca podłoga",
+        },
         "burning_torch_item": {
             "name": "\\{review}Płonąca pochodnia",
         },

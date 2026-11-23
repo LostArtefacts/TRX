@@ -2461,6 +2461,9 @@
         "bull_guardian": {
             "name": "\\{review}Вартовий-бик",
         },
+        "burning_floor": {
+            "name": "\\{review}Палаюча підлога",
+        },
         "burning_torch_item": {
             "name": "\\{review}Палаючий смолоскип",
         },

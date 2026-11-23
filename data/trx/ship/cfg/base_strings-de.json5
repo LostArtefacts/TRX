@@ -2449,6 +2449,9 @@
         "bull_guardian": {
             "name": "\\{review}Stierwächter",
         },
+        "burning_floor": {
+            "name": "\\{review}Brennender Boden",
+        },
         "burning_torch_item": {
             "name": "\\{review}Brennende Fackel",
         },

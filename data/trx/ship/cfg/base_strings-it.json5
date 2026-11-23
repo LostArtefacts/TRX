@@ -2461,6 +2461,9 @@
         "bull_guardian": {
             "name": "\\{review}Guardiano taurino",
         },
+        "burning_floor": {
+            "name": "\\{review}Pavimento in fiamme",
+        },
         "burning_torch_item": {
             "name": "\\{review}Torcia Accesa",
         },
