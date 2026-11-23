@@ -1306,8 +1306,8 @@ bool Creature_Animate(
                 } else {
                     item->rot.y += 2048;
                 }
+                return true;
             }
-            return true;
         }
     }
 
