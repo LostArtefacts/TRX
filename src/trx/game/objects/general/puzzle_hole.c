@@ -70,8 +70,9 @@ static OBJECT_BOUNDS M_GetControlledBounds(const ITEM *const item)
 
 static OBJECT_BOUNDS M_Bounds(const ITEM *const item)
 {
-    return g_Config.gameplay.enable_walk_to_items ? M_GetControlledBounds(item)
-                                                  : m_DefaultBounds;
+    return g_Config.gameplay.enable_walk_to_items || g_TRVersion == 4
+        ? M_GetControlledBounds(item)
+        : m_DefaultBounds;
 }
 
 static XYZ_32 M_GetControlledPosition(const ITEM *const item)
@@ -120,7 +121,10 @@ static bool M_IsUsable(const int16_t item_num)
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    Lara_AlignPosition(receptacle_item, &m_DefaultPosition);
+    const XYZ_32 position = g_TRVersion == 4
+        ? M_GetControlledPosition(receptacle_item)
+        : m_DefaultPosition;
+    Lara_AlignPosition(receptacle_item, &position);
     Lara_AnimateUntil(lara_item, LS(LS_USE_PUZZLE));
     lara_item->goal_anim_state = LS(LS_STOP);
     lara->gun_status = LGS_HANDS_BUSY;
