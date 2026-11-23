@@ -770,6 +770,7 @@ common_sources = [
   'trx/game/objects/general/gong_bonger.c',
   'trx/game/objects/general/henchman_jeep.c',
   'trx/game/objects/general/horus_statue.c',
+  'trx/game/objects/general/jean_yves.c',
   'trx/game/objects/general/keyhole.c',
   'trx/game/objects/general/kill_all_triggered.c',
   'trx/game/objects/general/lara_alarm.c',
