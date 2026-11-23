@@ -270,6 +270,7 @@ X_OBJ_NAME_DEFINE(O_JEAN_YVES,            "Jean-Yves")
 X_OBJ_NAME_DEFINE(O_HORUS,                "Horus")
 X_OBJ_NAME_DEFINE(O_DEMIGOD_3,            "Demigod 3")
 X_OBJ_NAME_DEFINE(O_HAMMERHEAD,           "Hammerhead")
+X_OBJ_NAME_DEFINE(O_SOLDIER_1,            "Soldier 1")
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "Wall-mounted Blade")

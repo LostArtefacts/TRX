@@ -3866,6 +3866,9 @@
         "snow_sprite": {
             "name": "Snowmobile Wake",
         },
+        "soldier_1": {
+            "name": "\\{review}Soldat 1",
+        },
         "sophia": {
             "name": "\\{review}Sophia",
         },

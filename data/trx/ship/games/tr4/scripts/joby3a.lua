@@ -1,3 +1,5 @@
+trx.creatures.add_ally(trx.catalog.objects.soldier_1)
+
 require("tr4.inv_setup").apply({
   key_item_11 = { scale = 1200, offset_y = 5, rot_x = -90 },
   key_item_12 = { scale = 768, offset_y = 4, rot_x = -90 },
