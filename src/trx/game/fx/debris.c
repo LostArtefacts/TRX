@@ -180,9 +180,11 @@ static void M_TriggerSmoke(const XYZ_32 pos)
     spark->dst_color.r = (Random_GetControl() & 0x1F) + 64;
     spark->dst_color.g = spark->dst_color.r;
     spark->dst_color.b = spark->dst_color.r;
-    spark->col_fade_speed = 4;
-    spark->fade_to_black = 24 - (Random_GetControl() & 7);
-    spark->life = (Random_GetControl() & 7) + 16;
+    // TR4 makes this a smoke spark, which loses two points of life per tick.
+    // The life and the fades are therefore half of the original values.
+    spark->col_fade_speed = 2;
+    spark->fade_to_black = (24 - (Random_GetControl() & 7)) >> 1;
+    spark->life = ((Random_GetControl() & 7) + 48 + 1) >> 1;
     spark->s_life = spark->life;
 
     spark->draw_type = DRAW_BLEND_ADD;
