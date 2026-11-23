@@ -1,6 +1,19 @@
 local cutscenes = require("tr4.cutscenes")
 
 local DEMIGOD_CUTSCENE = 22
+local DEMIGOD_ROOM = 39
+
+-- Starts the demigods once the scene that shows them ends, as the original
+-- game does.
+local function start_fight()
+  local items = trx.items.query
+    :of_object(trx.catalog.objects.demigod_3)
+    :in_room(DEMIGOD_ROOM)
+    :matches()
+  for _, item in ipairs(items) do
+    item:trigger()
+  end
+end
 
 local function open_doors()
   for _, item in
@@ -73,5 +86,6 @@ cutscenes.register(DEMIGOD_CUTSCENE, {
   end,
   on_end = function()
     open_doors()
+    start_fight()
   end,
 })
