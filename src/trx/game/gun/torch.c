@@ -236,9 +236,8 @@ static void M_Burn(void)
         return;
     }
 
-    XYZ_32 pos = { .x = -32, .y = 64, .z = 256 };
-    if (g_Config.visuals.enable_fire_lighting
-        && Lara_GetMeshPos(LM_HAND_L, &pos)) {
+    XYZ_32 pos;
+    if (g_Config.visuals.enable_fire_lighting && Gun_Torch_GetFlamePos(&pos)) {
         const RGB_888 color = {
             .r = (Random_GetControl() & 0x3F) + 192,
             .g = (Random_GetControl() & 0x1F) + 96,
@@ -353,6 +352,15 @@ void Gun_Torch_FireCollision(
         M_StartLighting(item_num, lara_item);
     }
     M_LightFire(item_num, lara_item);
+}
+
+bool Gun_Torch_GetFlamePos(XYZ_32 *const out_pos)
+{
+    if (!Lara_GetLaraInfo()->lit_torch) {
+        return false;
+    }
+    *out_pos = (XYZ_32) { .x = -32, .y = 64, .z = 256 };
+    return Lara_GetMeshPos(LM_HAND_L, out_pos);
 }
 
 void Gun_Torch_Take(const bool is_lit)

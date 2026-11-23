@@ -210,6 +210,10 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="2.33" description="The number of seconds the firehead blows flames for before resetting its animation and starting again." displayName="Blow Time" internalName="blow_time" minValue="0" type="Float" />
     </moveable>
+    <!--placeholder for O_FIRE_ROPE-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="false" description="Whether the rope sets off its triggers, with the sound of a falling boulder, as soon as it catches fire, rather than once it has burnt away." displayName="Triggers On Light" internalName="triggers_on_light" type="Bool" />
+    </moveable>
     <!--placeholder for O_FLAME_EMITTER_SIDE-->
     <moveable id="-1">
         <property category="TRX" defaultValue="2" description="Interval between flame bursts, in seconds." displayName="Interval" internalName="interval" minValue="0" type="Float" />

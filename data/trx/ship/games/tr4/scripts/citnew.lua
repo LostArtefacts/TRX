@@ -152,3 +152,7 @@ cutscenes.register(LEVEL_END_CUTSCENE, {
 trx.cutscenes[LEVEL_END_CUTSCENE]:on_end(function()
   trx.inventory.set_count(trx.catalog.objects.quest_item_1, 1)
 end)
+
+trx.events.on_game_start(function()
+  trx.items[5].properties.triggers_on_light = true
+end)

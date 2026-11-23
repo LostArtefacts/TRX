@@ -2773,6 +2773,9 @@
         "fire_head": {
             "name": "Fire Head",
         },
+        "fire_rope": {
+            "name": "Fire Rope",
+        },
         "fish_mutant": {
             "name": "Mutant Fish",
         },

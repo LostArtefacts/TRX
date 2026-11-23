@@ -2746,6 +2746,9 @@
         "fire_head": {
             "name": "Ognista głowa",
         },
+        "fire_rope": {
+            "name": "\\{review}Płonąca lina",
+        },
         "fish_mutant": {
             "name": "Ryba mutant|Zmutowana ryba",
         },

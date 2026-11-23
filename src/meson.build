@@ -761,6 +761,7 @@ common_sources = [
   'trx/game/objects/general/earthquake.c',
   'trx/game/objects/general/expanding_block.c',
   'trx/game/objects/general/final_cutscene.c',
+  'trx/game/objects/general/fire_rope.c',
   'trx/game/objects/general/flare_item.c',
   'trx/game/objects/general/floor_switch.c',
   'trx/game/objects/general/fuse_box.c',

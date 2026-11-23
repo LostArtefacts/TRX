@@ -2746,6 +2746,9 @@
         "fire_head": {
             "name": "\\{review}Feuerkopf",
         },
+        "fire_rope": {
+            "name": "\\{review}Brennendes Seil",
+        },
         "fish_mutant": {
             "name": "Fisch Mutant",
         },

@@ -213,6 +213,10 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="300" description="Damage dealt while Lara is touching the falling ceiling." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_FIRE_ROPE-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="false" description="Whether the rope sets off its triggers, with the sound of a falling boulder, as soon as it catches fire, rather than once it has burnt away." displayName="Triggers On Light" internalName="triggers_on_light" type="Bool" />
+    </moveable>
     <!--placeholder for O_FLOOR_BLADE..O_ROOF_BLADE-->
     <moveable id="-1">
         <property category="TRX" defaultValue="20" description="Damage dealt when Lara touches the blades." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />

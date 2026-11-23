@@ -2758,6 +2758,9 @@
         "fire_head": {
             "name": "\\{review}Вогняна голова",
         },
+        "fire_rope": {
+            "name": "\\{review}Палаюча мотузка",
+        },
         "fish_mutant": {
             "name": "\\{review}Риба-мутант",
         },

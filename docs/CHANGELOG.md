@@ -87,6 +87,7 @@
 - Added the cutscene with the demigods in Cleopatra's Palaces opening the doors as it ends (TRX2078)
 - Added Hammerhead control (TRX2075)
 - Added Burning Floor control, which catches fire from a burning torch lying on it (TRX2048)
+- Added Fire Rope control, which Lara burns through with her torch (TRX2048)
 - Changed the start point an end-level trigger picks in the next level to count all of that level's AI objects, as in the original game, rather than only Lara's start positions
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
