@@ -77,6 +77,7 @@
 - Added the puzzle slots that play a cutscene or a special animation, such as the harp in The Lost Library and the shovel in The Sphinx Complex (TRX2049)
 - Added Wraith control (TRX1995)
 - Added the Mine Detonator Body appearing after the cutscene with the soldier in Street Bazaar (TRX2078)
+- Added Jean-Yves in Alexandria giving the hint for how far Lara has got (TRX2078)
 - Changed the start point an end-level trigger picks in the next level to count all of that level's AI objects, as in the original game, rather than only Lara's start positions
 - Fixed certain triggers in room 155 of Sacred Lake never activating the intended crocodile, depending on the path Lara takes (OG bug) (TRX1972)
 - Fixed Lara's jeep closing gates 77 and 78 in KV5 after loading a save, potentially locking out the enemy jeep (TRX1977, regression from 1.12)
