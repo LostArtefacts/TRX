@@ -25,6 +25,8 @@
 #define M_LAST_MESH       4
 #define M_DEBRIS          (-24)
 #define M_LAST_DEBRIS     (-32)
+#define M_LIGHT_START     127
+#define M_LIGHT_STEP_TIME 6
 // clang-format on
 
 typedef enum {
@@ -43,6 +45,9 @@ typedef struct {
 typedef struct {
     int32_t timer;
     int32_t fades[M_FIRE_SIZES];
+    // How bright the floor stays while it burns, from 127 when it catches
+    // fire down to 52. 0 keeps its full light.
+    int32_t light;
 } M_PRIV;
 
 static const M_FIRE m_Fires[] = {
@@ -83,6 +88,7 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     MUST(JSON_READ_OPT(io, "fade_small", &p->fades[M_FIRE_SMALL]));
     MUST(JSON_READ_OPT(io, "fade_medium", &p->fades[M_FIRE_MEDIUM]));
     MUST(JSON_READ_OPT(io, "fade_big", &p->fades[M_FIRE_BIG]));
+    MUST(JSON_READ_OPT(io, "light", &p->light));
     return OK;
 }
 
@@ -93,6 +99,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "fade_small", p->fades[M_FIRE_SMALL]);
     JSONW_WRITE(io, "fade_medium", p->fades[M_FIRE_MEDIUM]);
     JSONW_WRITE(io, "fade_big", p->fades[M_FIRE_BIG]);
+    JSONW_WRITE(io, "light", p->light);
 }
 
 static bool M_IsTorchOnFloor(const ITEM *const item, const ITEM *const torch)
@@ -188,6 +195,7 @@ static void M_Spread(M_PRIV *const p)
         CLAMPG(p->fades[i], M_FADE_MAX);
     }
     p->timer++;
+    p->light = M_LIGHT_START - p->timer / M_LIGHT_STEP_TIME;
 }
 
 // Returns whether every fire has died down.
@@ -235,9 +243,21 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+// Darkens the floor while it burns. The light that is left stays when Lara
+// sets off the collapse herself, as in the original game.
+static float M_GetAmbientScale(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    if (p->light == 0) {
+        return 1.0f;
+    }
+    return (p->light + 1) / 128.0f;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->get_ambient_scale_func = M_GetAmbientScale;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
