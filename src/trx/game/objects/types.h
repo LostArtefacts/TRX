@@ -141,6 +141,9 @@ typedef struct OBJECT {
     bool (*can_be_projectile_target_func)(const ITEM *item);
     bool (*can_be_exploded_func)(const ITEM *item);
     int32_t (*get_mesh_index_func)(const ITEM *item, int32_t mesh_idx);
+    // Returns the factor that the TR4 ambient light of the item is scaled by,
+    // after the lights of its rooms have changed it. 1 keeps the light.
+    float (*get_ambient_scale_func)(const ITEM *item);
     // Reads the dashboard of a vehicle that has one.
     void (*dashboard_func)(const ITEM *item, VEHICLE_DASHBOARD *out);
 

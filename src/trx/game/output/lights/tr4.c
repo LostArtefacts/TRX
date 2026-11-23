@@ -136,6 +136,7 @@ static const ITEM *m_LooseLightKeys[M_MAX_LOOSE_LIGHTS] = {};
 static M_ITEM_LIGHT m_LooseLights[M_MAX_LOOSE_LIGHTS] = {};
 static M_ITEM_LIGHT *m_CurrentItemLight = nullptr;
 static bool m_CurrentIsProp = false; // the OG SetupLight_thing
+static float m_CurrentAmbientScale = 1.0f;
 static bool m_CurrentHasList = false;
 static bool m_InventoryMode = false;
 
@@ -650,6 +651,17 @@ static M_ITEM_LIGHT *M_GetItemLight(const ITEM *const item)
     return M_GetLooseItemLight(item);
 }
 
+static float M_GetAmbientScale(const ITEM *const item)
+{
+    if (item == nullptr) {
+        return 1.0f;
+    }
+    const OBJECT *const obj = Object_Get(item->object_id);
+    return obj->get_ambient_scale_func != nullptr
+        ? obj->get_ambient_scale_func(item)
+        : 1.0f;
+}
+
 static void M_PrepareItemLight(M_ITEM_LIGHT *const il)
 {
     if (!il->used) {
@@ -687,6 +699,7 @@ static void M_CalculateItemLighting(
     m_CurrentIsProp = item != nullptr
         && Catalog_IDToSlot(CATALOG_OBJECTS, item->object_id, -1)
             >= M_FIRST_PROP_SLOT;
+    m_CurrentAmbientScale = M_GetAmbientScale(item);
     m_CurrentHasList = true;
 
     M_SetScalarFallback(il->ambient);
@@ -721,6 +734,7 @@ static void M_CalculateLight(const XYZ_32 pos, const int16_t room_num)
 
     m_CurrentItemLight = il;
     m_CurrentIsProp = false;
+    m_CurrentAmbientScale = 1.0f;
     m_CurrentHasList = true;
 
     M_SetScalarFallback(il->ambient);
@@ -753,6 +767,9 @@ static void M_FillInstanceLight(OUTPUT_LIGHT_INFO *const info)
                 M_StageLight(&lights[i], l == il->cur, &list);
             }
         }
+    }
+    for (int32_t i = 0; i < 3; i++) {
+        list.ambient[i] *= m_CurrentAmbientScale;
     }
     M_StageDynamicLights(&list);
 
