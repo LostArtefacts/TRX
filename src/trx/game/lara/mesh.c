@@ -16,9 +16,10 @@ static LARA_GUN_TYPE M_DetermineHolsterGun(void)
         return lara_info->holsters_gun_type;
     }
     // What she is holding goes back into her holsters ahead of anything else,
-    // so long as it is small enough to fit in them.
+    // so long as it is a weapon that is stowed there.
     if (lara_info->gun_type != LGT_UNARMED
-        && !Gun_IsRifleType(lara_info->gun_type)) {
+        && Gun_Registry_Get(lara_info->gun_type)->stow_place
+            == STOW_PLACE_HOLSTER) {
         return lara_info->gun_type;
     }
     return Gun_GetHolsterChoice(Inv_GetState());
