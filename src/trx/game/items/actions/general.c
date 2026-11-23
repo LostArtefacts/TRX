@@ -18,6 +18,11 @@ static void M_ActivateCamera(ITEM *const item)
     Room_ArmKeyTrigger(KTP_CAMERA);
 }
 
+static void M_ActivateKey(ITEM *const item)
+{
+    Room_ArmKeyTrigger(KTP_ITEMS);
+}
+
 static void M_AssaultStart(ITEM *const item)
 {
     Gym_TrackManager_Start(GYM_TRACK_ASSAULT);
@@ -75,6 +80,7 @@ static void M_RacetrackFinished(ITEM *const item)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FINISH_LEVEL, M_FinishLevel)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLIP_MAP, M_FlipMap)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ACTIVATE_CAMERA, M_ActivateCamera)
+REGISTER_ITEM_ACTION(ITEM_ACTION_ACTIVATE_KEY, M_ActivateKey)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_RESET, M_AssaultReset)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_STOP, M_AssaultStop)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_START, M_AssaultStart)

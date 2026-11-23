@@ -106,6 +106,8 @@ typedef enum {
     KTP_ALL,
     // Fires every command except the item commands.
     KTP_CAMERA,
+    // Fires every command except the camera and flyby commands.
+    KTP_ITEMS,
 } KEY_TRIGGER_PART;
 
 typedef enum {

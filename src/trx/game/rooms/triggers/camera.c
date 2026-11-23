@@ -13,7 +13,7 @@ static void M_HandleCamera(
     const TRIGGER_CAMERA_DATA *const cam_data =
         (TRIGGER_CAMERA_DATA *)cmd->parameter;
     OBJECT_VECTOR *const camera = Camera_GetFixedObject(cam_data->camera_num);
-    if ((camera->flags & FCF_ONE_SHOT) != 0) {
+    if (status->key_part == KTP_ITEMS || (camera->flags & FCF_ONE_SHOT) != 0) {
         return;
     }
 
@@ -81,6 +81,10 @@ static void M_HandleFlyby(
     const TRIGGER *const trigger, const TRIGGER_CMD *const cmd,
     TRIGGER_STATUS *const status)
 {
+    if (status->key_part == KTP_ITEMS) {
+        return;
+    }
+
     if (Room_IsAntiTrigger(trigger->type)) {
         FlybyMode_Deactivate();
         return;
