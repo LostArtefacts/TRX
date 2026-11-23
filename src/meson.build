@@ -631,6 +631,7 @@ common_sources = [
   'trx/game/objects/creatures/bat_tr4.c',
   'trx/game/objects/creatures/bear.c',
   'trx/game/objects/creatures/big_eel.c',
+  'trx/game/objects/creatures/big_scorpion.c',
   'trx/game/objects/creatures/big_spider.c',
   'trx/game/objects/creatures/bird.c',
   'trx/game/objects/creatures/bird_guardian.c',

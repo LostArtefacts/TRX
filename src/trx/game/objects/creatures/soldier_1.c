@@ -1,7 +1,10 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/creatures/big_scorpion.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 
@@ -18,6 +21,8 @@
 #define M_SHOT_DELAY     5
 #define M_BLIND_TIME     100
 #define M_OCB_WRESTLING  1
+#define M_SCORPION_WAIT  80
+#define M_GRIP_FRAME     37
 // clang-format on
 
 typedef enum {
@@ -53,6 +58,7 @@ typedef enum {
 
 typedef struct {
     int32_t damage;
+    int16_t scorpion_wait;
 } M_PRIV;
 
 static const CREATURE_GUN m_Gun = {
@@ -66,6 +72,19 @@ static int32_t M_GetOCB(const ITEM *const item)
         return 0;
     }
     return value.as_int;
+}
+
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    MUST(JSON_READ_OPT(io, "scorpion_wait", &p->scorpion_wait));
+    return OK;
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "scorpion_wait", p->scorpion_wait);
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -117,10 +136,40 @@ static bool M_IsFollowDone(
         && (soldier->reached_goal || lara_dist > M_WALK_RANGE);
 }
 
+static bool M_DieToScorpion(ITEM *const item)
+{
+    const CREATURE *const soldier = item->creature_data;
+    M_PRIV *const p = item->priv;
+    ITEM *const scorpion = soldier->enemy;
+    if (scorpion == nullptr || scorpion->object_id != O_BIG_SCORPION
+        || p->scorpion_wait >= M_SCORPION_WAIT) {
+        return false;
+    }
+
+    if (!BigScorpion_IsKilling(scorpion)) {
+        p->scorpion_wait++;
+        return true;
+    }
+
+    const int16_t frame =
+        item->current_anim_state == M_STATE_WRESTLE ? M_GRIP_FRAME : 0;
+    Item_SwitchToAnim(item, M_ANIM_SCORPION_DEATH, frame);
+    item->current_anim_state = M_STATE_SCORPION_DEATH;
+    item->goal_anim_state = M_STATE_SCORPION_DEATH;
+    item->pos = scorpion->pos;
+    item->rot = scorpion->rot;
+    BigScorpion_EndWrestle(scorpion);
+    return true;
+}
+
 static void M_Die(ITEM *const item)
 {
     if (item->current_anim_state == M_STATE_DEATH
         || item->current_anim_state == M_STATE_SCORPION_DEATH) {
+        return;
+    }
+
+    if (M_DieToScorpion(item)) {
         return;
     }
 
@@ -394,6 +443,8 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = M_PIVOT;
 
     obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->intelligent = true;
     obj->save_flags = true;
     obj->save_anim = true;

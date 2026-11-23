@@ -2395,6 +2395,9 @@
         "big_pod": {
             "name": "Guscio Grande",
         },
+        "big_scorpion": {
+            "name": "\\{review}Scorpione gigante",
+        },
         "big_spider": {
             "name": "Ragno Gigante",
         },

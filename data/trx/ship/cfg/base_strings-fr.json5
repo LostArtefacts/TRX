@@ -2383,6 +2383,9 @@
         "big_pod": {
             "name": "Gros gousse",
         },
+        "big_scorpion": {
+            "name": "\\{review}Grand scorpion",
+        },
         "big_spider": {
             "name": "\\{review}Géante araignée",
         },
