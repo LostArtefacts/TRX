@@ -140,6 +140,7 @@
 - Fixed the Horus statue not changing during the final cutscene of the first Temple of Horus level (TRX2101)
 - Fixed characters' mouths not moving while they talk in some cutscenes, such as in Hall of Demetrius, Street Bazaar, Citadel Gate and Citadel (TRX2102)
 - Fixed the firelight missing from the cutscenes in Hall of Demetrius and Citadel Gate (TRX2102)
+- Fixed the lightning flash missing from a cutscene in The Sphinx Complex (TRX2102)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)

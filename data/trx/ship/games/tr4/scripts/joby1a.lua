@@ -3,6 +3,8 @@ local cutscenes = require("tr4.cutscenes")
 local DIG_CUTSCENE = 1
 local DIG_END_CUTSCENE = 2
 local DIG_FLIP_GROUP = 0
+local LIGHTNING_CUTSCENE = 3
+local LIGHTNING_FRAME = 1890
 
 local function hold_shovel()
   trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_L, trx.lara.ExtraMesh.SHOVEL)
@@ -56,4 +58,8 @@ cutscenes.register(DIG_END_CUTSCENE, {
   on_end = function()
     trx.lara.clear_equipment(trx.lara.Mesh.HAND_L)
   end,
+})
+
+cutscenes.register(LIGHTNING_CUTSCENE, {
+  frames = { [LIGHTNING_FRAME] = trx.weather.strike_lightning },
 })
