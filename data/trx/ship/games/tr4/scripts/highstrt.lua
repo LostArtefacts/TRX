@@ -50,6 +50,7 @@ cutscenes.register(LEVEL_END_CUTSCENE, {
   hide = {
     trx.catalog.objects.animating_1,
     trx.catalog.objects.animating_5,
+    trx.catalog.objects.motorbike,
   },
   hidden_actors = { 3, 4, 5, 6 },
   actor_cues = {
