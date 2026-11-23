@@ -105,6 +105,7 @@
 - Fixed the horizon fog, lightning, screen flashes and some sparks looking too dark with the flat lighting model (TRX2097)
 - Fixed smoke looking patchy rather than soft, such as from guns and sprinklers (TRX2106)
 - Fixed smoke looking patchy rather than soft, such as from guns and sprinklers (TRX2106)
+- Fixed sparks and smoke staying bright in the distance instead of fading out with the fog (TRX2107)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
