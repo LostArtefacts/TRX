@@ -49,6 +49,14 @@ void Camera_UpdateDynamicFixedObject(const XYZ_32 pos, const int16_t room_num)
     camera->data = room_num;
 }
 
+void Camera_UseForcedFixed(const XYZ_32 pos, const int16_t room_num)
+{
+    Camera_UpdateDynamicFixedObject(pos, room_num);
+    g_Camera.num = Camera_GetDynamicFixedObjectIdx();
+    g_Camera.type = CAM_FIXED;
+    g_Camera.flags = CF_FOLLOW_CENTRE;
+}
+
 OBJECT_VECTOR *Camera_GetFixedObject(const int32_t object_idx)
 {
     if (m_FixedObjects == nullptr) {

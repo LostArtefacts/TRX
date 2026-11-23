@@ -93,10 +93,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 static void M_AssertCamera(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
-    Camera_UpdateDynamicFixedObject(p->cam_pos, item->room_num);
-    g_Camera.num = Camera_GetDynamicFixedObjectIdx();
-    g_Camera.type = CAM_FIXED;
-    g_Camera.flags = CF_FOLLOW_CENTRE;
+    Camera_UseForcedFixed(p->cam_pos, item->room_num);
 }
 
 static bool M_IsPushSoundFrame(const ITEM *const lara_item, const int16_t anim)
