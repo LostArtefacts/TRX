@@ -134,6 +134,19 @@ typedef struct {
     int16_t *object_ids;
 } GF_DROP_ITEM_DATA;
 
+// Places the camera that watches Lara die on the ground beside a train. The
+// camera follows Lara along the X axis. Its Z position depends on where Lara
+// lands: mid_z between min_z and max_z, near_z at or below min_z and far_z at
+// or above max_z.
+typedef struct {
+    bool enabled;
+    int32_t min_z;
+    int32_t max_z;
+    int32_t near_z;
+    int32_t mid_z;
+    int32_t far_z;
+} GF_TRAIN_DEATH_CAMERA;
+
 typedef struct {
     int32_t num;
     GF_LEVEL_TYPE type;
@@ -154,6 +167,7 @@ typedef struct {
     WEATHER_TYPE weather_type;
     bool water_particles;
     int32_t train_ground;
+    GF_TRAIN_DEATH_CAMERA train_death_camera;
     int32_t pulse_flip_group;
 
     struct {

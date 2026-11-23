@@ -27,7 +27,7 @@
 **Level and game data**
 - Added a `remove_item` game flow sequence event, which takes a given item from Lara's inventory as a level starts (TRX2010)
 - Added `door_9` - `door_12` and `trapdoor_4` - `trapdoor_12` for custom levels (TRX2026)
-- Added a `train_ground` game flow level property, which sets the height of the ground beside a moving train. Enemies stay off this ground (TRX2025)
+- Added `train_ground` and `train_death_camera` game flow level properties, which set the height of the ground beside a moving train and the camera that shows Lara die on it. Enemies stay off this ground (TRX2025, TRX2050)
 - Added support for `display_picture` sequence events without a picture, which show a black screen for a script to draw on (#6929 / TRX1810)
 - Added a `respawn` property to pickups, which brings a pickup back each time Lara has none of it (TRX532)
 - Added a `setup_mirror` game flow sequence event, which makes a room show Lara's reflection in one of its walls (TRX688)

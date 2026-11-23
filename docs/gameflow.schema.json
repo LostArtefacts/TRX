@@ -249,6 +249,35 @@
           "type": "integer",
           "description": "Marks the level as set on a moving train and gives the height of the ground beside it, with 256 representing 1 click and 1024 representing 1 sector. The game draws the ground and the track at this height, with the rocks and cliffs of Desert Railroad beside them, and moves them at the setup_uv_rotate speed. Enemies do not walk onto the ground, and Lara and henchmen that fall onto it die. Omit for a level without a train."
         },
+        "train_death_camera": {
+          "type": "object",
+          "description": "Places the camera that watches Lara die on the ground beside a train. The camera follows Lara along the X axis. Between min_z and max_z, it is at mid_z, 384 units above the ground. At or below min_z, it is at near_z, and at or above max_z, it is at far_z, both 1024 units above the ground. Omit to keep the normal camera when Lara dies there.",
+          "properties": {
+            "min_z": {
+              "type": "integer"
+            },
+            "max_z": {
+              "type": "integer"
+            },
+            "near_z": {
+              "type": "integer"
+            },
+            "mid_z": {
+              "type": "integer"
+            },
+            "far_z": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "min_z",
+            "max_z",
+            "near_z",
+            "mid_z",
+            "far_z"
+          ],
+          "additionalProperties": false
+        },
         "pulse_flip_group": {
           "type": "integer",
           "minimum": 0,

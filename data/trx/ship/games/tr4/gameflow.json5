@@ -282,6 +282,7 @@
             "music_track": 106,
             "lara_outfit": "tr4_classic",
             "train_ground": 0,
+            "train_death_camera": {"min_z": 51900, "max_z": 53554, "near_z": 50176, "mid_z": 52736, "far_z": 55296},
             "fog_start": 12.0,
             "fog_end": 24.0,
             "fog_color": "#D2B063",

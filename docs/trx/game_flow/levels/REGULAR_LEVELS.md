@@ -163,6 +163,50 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
+    <td rowspan="6"><code>train_death_camera</code></td>
+    <td rowspan="6">Object</td>
+    <td colspan="2">
+      Places the camera that watches Lara die on the ground beside a train
+      (see <code>train_ground</code>). The camera follows Lara along the X
+      axis. Its Z position depends on where Lara lands. Omit to keep the
+      normal camera when Lara dies there.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>min_z</code></td>
+    <td>
+      The start of the track along the Z axis, in world units.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>max_z</code></td>
+    <td>
+      The end of the track along the Z axis. Must be more than
+      <code>min_z</code>.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>near_z</code></td>
+    <td>
+      The camera position when Lara is at or below <code>min_z</code>. The
+      camera is one sector above the ground.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>mid_z</code></td>
+    <td>
+      The camera position when Lara is between <code>min_z</code> and
+      <code>max_z</code>. The camera is 384 units above the ground.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>far_z</code></td>
+    <td>
+      The camera position when Lara is at or above <code>max_z</code>. The
+      camera is one sector above the ground.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>pulse_flip_group</code></td>
     <td>Integer</td>
     <td colspan="2">

@@ -279,6 +279,30 @@ static RESULT M_LoadSettings(
     return OK;
 }
 
+static RESULT M_LoadLevelTrainDeathCamera(
+    const M_CONTEXT *const ctx, GF_LEVEL *const level)
+{
+    JSON_READ_IO *const io = ctx->io;
+    GF_TRAIN_DEATH_CAMERA *const camera = &level->train_death_camera;
+    if (!JSON_ReadIO_HasKey(io, "train_death_camera")) {
+        return OK;
+    }
+
+    MUST(JSON_PUSH(io, "train_death_camera"));
+    MUST(JSON_READ(io, "min_z", &camera->min_z));
+    MUST(JSON_READ(io, "max_z", &camera->max_z));
+    MUST(JSON_READ(io, "near_z", &camera->near_z));
+    MUST(JSON_READ(io, "mid_z", &camera->mid_z));
+    MUST(JSON_READ(io, "far_z", &camera->far_z));
+    MUST(JSON_POP(io));
+    if (camera->min_z >= camera->max_z) {
+        return JSON_ReadIO_Fail(
+            io, "'train_death_camera' needs 'min_z' less than 'max_z'");
+    }
+    camera->enabled = true;
+    return OK;
+}
+
 static RESULT M_LoadLevelItemDrops(
     const M_CONTEXT *const ctx, GF_LEVEL *const level)
 {
@@ -1006,6 +1030,7 @@ static RESULT M_LoadLevel(
     }
     MUST(JSON_READ_D(io, "water_particles", &level->water_particles, false));
     MUST(JSON_READ_D(io, "train_ground", &level->train_ground, NO_HEIGHT));
+    MUST(M_LoadLevelTrainDeathCamera(ctx, level));
     MUST(JSON_READ_D(
         io, "pulse_flip_group", &level->pulse_flip_group, NO_FLIP_GROUP));
     if (level->pulse_flip_group != NO_FLIP_GROUP
