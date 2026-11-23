@@ -103,6 +103,7 @@
 - Fixed Citadel Gate, Citadel and Temple of Horus not ending after their final cutscene (TRX2076)
 - Fixed Lara arriving in The Sphinx Complex without the Amulet of Horus (TRX2080)
 - Fixed the horizon fog, lightning, screen flashes and some sparks looking too dark with the flat lighting model (TRX2097)
+- Fixed smoke looking patchy rather than soft, such as from guns and sprinklers (TRX2106)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
