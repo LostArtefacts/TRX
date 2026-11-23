@@ -146,35 +146,27 @@ static void M_TriggerFlame(
 static void M_TriggerEffect(
     const ITEM *const item, const XYZ_32 pos, const int16_t angle)
 {
-    // OG gives the fire and ice wraiths a random start tint here, and the
-    // third wraith a blue one.
+    // The original game draws random numbers for the start colours and then
+    // shifts them out, so the draws stay to keep the same random sequence.
     RGB_888 src;
     RGB_888 dst;
     if (item->object_id == O_WRAITH_1) {
-        const int32_t r1 = Random_GetControl();
-        const int32_t r2 = Random_GetControl();
-        src = (RGB_888) {
-            .r = (uint8_t)(r1 | (r2 >> 8)),
-            .g = (uint8_t)(r1 >> 8),
-            .b = 24,
-        };
+        Random_GetControl();
+        Random_GetControl();
+        src = (RGB_888) { .r = 0, .g = 0, .b = 24 };
         dst.g = (Random_GetControl() & 0x1F) + 48;
         dst.r = (Random_GetControl() & 0x1F) + 128;
         dst.b = 24;
     } else if (item->object_id == O_WRAITH_2) {
         const int32_t r1 = Random_GetControl();
-        const int32_t r2 = Random_GetControl();
-        src = (RGB_888) {
-            .r = (uint8_t)(r2 >> 8),
-            .g = 0,
-            .b = (r1 & 0x1F) + 128,
-        };
+        Random_GetControl();
+        src = (RGB_888) { .r = 0, .g = 0, .b = (r1 & 0x1F) + 128 };
         dst.g = (Random_GetControl() & 0x1F) + 48;
         dst.b = (Random_GetControl() & 0x1F) + 128;
         dst.r = 24;
     } else {
         const uint8_t shade = (Random_GetControl() & 0xF) + 64;
-        src = (RGB_888) { .r = 0, .g = 0, .b = shade };
+        src = (RGB_888) { .r = shade, .g = shade, .b = shade };
         dst = (RGB_888) {
             .r = shade,
             .g = shade,
