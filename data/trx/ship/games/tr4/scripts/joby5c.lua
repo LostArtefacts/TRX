@@ -43,5 +43,6 @@ cutscenes.register(CUTSCENE, {
   on_end = function()
     cutscenes.set_items_visible(trx.catalog.objects.animating_5, true)
     trx.rooms.flip(CUTSCENE_FLIP_GROUP)
+    cutscenes.hide_items(trx.catalog.objects.horus)
   end,
 })
