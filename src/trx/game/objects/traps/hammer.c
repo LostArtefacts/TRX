@@ -4,6 +4,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/traps/movable_block.h>
+#include <trx/game/objects/traps/obelisk.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 
@@ -132,8 +133,7 @@ static void M_SmashBlocks(const ITEM *const item)
 
 static void M_Strike(const ITEM *const item)
 {
-    // TODO: start the obelisks of the room once they line up, when the
-    // obelisk is ported.
+    Obelisk_StartIfLinedUp(item->room_num);
     Sound_Effect(SFX_DOOR_THUD, &item->pos, SPM_NORMAL);
     Sound_Effect(SFX_EXPLOSION_2, &item->pos, SPM_NORMAL);
 }
