@@ -1,3 +1,5 @@
+#include <trx/game/objects/traps/obelisk.h>
+
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
@@ -10,6 +12,7 @@
 #include <trx/game/objects/general/pulley_switch.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 
@@ -314,6 +317,22 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_save_func = M_SavePriv;
     obj->save_flags = true;
     obj->save_position = true;
+}
+
+void Obelisk_StartIfLinedUp(const int16_t room_num)
+{
+    int16_t item_num = Room_Get(room_num)->item_num;
+    while (item_num != NO_ITEM) {
+        ITEM *const item = Item_Get(item_num);
+        if (item->object_id == O_OBELISK && M_IsLinedUp(item)) {
+            const M_PRIV *const p = item->priv;
+            item->trigger.mask = TRIGGER_MASK_ALL;
+            Item_Get(p->others[0])->trigger.mask = TRIGGER_MASK_ALL;
+            Item_Get(p->others[1])->trigger.mask = TRIGGER_MASK_ALL;
+            return;
+        }
+        item_num = item->next_item;
+    }
 }
 
 REGISTER_OBJECT(O_OBELISK, M_Setup)
