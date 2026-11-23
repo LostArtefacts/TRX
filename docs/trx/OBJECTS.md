@@ -2221,6 +2221,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### fire_rope
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>triggers_on_light</code></td><td colspan="3" align="center">false</td><td>Whether the rope sets off its triggers, with the sound of a falling boulder, as soon as it catches fire, rather than once it has burnt away.</td></tr>
+</tbody>
+</table>
+
 #### flares_box_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (187)</th><th align="center">TR2 (151)</th><th align="center">TR3 (178)</th><th>Description</th></tr></thead>

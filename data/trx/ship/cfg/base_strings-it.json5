@@ -2758,6 +2758,9 @@
         "fire_head": {
             "name": "Testa Sputafuoco",
         },
+        "fire_rope": {
+            "name": "\\{review}Corda infuocata",
+        },
         "fish_mutant": {
             "name": "Pesce Mutante",
         },

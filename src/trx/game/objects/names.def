@@ -488,6 +488,7 @@ X_OBJ_NAME_DEFINE(O_SENET_ENEMY_PIECE,      "Senet Enemy Piece")
 X_OBJ_NAME_DEFINE(O_SENET_SPINNER,          "Senet Spinner")
 X_OBJ_NAME_DEFINE(O_SPRINKLER,              "Sprinkler")
 X_OBJ_NAME_DEFINE(O_BURNING_FLOOR,          "Burning Floor")
+X_OBJ_NAME_DEFINE(O_FIRE_ROPE,              "Fire Rope")
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "Alarm")

@@ -2746,6 +2746,9 @@
         "fire_head": {
             "name": "Ceann Teine",
         },
+        "fire_rope": {
+            "name": "\\{review}Ròpa teine",
+        },
         "fish_mutant": {
             "name": "Iasg-mùthaidh",
         },
