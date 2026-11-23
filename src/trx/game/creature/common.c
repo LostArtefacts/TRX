@@ -2,6 +2,7 @@
 #include <trx/core/log.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/game/camera/fixed.h>
 #include <trx/game/camera/vars.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
@@ -44,6 +45,8 @@
 #define M_MARKER_REACH     (g_TRVersion >= 4 ? STEP_L * 5 / 2 : STEP_L * 3) // = 640 (TR4), 768
 #define M_FEEL_DISTANCE    (STEP_L * 2) // = 512
 #define M_FEEL_ARC         8190 // a little under 45 degrees, as the OG has it
+#define M_KILL_CAM_DIST    (WALL_L * 2) // = 2048
+#define M_KILL_CAM_HEIGHT  WALL_L
 // clang-format on
 
 typedef struct {
@@ -1486,6 +1489,45 @@ void Creature_SpecialKill(
     Lara_SwitchToExtraState(lara_kill_state);
 
     g_Camera.pos.room_num = lara_item->room_num;
+}
+
+void Creature_KillLara(
+    ITEM *const item, const int32_t kill_anim, const int32_t kill_state,
+    const LARA_ANIMATION_ID lara_anim)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    ITEM *const lara_item = Lara_GetItem();
+
+    Item_SwitchToAnim(item, kill_anim, 0);
+    item->current_anim_state = kill_state;
+
+    Item_SwitchToAnim(lara_item, LA(lara_anim), 0);
+    lara_item->current_anim_state = LS(LS_DEATH);
+    lara_item->goal_anim_state = LS(LS_DEATH);
+    lara_item->pos = item->pos;
+    lara_item->rot = item->rot;
+    lara_item->fall_speed = 0;
+    lara_item->gravity = false;
+    lara_item->speed = 0;
+    if (item->room_num != lara_item->room_num) {
+        Item_UpdateRoom(lara->item_num, item->room_num);
+    }
+    Lara_Animate(lara_item);
+
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->gun_type = LGT_UNARMED;
+    lara->hit_direction = DIR_UNKNOWN;
+    lara->air = -1;
+
+    g_Camera.pos.room_num = lara_item->room_num;
+    Creature_WatchKill(item);
+}
+
+void Creature_WatchKill(const ITEM *const item)
+{
+    XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_KILL_CAM_DIST);
+    pos.y = item->pos.y - M_KILL_CAM_HEIGHT;
+    Camera_UseForcedFixed(pos, item->room_num);
 }
 
 void Creature_TestBoxDamage(const int16_t item_num)
