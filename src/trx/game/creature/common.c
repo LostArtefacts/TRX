@@ -1135,12 +1135,14 @@ bool Creature_Animate(
         next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
 
     const bool fly_check = g_TRVersion < 3 || lot->setup.fly == 0;
+    const bool zone_check =
+        g_TRVersion >= 4 ? item->box_num != NO_BOX : fly_check;
 
     const int32_t box_height =
         item->box_num == NO_BOX ? height : Box_GetBox(item->box_num)->height;
     if (sector->box == NO_BOX
         || (!lot->is_jumping
-            && ((fly_check && zone[item->box_num] != zone[sector->box])
+            && ((zone_check && zone[item->box_num] != zone[sector->box])
                 || box_height - height > lot->setup.step
                 || box_height - height < lot->setup.drop))) {
         const int32_t pos_x = item->pos.x >> WALL_SHIFT;
