@@ -141,6 +141,7 @@
 - Fixed characters' mouths not moving while they talk in some cutscenes, such as in Hall of Demetrius, Street Bazaar, Citadel Gate and Citadel (TRX2102)
 - Fixed the firelight missing from the cutscenes in Hall of Demetrius and Citadel Gate (TRX2102)
 - Fixed the lightning flash missing from a cutscene in The Sphinx Complex (TRX2102)
+- Fixed Lara not holding her pistols in the detonator cutscene in Street Bazaar (TRX2112)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)

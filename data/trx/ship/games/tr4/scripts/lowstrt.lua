@@ -2,6 +2,15 @@ local cutscenes = require("tr4.cutscenes")
 
 local DETONATOR_CUTSCENE = 24
 local DETONATOR_ROOM = 107
+-- Lara holds her pistols from the start of the scene until this frame.
+local HOLSTER_FRAME = 552
+
+-- Moves both of Lara's pistols between her hands and her holsters.
+local function toggle_pistols()
+  local lara = trx.lara.item
+  lara:run_action(trx.catalog.flip_effects.LARA_DRAW_RIGHT_GUN)
+  lara:run_action(trx.catalog.flip_effects.LARA_DRAW_LEFT_GUN)
+end
 
 trx.events.on_game_start(function()
   trx.items[45].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
@@ -67,6 +76,8 @@ cutscenes.register(DETONATOR_CUTSCENE, {
     },
   },
   hide = { trx.catalog.objects.animating_13 },
+  on_start = toggle_pistols,
+  frames = { [HOLSTER_FRAME] = toggle_pistols },
   on_end = function()
     local items = trx.items.query
       :of_object(trx.catalog.objects.puzzle_item_8_combo_1)
