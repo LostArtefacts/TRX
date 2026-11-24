@@ -21,6 +21,7 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/cutscene.h>
 #include <trx/game/lara/hair.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/lua/events.h>
@@ -384,6 +385,8 @@ static bool M_Begin(const int32_t num)
     m_State.lara_shadow_bounds.is_present = false;
 
     M_ClearLaraHands();
+    Lara_Cutscene_CaptureState();
+    Lara_Cutscene_ResetGunFlashes();
     M_TeleportLara(info->origin, 0);
     M_SetLaraPose(&m_State.actors[0].pose_curr);
 
@@ -434,6 +437,8 @@ static void M_Finish(void)
 
     M_ReleaseNodes();
     Lara_Pose_SetOverride(nullptr);
+    Lara_Cutscene_ResetGunFlashes();
+    Lara_Cutscene_RestoreState();
     if (m_State.lara_return.is_present) {
         M_TeleportLara(m_State.lara_return.pos, m_State.lara_return.rot);
     } else {
@@ -515,6 +520,7 @@ static void M_Step(void)
     if (is_lara_cut) {
         Interpolation_CommitBraid();
     }
+    Lara_Cutscene_ControlGun();
 
     if (info->audio_track != -1
         && Music_GetCurrentPlayingTrack() == (MUSIC_SLOT)info->audio_track) {
@@ -983,6 +989,7 @@ void CutSeq_DrawActors(void)
 
         Matrix_Pop();
     }
+    Lara_Cutscene_DrawGunFlashes();
 }
 
 void CutSeq_DrawOverlay(void)
