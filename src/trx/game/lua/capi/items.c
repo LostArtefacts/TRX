@@ -4,6 +4,7 @@
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
+#include <trx/game/items/actions.h>
 #include <trx/game/items/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua/common.h>
@@ -745,6 +746,16 @@ static int M_L_ItemsDie(lua_State *const L)
     return 0;
 }
 
+// item:run_action(action_id)
+static int M_L_ItemsRunAction(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    ITEM *const item = LUA_Struct_Deref(L, ref);
+    const ITEM_ACTION_ID action_id = (ITEM_ACTION_ID)luaL_checkinteger(L, 2);
+    ItemAction_Run(action_id, item);
+    return 0;
+}
+
 // item:take_damage(damage, [sender])
 static int M_L_ItemsTakeDamage(lua_State *const L)
 {
@@ -783,6 +794,7 @@ static const luaL_Reg m_Methods[] = {
     { "distance_to", M_L_ItemsDistanceTo },
     { "die", M_L_ItemsDie },
     { "take_damage", M_L_ItemsTakeDamage },
+    { "run_action", M_L_ItemsRunAction },
     { "shatter", M_L_ItemsShatter },
     { "destroy", M_L_ItemsDestroy },
     { "activate", M_L_ItemsActivate },

@@ -563,6 +563,18 @@ end
       end)
       ```
 
+    - <a id="items.Item.run_action" name="items.Item.run_action"></a>[lua]`item:run_action(action)`  
+      Runs an item action on the item once, as an animation command does. A
+      cutscene uses this to draw or fire Lara's guns on a given frame.
+
+      Parameters:
+      - <a id="items.Item.run_action.action" name="items.Item.run_action.action"></a>**`action`** ([trx.catalog.flip_effects](CATALOG.md#catalog.flip_effects)). The action to run.
+
+      Example:
+      ```lua
+      trx.lara.item:run_action(trx.catalog.flip_effects.LARA_DRAW_RIGHT_GUN)
+      ```
+
     - <a id="items.Item.set_property" name="items.Item.set_property"></a>[lua]`item:set_property(name, value)`  
       Overrides an object property for this item. Prefer
       `item.properties.<name> = ...`.
