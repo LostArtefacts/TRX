@@ -150,6 +150,7 @@
 - Added `trx.game.Level.is_remembered`, which tells a return to a level from a first visit (TRX459)
 - Added `trx.cutscenes.set_node_visible()`, for hiding one mesh of an actor in the scene on screen (TRX2102)
 - Added `trx.weather.strike_lightning()`, which flashes the sky with lightning at once in a level that has lightning (TRX2102)
+- Added `trx.items.Item:run_action()`, which runs an item action on an item once, such as drawing or firing Lara's guns in a cutscene (TRX2112)
 - Changed `trx.game.Level.is_completed` to report the levels before the one started with `/play` or `trx.game.play_level` as finished
 - Changed TR4 cutscenes to leave Lara at the scene's origin, as in the original game, unless `trx.cutscenes.set_lara_return` names another place (TRX2062)
 - Changed `trx.store.level` to keep what it held when Lara comes back to a level (TRX459)

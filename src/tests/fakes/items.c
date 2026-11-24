@@ -16,6 +16,7 @@
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
+#include <trx/game/items/actions.h>
 #include <trx/core/handle.h>
 #include <trx/core/strings.h>
 #include <trx/game/anims.h>
@@ -963,6 +964,11 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
     const int32_t gib_flags = args.gib_flags;
     FAKE_RECORD("creature_die", FV(explode), FV(flame_variant), FV(gib_flags));
     m_Items[item_num].hit_points = 0;
+}
+
+void ItemAction_Run(const ITEM_ACTION_ID action_id, ITEM *const item)
+{
+    FAKE_RECORD("run_action", FV(action_id));
 }
 
 // Records the blow and takes the hit points; the events the real function

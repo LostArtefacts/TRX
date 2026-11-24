@@ -693,6 +693,17 @@ function Item:take_damage(damage, sender)
   return h.native()
 end
 
+---Runs an item action on the item once, as an animation command does. A
+---cutscene uses this to draw or fire Lara's guns on a given frame.
+---
+---```lua
+---trx.lara.item:run_action(trx.catalog.flip_effects.LARA_DRAW_RIGHT_GUN)
+---```
+---@param action trx.catalog.flip_effects The action to run.
+function Item:run_action(action)
+  return h.native()
+end
+
 ---Bursts the item's meshes into flying debris, the visual `trx.items.Item:die`
 ---produces with `trx.items.Item.die.opts.explode`, on its own. It does not
 ---kill or remove the item.

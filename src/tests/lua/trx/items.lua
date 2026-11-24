@@ -694,6 +694,15 @@ test("take_damage takes the item's hit points", function()
   assert(it.hit_points == 0, "the last blow should empty the hit points")
 end)
 
+test("run_action runs the action on the item", function()
+  fake.reset()
+  trx.items[0]:run_action(trx.catalog.flip_effects.LARA_DRAW_RIGHT_GUN)
+  assert(
+    fake.calls().run_action.count == 1,
+    "run_action should reach the engine"
+  )
+end)
+
 test("shatter bursts the meshes on their own", function()
   fake.reset()
   trx.items[0]:shatter()
