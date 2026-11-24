@@ -491,6 +491,7 @@ common_sources = [
   'trx/game/lara/col/vault.c',
   'trx/game/lara/common.c',
   'trx/game/lara/control.c',
+  'trx/game/lara/cutscene.c',
   'trx/game/lara/draw.c',
   'trx/game/lara/electric.c',
   'trx/game/lara/hair.c',
