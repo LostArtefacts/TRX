@@ -39,6 +39,13 @@ order: 3
    `trx.game.current_level.is_remembered` first, so it does not overwrite the
    kept state.
 
+5. **TR4 has no boat sample names**
+   TR4 has no boat, so the TR4 sample catalog no longer names samples 195 and
+   197 after it. Sample 197 now has the name the original game gives it, and
+   sample 195 has no name:
+   - `trx.catalog.samples.rib_moving` → `trx.catalog.samples.electric_arcing_loop`
+   - `trx.catalog.samples.rib_idle` → nothing
+
 ### Version 1.11 to 1.12
 
 1. **`display_time` no longer counts the fades**

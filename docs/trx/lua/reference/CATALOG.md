@@ -289,7 +289,7 @@ convert between the two.
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 233 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 232 names
 
     Every sound sample TRX has a name for.
 
@@ -311,9 +311,9 @@ convert between the two.
     `CLICK`, `COWBOY_SPEECH`, `CRUNCH_1`, `CRUNCH_2`, `CURTAIN`,
     `DAMOCLES_SWORD`, `DART`, `DISC`, `DOORBELL`, `DOOR_CHIME`, `DOOR_THUD`,
     `DRAGON_FEET`, `DRAGON_FIRE`, `DRIPS_REVERB`, `EARTHQUAKE_1`,
-    `EARTHQUAKE_2`, `EARTHQUAKE_LOOP`, `ELECTRIC_ARCING`,
-    `ELECTRIC_ARCING_LOOP`, `ELECTRIC_ONE_SHOT`, `ENEMY_HIT_1`, `ENEMY_HIT_2`,
-    `ENGLISH_HOY`, `EXPLOSION_1`, `EXPLOSION_2`, `EXPLOSION_3`, `EXPLOSION_FX`,
+    `EARTHQUAKE_2`, `EARTHQUAKE_LOOP`, `ELECTRIC_ARCING_LOOP`,
+    `ELECTRIC_ONE_SHOT`, `ENEMY_HIT_1`, `ENEMY_HIT_2`, `ENGLISH_HOY`,
+    `EXPLOSION_1`, `EXPLOSION_2`, `EXPLOSION_3`, `EXPLOSION_FX`,
     `FLAME_THROWER_LOOP`, `FLOOD`, `FOOTSTEPS_GRAVEL`, `FOOTSTEPS_ICE`,
     `FOOTSTEPS_METAL`, `FOOTSTEPS_MUD`, `FOOTSTEPS_SAND_OR_GRASS`,
     `FOOTSTEPS_SNOW`, `FOOTSTEPS_WOOD`, `GLASS_BREAK`, `GUIDE_SCARE`,
