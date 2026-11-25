@@ -195,7 +195,8 @@ static void M_Strike(const int16_t item_num, const M_MODE mode)
     });
 
     if (M_IsInFlashRoom(item)) {
-        const int32_t shift = (p->strikes & 1) != 0 ? 1 : 2;
+        const int32_t frame = (int32_t)Output_GetTimeInGame();
+        const int32_t shift = (frame & 1) != 0 ? 1 : 2;
         Output_Flash_Trigger((RGB_888) {
             .r = color.r >> shift,
             .g = color.g >> shift,
