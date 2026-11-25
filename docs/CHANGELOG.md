@@ -129,6 +129,7 @@
 - Fixed Lara walking through a closed sequence door in Underneath the Sphinx (OG bug) (TRX2036)
 - Fixed the trail of the fire wraith turning blue at a distance (OG bug) (TRX2038)
 - Fixed wraith sparks starting with the wrong color (OG bug) (TRX2039)
+- Fixed Lara moving or falling while the screen fades out for a cutscene (TRX2078)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)

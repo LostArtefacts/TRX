@@ -35,6 +35,9 @@ int32_t CutSeq_GetCount(void);
 // or another place to go has taken the screen.
 bool CutSeq_IsActive(void);
 bool CutSeq_IsPlaying(void);
+// Whether the screen is fading out for a requested cutscene, before its first
+// frame.
+bool CutSeq_IsStarting(void);
 int32_t CutSeq_GetCurrent(void);
 
 // Which frame of the running scene is on screen, or -1 when none is. A scene
