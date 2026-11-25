@@ -91,6 +91,7 @@
 - Fixed the animating 2 item in Guardian of Semerkhet disappearing at certain camera angles (OG bug) (TRX2001)
 - Fixed a stretched texture and holes in the fire bowls in Temple of Karnak, and the glass pyramid panels in The Great Hypostyle Hall (OG bug) (TRX2118)
 - Fixed a stretched texture in Tomb of Semerkhet, see-through gaps behind a receptacle in Tomb of Semerkhet and behind five switches in Guardian of Semerkhet, and the camera passing through those switches (OG bug) (TRX2117)
+- Fixed misplaced carriage connectors in Desert Railroad (OG bug) (TRX2119)
 - Fixed Lara snapping into a turn when steering as the jeep starts moving (TRX2017, regression from 1.12)
 - Fixed the moving sky layer jumping back to its start when a save is loaded (TRX2018)
 - Fixed Lara standing too far back when using certain keyholes and puzzle slots (TRX1959)
