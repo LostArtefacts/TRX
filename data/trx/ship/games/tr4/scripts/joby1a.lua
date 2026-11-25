@@ -52,10 +52,7 @@ cutscenes.register(DIG_CUTSCENE, {
 })
 
 cutscenes.register(DIG_END_CUTSCENE, {
-  on_start = function()
-    hold_shovel()
-    trx.cutscenes.set_lara_return({ x = 51109, y = 256, z = 50995 }, 0)
-  end,
+  on_start = hold_shovel,
   on_end = function()
     trx.lara.clear_equipment(trx.lara.Mesh.HAND_L)
   end,
