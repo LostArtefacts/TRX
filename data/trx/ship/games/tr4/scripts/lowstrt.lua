@@ -1,5 +1,7 @@
 trx.events.on_game_start(function()
   trx.items[45].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
+  trx.items[7].properties.flash_room_nums = { 87, 22, 10, 15 }
+  trx.items[11].properties.flash_room_nums = { 87, 22, 10, 15 }
 
   trx.objects.animating_13.properties.collidable = false
   trx.objects.animating_14.properties.collidable = false
