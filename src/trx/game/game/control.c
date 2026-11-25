@@ -217,6 +217,20 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
+    // Lara ignores the controls while the screen fades out for a cutscene, as
+    // in the original game. Action stays held while her hands are busy, so
+    // that she keeps her grip on a wall or a ledge. A skip key that is down
+    // during the fade-out is ignored until the player lets go of it, so that
+    // the key held for the grip does not skip the scene once it starts.
+    if (CutSeq_IsStarting()) {
+        const bool keeps_grip =
+            Lara_GetLaraInfo()->gun_status == LGS_HANDS_BUSY;
+        InputState_Clear(&g_Input);
+        InputState_Clear(&g_InputDB);
+        g_Input.action = keeps_grip;
+        Input_HoldOffRole(INPUT_ROLE_MENU_SKIP);
+    }
+
     Game_TickBeginFrame();
     Sound_ResetAmbient();
     Game_TickWorld();

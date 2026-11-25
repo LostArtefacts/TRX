@@ -578,6 +578,11 @@ bool CutSeq_IsPlaying(void)
         || m_State.phase == M_PHASE_FADE_END;
 }
 
+bool CutSeq_IsStarting(void)
+{
+    return m_State.phase == M_PHASE_FADE_OUT;
+}
+
 int32_t CutSeq_GetCurrent(void)
 {
     return CutSeq_IsPlaying() ? m_State.num : M_NO_CUTSCENE;
