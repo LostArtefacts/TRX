@@ -3,6 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/objects/common.h>
 
@@ -110,33 +111,39 @@ static void M_ApplyFaceEdit(
     }
 }
 
-static void M_ApplyMeshEdit(const M_MESH_EDIT *const edit)
+static OBJECT_MESH *M_GetMesh(
+    const INJECTION_OBJECT_INFO obj_info, const int16_t mesh_idx)
 {
-    OBJECT_MESH *mesh;
-    if (edit->obj_info.type == OBJ_TYPE_OBJECT) {
+    if (obj_info.type == OBJ_TYPE_OBJECT) {
         OBJECT *obj;
-        if (!SHOULD(
-                Inject_GetObject(edit->obj_info, &obj),
-                "mesh stays unchanged")) {
-            return;
+        if (!SHOULD(Inject_GetObject(obj_info, &obj), "mesh stays unchanged")) {
+            return nullptr;
         }
         if (!obj->loaded) {
-            return;
+            return nullptr;
         }
-        ASSERT(edit->mesh_idx >= 0);
-        ASSERT(edit->mesh_idx < obj->mesh_count);
+        ASSERT(mesh_idx >= 0);
+        ASSERT(mesh_idx < obj->mesh_count);
+        return Object_GetMesh(obj->mesh_idx + mesh_idx);
+    }
 
-        mesh = Object_GetMesh(obj->mesh_idx + edit->mesh_idx);
-    } else if (edit->obj_info.type == OBJ_TYPE_STATIC3D) {
-        if (edit->obj_info.id < 0
-            || edit->obj_info.id >= Object_GetStaticObjects3DCount()) {
-            return;
+    if (obj_info.type == OBJ_TYPE_STATIC3D) {
+        if (obj_info.id < 0
+            || obj_info.id >= Object_GetStaticObjects3DCount()) {
+            return nullptr;
         }
-        const STATIC_OBJECT_3D *const obj =
-            Object_Get3DStatic(edit->obj_info.id);
-        mesh = Object_GetMesh(obj->mesh_idx);
-    } else {
-        LOG_WARNING("Invalid mesh edit type %d", edit->obj_info.type);
+        const STATIC_OBJECT_3D *const obj = Object_Get3DStatic(obj_info.id);
+        return Object_GetMesh(obj->mesh_idx);
+    }
+
+    LOG_WARNING("Invalid mesh edit type %d", obj_info.type);
+    return nullptr;
+}
+
+static void M_ApplyMeshEdit(const M_MESH_EDIT *const edit)
+{
+    OBJECT_MESH *const mesh = M_GetMesh(edit->obj_info, edit->mesh_idx);
+    if (mesh == nullptr) {
         return;
     }
 
@@ -335,6 +342,166 @@ static void M_MeshEdits(
     }
 }
 
+static FACE *M_GetFace(
+    OBJECT_MESH *const mesh, const FACE_TYPE face_type, const int16_t face_idx)
+{
+    switch (face_type) {
+    case FT_TEXTURED_QUAD:
+        if (face_idx >= 0 && face_idx < mesh->tex_face4s.count) {
+            return &mesh->tex_face4s.data[face_idx];
+        }
+        break;
+    case FT_TEXTURED_TRIANGLE:
+        if (face_idx >= 0 && face_idx < mesh->tex_face3s.count) {
+            return &mesh->tex_face3s.data[face_idx];
+        }
+        break;
+    case FT_COLOURED_QUAD:
+        if (face_idx >= 0 && face_idx < mesh->flat_face4s.count) {
+            return &mesh->flat_face4s.data[face_idx];
+        }
+        break;
+    case FT_COLOURED_TRIANGLE:
+        if (face_idx >= 0 && face_idx < mesh->flat_face3s.count) {
+            return &mesh->flat_face3s.data[face_idx];
+        }
+        break;
+    }
+    return nullptr;
+}
+
+static void M_RotateFace(
+    OBJECT_MESH *const mesh, const FACE_TYPE face_type, const int16_t face_idx,
+    const uint8_t num_rotations)
+{
+    FACE *const face = M_GetFace(mesh, face_type, face_idx);
+    if (face == nullptr) {
+        LOG_WARNING("Invalid mesh face %d of type %d", face_idx, face_type);
+        return;
+    }
+
+    for (int32_t i = 0; i < num_rotations; i++) {
+        const uint16_t first = face->vertices[0];
+        for (int32_t j = 0; j < face->vertex_count - 1; j++) {
+            face->vertices[j] = face->vertices[j + 1];
+        }
+        face->vertices[face->vertex_count - 1] = first;
+    }
+}
+
+// Copies a group of faces to out and points the group at the copy. Appends
+// added_face to the group when it is given. Returns the position after the
+// group.
+static FACE *M_CopyFaces(
+    FACE *out, FACE **const data, int16_t *const count,
+    const FACE *const added_face)
+{
+    const FACE *const source = *data;
+    *data = out;
+    for (int32_t i = 0; i < *count; i++) {
+        *out++ = source[i];
+    }
+    if (added_face != nullptr) {
+        *out++ = *added_face;
+        (*count)++;
+    }
+    return out;
+}
+
+static void M_AddFace(
+    OBJECT_MESH *const mesh, const FACE_TYPE face_type, const FACE *const face)
+{
+    for (int32_t i = 0; i < face->vertex_count; i++) {
+        if (face->vertices[i] >= mesh->num_vertices) {
+            LOG_WARNING(
+                "Mesh face names vertex %d of the %d the mesh holds",
+                face->vertices[i], mesh->num_vertices);
+            return;
+        }
+    }
+    if (mesh->all_faces.count >= INT16_MAX) {
+        LOG_WARNING("Mesh holds too many faces to add another");
+        return;
+    }
+
+    FACE *const faces =
+        GameBuf_Alloc(sizeof(FACE) * (mesh->all_faces.count + 1), GBUF_MESHES);
+    FACE *out = faces;
+    out = M_CopyFaces(
+        out, &mesh->tex_face4s.data, &mesh->tex_face4s.count,
+        face_type == FT_TEXTURED_QUAD ? face : nullptr);
+    out = M_CopyFaces(
+        out, &mesh->tex_face3s.data, &mesh->tex_face3s.count,
+        face_type == FT_TEXTURED_TRIANGLE ? face : nullptr);
+    out = M_CopyFaces(
+        out, &mesh->flat_face4s.data, &mesh->flat_face4s.count,
+        face_type == FT_COLOURED_QUAD ? face : nullptr);
+    M_CopyFaces(
+        out, &mesh->flat_face3s.data, &mesh->flat_face3s.count,
+        face_type == FT_COLOURED_TRIANGLE ? face : nullptr);
+
+    mesh->tex_faces.data = mesh->tex_face4s.data;
+    mesh->tex_faces.count = mesh->tex_face4s.count + mesh->tex_face3s.count;
+    mesh->flat_faces.data = mesh->flat_face4s.data;
+    mesh->flat_faces.count = mesh->flat_face4s.count + mesh->flat_face3s.count;
+    mesh->all_faces.data = faces;
+    mesh->all_faces.count = mesh->tex_faces.count + mesh->flat_faces.count;
+}
+
+static void M_MeshFaceEdits(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const MESH_FACE_EDIT_TYPE edit_type = File_ReadS32(injection->fp);
+        const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
+        const int16_t mesh_idx = File_ReadS16(injection->fp);
+        const FACE_TYPE face_type = File_ReadS32(injection->fp);
+
+        switch (edit_type) {
+        case MFET_ROTATE_FACE: {
+            const int16_t face_idx = File_ReadS16(injection->fp);
+            const uint8_t num_rotations = File_ReadU8(injection->fp);
+            if (ctx->mode == INJECTION_MODE_STATS) {
+                break;
+            }
+            OBJECT_MESH *const mesh = M_GetMesh(obj_info, mesh_idx);
+            if (mesh != nullptr) {
+                M_RotateFace(mesh, face_type, face_idx, num_rotations);
+            }
+            break;
+        }
+
+        case MFET_ADD_FACE: {
+            const bool is_quad =
+                face_type == FT_TEXTURED_QUAD || face_type == FT_COLOURED_QUAD;
+            FACE face = { .vertex_count = is_quad ? 4 : 3 };
+            const uint16_t texture = File_ReadU16(injection->fp);
+            face.texture_idx = texture & 0x7FFF;
+            face.double_sided = (texture & 0x8000) != 0;
+            face.effects = File_ReadU16(injection->fp);
+            for (int32_t j = 0; j < face.vertex_count; j++) {
+                face.vertices[j] = File_ReadU16(injection->fp);
+                face.texture_zw[j].z = 1.0f;
+                face.texture_zw[j].w = 1.0f;
+            }
+            if (ctx->mode == INJECTION_MODE_STATS) {
+                break;
+            }
+            OBJECT_MESH *const mesh = M_GetMesh(obj_info, mesh_idx);
+            if (mesh != nullptr) {
+                M_AddFace(mesh, face_type, &face);
+            }
+            break;
+        }
+
+        default:
+            LOG_WARNING("Unknown mesh face edit type: %d", edit_type);
+            break;
+        }
+    }
+}
+
 static void M_Object3DEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
@@ -363,3 +530,4 @@ static void M_Object3DEdits(
 
 REGISTER_INJECT_EDITOR(IDT_MESH_EDITS, M_MeshEdits)
 REGISTER_INJECT_EDITOR(IDT_OBJECT_3D_EDITS, M_Object3DEdits)
+REGISTER_INJECT_EDITOR(IDT_MESH_FACE_EDITS, M_MeshFaceEdits)
