@@ -10,12 +10,17 @@
 // clock read.
 #define M_CHECK_INTERVAL 100000
 
+// A longer gap between two checks means the engine had control in between,
+// so the gap does not count against the script.
+#define M_STALL_SEC 0.25
+
 static double m_BudgetSec = 0.0;
 
 // Zero until the first check after a heartbeat. The budget measures
 // continuous Lua execution, not time since the last frame, so a script
 // entered after a long C-side stall is not blamed for it.
 static double m_DeadlineSec = 0.0;
+static double m_LastCheckSec = 0.0;
 
 // coroutine.create makes a thread with no hook of its own, so both creators
 // route new threads through the guard. wrap keeps its stock behaviour of
@@ -39,7 +44,10 @@ static void M_Hook(lua_State *const L, lua_Debug *const ar)
     const double now = Clock_GetRealTime();
     if (m_DeadlineSec == 0.0) {
         m_DeadlineSec = now + m_BudgetSec;
+    } else if (now - m_LastCheckSec > M_STALL_SEC) {
+        m_DeadlineSec += now - m_LastCheckSec;
     }
+    m_LastCheckSec = now;
     if (now < m_DeadlineSec) {
         // A trip may have left this thread checking on every instruction.
         lua_sethook(L, M_Hook, LUA_MASKCOUNT, M_CHECK_INTERVAL);

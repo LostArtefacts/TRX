@@ -4,6 +4,7 @@
 
 **UI**
 - Fixed a Lua error in the TR4 save and load lists (#7083 / TRX1973)
+- Fixed the game closing at start on some computers that are slow to open the game window (TRX2120, regression from 1.12)
 
 **Camera**
 - Fixed Lara's position not resetting in photo mode if her weapons are drawn (TRX2000, regression from 1.11)
