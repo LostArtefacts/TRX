@@ -34,6 +34,7 @@
 - Added a `setup_mirror` game flow sequence event, which makes a room show Lara's reflection in one of its walls (TRX688)
 - Added a `pulse_flip_group` game flow level property, which keeps the TR4 pulsing lights dark until a given flip group is flipped (TRX2022)
 - Added `win_item_nums` and `lose_item_nums` properties to the senet spinner, which name the items that winning or losing the game of senet starts (TRX2051)
+- Added a `flash_room_nums` property to the lightning conductor, which names the rooms where its strikes flash the screen (TRX2063)
 - Changed the `reset_hub` game flow sequence event to also make the game forget the state of the levels Lara has left (TRX459)
 
 **TR3**

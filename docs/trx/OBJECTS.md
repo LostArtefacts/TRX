@@ -1337,6 +1337,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### lightning_conductor
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>flash_room_nums</code></td><td colspan="3" align="center">{}</td><td>Numbers of the rooms in which Lara sees the screen flash when the conductor strikes.</td></tr>
+</tbody>
+</table>
+
 #### lightning_emitter
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (46)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>

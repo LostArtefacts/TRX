@@ -38,10 +38,6 @@ typedef struct {
     int16_t targets[2];
 } M_PRIV;
 
-// The original game flashes the screen only while Lara is in these rooms of
-// Street Bazaar.
-static const int16_t m_FlashRooms[] = { 87, 22, 10, 15 };
-
 static int32_t M_GetOCB(const ITEM *const item)
 {
     TRX_VALUE value = {};
@@ -97,11 +93,15 @@ static void M_StartStrike(M_PRIV *const p)
     p->offset = (Random_GetControl() & 0x3FF) - 512;
 }
 
-static bool M_IsInFlashRoom(void)
+static bool M_IsInFlashRoom(const ITEM *const item)
 {
+    TRX_VALUE value;
+    if (!ObjectProperty_GetItemValue(item, "flash_room_nums", &value)) {
+        return false;
+    }
     const int16_t room_num = Lara_GetItem()->room_num;
-    for (size_t i = 0; i < ARRAY_SIZE(m_FlashRooms); i++) {
-        if (m_FlashRooms[i] == room_num) {
+    for (int32_t i = 0; i < value.as_list.count; i++) {
+        if (value.as_list.values[i] == room_num) {
             return true;
         }
     }
@@ -194,7 +194,7 @@ static void M_Strike(const int16_t item_num, const M_MODE mode)
         .flags = is_fork ? FX_LIGHTNING_F_NONE : FX_LIGHTNING_F_CURVED,
     });
 
-    if (M_IsInFlashRoom()) {
+    if (M_IsInFlashRoom(item)) {
         const int32_t shift = (p->strikes & 1) != 0 ? 1 : 2;
         Output_Flash_Trigger((RGB_888) {
             .r = color.r >> shift,
@@ -260,6 +260,13 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
     obj->save_flags = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_STORED(
+            "flash_room_nums", (S32_LIST) {},
+            "Numbers of the rooms in which Lara sees the screen flash when "
+            "the conductor strikes."));
 }
 
 REGISTER_OBJECT(O_LIGHTNING_CONDUCTOR, M_Setup)
