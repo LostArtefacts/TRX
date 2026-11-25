@@ -14,6 +14,7 @@
 - Fixed Lara not being able to look as far to the left and right while hanging from monkey bars in the TR3 camera mode (TRX41)
 
 **Rendering**
+- Changed pickup aids to hide during cutscenes (TRX2115)
 - Fixed Lara, statics and inventory models not being drawn on some AMD graphics drivers (TRX2024, regression from 1.12)
 - Fixed certain sparks, such as smoke and gas, not being drawn during fixed or cinematic camera sequences when Lara is far from the spawn position (OG bug) (TRX1966)
 - Fixed Lara's legs remaining invisible if the fly cheat is entered when she is in a kayak (#7085 / TRX1974)
