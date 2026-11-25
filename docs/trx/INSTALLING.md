@@ -1432,8 +1432,10 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── guide_gun.bin
 │   │   │   ├── henchman_jeep.bin
 │   │   │   ├── hypostyle_jeep.bin
+│   │   │   ├── hypostyle_textures.bin
 │   │   │   ├── inventory_models.bin
 │   │   │   ├── karnak_fd.bin
+│   │   │   ├── karnak_textures.bin
 │   │   │   ├── kv5_textures.bin
 │   │   │   ├── lake_fd.bin
 │   │   │   ├── lara_animations.bin
@@ -3092,8 +3094,10 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── guide_gun.bin
     │   │   │   │   ├── henchman_jeep.bin
     │   │   │   │   ├── hypostyle_jeep.bin
+    │   │   │   │   ├── hypostyle_textures.bin
     │   │   │   │   ├── inventory_models.bin
     │   │   │   │   ├── karnak_fd.bin
+    │   │   │   │   ├── karnak_textures.bin
     │   │   │   │   ├── kv5_textures.bin
     │   │   │   │   ├── lake_fd.bin
     │   │   │   │   ├── lara_animations.bin

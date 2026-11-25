@@ -192,6 +192,7 @@
             ],
             "injections": [
                 "karnak_fd.bin",
+                "karnak_textures.bin",
             ],
         },
 
@@ -208,6 +209,7 @@
             ],
             "injections": [
                 "hypostyle_jeep.bin",
+                "hypostyle_textures.bin",
             ],
             "unobtainable_kills": 1,
         },
