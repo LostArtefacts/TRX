@@ -152,7 +152,7 @@ static void M_Strike(const int16_t item_num, const M_MODE mode)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
 
-    Sound_Effect(SFX_ELECTRIC_ARCING, &item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_ELECTRIC_ARCING_LOOP, &item->pos, SPM_NORMAL);
     p->strikes--;
 
     const int32_t b = (Random_GetControl() & 0x3F) + 192;
