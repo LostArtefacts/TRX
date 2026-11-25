@@ -329,6 +329,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "alexandria_textures.bin",
+            ],
         },
 
         // 15. Coastal Ruins
