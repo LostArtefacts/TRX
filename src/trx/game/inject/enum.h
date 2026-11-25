@@ -107,7 +107,8 @@ typedef enum {
     IDT_ANIM_TEXTURE_ADDS  = 42,
     IDT_DEMO_DATA          = 43,
     IDT_OVERLAP_INDICES    = 44,
-    IDT_NUMBER_OF          = 45,
+    IDT_MESH_FACE_EDITS    = 45,
+    IDT_NUMBER_OF          = 46,
 } INJECTION_DATA_TYPE;
 
 // A face effect that TRX keeps for itself, apart from the TR4 bits: it marks a
@@ -155,6 +156,11 @@ typedef enum {
     RMET_DOUBLE_SIDED         = 10,
     RMET_PS1_SEMI_TRANSPARENT = 11,
 } ROOM_MESH_EDIT_TYPE;
+
+typedef enum {
+    MFET_ROTATE_FACE = 0,
+    MFET_ADD_FACE    = 1,
+} MESH_FACE_EDIT_TYPE;
 // clang-format on
 
 typedef enum {

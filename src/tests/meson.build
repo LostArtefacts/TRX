@@ -481,6 +481,25 @@ unit_tests += {
   'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
 }
 
+# The mesh face edits rotate and add the faces of a mesh, which is faked here
+# with the object lookups that lead to it.
+unit_tests += {
+  'name': 'trx/game/inject/editors/meshes',
+  'engine': [
+    'core/result.c',
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/inject/editors/meshes.c',
+  ],
+  'src': ['harness/stubs_result.c'],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
+}
+
 unit_tests += {
   'name': 'trx/core/file',
   'engine': [
