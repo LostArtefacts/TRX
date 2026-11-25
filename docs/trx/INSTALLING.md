@@ -1429,6 +1429,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── controls_models.bin
 │   │   │   ├── font.bin
 │   │   │   ├── guardian_animating_bounds.bin
+│   │   │   ├── guardian_fd.bin
+│   │   │   ├── guardian_textures.bin
 │   │   │   ├── guide_gun.bin
 │   │   │   ├── henchman_jeep.bin
 │   │   │   ├── hypostyle_jeep.bin
@@ -1445,6 +1447,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── race_fd.bin
 │   │   │   ├── race_textures.bin
 │   │   │   ├── semerkhet_bolt.bin
+│   │   │   ├── semerkhet_textures.bin
 │   │   │   ├── seth_fd.bin
 │   │   │   ├── seth_textures.bin
 │   │   │   ├── shadow_sprite.bin
@@ -3091,6 +3094,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── controls_models.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── guardian_animating_bounds.bin
+    │   │   │   │   ├── guardian_fd.bin
+    │   │   │   │   ├── guardian_textures.bin
     │   │   │   │   ├── guide_gun.bin
     │   │   │   │   ├── henchman_jeep.bin
     │   │   │   │   ├── hypostyle_jeep.bin
@@ -3107,6 +3112,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── race_fd.bin
     │   │   │   │   ├── race_textures.bin
     │   │   │   │   ├── semerkhet_bolt.bin
+    │   │   │   │   ├── semerkhet_textures.bin
     │   │   │   │   ├── seth_fd.bin
     │   │   │   │   ├── seth_textures.bin
     │   │   │   │   ├── shadow_sprite.bin
