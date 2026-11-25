@@ -1421,6 +1421,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   └── strings.json5
 │   ├── tr4
 │   │   ├── injections
+│   │   │   ├── alexandria_textures.bin
 │   │   │   ├── angkor_fd.bin
 │   │   │   ├── angkor_textures.bin
 │   │   │   ├── burial_animating_bounds.bin
@@ -3086,6 +3087,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   └── strings.json5
     │   │   ├── tr4
     │   │   │   ├── injections
+    │   │   │   │   ├── alexandria_textures.bin
     │   │   │   │   ├── angkor_fd.bin
     │   │   │   │   ├── angkor_textures.bin
     │   │   │   │   ├── burial_animating_bounds.bin
