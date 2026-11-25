@@ -135,6 +135,7 @@
 - Fixed Lara moving or falling while the screen fades out for a cutscene (TRX2078)
 - Fixed the windows of the jeep in The Great Hypostyle Hall looking green (OG bug) (TRX2121)
 - Fixed the train wheels in Alexandria sitting too low (OG bug) (TRX2119)
+- Fixed mis-rotated textures in Angkor Wat, Tomb of Seth and KV5 (OG bug) (TRX2117)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
