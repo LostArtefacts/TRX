@@ -206,6 +206,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "hypostyle_jeep.bin",
+            ],
             "unobtainable_kills": 1,
         },
 
