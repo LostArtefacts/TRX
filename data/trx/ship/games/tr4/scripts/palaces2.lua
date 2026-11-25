@@ -2,6 +2,14 @@ local cutscenes = require("tr4.cutscenes")
 
 local DEMIGOD_CUTSCENE = 22
 
+local function open_doors()
+  for _, item in
+    ipairs(trx.items.query:of_object(trx.catalog.objects.door_6):matches())
+  do
+    item:trigger()
+  end
+end
+
 trx.events.on_game_start(function()
   trx.objects.animating_16.properties.collidable = false
   trx.items[26].properties.crowbar = true
@@ -62,5 +70,8 @@ cutscenes.register(DEMIGOD_CUTSCENE, {
   hide = { trx.catalog.objects.door_6 },
   on_start = function()
     trx.cutscenes.set_lara_return({ x = 72770, y = -11776, z = 54077 }, 0)
+  end,
+  on_end = function()
+    open_doors()
   end,
 })
