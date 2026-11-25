@@ -258,6 +258,7 @@
             ],
             "injections": [
                 "semerkhet_bolt.bin",
+                "semerkhet_textures.bin",
             ],
             "unobtainable_kills": 8,
             "unobtainable_pickups": 5,
@@ -277,6 +278,8 @@
             ],
             "injections": [
                 "guardian_animating_bounds.bin",
+                "guardian_fd.bin",
+                "guardian_textures.bin",
             ],
             "unobtainable_pickups": 2,
         },
