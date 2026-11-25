@@ -130,6 +130,7 @@
 - Fixed the trail of the fire wraith turning blue at a distance (OG bug) (TRX2038)
 - Fixed wraith sparks starting with the wrong color (OG bug) (TRX2039)
 - Fixed Lara moving or falling while the screen fades out for a cutscene (TRX2078)
+- Fixed the windows of the jeep in The Great Hypostyle Hall looking green (OG bug) (TRX2121)
 
 **Lua**
 - Added `trx.ui.PictureContext.is_legal`, which reports whether a picture is a legal notice (#6929 / TRX1810)
