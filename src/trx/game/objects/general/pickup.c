@@ -4,8 +4,10 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/effects.h>
 #include <trx/game/game.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
@@ -326,6 +328,11 @@ static bool M_CanShowPickupAid(const M_PRIV *const p)
     default:
         return p->show_pickup_aid;
     }
+}
+
+static bool M_IsCutscenePlaying(void)
+{
+    return GF_GetCurrentLevel()->type == GFL_CUTSCENE || CutSeq_IsActive();
 }
 
 static bool M_IsAwaitingRespawn(const ITEM *const item)
@@ -1129,7 +1136,7 @@ void Pickup_ControlAids(const ITEM *const item, int32_t *const timer)
     const ITEM *const lara = Lara_GetItem();
     if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
         || item->speed != 0 || lara == nullptr
-        || !Object_Get(O_PICKUP_AID)->loaded) {
+        || !Object_Get(O_PICKUP_AID)->loaded || M_IsCutscenePlaying()) {
         return;
     }
 
