@@ -11,6 +11,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/sources/poly_fx.h>
+#include <trx/game/output/state.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
@@ -186,11 +187,17 @@ static void M_Draw(void)
         const RGBA_8888 color = { c, c, c, 255 };
         const RGBA_8888 tri_color[3] = { color, color, color };
 
+        // A footprint darkens the floor under it, so the fog fades it out
+        // rather than giving it the fog color.
+        RGBA_F tint = Output_GetTint();
+        tint.a *= 1.0f - Output_GetFogAmount(print->pos);
+        Output_PushTintOverride(tint);
         for (int32_t j = 0; j < passes; j++) {
             OutputSource_PolyFX_StageSpriteTriWorldDepth(
                 sprite_idx, world, tri_color, scale_flags,
                 M_FOOTPRINT_Z_DEPTH_ADJUST, DRAW_BLEND_SUB);
         }
+        Output_PopTintOverride();
     }
 }
 

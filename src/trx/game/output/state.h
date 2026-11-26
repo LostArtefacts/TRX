@@ -65,6 +65,10 @@ RGBA_F Output_GetBackgroundColor(void);
 void Output_SetBackgroundColor(RGB_888 color);
 int32_t Output_GetFogStart(void);
 int32_t Output_GetFogEnd(void);
+// Returns how much distance fog covers a point at the given world position,
+// from 0 for none to 1 for full fog, by the same curve that the mesh shader
+// uses.
+float Output_GetFogAmount(XYZ_32 pos);
 
 void Output_SetFogColor(RGBA_8888 color);
 void Output_SetFogStart(int32_t dist);
