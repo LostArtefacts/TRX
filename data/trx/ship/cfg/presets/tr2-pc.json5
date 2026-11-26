@@ -13,6 +13,7 @@
         "ui.ammo_counter_location": "top_right",
         "ui.healthbar_location": "top_left",
         "ui.airbar_location": "top_right",
+        "ui.stats_transition_style": "immediate",
         "audio.enable_ps1_sfx": false,
         "gameplay.restore_ps1_enemies": false,
         "visuals.enable_gun_glow": false,

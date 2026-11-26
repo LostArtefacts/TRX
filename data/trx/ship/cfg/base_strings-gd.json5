@@ -924,6 +924,11 @@
             "bare": "Furasta",
             "bordered": "Leacanach",
         },
+        "stats_transition_style": {
+            "immediate": "\\{review}Sa bhad",
+            "tr2": "\\{review}TR2",
+            "tr3": "\\{review}TR3",
+        },
         "sunglasses_mode": {
             "off": "Dheth",
             "opaque": "Neo-shoilleir",
@@ -1966,6 +1971,10 @@
         "ui.stats_fade_effects": {
             "title": "Buaidhean falamh staitistig",
             "description": "A' rèiteachadh gu mionaideach na buaidhean falamh airson an cleachdadh neo an cur dheth air scrion staitistig deireadh ìre. Feumaidh an roghainn Buaidhean Falamh a bhith air a thaghadh gus seo obrachadh.",
+        },
+        "ui.stats_transition_style": {
+            "title": "\\{review}Stoidhle staitistig",
+            "description": "\\{review}Smachdaichidh seo cuin agus ciamar a nochdas staitistig aig deireadh na h-ìre. Seallaidh an roghainn «Sa bhad» iad mus bi a’ bhuaidh seargadh deiseil. Cha nochd an dà roghainn eile iad gus am bi a’ bhuaidh seargadh deiseil. Ann an TR2, thèid dàil a chur air a’ cheòl cuideachd, ach ann an TR3 cluichidh an ceòl sa bhad. Feumaidh an roghainn «Buaidhean seargadh staitistig» a bhith an comas gus an obraich seo.",
         },
         "ui.text_scale": {
             "title": "Meud teacsa",

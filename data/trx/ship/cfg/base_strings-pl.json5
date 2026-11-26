@@ -924,6 +924,11 @@
             "bare": "Prosty",
             "bordered": "Z obramowaniem",
         },
+        "stats_transition_style": {
+            "immediate": "\\{review}Natychmiastowy",
+            "tr2": "\\{review}TR2",
+            "tr3": "\\{review}TR3",
+        },
         "sunglasses_mode": {
             "off": "Wyłączone",
             "opaque": "Nieprzezroczyste",
@@ -1966,6 +1971,10 @@
         "ui.stats_fade_effects": {
             "title": "Efekty przejścia w statystykach",
             "description": "Włącza lub wyłącza efekty przejścia na ekranach statystyk. Wymaga opcji ogólnych efektów przejścia do działania.",
+        },
+        "ui.stats_transition_style": {
+            "title": "\\{review}Styl statystyk",
+            "description": "\\{review}Określa, kiedy i w jaki sposób wyświetlane są statystyki na koniec poziomu. Opcja „Natychmiastowy” wyświetli je, zanim efekt zanikania dobiegnie końca. Dwie pozostałe opcje wyświetlą je dopiero po zakończeniu efektu zanikania. W TR2 opóźnione zostanie również odtworzenie muzyki, natomiast w TR3 muzyka zostanie odtworzona natychmiast. Do działania tej funkcji wymagane jest włączenie opcji „Efekty zanikania statystyk”.",
         },
         "ui.text_scale": {
             "title": "Skala tekstu",

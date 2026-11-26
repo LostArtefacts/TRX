@@ -243,6 +243,7 @@ local TABS = {
     "ui.pause_fade_effects",
     "ui.stats_background_style",
     "ui.stats_fade_effects",
+    "ui.stats_transition_style",
     "ui.background_blur",
 
     "visuals.enable_fade_effects",

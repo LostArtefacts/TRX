@@ -103,7 +103,7 @@ end
 -- The box with what it lists now. The ring hides it until the entry is open,
 -- and the save offer takes its place.
 local function box_of(state)
-  if state.offering then
+  if state.offering or state.hidden then
     return trx.ui.widgets.Spacer()
   end
   state.rows = listing.all_rows(state)
@@ -200,7 +200,7 @@ end
 
 -- Brings in the backdrop the screen stands on: the picture that ends the
 -- game, or the style the player picked.
-local function enter_backdrop(ctx)
+local function enter_backdrop(ctx, on_done)
   local style = ctx.is_final and "image"
     or trx.config.get("ui.stats_background_style")
   local fades = fade.screen(ctx, {
@@ -213,6 +213,7 @@ local function enter_backdrop(ctx)
     from = PATTERNS[style] and 1 or 0,
     to = 1,
     ticks = BACKDROP_TICKS[style] or BACKDROP_TICKS.default,
+    on_done = on_done,
   })
 end
 
@@ -282,9 +283,38 @@ local function open_level_end(ctx)
   if mode == Mode.FINAL and #state.rows == 0 then
     return nil
   end
-  enter_backdrop(ctx)
+  local delay_music = trx.config.get("ui.stats_transition_style") == "tr2"
+  local music_paused = delay_music and trx.music.current_track ~= nil
+  if music_paused then
+    trx.music.pause()
+  end
+  local function resume_music()
+    if not music_paused then
+      return
+    end
+    music_paused = false
+    trx.music.unpause()
+  end
+  ctx:on_end(resume_music)
+  local wait_for_fade = trx.config.get("ui.stats_transition_style")
+    ~= "immediate"
+  state.hidden = wait_for_fade
+  enter_backdrop(ctx, function()
+    if not wait_for_fade then
+      return
+    end
+    state.hidden = false
+    if state.layer ~= nil then
+      state.layer:set_root(box_of(state), box.place(state))
+    end
+    resume_music()
+  end)
   return push(ctx, state, function(_, keys)
-    if state.offering or not keys:pressed(trx.input.Role.MENU_SKIP) then
+    if
+      state.offering
+      or state.hidden
+      or not keys:pressed(trx.input.Role.MENU_SKIP)
+    then
       return
     end
     trx.input.hold_off_skip(trx.input.SkipContext.TO_SCREEN)
