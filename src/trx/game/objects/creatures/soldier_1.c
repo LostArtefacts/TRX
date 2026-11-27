@@ -1,5 +1,6 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
@@ -72,6 +73,14 @@ static int32_t M_GetOCB(const ITEM *const item)
         return 0;
     }
     return value.as_int;
+}
+
+static XYZ_32 M_GetDropPos(const ITEM *const item)
+{
+    if (M_GetOCB(item) != M_OCB_WRESTLING) {
+        return item->pos;
+    }
+    return XYZ_32_OffsetYaw(item->pos, item->rot.y, WALL_L);
 }
 
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -437,6 +446,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->collision_func = Creature_Collision;
     obj->control_func = M_Control;
+    obj->drop_pos_func = M_GetDropPos;
 
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->radius = M_RADIUS;

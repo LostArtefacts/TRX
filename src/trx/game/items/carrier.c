@@ -388,6 +388,11 @@ void Carrier_TestItemDrops(const int16_t item_num)
         return;
     }
 
+    const OBJECT *const carrier_obj = Object_Get(carrier->object_id);
+    const XYZ_32 drop_pos = carrier_obj->drop_pos_func != nullptr
+        ? carrier_obj->drop_pos_func(carrier)
+        : carrier->pos;
+
     // The enemy is killed (plus is not runaway) and is carrying at
     // least one item. Ensure that each item has not already spawned,
     // convert guns to ammo if applicable, and spawn the items.
@@ -414,8 +419,8 @@ void Carrier_TestItemDrops(const int16_t item_num)
         ITEM *const pickup = Item_Get(item->spawn_num);
         if (M_ShouldSnapDrop(pickup)) {
             int16_t room_num = carrier->room_num;
-            pickup->pos.x = ROUND_TO_SECTOR(carrier->pos.x) + WALL_L / 2;
-            pickup->pos.z = ROUND_TO_SECTOR(carrier->pos.z) + WALL_L / 2;
+            pickup->pos.x = ROUND_TO_SECTOR(drop_pos.x) + WALL_L / 2;
+            pickup->pos.z = ROUND_TO_SECTOR(drop_pos.z) + WALL_L / 2;
             const SECTOR *const sector = Room_GetSector(pickup->pos, &room_num);
             pickup->pos.y = Room_GetHeight(
                 sector,
