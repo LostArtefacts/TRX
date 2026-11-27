@@ -68,6 +68,8 @@ static void M_ShootRightGun(ITEM *const item)
     Lara_GetLaraInfo()->right_arm.flash_gun = 3;
     if (g_TRVersion == 3) {
         Spawn_GunShell(Gun_GetDefaultType(), true);
+    }
+    if (g_TRVersion == 3 || g_TRVersion == 4) {
         Gun_Smoke_OnFire(Gun_GetDefaultType(), true);
     }
 }
@@ -77,6 +79,8 @@ static void M_ShootLeftGun(ITEM *const item)
     Lara_GetLaraInfo()->left_arm.flash_gun = 3;
     if (g_TRVersion == 3) {
         Spawn_GunShell(Gun_GetDefaultType(), false);
+    }
+    if (g_TRVersion == 3 || g_TRVersion == 4) {
         Gun_Smoke_OnFire(Gun_GetDefaultType(), false);
     }
 }

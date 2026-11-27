@@ -21,7 +21,43 @@ local function open_the_way()
   end
 end
 
+-- Moves both of Lara's pistols between her hands and her holsters.
+local function toggle_pistols()
+  local lara = trx.lara.item
+  lara:run_action(trx.catalog.flip_effects.LARA_DRAW_RIGHT_GUN)
+  lara:run_action(trx.catalog.flip_effects.LARA_DRAW_LEFT_GUN)
+end
+
+local function shoot_right_gun()
+  trx.lara.item:run_action(trx.catalog.flip_effects.LARA_SHOOT_RIGHT_GUN)
+end
+
+local function shoot_left_gun()
+  trx.lara.item:run_action(trx.catalog.flip_effects.LARA_SHOOT_LEFT_GUN)
+end
+
+local function shoot_both_guns()
+  shoot_right_gun()
+  shoot_left_gun()
+end
+
 cutscenes.register(SCORPION_CUTSCENE, {
+  on_start = toggle_pistols,
+  frames = {
+    [51] = shoot_both_guns,
+    [64] = shoot_left_gun,
+    [68] = shoot_right_gun,
+    [73] = shoot_left_gun,
+    [108] = shoot_both_guns,
+    [114] = shoot_both_guns,
+    [120] = shoot_both_guns,
+    [128] = shoot_both_guns,
+    [134] = shoot_both_guns,
+    [141] = shoot_both_guns,
+    [147] = shoot_both_guns,
+    [158] = shoot_both_guns,
+    [309] = toggle_pistols,
+  },
   chat = {
     {
       actor = 1,
