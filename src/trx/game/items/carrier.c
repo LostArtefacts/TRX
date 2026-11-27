@@ -110,11 +110,14 @@ static bool M_IsCarrierType(const OBJECT_ID obj_id)
     bool is_enemy = ObjectFamily_Has(obj_id, OBJ_FAMILY_CREATURE);
     // Eels are hostile but cannot be killed, so must be excluded. Monks may be
     // allocated drop items whether or not they are hostile. Drop items must be
-    // assigned to the skidoo and not the rider to avoid issues with /kill.
+    // assigned to the skidoo and not the rider to avoid issues with /kill. The
+    // big scorpion grips its prey at the same position, so it must be
+    // excluded to keep the carried item on the creature it is standing on.
     // Check O_DRAGON_BACK separately because including the active dragon in
     // the creature family causes problems with /kill.
     is_enemy &= obj_id != O_EEL && obj_id != O_BIG_EEL;
     is_enemy &= obj_id != O_SKIDOO_DRIVER;
+    is_enemy &= obj_id != O_BIG_SCORPION;
     is_enemy |= obj_id == O_DRAGON_BACK || obj_id == O_SKIDOO_ARMED;
     return is_enemy;
 }
@@ -385,6 +388,11 @@ void Carrier_TestItemDrops(const int16_t item_num)
         return;
     }
 
+    const OBJECT *const carrier_obj = Object_Get(carrier->object_id);
+    const XYZ_32 drop_pos = carrier_obj->drop_pos_func != nullptr
+        ? carrier_obj->drop_pos_func(carrier)
+        : carrier->pos;
+
     // The enemy is killed (plus is not runaway) and is carrying at
     // least one item. Ensure that each item has not already spawned,
     // convert guns to ammo if applicable, and spawn the items.
@@ -411,8 +419,8 @@ void Carrier_TestItemDrops(const int16_t item_num)
         ITEM *const pickup = Item_Get(item->spawn_num);
         if (M_ShouldSnapDrop(pickup)) {
             int16_t room_num = carrier->room_num;
-            pickup->pos.x = ROUND_TO_SECTOR(carrier->pos.x) + WALL_L / 2;
-            pickup->pos.z = ROUND_TO_SECTOR(carrier->pos.z) + WALL_L / 2;
+            pickup->pos.x = ROUND_TO_SECTOR(drop_pos.x) + WALL_L / 2;
+            pickup->pos.z = ROUND_TO_SECTOR(drop_pos.z) + WALL_L / 2;
             const SECTOR *const sector = Room_GetSector(pickup->pos, &room_num);
             pickup->pos.y = Room_GetHeight(
                 sector,

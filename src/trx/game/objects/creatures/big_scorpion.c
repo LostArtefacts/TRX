@@ -213,12 +213,14 @@ static void M_Die(ITEM *const item)
         item->current_anim_state = M_STATE_DEATH;
         scorpion->maximum_turn = 0;
         M_RemoveWrestler(item);
+        Item_SetVisible(item, false);
+        CutSeq_Request(M_CUTSCENE_NUM, true);
     } else if (
         item->current_anim_state != M_STATE_DEATH
         && item->current_anim_state != M_STATE_KILL) {
         Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
         item->current_anim_state = M_STATE_DEATH;
-    } else if (CutSeq_GetCurrent() == M_CUTSCENE_NUM) {
+    } else if (CutSeq_IsActive()) {
         item->frame_num = Item_GetAnim(item)->frame_end - 1;
         Item_SetVisible(item, false);
     } else if (item->current_anim_state == M_STATE_DEATH && !item->is_visible) {

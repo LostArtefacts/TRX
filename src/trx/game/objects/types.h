@@ -132,6 +132,9 @@ typedef struct OBJECT {
     // from its own room and from every neighbour that its bounds reach.
     int16_t (*draw_room_num_func)(const ITEM *item);
     bool (*can_drop_items_func)(const ITEM *item);
+    // Returns the point a carried item drops from, in place of the carrier's
+    // own position.
+    XYZ_32 (*drop_pos_func)(const ITEM *item);
     bool (*can_interpolate_func)(
         const ITEM *item, int32_t frame_a, int32_t frame_b);
     ITEM_HIT_EFFECT (*get_hit_effect_func)(const ITEM *item);
