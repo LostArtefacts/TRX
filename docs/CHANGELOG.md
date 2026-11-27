@@ -19,6 +19,7 @@
 - Fixed certain sparks, such as smoke and gas, not being drawn during fixed or cinematic camera sequences when Lara is far from the spawn position (OG bug) (TRX1966)
 - Fixed Lara's legs remaining invisible if the fly cheat is entered when she is in a kayak (#7085 / TRX1974)
 - Fixed a fire briefly appearing between two nearby fires when one of them starts to burn (TRX2070, regression from 1.12)
+- Fixed shadows and footprints staying dark in the distance instead of fading out with the fog (OG bug) (TRX2125)
 
 **Developer console**
 - Fixed `/play` showing the wrong level number on the stats screen, such as "1 of 18" in Venice (regression from 1.9)

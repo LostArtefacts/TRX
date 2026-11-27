@@ -1128,6 +1128,12 @@ static bool M_DrawSprite(
     tint.r = 1.0f;
     tint.g = 1.0f;
     tint.b = 1.0f;
+    const XYZ_32 floor_pos = {
+        .x = anchor_pos.x,
+        .y = anchor_floor,
+        .z = anchor_pos.z,
+    };
+    tint.a *= 1.0f - Output_GetFogAmount(floor_pos);
     Output_PushTintOverride(tint);
 
     M_FACET facets[M_SHADOW_MAX_FACETS];
@@ -1141,7 +1147,7 @@ static bool M_DrawSprite(
     return true;
 }
 
-static void M_StageShadow(void)
+static void M_StageShadow(const float fog_fade)
 {
     M_PRIV *const p = &m_Priv;
     OUTPUT_MESH *const mesh = g_Config.visuals.shadow_type == SHADOW_TYPE_CIRCLE
@@ -1150,12 +1156,14 @@ static void M_StageShadow(void)
     MATRIX cwmatrix = *g_MatrixPtr;
     MATRIX wmatrix = *g_WMatrixPtr;
     Output_ApplyMirror(&cwmatrix, &wmatrix);
+    RGBA_F tint = Output_GetTint();
+    tint.a *= fog_fade;
     const MESH_INSTANCE inst = {
         .mesh = mesh,
         .cwmatrix = cwmatrix,
         .wmatrix = wmatrix,
         // Keep the black shadow synced with item alpha.
-        .tint = Output_GetTint(),
+        .tint = tint,
         .sort_layer = -1,
         .room = Output_GetCurrentRoom(),
     };
@@ -1243,11 +1251,19 @@ void OutputSource_Shadows_Draw(
     XYZ_32 anchor_pos;
     int32_t anchor_floor;
     M_GetPlacement(item, bounds, &anchor_pos, &anchor_floor);
+    // A shadow darkens the floor under it, so the fog fades it out rather
+    // than giving it the fog color.
+    const float fog_fade = 1.0f
+        - Output_GetFogAmount((XYZ_32) {
+            .x = anchor_pos.x,
+            .y = anchor_floor,
+            .z = anchor_pos.z,
+        });
 
     Matrix_TranslateAbs(anchor_pos.x, anchor_floor, anchor_pos.z);
     Matrix_RotY(item->interp.result.rot.y);
     Matrix_ScaleX((1 << W2V_SHIFT) * x_size / UNIT_SHADOW);
     Matrix_ScaleZ((1 << W2V_SHIFT) * z_size / UNIT_SHADOW);
-    M_StageShadow();
+    M_StageShadow(fog_fade);
     Matrix_Pop();
 }

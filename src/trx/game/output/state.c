@@ -170,6 +170,40 @@ int32_t Output_GetFogEnd(void)
     return m_FogEnd;
 }
 
+float Output_GetFogAmount(const XYZ_32 pos)
+{
+    if (!g_Config.rendering.enable_lighting) {
+        return 0.0f;
+    }
+
+    Matrix_Push();
+    *g_MatrixPtr = g_ViewMatrix;
+    Matrix_TranslateAbs32(pos);
+    const float x = (float)(g_MatrixPtr->_03 >> W2V_SHIFT);
+    const float y = (float)(g_MatrixPtr->_13 >> W2V_SHIFT);
+    const float z = (float)(g_MatrixPtr->_23 >> W2V_SHIFT);
+    Matrix_Pop();
+    const float dist = g_Config.visuals.enable_spherical_fog
+        ? sqrtf((x * x) + (y * y) + (z * z))
+        : z;
+    const float start = (float)Output_GetFogStart();
+    const float end = (float)Output_GetFogEnd();
+
+    float amount;
+    if (g_Config.rendering.enable_ps1_fog) {
+        const float near_dist = MAX(start, 1.0f);
+        const float far_dist = MAX(end, near_dist + 1.0f);
+        const float dqa = (1.0f / far_dist) - (1.0f / near_dist);
+        amount = ((1.0f / MAX(dist, 1.0f)) - (1.0f / near_dist)) / dqa;
+    } else if (end <= start) {
+        amount = dist >= end ? 1.0f : 0.0f;
+    } else {
+        amount = (dist - start) / (end - start);
+    }
+    CLAMP(amount, 0.0f, 1.0f);
+    return amount;
+}
+
 void Output_SetFogStart(const int32_t dist)
 {
     m_FogStart = dist;
