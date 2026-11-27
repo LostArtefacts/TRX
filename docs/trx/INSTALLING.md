@@ -1455,6 +1455,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── shell_casings.bin
 │   │   │   ├── sparks_gfx.bin
 │   │   │   ├── title_textures.bin
+│   │   │   ├── train_textures.bin
 │   │   │   ├── valley_fd.bin
 │   │   │   └── valley_textures.bin
 │   │   ├── modules
@@ -3121,6 +3122,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── shell_casings.bin
     │   │   │   │   ├── sparks_gfx.bin
     │   │   │   │   ├── title_textures.bin
+    │   │   │   │   ├── train_textures.bin
     │   │   │   │   ├── valley_fd.bin
     │   │   │   │   └── valley_textures.bin
     │   │   │   ├── modules
